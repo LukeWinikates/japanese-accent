@@ -13,9 +13,12 @@ This git repository contains scripts and tools for making it easier to efficient
 * [ ] automatically open a word in a dictionary that provides pitch accent
 * [ ] *OR* automatically draw pitch accent diacritics over the word
 * [ ] provide a voice recording and playback feature (can we analyze pitch?)
+    * [ ] use https://www.npmjs.com/package/react-media-recorder
+
 ## Chore Backlog
 * [ ] set up yarn, typescript, and react
 * [ ] consider deployment options
+* [ ] use material-ui?
 
 
 ## Research Log:
