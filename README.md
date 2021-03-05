@@ -32,3 +32,11 @@ This git repository contains scripts and tools for making it easier to efficient
     * a sqlite database dump `collection.anki2`
 * a lot of Anki's code is available as a python library that can be `pip` installed
 * Could potentially mash these up in some way - generate Anki cards from personal word lists, for example.
+
+### 2021-03-05
+
+* since MacOS's voice memo app is a little broken, I downloaded a different thing for now - making a dictaphone is still the eventual goal
+* looked for open-source dictionaries, but couldn't find any that included accent information
+* so, no clear stories about how to provide accent information in FOSS software, which is sad
+* can use edict or other open-source dictionaries for part of speech tagging, potentially
+* perhaps automation for - I have a list, iterate over it, let's get parts of speech and accent patterns and make flashcards
