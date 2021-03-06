@@ -46,5 +46,12 @@ This git repository contains scripts and tools for making it easier to efficient
 * so, no clear stories about how to provide accent information in FOSS software, which is sad
 * can use edict or other open-source dictionaries for part of speech tagging, potentially
 * perhaps automation for - I have a list, iterate over it, let's get parts of speech and accent patterns and make flashcards
-* MacOS path to the japanese dictionary with accent information: tree /System/Library/AssetsV2/com_apple_MobileAsset_DictionaryServices_dictionaryOSX/696aefd46a36296fe1614da8660175a7c5f15482.asset
+* MacOS path to the japanese dictionary with accent information: tree `/System/Library/AssetsV2/com_apple_MobileAsset_DictionaryServices_dictionaryOSX/696aefd46a36296fe1614da8660175a7c5f15482.asset`
     *  only available to OSX users, but could write a script to generate personal flashcards from this
+    
+### 2021-03-6
+
+* links about scripting MacOS dictionary access locally:
+    * [ ] various terminal and python-based solutions: https://apple.stackexchange.com/questions/90040/look-up-a-word-in-dictionary-app-in-terminal
+    * [ ] https://github.com/mattt/DictionaryKit
+    * [ ] https://nshipster.com/dictionary-services/
