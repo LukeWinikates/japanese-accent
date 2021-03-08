@@ -1,0 +1,16 @@
+{
+  "name": "japanese-accent",
+  "version": "0.0.1",
+  "description": "tools for studying and practicing japanese pitch accent",
+  "main": "index.js",
+  "repository": "git@github.com:LukeWinikates/japanese-accent.git",
+  "author": "Luke Winikates <luke.winikates@gmail.com>",
+  "license": "GPL",
+  "private": true,
+  "scripts": {
+    "server": "http-server app/public"
+  },
+  "dependencies": {
+    "http-server": "^0.12.3"
+  }
+}
