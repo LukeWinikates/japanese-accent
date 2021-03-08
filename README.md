@@ -11,6 +11,18 @@ run the dictaphone:
 From the terminal, run `yarn server`, and then click one of the urls the pops up. 
 
 ## Feature Backlog
+* Practicing with Dictaphone
+    * [ ] show a page for a given 'practice' item (e.g. currently わにわにのおふろ)
+    * [ ] save files to server as they go
+        * binary contents, unique id, date
+        * [ ] binary persistence to a local disk
+            * ~~[ ] (use minio for now?)~~
+            * [] make a data directory (what's a good convention for this?)  
+    * [ ] implement UI from sketches
+        * ![ui sketch](gh-assets/2021-03-08-dictaphone-interactions.png)
+        * [ ] react
+        * [ ] typescript
+        * [ ] just the landing page for now, and can hardcode a single practice context at first 
 * [ ] import words from Japanese by Renzo flashcards, look up their pitch accent pattern:
     * [ ] via a standard dictionary, like the MacOS one or an online one
     * [ ] via generating a url to Forvo (possibly checking to see if it's a word there)
@@ -30,17 +42,28 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
 ## Chore Backlog
 
 * [ ] set up yarn, typescript, and react
-* [ ] decide on python vs ruby for processing text files
-* [ ] backend language choice:
-    * [ ] golang?
-    * [ ] python?
-    * [ ] node?
-    * [ ] ruby?
-
+* [ ] set up golang project structure
+* [ ] set up Brewfile? (if we're using minio)
 
 ## Decisions
 * [x] Deploy to Heroku using their Container runtime
-
+* [x] Backend language: Golang
+    * [X] golang?
+        * fast
+        * easy cross-compilation
+        * I use it at work
+    * [ ] python?
+        * anki uses it
+        * I like it
+        * not as familiar with it personally, would have to learn a whole web stack
+        * potentially harder distribution story
+    * [ ] node?
+        * typescript
+        * just not as inspired by the choice
+        * no particular advantages for library use or otherwise, at this point
+    * [ ] ruby?
+        * I know it well
+        * don't really want to use rails
 
 ## Research Log:
 
