@@ -1,8 +1,10 @@
 const button = document.querySelector('.start-stop');
 const visualization = document.querySelector('.visualization');
 const clips = document.querySelector('.clips');
+const saveButton = document.querySelector('.save');
 
 let recording = false;
+let blobs = [];
 
 function visualize({recording, error}) {
     if (error) {
@@ -25,7 +27,9 @@ function saveRecording(recordingData) {
     deleteButton.textContent = 'Delete';
     deleteButton.className = 'delete';
 
-    clipLabel.textContent = `${new Date().valueOf()}`;
+    let timestamp = `${new Date().valueOf()}`;
+    clipLabel.textContent = timestamp;
+    let filename = `${timestamp}.ogg`;
 
     clipContainer.appendChild(audio);
     clipContainer.appendChild(clipLabel);
@@ -34,6 +38,7 @@ function saveRecording(recordingData) {
 
     audio.controls = true;
     const blob = new Blob(recordingData, {'type': 'audio/ogg; codecs=opus'});
+    blobs.push({blob, filename});
     audio.src = window.URL.createObjectURL(blob);
     audio.play();
 
@@ -68,6 +73,16 @@ if (navigator.mediaDevices.getUserMedia) {
             visualize({recording});
         };
 
+
+        saveButton.onclick = function () {
+            const formData = new FormData();
+
+            blobs.forEach(audio => {
+                formData.append("file[]", audio.blob, audio.filename);
+            });
+            fetch("/recordings", {method: "POST", body: formData});
+
+        }
     };
 
     let onError = function (error) {

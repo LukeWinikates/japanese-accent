@@ -8,7 +8,7 @@
   "license": "GPL",
   "private": true,
   "scripts": {
-    "server": "http-server app/public"
+    "server": "http-server web/public"
   },
   "dependencies": {
     "http-server": "^0.12.3"
