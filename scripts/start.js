@@ -111,6 +111,7 @@ checkBrowsers(paths.appPath, isInteractive)
     });
     // Load proxy config
     const proxySetting = require(paths.appPackageJson).proxy;
+    console.log(proxySetting);
     const proxyConfig = prepareProxy(
       proxySetting,
       paths.appPublic,
@@ -140,7 +141,6 @@ checkBrowsers(paths.appPath, isInteractive)
       }
 
       console.log(chalk.cyan('Starting the development server...\n'));
-      openBrowser(urls.localUrlForBrowser);
     });
 
     ['SIGINT', 'SIGTERM'].forEach(function (sig) {

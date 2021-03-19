@@ -41,9 +41,8 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
 
 ## Chore Backlog
 
-* [ ] set up yarn, typescript, and react
-* [ ] set up golang project structure
-* [ ] set up Brewfile? (if we're using minio)
+* [x] set up yarn, typescript, and react
+* [x] set up golang project structure
 
 ## Decisions
 * [x] Deploy to Heroku using their Container runtime

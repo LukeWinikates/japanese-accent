@@ -6,6 +6,7 @@
   "author": "Luke Winikates <luke.winikates@gmail.com>",
   "license": "GPL",
   "private": true,
+  "proxy": "http://localhost:8080",
   "dependencies": {
     "@babel/core": "7.12.3",
     "@pmmmwh/react-refresh-webpack-plugin": "0.4.3",
