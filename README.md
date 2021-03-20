@@ -11,6 +11,36 @@ run the dictaphone:
 From the terminal, run `yarn server`, and then click one of the urls the pops up. 
 
 ## Feature Backlog
+* Scaffold the UI
+    * [ ] navigation 'drawer'
+        * [ ] user-defined 'topics' with optional groupings
+        * [ ] system-generated groupings
+            * [ ] heiban/odaka/atamadaka/nakadaka
+            * [ ] parts of speech
+            * [ ] \# of mora
+        * [ ] button to add a new item
+    * [ ] user-defined 'practice items'
+        * [ ] name (click to edit)
+        * [ ] description + resource links (markdown text, links open in a new tab, click to edit)
+        * [ ] stats about last time practiced
+    * [ ] pitch indicator
+        * [ ] allow manual entry?
+        * [ ] pull from macOS dictionary if available
+        * [ ] pull from suzuki-kun if available (for now, click a button)
+    * [ ] external links
+        * [ ] suzuki-kun
+        * [ ] macOS dictionary (if on macOS)
+        * [ ] Forvo
+    * [ ] dictaphone
+        * [ ] click to record
+        * [ ] when in record mode, can stop, stop and play, or stop and trash
+        * [ ] in stopped mode with a recording, can see the latest recording or navigate back through a list of older ones
+        * [ ] possibly can star 'good' recordings
+        * [ ] can see a spectrograph of recording
+    * [ ] some notion of progress tracking/study plan
+        * [ ] frequency of desired study
+        * [ ] click through a wizard, ask quesitons to drive out frequency/weight to give different categories
+        * [ ] randomly mix in different sets - "heiban i adjectives", "body nouns", etc
 * Practicing with Dictaphone
     * [ ] show a page for a given 'practice' item (e.g. currently わにわにのおふろ)
     * [ ] save files to server as they go
@@ -20,9 +50,9 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
             * [] make a data directory (what's a good convention for this?)  
     * [ ] implement UI from sketches
         * ![ui sketch](gh-assets/2021-03-08-dictaphone-interactions.png)
-        * [ ] react
-        * [ ] typescript
-        * [ ] just the landing page for now, and can hardcode a single practice context at first 
+        * [x] react
+        * [x] typescript
+        * [x] just the landing page for now, and can hardcode a single practice context at first 
 * [ ] import words from Japanese by Renzo flashcards, look up their pitch accent pattern:
     * [ ] via a standard dictionary, like the MacOS one or an online one
     * [ ] via generating a url to Forvo (possibly checking to see if it's a word there)
