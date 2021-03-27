@@ -4,12 +4,10 @@ import './App.css';
 import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import {
   AppBar, Box, Breadcrumbs,
-  Button, Checkbox,
+  Checkbox,
   Container, Divider, Drawer,
   IconButton, Link,
   List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText,
-  ListSubheader,
-  Paper,
   Toolbar,
   Typography
 } from "@material-ui/core";
@@ -19,6 +17,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import DeleteIcon from '@material-ui/icons/Delete'
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import {Recorder} from "./Recorder";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -66,7 +65,8 @@ function App() {
       <Container maxWidth={false} disableGutters={true}>
         <AppBar position="static">
           <Toolbar>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu" onClick={handleDrawerOpen}>
+            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
+                        onClick={handleDrawerOpen}>
               <MenuIcon/>
             </IconButton>
             <Typography variant="h6" className={classes.title}>
@@ -80,13 +80,13 @@ function App() {
           variant="persistent"
           anchor="left"
           open={open}
-           // classes={{
-           //   paper: classes.drawerPaper,
-           // }}
+          // classes={{
+          //   paper: classes.drawerPaper,
+          // }}
         >
           <div
             // className={classes.drawerHeader}
-            >
+          >
             <IconButton onClick={handleDrawerClose}>
               {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
             </IconButton>
@@ -122,6 +122,7 @@ function App() {
               <Typography color="textPrimary"> とうさん まいご （五味太郎）</Typography>
             </Breadcrumbs>
 
+            <Recorder/>
             <List subheader={<li/>}>
               {items.map((item, i) =>
                 <ListItem key={`item-${i}`}>
