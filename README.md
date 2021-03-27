@@ -10,6 +10,12 @@ run the dictaphone:
 
 From the terminal, run `yarn server`, and then click one of the urls the pops up. 
 
+## Feature Ideas
+
+"export to printout": print a PDF with just the word list and pitch accent patterns
+single-page edit: edit the whole list in a custom "markdown" format -> easy copy-paste
+    (would probably soft delete any words in this case)
+
 ## Feature Backlog
 * Scaffold the UI
     * [ ] navigation 'drawer'
