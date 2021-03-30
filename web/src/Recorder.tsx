@@ -1,9 +1,12 @@
 import React, {useRef, useState} from 'react';
 
 import {useReactMediaRecorder} from "react-media-recorder";
-import {Button} from "@material-ui/core";
+import {Button, Card} from "@material-ui/core";
 import {Pagination} from '@material-ui/lab';
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
+// import StopIcon from '@material-ui/icons/Stop';
+// import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+import CardContent from "@material-ui/core/CardContent";
 
 declare type AudioRecording = {
   blob: Blob,
@@ -47,20 +50,27 @@ export const Recorder = () => {
   const hasRecordings = recordings.length > 0;
 
   return (
-    <div>
-      <Button onClick={toggle} color="default" variant="outlined" startIcon={<RadioButtonCheckedIcon/>}>
-        {status !== 'recording' ? "Record" : "Stop"}
-      </Button>
-      {hasRecordings ? <>
-        <div>
-          <audio ref={audioRef} src={currentRecording.blobUrl || ""} controls={true}/>
+    <Card>
+      <CardContent>
+        <Button onClick={toggle} color="default" variant="outlined" startIcon={<RadioButtonCheckedIcon/>}>
+          {status !== 'recording' ? "Record" : "Stop"}
+        </Button>
+        {/*<Button color="default" variant="outlined" onClick={stopRecording}>*/}
+        {/*  <StopIcon/>*/}
+        {/*  <PlayArrowIcon></PlayArrowIcon>*/}
+        {/*  Stop Recording & Play*/}
+        {/*</Button>*/}
+        {hasRecordings ? <>
           <div>
-            {currentRecording.timestamp.toLocaleString()}
+            <audio ref={audioRef} src={currentRecording.blobUrl || ""} controls={true}/>
+            <div>
+              {currentRecording.timestamp.toLocaleString()}
+            </div>
           </div>
-        </div>
-        <Pagination count={recordings.length} page={page || recordings.length} siblingCount={2} size="small"
-                    onChange={handlePageChange}/>
-      </> : <></>}
-    </div>
+          <Pagination count={recordings.length} page={page || recordings.length} siblingCount={2} size="small"
+                      onChange={handlePageChange}/>
+        </> : <></>}
+      </CardContent>
+    </Card>
   );
 };

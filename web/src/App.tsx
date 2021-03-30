@@ -3,7 +3,7 @@ import '@fontsource/roboto';
 import './App.css';
 import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import {
-  AppBar, Box, Breadcrumbs,
+  AppBar, Box, Breadcrumbs, Card, CardContent,
   Checkbox,
   Container, Divider, Drawer,
   IconButton, Link,
@@ -31,6 +31,11 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+// palette colors?
+// black rgba(0, 0, 0, 0.9);
+// white rgba(255, 255, 255, 0.9);
+// green rgba(0, 108, 79, 0.9);
+// brownish_orange rgba(179, 89, 55, 0.9);
 
 const theme = createMuiTheme({});
 
@@ -122,28 +127,53 @@ function App() {
               <Typography color="textPrimary"> とうさん まいご （五味太郎）</Typography>
             </Breadcrumbs>
 
-            <Recorder/>
-            <List subheader={<li/>}>
-              {items.map((item, i) =>
-                <ListItem key={`item-${i}`}>
-                  <ListItemIcon>
-                    <Checkbox
-                      edge="start"
-                      // checked={checked.indexOf(value) !== -1}
-                      tabIndex={-1}
-                      disableRipple
-                      // inputProps={{ 'aria-labelledby': labelId }}
-                    />
-                  </ListItemIcon>
-                  <ListItemText primary={item}/>
-                  <ListItemSecondaryAction>
-                    <IconButton edge={false} aria-label="delete">
-                      <DeleteIcon/>
-                    </IconButton>
-                  </ListItemSecondaryAction>
-                </ListItem>)}
+            <Box paddingY={2} margin={0}>
+              <Typography variant="h2">
+                とうさん まいご （五味太郎）
+              </Typography>
 
-            </List>
+
+              <Box paddingY={2} width={1 / 3}>
+                <Typography variant="h4">
+                  Recordings
+                </Typography>
+                <Box paddingY={2}>
+                  <Recorder/>
+                </Box>
+              </Box>
+            </Box>
+
+
+            <Box paddingY={2} width={3 / 4}>
+              <Card>
+                <CardContent>
+                  <Typography variant="h4">
+                    Practice Items
+                  </Typography>
+                  <List subheader={<li/>}>
+                    {items.map((item, i) =>
+                      <ListItem key={`item-${i}`}>
+                        <ListItemIcon>
+                          <Checkbox
+                            edge="start"
+                            // checked={checked.indexOf(value) !== -1}
+                            tabIndex={-1}
+                            disableRipple
+                            // inputProps={{ 'aria-labelledby': labelId }}
+                          />
+                        </ListItemIcon>
+                        <ListItemText primary={item}/>
+                        <ListItemSecondaryAction>
+                          <IconButton edge={false} aria-label="delete">
+                            <DeleteIcon/>
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>)}
+
+                  </List>
+                </CardContent>
+              </Card>
+            </Box>
           </Container>
         </Box>
       </Container>
