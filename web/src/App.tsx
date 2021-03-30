@@ -31,13 +31,16 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-// palette colors?
-// black rgba(0, 0, 0, 0.9);
-// white rgba(255, 255, 255, 0.9);
-// green rgba(0, 108, 79, 0.9);
-// brownish_orange rgba(179, 89, 55, 0.9);
-
-const theme = createMuiTheme({});
+const theme = createMuiTheme({
+  palette: {
+    primary: {
+      main: "#006c4f"
+    },
+    secondary: {
+      main: "#b35937"
+    }
+  }
+});
 
 const items = [
   "おもちゃ",
