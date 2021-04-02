@@ -1,23 +1,22 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import '@fontsource/roboto';
 import './App.css';
 import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
 import {
   AppBar, Box, Breadcrumbs, Card, CardContent,
   Checkbox,
-  Container, Divider, Drawer,
+  Container,
   IconButton, Link,
   List, ListItem, ListItemIcon, ListItemSecondaryAction, ListItemText,
   Toolbar,
   Typography
 } from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
-import InboxIcon from '@material-ui/icons/Inbox';
-import MailIcon from '@material-ui/icons/Mail';
 import DeleteIcon from '@material-ui/icons/Delete'
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import {Recorder} from "./Recorder";
+import useFetch from "use-http";
+import {Category} from "./api";
+import {AppDrawer} from "./AppDrawer";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -56,9 +55,22 @@ function handleClick() {
 
 }
 
+
 function App() {
   const classes = useStyles();
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
+
+  const {get, post, response, loading, error} = useFetch('/categories');
+
+  async function initialize() {
+    const initialCategories = await get('');
+    if (response.ok) setCategories(initialCategories)
+  }
+
+  useEffect(() => {
+    initialize()
+  }, []);
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -83,41 +95,7 @@ function App() {
             {/*<Button color="inherit">Login</Button>*/}
           </Toolbar>
         </AppBar>
-        <Drawer
-          // className={classes.drawer}
-          variant="persistent"
-          anchor="left"
-          open={open}
-          // classes={{
-          //   paper: classes.drawerPaper,
-          // }}
-        >
-          <div
-            // className={classes.drawerHeader}
-          >
-            <IconButton onClick={handleDrawerClose}>
-              {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-            </IconButton>
-          </div>
-          <Divider/>
-          <List>
-            {['Inbox', 'Starred', 'Send email', 'Drafts'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
-                <ListItemText primary={text}/>
-              </ListItem>
-            ))}
-          </List>
-          <Divider/>
-          <List>
-            {['All mail', 'Trash', 'Spam'].map((text, index) => (
-              <ListItem button key={text}>
-                <ListItemIcon>{index % 2 === 0 ? <InboxIcon/> : <MailIcon/>}</ListItemIcon>
-                <ListItemText primary={text}/>
-              </ListItem>
-            ))}
-          </List>
-        </Drawer>
+        <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme} />
         <Box m={2}>
           <Container maxWidth='lg'>
             <Breadcrumbs aria-label="breadcrumb">

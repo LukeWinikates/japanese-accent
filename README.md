@@ -38,7 +38,7 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
         * [ ] macOS dictionary (if on macOS)
         * [ ] Forvo
     * [ ] dictaphone
-        * [ ] click to record
+        * [x] click to record
         * [ ] when in record mode, can stop, stop and play, or stop and trash
         * [ ] in stopped mode with a recording, can see the latest recording or navigate back through a list of older ones
         * [ ] possibly can star 'good' recordings
@@ -129,3 +129,13 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
     * [ ] https://github.com/mattt/DictionaryKit
     * [ ] https://nshipster.com/dictionary-services/
 * spectrogram library: https://www.npmjs.com/package/spectrogram
+
+### 20201-04-01
+
+I've been building up a study list for myself in a text file, using mostly markdown syntax. I'm wondering what it'll take to parse that into a form that can be persisted to the DB and round-tripped back to editable form for the user, but maybe that's an unrealistic goal:
+
+* [ ] https://github.com/yuin/goldmark
+
+Also looking at how to do http in the react app along with hooks:
+
+* [ ] https://github.com/ava/use-http
