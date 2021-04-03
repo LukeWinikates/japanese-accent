@@ -17,6 +17,10 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
     (would probably soft delete any words in this case)
 
 ## Feature Backlog
+* [ ] drag-drop recordings onto study items
+* [ ] pull category list into an unexported component
+* [ ] try syncing markdown file to json, and load that json file as the category/page definition
+
 * Scaffold the UI
     * [ ] navigation 'drawer'
         * [ ] user-defined 'topics' with optional groupings
@@ -138,4 +142,4 @@ I've been building up a study list for myself in a text file, using mostly markd
 
 Also looking at how to do http in the react app along with hooks:
 
-* [ ] https://github.com/ava/use-http
+* [x] https://github.com/ava/use-http
