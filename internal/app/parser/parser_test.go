@@ -55,14 +55,14 @@ func TestBasicParsing(t *testing.T) {
 	if err != nil {
 		t.Error("err was supposed to be nil")
 	}
-	assert.Equal(t, 2, len(result.Sections), nil)
-	section := result.Sections[0]
+	assert.Equal(t, 2, len(result.Categories), nil)
+	section := result.Categories[0]
 	assert.Equal(t, "#ごめんやさい", section.Name, nil)
 
 	assert.Equal(t, 2, len(section.Links), nil)
 	assert.Equal(t, 21, len(section.Words), nil)
 
-	section = result.Sections[1]
+	section = result.Categories[1]
 	assert.Equal(t, "#とうさん　まいご", section.Name, nil)
 
 	assert.Equal(t, 0, len(section.Links), nil)

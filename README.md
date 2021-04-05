@@ -10,6 +10,14 @@ run the dictaphone:
 
 From the terminal, run `yarn server`, and then click one of the urls the pops up. 
 
+## Current Core Use Case:
+* [ ] I can study ad-hoc words from atsui atsui
+    * [ ] show per-#tag wordlists from my file
+        * [x] parse the file
+        * [ ] support nested tags (maybe by making the parser recursive and tracking the nesting context?)
+    * [ ] access forvo recordings
+    * [ ] manually edit accent data (click to edit)
+
 ## Feature Ideas
 
 "export to printout": print a PDF with just the word list and pitch accent patterns
