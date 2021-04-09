@@ -17,6 +17,7 @@ import {
 } from "@material-ui/core";
 import {Recorder} from "./Recorder";
 import DeleteIcon from '@material-ui/icons/Delete'
+import {useRouteMatch} from "react-router";
 
 
 function handleClick() {
@@ -32,7 +33,14 @@ const items = [
   "ネクタイ"
 ];
 
+type CategoryPageParams = string[];
+
 function CategoryPage() {
+  const match = useRouteMatch<CategoryPageParams>();
+  const segments = match.params[0].split("/");
+
+  console.log(match);
+
   return (
     <Box m={2}>
       <Container maxWidth='lg'>
@@ -40,10 +48,19 @@ function CategoryPage() {
           <Link color="inherit" href="/" onClick={handleClick}>
             /#
           </Link>
-          <Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>
-            えほん
-          </Link>
-          <Typography color="textPrimary"> とうさん まいご （五味太郎）</Typography>
+          {
+            segments.map((tag, i) => {
+                var selfLink = segments.slice(0, i).join();
+                return (<Link color="inherit" href={`#/categories/${selfLink}`} key={i}>
+                  {tag}
+                </Link>);
+              }
+            )
+          }
+          {/*<Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>*/}
+          {/*  えほん*/}
+          {/*</Link>*/}
+          {/*<Typography color="textPrimary"> とうさん まいご （五味太郎）</Typography>*/}
         </Breadcrumbs>
 
         <Box paddingY={2} margin={0}>

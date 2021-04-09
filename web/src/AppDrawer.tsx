@@ -1,15 +1,13 @@
 import React from 'react';
 import {Category} from "./api";
 import {makeStyles} from '@material-ui/core/styles';
-import {
-  Divider, Drawer,
-  IconButton, List, ListItem, ListItemIcon, ListItemText
-} from "@material-ui/core";
+import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import InboxIcon from '@material-ui/icons/Inbox';
 import MailIcon from '@material-ui/icons/Mail';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
 import ChevronRightIcon from '@material-ui/icons/ChevronRight'
 import NoteIcon from '@material-ui/icons/Note';
+import {Link} from "react-router-dom";
 
 type AppDrawerProps = {
   categories: Category[],
@@ -59,8 +57,10 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
         {categories.map((category, index) => (
           <React.Fragment key={index}>
             <ListItem button>
-              <ListItemIcon>{<NoteIcon/>}</ListItemIcon>
-              <ListItemText primary={category.name}/>
+              <Link to={`/category/${encodeURIComponent(category.name.replaceAll("#", ""))}`}>
+                <ListItemText primary={category.name}/>
+              </Link>
+              {/*<ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}
             </ListItem>
             <List>
               {

@@ -8,6 +8,8 @@ import useFetch from "use-http";
 import {Category} from "./api";
 import {AppDrawer} from "./AppDrawer";
 import CategoryPage from "./CategoryPage";
+import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
+import HomePage from "./HomePage";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -31,6 +33,7 @@ const theme = createMuiTheme({
     }
   }
 });
+
 
 function App() {
   const classes = useStyles();
@@ -57,24 +60,32 @@ function App() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <Container maxWidth={false} disableGutters={true}>
-        <AppBar position="static">
-          <Toolbar>
-            <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-                        onClick={handleDrawerOpen}>
-              <MenuIcon/>
-            </IconButton>
-            <Typography variant="h6" className={classes.title}>
-              Japanese Accent Practice
-            </Typography>
-            {/*<Button color="inherit">Login</Button>*/}
-          </Toolbar>
-        </AppBar>
-        <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
-        <CategoryPage />
-      </Container>
-    </ThemeProvider>
+    <Router>
+      <ThemeProvider theme={theme}>
+        <Container maxWidth={false} disableGutters={true}>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
+                          onClick={handleDrawerOpen}>
+                <MenuIcon/>
+              </IconButton>
+              <Typography variant="h6" className={classes.title}>
+                Japanese Accent Practice
+              </Typography>
+            </Toolbar>
+          </AppBar>
+          <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
+          <Switch>
+            <Route exact path="/">
+              <HomePage/>
+            </Route>
+            <Route path="/category/*">
+              <CategoryPage/>
+            </Route>
+          </Switch>
+        </Container>
+      </ThemeProvider>
+    </Router>
   );
 }
 
