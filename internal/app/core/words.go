@@ -5,10 +5,10 @@ import (
 )
 
 type Word struct {
-	Text       string
-	Furigana   string
-	AccentMora int
-	moraCount  *int
+	Text       string `json:"word"`
+	Furigana   string `json:"furigana"`
+	AccentMora int    `json:"accentMora"`
+	moraCount  *int   `json:"moraCount"`
 }
 
 type Shiki string

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   Box,
   Breadcrumbs,
@@ -18,54 +18,53 @@ import {
 import {Recorder} from "./Recorder";
 import DeleteIcon from '@material-ui/icons/Delete'
 import {useRouteMatch} from "react-router";
-
-
-function handleClick() {
-
-}
-
-const items = [
-  "おもちゃ",
-  "研究",
-  "靴",
-  "雰囲気",
-  "背広",
-  "ネクタイ"
-];
+import {CategoryDetails} from "./api";
+import useFetch from "use-http";
 
 type CategoryPageParams = string[];
 
 function CategoryPage() {
   const match = useRouteMatch<CategoryPageParams>();
   const segments = match.params[0].split("/");
+  const title = segments[segments.length - 1];
 
-  console.log(match);
+  const [category, setCategory] = useState<CategoryDetails | null>(null);
+
+  const {get, post, response, loading, error} = useFetch('/api/categories/' + encodeURIComponent(title));
+
+  async function initialize() {
+    const initialCategory = await get('');
+    if (response.ok) setCategory(initialCategory)
+  }
+
+  useEffect(() => {
+    initialize()
+  }, [title]);
+
+
+  console.log(segments);
 
   return (
     <Box m={2}>
       <Container maxWidth='lg'>
         <Breadcrumbs aria-label="breadcrumb">
-          <Link color="inherit" href="/" onClick={handleClick}>
-            /#
+          <Link color="inherit" href="/">
+            #
           </Link>
           {
             segments.map((tag, i) => {
-                var selfLink = segments.slice(0, i).join();
-                return (<Link color="inherit" href={`#/categories/${selfLink}`} key={i}>
+                const selfLink = segments.slice(0, i + 1).join('/');
+                return (<Link color="inherit" href={`/category/${selfLink}`} key={i}>
                   {tag}
                 </Link>);
               }
             )
           }
-          {/*<Link color="inherit" href="/getting-started/installation/" onClick={handleClick}>*/}
-          {/*  えほん*/}
-          {/*</Link>*/}
-          {/*<Typography color="textPrimary"> とうさん まいご （五味太郎）</Typography>*/}
         </Breadcrumbs>
 
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
-            とうさん まいご （五味太郎）
+            {title}
           </Typography>
 
 
@@ -87,7 +86,7 @@ function CategoryPage() {
                 Practice Items
               </Typography>
               <List subheader={<li/>}>
-                {items.map((item, i) =>
+                {category?.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>
                     <ListItemIcon>
                       <Checkbox
@@ -98,7 +97,7 @@ function CategoryPage() {
                         // inputProps={{ 'aria-labelledby': labelId }}
                       />
                     </ListItemIcon>
-                    <ListItemText primary={item}/>
+                    <ListItemText primary={item.word}/>
                     <ListItemSecondaryAction>
                       <IconButton edge={false} aria-label="delete">
                         <DeleteIcon/>
