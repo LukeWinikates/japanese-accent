@@ -12,11 +12,20 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
 
 ## Current Core Use Case:
 * [ ] I can study ad-hoc words from atsui atsui
+    * [ ] fix recording tool
+    * [ ] word rendering
+        * [ ] allow pitch kernel editing (manually)
+        * [ ] show pitch graph
+        * [ ] expose forvo external links
+    * [ ] separate parser types and api types
+    * [ ] move 'api' route
     * [ ] show per-#tag wordlists from my file
         * [x] parse the file
         * [ ] support nested tags (maybe by making the parser recursive and tracking the nesting context?)
     * [ ] access forvo recordings
     * [ ] manually edit accent data (click to edit)
+    * [ ] autoclose drawer on select
+    * [ ] drawer is fixed, has independent scrollbar
 
 ## Feature Ideas
 
@@ -36,7 +45,6 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
             * [ ] heiban/odaka/atamadaka/nakadaka
             * [ ] parts of speech
             * [ ] \# of mora
-        * [ ] button to add a new item
     * [ ] user-defined 'practice items'
         * [ ] name (click to edit)
         * [ ] description + resource links (markdown text, links open in a new tab, click to edit)
