@@ -1,7 +1,10 @@
 server:
 	go build -o bin/server cmd/server/cmd.go
 
-.PHONY: test
+.PHONY: test watch
 
 test:
 	go test -v ./... -short
+
+watch:
+	${GOPATH}/bin/air

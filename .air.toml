@@ -1,0 +1,4 @@
+[build]
+cmd = "make server"
+bin = "bin/server"
+exclude_dir = ["web", "data","node_modules"]
