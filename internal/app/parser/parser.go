@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"strconv"
 	"strings"
 )
 
@@ -96,8 +97,35 @@ func linkFromLine(line string) Link {
 	}
 }
 
+//https://github.com/ikawaha/kagome
+
 func wordFromLine(line string) core.Word {
-	return core.Word{
-		Text: line,
+	segments := strings.Split(line, " ")
+	if len(segments) > 1 {
+		maybeAccentMora, err := strconv.Atoi(segments[len(segments)-1])
+		accentMora := &maybeAccentMora
+		text := segments[0]
+		furigana := segments[0]
+
+		if err != nil {
+			accentMora = nil
+		}
+
+		if len(segments) == 3 {
+			furigana = segments[1]
+		}
+
+		return core.Word{
+			Text:       text,
+			Furigana:   furigana,
+			AccentMora: accentMora,
+		}
 	}
+
+	return core.Word{
+		Text:       line,
+		Furigana:   line,
+		AccentMora: nil,
+	}
+
 }

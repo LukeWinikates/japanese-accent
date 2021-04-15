@@ -10,6 +10,9 @@ import {AppDrawer} from "./AppDrawer";
 import CategoryPage from "./CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import HomePage from "./HomePage";
+import clsx from 'clsx';
+
+const drawerWidth = 440;
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,6 +23,36 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  appBar: {
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+  },
+  appBarShift: {
+    width: `calc(100% - ${drawerWidth}px)`,
+    marginLeft: drawerWidth,
+    transition: theme.transitions.create(['margin', 'width'], {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+  },
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.sharp,
+      duration: theme.transitions.duration.leavingScreen,
+    }),
+    marginLeft: drawerWidth,
+  },
+  contentShift: {
+    transition: theme.transitions.create('margin', {
+      easing: theme.transitions.easing.easeOut,
+      duration: theme.transitions.duration.enteringScreen,
+    }),
+    marginLeft: 0,
   },
 }));
 
@@ -63,7 +96,9 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <Container maxWidth={false} disableGutters={true}>
-          <AppBar position="static">
+          <AppBar position="fixed" className={clsx(classes.appBar, {
+            [classes.appBarShift]: open,
+          })}>
             <Toolbar>
               <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
                           onClick={handleDrawerOpen}>
@@ -74,15 +109,19 @@ function App() {
               </Typography>
             </Toolbar>
           </AppBar>
-          <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
-          <Switch>
-            <Route exact path="/">
-              <HomePage/>
-            </Route>
-            <Route path="/category/*">
-              <CategoryPage/>
-            </Route>
-          </Switch>
+          <main className={clsx(classes.content, {
+            [classes.contentShift]: !open,
+          })}>
+            <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
+            <Switch>
+              <Route exact path="/">
+                <HomePage/>
+              </Route>
+              <Route path="/category/*">
+                <CategoryPage/>
+              </Route>
+            </Switch>
+          </main>
         </Container>
       </ThemeProvider>
     </Router>

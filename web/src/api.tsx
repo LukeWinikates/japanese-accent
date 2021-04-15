@@ -6,8 +6,10 @@ export declare type Category = {
 export declare type Word = {
   word: string,
   furigana: string,
+  morae: string[],
   moraCount: number,
-  accentMora: number
+  accentMora: number | null,
+  link: string,
 }
 
 export declare type CategoryDetails = {

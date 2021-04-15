@@ -4,24 +4,41 @@ import {
   Breadcrumbs,
   Card,
   CardContent,
-  Checkbox,
   Container,
   IconButton,
   Link,
   List,
   ListItem,
-  ListItemIcon,
   ListItemSecondaryAction,
   ListItemText,
+  makeStyles,
   Typography
 } from "@material-ui/core";
 import {Recorder} from "./Recorder";
-import DeleteIcon from '@material-ui/icons/Delete'
 import {useRouteMatch} from "react-router";
 import {CategoryDetails} from "./api";
 import useFetch from "use-http";
+import LinkIcon from '@material-ui/icons/Link';
 
 type CategoryPageParams = string[];
+
+type MoraProps = {
+  mora: string,
+  accented: boolean,
+}
+
+const useStyles = makeStyles((theme) => ({
+  accented: {
+    borderTop: "2px dotted black"
+  },
+  default: {}
+}));
+
+function Mora({mora, accented}: MoraProps) {
+  const classes = useStyles();
+
+  return (<span className={accented ? classes.accented : classes.default}>{mora}</span>);
+}
 
 function CategoryPage() {
   const match = useRouteMatch<CategoryPageParams>();
@@ -88,19 +105,17 @@ function CategoryPage() {
               <List subheader={<li/>}>
                 {category?.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        // checked={checked.indexOf(value) !== -1}
-                        tabIndex={-1}
-                        disableRipple
-                        // inputProps={{ 'aria-labelledby': labelId }}
-                      />
-                    </ListItemIcon>
-                    <ListItemText primary={item.word}/>
+                    <ListItemText>
+                      {
+                        item.morae.map((m, i) =>
+                          <Mora key={i} mora={m} accented={(item.accentMora ? item.accentMora : 1) === i + 1}/>
+                        )
+                      }
+                    </ListItemText>
                     <ListItemSecondaryAction>
-                      <IconButton edge={false} aria-label="delete">
-                        <DeleteIcon/>
+                      <IconButton edge={false} aria-label="forvo" href={item.link} target="_blank">
+                        <LinkIcon/>
+                        <ListItemText>Forvo</ListItemText>
                       </IconButton>
                     </ListItemSecondaryAction>
                   </ListItem>)}

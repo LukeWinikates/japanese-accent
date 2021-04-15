@@ -15,10 +15,26 @@ type AppDrawerProps = {
   handleClose: () => void,
   theme: any,
 }
+const drawerWidth = 440;
 
 const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
+  },
+  drawer: {
+    width: drawerWidth,
+    flexShrink: 0,
+  },
+  drawerPaper: {
+    width: drawerWidth,
+  },
+  drawerHeader: {
+    display: 'flex',
+    alignItems: 'center',
+    padding: theme.spacing(0, 1),
+    // necessary for content to be below app bar
+    ...theme.mixins.toolbar,
+    justifyContent: 'flex-end',
   },
 }));
 
@@ -28,16 +44,16 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
   return (
 
     <Drawer
-      // className={classes.drawer}
+      className={classes.drawer}
       variant="persistent"
       anchor="left"
       open={open}
-      // classes={{
-      //   paper: classes.drawerPaper,
-      // }}
+      classes={{
+        paper: classes.drawerPaper,
+      }}
     >
       <div
-        // className={classes.drawerHeader}
+        className={classes.drawerHeader}
       >
         <IconButton onClick={handleClose}>
           {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}

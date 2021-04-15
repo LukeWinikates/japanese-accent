@@ -34,3 +34,9 @@ func TestMoraCount(t *testing.T) {
 	assert.Equal(t, 2, FuriganaWord("じしょ").MoraCount(), "they should be equal")
 	assert.Equal(t, 4, FuriganaWord("がっこう").MoraCount(), "they should be equal")
 }
+
+func TestMoraeCount(t *testing.T) {
+	assert.Equal(t, []string{"じ", "しょ"}, FuriganaWord("じしょ").Morae(), "they should be equal")
+	assert.Equal(t, []string{"が", "っ", "こ", "う"}, FuriganaWord("がっこう").Morae(), "they should be equal")
+	assert.Equal(t, []string{"が", "っ", "こ", "う"}, FuriganaWord("がっこう").Morae(), "they should be equal")
+}

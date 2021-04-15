@@ -13,6 +13,9 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
 ## Current Core Use Case:
 * [ ] I can study ad-hoc words from atsui atsui
     * [ ] fix recording tool
+    * [ ] DB persistence of word
+        * [ ] create SQLite file
+        * [ ] words table with furigana, kanji, accentMora
     * [ ] word rendering
         * [ ] allow pitch kernel editing (manually)
         * [ ] show pitch graph
@@ -150,7 +153,7 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
     * [ ] https://nshipster.com/dictionary-services/
 * spectrogram library: https://www.npmjs.com/package/spectrogram
 
-### 20201-04-01
+### 2021-04-01
 
 I've been building up a study list for myself in a text file, using mostly markdown syntax. I'm wondering what it'll take to parse that into a form that can be persisted to the DB and round-tripped back to editable form for the user, but maybe that's an unrealistic goal:
 
@@ -159,3 +162,14 @@ I've been building up a study list for myself in a text file, using mostly markd
 Also looking at how to do http in the react app along with hooks:
 
 * [x] https://github.com/ava/use-http
+
+
+### 2021-04-13
+
+Looking into calling macOS dictionary services from go:
+
+* https://golang.org/cmd/cgo/
+* https://stackoverflow.com/questions/41264945/how-to-use-macos-os-x-frameworks-in-go/41264946
+* https://github.com/NSHipster/DictionaryKit/blob/main/DictionaryKit/TTTDictionary.m
+* https://nshipster.com/dictionary-services/
+* https://apple.stackexchange.com/questions/90040/look-up-a-word-in-dictionary-app-in-terminal

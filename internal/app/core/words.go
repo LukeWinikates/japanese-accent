@@ -5,10 +5,10 @@ import (
 )
 
 type Word struct {
-	Text       string `json:"word"`
-	Furigana   string `json:"furigana"`
-	AccentMora int    `json:"accentMora"`
-	moraCount  *int   `json:"moraCount"`
+	Text       string
+	Furigana   string
+	AccentMora *int
+	moraCount  *int
 }
 
 type Shiki string
@@ -18,10 +18,14 @@ const (
 	頭高 = Shiki("頭高")
 	中高 = Shiki("中高")
 	尾高 = Shiki("尾高")
+	未定 = Shiki("未定")
 )
 
 func (w Word) Shiki() Shiki {
-	switch w.AccentMora {
+	if w.AccentMora == nil {
+		return 未定
+	}
+	switch *w.AccentMora {
 	case 0:
 		return 平板
 	case 1:
@@ -31,6 +35,19 @@ func (w Word) Shiki() Shiki {
 	default:
 	}
 	return 中高
+}
+
+func isGlide(r rune) bool {
+	switch r {
+	case []rune("ょ")[0]:
+		return true
+	case []rune("ゃ")[0]:
+		return true
+	case []rune("ゅ")[0]:
+		return true
+	default:
+	}
+	return false
 }
 
 func (w Word) MoraCount() int {
@@ -49,6 +66,19 @@ func (w Word) MoraCount() int {
 	}
 	w.moraCount = &count
 	return count
+}
+
+func (w Word) Morae() []string {
+	morae := make([]string, 0)
+	for _, r := range w.Furigana {
+		ji := string(r)
+		if isGlide(r) {
+			morae = append(morae[0:len(morae)-1], morae[len(morae)-1]+ji)
+		} else {
+			morae = append(morae, ji)
+		}
+	}
+	return morae
 }
 
 func (w Word) ForvoURL() string {

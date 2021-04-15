@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/core"
 	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
 	"github.com/gin-gonic/gin"
@@ -62,12 +63,34 @@ func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 type ApiLink struct {
 }
 
+type ApiWord struct {
+	Text       string   `json:"word"`
+	Furigana   string   `json:"furigana"`
+	AccentMora *int     `json:"accentMora"`
+	MoraCount  int      `json:"moraCount"`
+	Morae      []string `json:"morae"`
+	Link       string   `json:"link"`
+}
+
+func makeApiWord(word core.Word) ApiWord {
+	fmt.Printf("%s: %v\n", word.Text, word.MoraCount())
+	fmt.Printf("%s: %s\n", word.Text, word.Morae())
+	return ApiWord{
+		Text:       word.Text,
+		Furigana:   word.Furigana,
+		AccentMora: word.AccentMora,
+		MoraCount:  word.MoraCount(),
+		Morae:      word.Morae(),
+		Link:       word.ForvoURL(),
+	}
+}
+
 type ApiCategory struct {
 	Name  string `json:"name"`
 	Tag   string
 	Notes string
 	Links []ApiLink
-	Words []core.Word `json:"words"`
+	Words []ApiWord `json:"words"`
 }
 
 func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
@@ -95,7 +118,7 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 			if strings.ReplaceAll(category.Name, "#", "") == categoryParam {
 				categoryJSON := ApiCategory{
 					Name:  category.Name,
-					Words: category.Words,
+					Words: apiWords(category.Words),
 				}
 				context.JSON(200, categoryJSON)
 				return
@@ -105,4 +128,12 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 		context.Status(404)
 	}
 
+}
+
+func apiWords(words []core.Word) []ApiWord {
+	apiWords := make([]ApiWord, 0)
+	for _, w := range words {
+		apiWords = append(apiWords, makeApiWord(w))
+	}
+	return apiWords
 }
