@@ -84,6 +84,37 @@ function CategoryPage() {
             {title}
           </Typography>
 
+          <form action={category?.suzukiKunAction} method="post" target="_blank">
+            <IconButton>
+              <LinkIcon/>
+              <ListItemText>Open All in Suzuki-Kun</ListItemText>
+            </IconButton>
+            <input type="hidden"
+                   value={category?.words.map(w => w.word).join("\n") || ""}
+                   name="data[Phrasing][text]"
+            />
+
+            {
+              Object.entries({
+                "curve": "advanced",
+                "accent": "advanced",
+                "accent_mark": "all",
+                "estimation": "crf",
+                "analyze": "true",
+                "phrase_component": "invisible",
+                "param": "invisible",
+                "subscript": "visible",
+                "jeita": "invisible",
+              }).map(([k, v]) => {
+                return (<input type="hidden"
+                       key={k}
+                       value={v}
+                       name={`data[Phrasing][${k}]`}
+                />)
+              })
+            }
+            <button>Click</button>
+          </form>
 
           <Box paddingY={2} width={1 / 3}>
             <Typography variant="h4">
@@ -108,7 +139,7 @@ function CategoryPage() {
                     <ListItemText>
                       {
                         item.morae.map((m, i) =>
-                          <Mora key={i} mora={m} accented={(item.accentMora ? item.accentMora : 1) === i + 1}/>
+                          <Mora key={i} mora={m} accented={!!item.accentMora && (item.accentMora === i + 1)}/>
                         )
                       }
                     </ListItemText>

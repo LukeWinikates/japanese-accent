@@ -15,4 +15,5 @@ export declare type Word = {
 export declare type CategoryDetails = {
   name: string,
   words: Word[],
+  suzukiKunAction: string,
 }

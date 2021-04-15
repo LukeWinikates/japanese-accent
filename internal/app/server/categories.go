@@ -86,11 +86,12 @@ func makeApiWord(word core.Word) ApiWord {
 }
 
 type ApiCategory struct {
-	Name  string `json:"name"`
-	Tag   string
-	Notes string
-	Links []ApiLink
-	Words []ApiWord `json:"words"`
+	Name            string `json:"name"`
+	Tag             string
+	Notes           string
+	Links           []ApiLink
+	Words           []ApiWord `json:"words"`
+	SuzukiKunAction string    `json:"suzukiKunAction"`
 }
 
 func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
@@ -117,8 +118,9 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 		for _, category := range wordlist.Categories {
 			if strings.ReplaceAll(category.Name, "#", "") == categoryParam {
 				categoryJSON := ApiCategory{
-					Name:  category.Name,
-					Words: apiWords(category.Words),
+					Name:            category.Name,
+					Words:           apiWords(category.Words),
+					SuzukiKunAction: suzukiKunAction(category.Words),
 				}
 				context.JSON(200, categoryJSON)
 				return
@@ -128,6 +130,12 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 		context.Status(404)
 	}
 
+}
+
+func suzukiKunAction(words []core.Word) string {
+	str := "http://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index"
+	//params := "_method=POST&data%5BPhrasing%5D%5Btext%5D=%E9%87%91%E9%AD%9A&data%5BPhrasing%5D%5Bcurve%5D=advanced&data%5BPhrasing%5D%5Baccent%5D=advanced&data%5BPhrasing%5D%5Baccent_mark%5D=all&data%5BPhrasing%5D%5Bestimation%5D=crf&data%5BPhrasing%5D%5Banalyze%5D=true&data%5BPhrasing%5D%5Bphrase_component%5D=invisible&data%5BPhrasing%5D%5Bparam%5D=invisible&data%5BPhrasing%5D%5Bsubscript%5D=visible&data%5BPhrasing%5D%5Bjeita%5D=invisible"
+	return str
 }
 
 func apiWords(words []core.Word) []ApiWord {
