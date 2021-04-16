@@ -12,23 +12,25 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
 
 ## Current Core Use Case:
 * [ ] I can study ad-hoc words from atsui atsui
-    * [ ] fix recording tool
-    * [ ] DB persistence of word
-        * [ ] create SQLite file
-        * [ ] words table with furigana, kanji, accentMora
     * [ ] word rendering
         * [ ] allow pitch kernel editing (manually)
         * [ ] show pitch graph
-        * [ ] expose forvo external links
-    * [ ] separate parser types and api types
+        * [x] expose forvo external links
+        * [ ] larger font
+        * [ ] show 'shiki' (or categorize as 'phrase' if multiple accent kernels)
+    * [ ] fix recording tool
+    * [ ] DB persistence of word
+        * [ ] create SQLite file
+        * [ ] words table with furigana, kanji, accentMora    * [ ] separate parser types and api types
     * [ ] move 'api' route
     * [ ] show per-#tag wordlists from my file
         * [x] parse the file
         * [ ] support nested tags (maybe by making the parser recursive and tracking the nesting context?)
-    * [ ] access forvo recordings
+    * [x] access forvo recordings
     * [ ] manually edit accent data (click to edit)
     * [ ] autoclose drawer on select
     * [ ] drawer is fixed, has independent scrollbar
+    * [ ] some kind of spinner effect when loading is happening
 
 ## Feature Ideas
 
@@ -57,9 +59,9 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
         * [ ] pull from macOS dictionary if available
         * [ ] pull from suzuki-kun if available (for now, click a button)
     * [ ] external links
-        * [ ] suzuki-kun
+        * [x] suzuki-kun
+        * [x] Forvo
         * [ ] macOS dictionary (if on macOS)
-        * [ ] Forvo
     * [ ] dictaphone
         * [x] click to record
         * [ ] when in record mode, can stop, stop and play, or stop and trash
@@ -74,8 +76,6 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
     * [ ] show a page for a given 'practice' item (e.g. currently わにわにのおふろ)
     * [ ] save files to server as they go
         * binary contents, unique id, date
-        * [ ] binary persistence to a local disk
-            * ~~[ ] (use minio for now?)~~
             * [] make a data directory (what's a good convention for this?)  
     * [ ] implement UI from sketches
         * ![ui sketch](gh-assets/2021-03-08-dictaphone-interactions.png)
@@ -90,38 +90,9 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
 * Dictaphone
     * [ ] show a "record" button next to each word
     * [ ] record and store multiple recordings - e.g. "save and record another" "discard and record another" 
-* [ ] open a word in suzuki-kun
-* [ ] open a sound sample from sound sample website (Forvo)
 * [ ] provide automatic grouping of words by mora-count and part of speech, and/or pitch pattern
 * [ ] automatically open a word in a dictionary that provides pitch accent
 * [ ] *OR* automatically draw pitch accent diacritics over the word
-* [ ] provide a voice recording and playback feature (can we analyze pitch?)
-    * [ ] use https://www.npmjs.com/package/react-media-recorder
-
-## Chore Backlog
-
-* [x] set up yarn, typescript, and react
-* [x] set up golang project structure
-
-## Decisions
-* [x] Deploy to Heroku using their Container runtime
-* [x] Backend language: Golang
-    * [X] golang?
-        * fast
-        * easy cross-compilation
-        * I use it at work
-    * [ ] python?
-        * anki uses it
-        * I like it
-        * not as familiar with it personally, would have to learn a whole web stack
-        * potentially harder distribution story
-    * [ ] node?
-        * typescript
-        * just not as inspired by the choice
-        * no particular advantages for library use or otherwise, at this point
-    * [ ] ruby?
-        * I know it well
-        * don't really want to use rails
 
 ## Research Log:
 
@@ -173,3 +144,6 @@ Looking into calling macOS dictionary services from go:
 * https://github.com/NSHipster/DictionaryKit/blob/main/DictionaryKit/TTTDictionary.m
 * https://nshipster.com/dictionary-services/
 * https://apple.stackexchange.com/questions/90040/look-up-a-word-in-dictionary-app-in-terminal
+
+### 2021-04-16
+* https://github.com/ikawaha/kagome

@@ -97,8 +97,6 @@ func linkFromLine(line string) Link {
 	}
 }
 
-//https://github.com/ikawaha/kagome
-
 func wordFromLine(line string) core.Word {
 	segments := strings.Split(line, " ")
 	if len(segments) > 1 {
