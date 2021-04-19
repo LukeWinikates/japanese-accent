@@ -181,7 +181,13 @@ function CategoryPage() {
               <List subheader={<li/>}>
                 {category?.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>
-                    <ListItemText secondary={<Typography variant="h5">{item.word}</Typography>}
+                    <ListItemText secondary={
+                      <>
+
+                      <Typography variant="h5">{item.word}</Typography>
+                      <Typography variant="body1">{item.shiki}式</Typography>
+                      </>
+                    }
                                   primary={<MoraSVG word={item}/>}/>
                     <ListItemSecondaryAction>
                       <Button

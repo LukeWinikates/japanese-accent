@@ -10,6 +10,7 @@ export declare type Word = {
   moraCount: number,
   accentMora: number | null,
   link: string,
+  shiki: string,
 }
 
 export declare type CategoryDetails = {

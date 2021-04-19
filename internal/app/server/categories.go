@@ -68,6 +68,7 @@ type ApiWord struct {
 	Furigana   string   `json:"furigana"`
 	AccentMora *int     `json:"accentMora"`
 	MoraCount  int      `json:"moraCount"`
+	Shiki      string   `json:"shiki"`
 	Morae      []string `json:"morae"`
 	Link       string   `json:"link"`
 }
@@ -82,6 +83,7 @@ func makeApiWord(word core.Word) ApiWord {
 		MoraCount:  word.MoraCount(),
 		Morae:      word.Morae(),
 		Link:       word.ForvoURL(),
+		Shiki:      string(word.Shiki()),
 	}
 }
 

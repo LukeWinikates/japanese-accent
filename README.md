@@ -31,6 +31,7 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
     * [ ] autoclose drawer on select
     * [ ] drawer is fixed, has independent scrollbar
     * [ ] some kind of spinner effect when loading is happening
+    * [ ] add particle attachment indicator (default to ga for adjectives, yo for verbs? are the attachment rules the same?)
 
 ## Feature Ideas
 
@@ -42,7 +43,7 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
 * [ ] drag-drop recordings onto study items
 * [ ] pull category list into an unexported component
 * [ ] try syncing markdown file to json, and load that json file as the category/page definition
-
+* [ ] tests for drawing the pitch chart
 * Scaffold the UI
     * [ ] navigation 'drawer'
         * [ ] user-defined 'topics' with optional groupings
