@@ -73,7 +73,7 @@ function App() {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
 
-  const {get, post, response, loading, error} = useFetch('/categories');
+  const {get, post, response, loading, error} = useFetch('/api/categories');
 
   async function initialize() {
     const initialCategories = await get('');
