@@ -148,3 +148,7 @@ Looking into calling macOS dictionary services from go:
 
 ### 2021-04-16
 * https://github.com/ikawaha/kagome
+
+### 2021-04-23
+* https://michalzalecki.com/generate-unique-id-in-the-browser-without-a-library/
+* https://react-query.tanstack.com/
