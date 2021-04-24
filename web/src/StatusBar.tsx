@@ -1,10 +1,15 @@
-import React, {createContext, useContext, useState} from "react"
+import React, {createContext, useContext} from "react"
 import {LinearProgress} from "@material-ui/core";
 import {Alert} from "@material-ui/lab";
 import Snackbar from "@material-ui/core/Snackbar";
 
+export declare type StatusError = {
+  message: string,
+  seen: boolean,
+}
+
 export declare type Status = {
-  error: string | null,
+  error: StatusError | null,
   spinner: boolean,
 }
 
@@ -51,19 +56,22 @@ export const StatusProvider = ({children}: any) => {
 };
 
 export const StatusBar = () => {
-  const {state} = useStatus();
-  const [snackBarState, setSnackBarState] = useState<boolean>(!!state.error);
-  const handleClose = () => setSnackBarState(false);
-  console.log(state);
-  console.log(!!state.error);
-  console.log("snackbar: ", snackBarState);
+  const {state, setter} = useStatus();
+  const handleCloseSnackBarError = () => setter({
+    ...state,
+    error: state.error ? {
+      ...state.error,
+      seen: true,
+    } : null,
+  });
+
   return (
     <>
       {state.spinner ? <LinearProgress/> : <></>}
-      <Snackbar open={snackBarState} autoHideDuration={6000} onClose={handleClose}>
+      <Snackbar open={!!state.error && !state.error.seen} autoHideDuration={6000} onClose={handleCloseSnackBarError}>
         {state.error ?
-          <Alert onClose={handleClose} severity="error">
-            Error: {state.error}
+          <Alert onClose={handleCloseSnackBarError} severity="error">
+            Error: {state.error.message}
           </Alert>
           : <></>}
       </Snackbar>

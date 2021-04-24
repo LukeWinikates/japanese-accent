@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import '@fontsource/roboto';
 import './App.css';
-import {createMuiTheme, makeStyles, ThemeProvider} from '@material-ui/core/styles';
+import {makeStyles, ThemeProvider, unstable_createMuiStrictModeTheme as createMuiTheme} from '@material-ui/core/styles';
 import {AppBar, Container, IconButton, Toolbar, Typography} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import useFetch from "use-http";
@@ -94,7 +94,10 @@ function CoreApp() {
     if (response.ok) setCategories(initialCategories);
     let status = {
       spinner: loading,
-      error: response.ok ? null : (error ? error.message : "unknown error")
+      error: response.ok ? null : {
+        message: error ? error.message : "unknown error",
+        seen: false,
+      }
     };
     console.log("status", response.status);
     console.log("error", error);
