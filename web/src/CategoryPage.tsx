@@ -89,7 +89,7 @@ function CategoryPage() {
 
   const [category, setCategory] = useState<CategoryDetails | null>(null);
 
-  const {get, post, response, loading, error} = useFetch('/api/categories/' + encodeURIComponent(title));
+  const {get, response} = useFetch('/api/categories/' + encodeURIComponent(title));
 
   async function initialize() {
     const initialCategory = await get('');

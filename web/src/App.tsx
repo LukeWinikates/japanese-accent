@@ -11,6 +11,7 @@ import CategoryPage from "./CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import HomePage from "./HomePage";
 import clsx from 'clsx';
+import {StatusBar, StatusProvider, useStatus} from "./StatusBar";
 
 const drawerWidth = 440;
 
@@ -68,21 +69,13 @@ const theme = createMuiTheme({
 });
 
 
-function App() {
+function CoreApp() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState<Category[]>([]);
+  const {setter: setStatus} = useStatus();
 
-  const {get, post, response, loading, error} = useFetch('/api/categories');
-
-  async function initialize() {
-    const initialCategories = await get('');
-    if (response.ok) setCategories(initialCategories)
-  }
-
-  useEffect(() => {
-    initialize()
-  }, []);
+  const {get, response, loading, error} = useFetch('/api/categories');
 
   const handleDrawerOpen = () => {
     setOpen(true);
@@ -92,39 +85,70 @@ function App() {
     setOpen(false);
   };
 
+  async function initialize() {
+    setStatus({
+      spinner: true,
+      error: null
+    });
+    const initialCategories = await get('');
+    if (response.ok) setCategories(initialCategories);
+    let status = {
+      spinner: loading,
+      error: response.ok ? null : (error ? error.message : "unknown error")
+    };
+    console.log("status", response.status);
+    console.log("error", error);
+    console.log("error", error?.message);
+    setStatus(status);
+  }
+
+  useEffect(() => {
+    initialize()
+  }, []);
+
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <Container maxWidth={false} disableGutters={true}>
-          <AppBar position="fixed" className={clsx(classes.appBar, {
-            [classes.appBarShift]: open,
-          })}>
-            <Toolbar>
-              <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
-                          onClick={handleDrawerOpen}>
-                <MenuIcon/>
-              </IconButton>
-              <Typography variant="h6" className={classes.title}>
-                Japanese Accent Practice
-              </Typography>
-            </Toolbar>
-          </AppBar>
-          <main className={clsx(classes.content, {
-            [classes.contentShift]: !open,
-          })}>
-            <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
-            <Switch>
-              <Route exact path="/">
-                <HomePage/>
-              </Route>
-              <Route path="/category/*">
-                <CategoryPage/>
-              </Route>
-            </Switch>
-          </main>
-        </Container>
-      </ThemeProvider>
-    </Router>
+    <Container maxWidth={false} disableGutters={true}>
+      <AppBar position="fixed" className={clsx(classes.appBar, {
+        [classes.appBarShift]: open,
+      })}>
+        <StatusBar/>
+        <Toolbar>
+          <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
+                      onClick={handleDrawerOpen}>
+            <MenuIcon/>
+          </IconButton>
+          <Typography variant="h6" className={classes.title}>
+            Japanese Accent Practice
+          </Typography>
+        </Toolbar>
+      </AppBar>
+      <main className={clsx(classes.content, {
+        [classes.contentShift]: !open,
+      })}>
+
+        <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
+        <Switch>
+          <Route exact path="/">
+            <HomePage/>
+          </Route>
+          <Route path="/category/*">
+            <CategoryPage/>
+          </Route>
+        </Switch>
+      </main>
+    </Container>
+  );
+}
+
+function App() {
+  return (
+    <StatusProvider>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <CoreApp/>
+        </ThemeProvider>
+      </Router>
+    </StatusProvider>
   );
 }
 
