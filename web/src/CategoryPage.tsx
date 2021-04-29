@@ -43,24 +43,28 @@ function MoraSVG({word}: {
   const high = 10;
   const low = 30;
 
+
   const points = word.morae.map((m, i) => {
     const x = 20 + (i * moraWidth);
-    const y = moraAccentHigh(word, i) ? high : low;
+    const y = word.accentMora !== null && moraAccentHigh(word, i) ? high : low;
     return {x, y}
   });
 
+  const strokeDashes = word.accentMora !== null ? "1 0" : "1 1";
 
   const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
+
 
   return (
     <svg style={{display: "inline-block", width: 8 * moraWidth, height: 80}}>
 
       {
-        points.map((p, i) => {
-          return <circle key={`point-${i}`} cx={p.x} cy={p.y} r="5" fill={theme.palette.primary.light}/>
-        })
+        word.accentMora !== null ?
+          points.map((p, i) => {
+            return <circle key={`point-${i}`} cx={p.x} cy={p.y} r="5" fill={theme.palette.primary.light}/>
+          }) : <></>
       }
-      <path fill="none" stroke={theme.palette.primary.light} strokeWidth={2} d={path}/>
+      <path fill="none" stroke={theme.palette.primary.light} strokeDasharray={strokeDashes} strokeWidth={2} d={path}/>
 
       {
         word.morae.map((m, i) => {

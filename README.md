@@ -13,12 +13,13 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
 ## Current Core Use Case:
 * [ ] I can study ad-hoc words from atsui atsui
     * [ ] word rendering
-        * [ ] allow pitch kernel editing (manually)
-        * [ ] show pitch graph
+        * [x] allow pitch kernel editing (manually)
+        * [x] show pitch graph
         * [x] expose forvo external links
         * [ ] larger font
-        * [ ] show 'shiki' (or categorize as 'phrase' if multiple accent kernels)
-    * [ ] fix recording tool
+        * [x] show 'shiki' 
+        * [ ] (or categorize as 'phrase' if multiple accent kernels)
+    * [x] fix recording tool
     * [ ] DB persistence of word
         * [ ] create SQLite file
         * [ ] words table with furigana, kanji, accentMora    * [ ] separate parser types and api types
@@ -30,7 +31,7 @@ From the terminal, run `yarn server`, and then click one of the urls the pops up
     * [ ] manually edit accent data (click to edit)
     * [ ] autoclose drawer on select
     * [ ] drawer is fixed, has independent scrollbar
-    * [ ] some kind of spinner effect when loading is happening
+    * [x] some kind of spinner effect when loading is happening
     * [ ] add particle attachment indicator (default to ga for adjectives, yo for verbs? are the attachment rules the same?)
 
 ## Feature Ideas
