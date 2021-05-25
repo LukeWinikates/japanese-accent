@@ -19,6 +19,7 @@ import {useRouteMatch} from "react-router";
 import {CategoryDetails, Word} from "./api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
+import {LinkedVideo} from "./LinkedVideo";
 
 type CategoryPageParams = string[];
 
@@ -167,10 +168,29 @@ function CategoryPage() {
 
           <Box paddingY={2} width={1 / 3}>
             <Typography variant="h4">
-              Recordings
+              Quick Recording
             </Typography>
             <Box paddingY={2}>
-              <Recorder/>
+              <Card>
+                <CardContent>
+                  <Recorder beforeRecord={()=>{}}/>
+                </CardContent>
+              </Card>
+            </Box>
+          </Box>
+
+          <Box paddingY={2}>
+            <Typography variant="h4">
+              Native Practice Recordings
+            </Typography>
+            <Box paddingY={2}>
+              {category?.links.map((l, i) => {
+                return (<Card key={i}>
+                  <CardContent>
+                    <LinkedVideo link={l}/>
+                  </CardContent>
+                </Card>)
+              })}
             </Box>
           </Box>
         </Box>

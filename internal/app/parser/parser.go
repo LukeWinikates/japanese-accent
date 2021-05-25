@@ -13,6 +13,10 @@ type Link struct {
 	URL  string
 }
 
+func (link Link) VideoID() string {
+	return strings.Split(link.URL, "=")[1]
+}
+
 type Category struct {
 	Name       string `json:"name"`
 	Tag        string

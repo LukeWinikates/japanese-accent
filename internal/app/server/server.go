@@ -9,7 +9,7 @@ type Persister interface {
 	PersistFile(file *multipart.FileHeader) error
 }
 
-func Configure(engine *gin.Engine, wordsFilePath string) {
+func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string) {
 	engine.Static("/public", "./web/public")
 	engine.StaticFile("/", "./web/public/index.html")
 
@@ -17,6 +17,12 @@ func Configure(engine *gin.Engine, wordsFilePath string) {
 	{
 		api.POST("/recordings", HandleRecordingUpload)
 		api.GET("/categories", MakeHandleCategoriesGET(wordsFilePath))
-		api.GET("/categories/*category", MakeHandleCategoryGET(wordsFilePath))
+		api.GET("/categories/*category", MakeHandleCategoryGET(wordsFilePath, mediaDirPath))
+	}
+
+	media := engine.Group("/media")
+	{
+		media.GET("/audio/:id/segments", MakeAudioSegmentsGET(mediaDirPath))
+		media.GET("/audio/:id", MakeAudioGET(mediaDirPath))
 	}
 }

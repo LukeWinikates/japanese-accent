@@ -61,6 +61,9 @@ func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 }
 
 type ApiLink struct {
+	Text    string `json:"text"`
+	URL     string `json:"url"`
+	VideoID string `json:"videoId"`
 }
 
 type ApiWord struct {
@@ -91,12 +94,12 @@ type ApiCategory struct {
 	Name            string `json:"name"`
 	Tag             string
 	Notes           string
-	Links           []ApiLink
+	Links           []ApiLink `json:"links"`
 	Words           []ApiWord `json:"words"`
 	SuzukiKunAction string    `json:"suzukiKunAction"`
 }
 
-func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
+func MakeHandleCategoryGET(wordsFilePath, mediaDirPath string) gin.HandlerFunc {
 	return func(context *gin.Context) {
 
 		content, err := ioutil.ReadFile(wordsFilePath)
@@ -123,6 +126,7 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 					Name:            category.Name,
 					Words:           apiWords(category.Words),
 					SuzukiKunAction: suzukiKunAction(category.Words),
+					Links:           apiLinks(category.Links),
 				}
 				context.JSON(200, categoryJSON)
 				return
@@ -132,6 +136,18 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 		context.Status(404)
 	}
 
+}
+
+func apiLinks(links []parser.Link) []ApiLink {
+	apiLinks := make([]ApiLink, 0)
+	for _, link := range links {
+		apiLinks = append(apiLinks, ApiLink{
+			Text:    link.Text,
+			URL:     link.URL,
+			VideoID: link.VideoID(),
+		})
+	}
+	return apiLinks
 }
 
 func suzukiKunAction(words []core.Word) string {

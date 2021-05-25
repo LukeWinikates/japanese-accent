@@ -11,40 +11,48 @@ run the dictaphone:
 From the terminal, run `yarn server`, and then click one of the urls the pops up. 
 
 ## Current Core Use Case:
-* [ ] I can study ad-hoc words from atsui atsui
-    * [ ] word rendering
-        * [x] allow pitch kernel editing (manually)
-        * [x] show pitch graph
-        * [x] expose forvo external links
-        * [ ] larger font
-        * [x] show 'shiki' 
-        * [ ] (or categorize as 'phrase' if multiple accent kernels)
-    * [x] fix recording tool
-    * [ ] DB persistence of word
-        * [ ] create SQLite file
-        * [ ] words table with furigana, kanji, accentMora    * [ ] separate parser types and api types
-    * [ ] move 'api' route
-    * [ ] show per-#tag wordlists from my file
-        * [x] parse the file
-        * [ ] support nested tags (maybe by making the parser recursive and tracking the nesting context?)
-    * [x] access forvo recordings
-    * [ ] manually edit accent data (click to edit)
-    * [ ] autoclose drawer on select
-    * [ ] drawer is fixed, has independent scrollbar
-    * [x] some kind of spinner effect when loading is happening
-    * [ ] add particle attachment indicator (default to ga for adjectives, yo for verbs? are the attachment rules the same?)
+* [ ] I can record and listen back to myself based on native speech
+    * [ ] convert youtube videos into audio clips
+        * [x] download to media directory using youtube-dl
+        * [ ] detect if youtube-dl is on the $PATH
+        * [x] create clips based on timestamps in youtube video 
+            * [x] (how to make these not a pain to record?)
+        * [x] for each audio sample, show an entry in the UI.
+        * [ ] Support practice "dictaphone" playback/analysis
+            * [ ] card for the 'native recording'
+            * [ ] card for 'my recording'
+            * [ ] some interaction for prioritizing it for review
+    * [ ] make local copies of forvo recordings for individual words
+
+* [ ] navigation
+    * [ ] support nested tags (maybe by making the parser recursive and tracking the nesting context?)
+* [ ] phrase support in the file format
+    * [ ] different format for phrases? [Phrase] (or [Phrases]) label:
+        * normal text
+        * kana with word spaces + accent numberings
+        * implies [Words] label too?
+
+
 
 ## Feature Ideas
 
 "export to printout": print a PDF with just the word list and pitch accent patterns
 single-page edit: edit the whole list in a custom "markdown" format -> easy copy-paste
     (would probably soft delete any words in this case)
+export to Japanese by Renzo
+export to Anki
+Spectrograph
+
 
 ## Feature Backlog
 * [ ] drag-drop recordings onto study items
 * [ ] pull category list into an unexported component
 * [ ] try syncing markdown file to json, and load that json file as the category/page definition
 * [ ] tests for drawing the pitch chart
+* [ ] autoclose drawer on select
+* [ ] drawer is fixed, has independent scrollbar
+* [ ] add particle attachment indicator (default to ga for adjectives, yo for verbs? are the attachment rules the same?)
+
 * Scaffold the UI
     * [ ] navigation 'drawer'
         * [ ] user-defined 'topics' with optional groupings
@@ -79,11 +87,6 @@ single-page edit: edit the whole list in a custom "markdown" format -> easy copy
     * [ ] save files to server as they go
         * binary contents, unique id, date
             * [] make a data directory (what's a good convention for this?)  
-    * [ ] implement UI from sketches
-        * ![ui sketch](gh-assets/2021-03-08-dictaphone-interactions.png)
-        * [x] react
-        * [x] typescript
-        * [x] just the landing page for now, and can hardcode a single practice context at first 
 * [ ] import words from Japanese by Renzo flashcards, look up their pitch accent pattern:
     * [ ] via a standard dictionary, like the MacOS one or an online one
     * [ ] via generating a url to Forvo (possibly checking to see if it's a word there)
@@ -153,3 +156,6 @@ Looking into calling macOS dictionary services from go:
 ### 2021-04-23
 * https://michalzalecki.com/generate-unique-id-in-the-browser-without-a-library/
 * https://react-query.tanstack.com/
+
+### 2021-05-10
+* youtube-dl is great, but embedding python and shelling out to the command line sounds like a pain. Given that we're only using it to download from youtube, I wonder if we can port some pieces of it to golang (seems like it should be easy)

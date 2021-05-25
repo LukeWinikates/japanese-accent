@@ -7,19 +7,28 @@ import (
 	"log"
 )
 
-func main() {
-	log.Println("Data directories:", xdg.DataDirs)
-	wordsFilePath := readConfig()
-
-	r := gin.Default()
-	server.Configure(r, wordsFilePath)
-	r.Run() // listen and serve on 0.0.0.0:8080 (for windows "localhost:8080")
+type config struct {
+	WordsFilePath string
+	MediaDirPath  string
 }
 
-func readConfig() string {
-	configFilePath, err := xdg.DataFile("japanese-accent/data/words.txt")
+func main() {
+	log.Println("Data directories:", xdg.DataDirs)
+	config := readConfig()
+
+	r := gin.Default()
+	server.Configure(r, config.WordsFilePath, config.MediaDirPath)
+	log.Fatalln(r.Run().Error())
+}
+
+func readConfig() config {
+	wordsFilePath, err := xdg.DataFile("japanese-accent/data/words.txt")
+	mediaPath, err := xdg.DataFile("japanese-accent/data/media")
 	if err != nil {
 		log.Fatal(err)
 	}
-	return configFilePath
+	return config{
+		WordsFilePath: wordsFilePath,
+		MediaDirPath:  mediaPath,
+	}
 }
