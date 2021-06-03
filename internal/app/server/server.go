@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"mime/multipart"
 )
 
@@ -9,7 +10,7 @@ type Persister interface {
 	PersistFile(file *multipart.FileHeader) error
 }
 
-func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string) {
+func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.DB) {
 	engine.Static("/public", "./web/public")
 	engine.StaticFile("/", "./web/public/index.html")
 
@@ -22,7 +23,7 @@ func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string) {
 
 	media := engine.Group("/media")
 	{
-		media.GET("/audio/:id/segments", MakeAudioSegmentsGET(mediaDirPath))
+		media.GET("/audio/:id/segments", MakeAudioSegmentsGET(mediaDirPath, db))
 		media.GET("/audio/:id", MakeAudioGET(mediaDirPath))
 	}
 }

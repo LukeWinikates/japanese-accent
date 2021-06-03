@@ -20,13 +20,13 @@ const parseTime = (timeString: string) => {
 
 
 declare type Segment = {
-  start: string,
-  end: string,
+  start: number,
+  end: number,
   text: string,
 };
 
 function duration(segment: Segment): number {
-  return parseTime(segment.end) - parseTime(segment.start);
+  return (segment.end - segment.start) / 1000;
 }
 
 export const LinkedVideo = ({link}: { link: Link }) => {
@@ -61,17 +61,17 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   }, [link.videoId]);
 
   function audioUrl() {
-    return `/media/audio/${link.videoId}` + (currentSegment ? `#t=${currentSegment.start},${currentSegment.end}` : "");
+    return `/media/audio/${link.videoId}` + (currentSegment ? `#t=${currentSegment.start / 1000},${currentSegment.end / 1000}` : "");
   }
 
   function timeUpdate() {
     console.log(audioRef.current?.currentTime);
     console.log(currentSegment?.end);
-    console.log(parseTime(currentSegment?.end || ""));
+    // console.log(parseTime(currentSegment?.end || ""));
     setProgress(calculateProgress());
     if (currentSegment
       && audioRef.current
-      && parseTime(currentSegment.end || "") <= audioRef.current.currentTime) {
+      && audioRef.current.currentTime >= currentSegment.end / 1000) {
       audioRef.current?.pause();
       setPlayingSegment(false);
     }
@@ -143,7 +143,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
       return;
     }
     setPlayingSegment(false);
-    audioRef.current?.fastSeek(parseTime(currentSegment.start));
+    audioRef.current?.fastSeek(currentSegment.start / 1000);
   };
 
 
@@ -155,8 +155,8 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     if (audioRef.current === null || currentSegment === null) {
       return 0;
     }
-    const current = audioRef.current.currentTime - parseTime(currentSegment.start);
-    const total = parseTime(currentSegment.end) - parseTime(currentSegment.start);
+    const current = audioRef.current.currentTime - (currentSegment.start / 1000);
+    const total = (currentSegment.end / 1000) - (currentSegment.start / 1000);
     let progress = (current / total) * 100;
     console.log("progress:", progress);
     return progress;
