@@ -11,13 +11,7 @@ import {Pagination} from '@material-ui/lab';
 import AutoSizer from "react-virtualized-auto-sizer";
 import PauseIcon from '@material-ui/icons/Pause';
 import ListItemText from "@material-ui/core/ListItemText";
-
-const parseTime = (timeString: string) => {
-  const [rest, ms] = timeString.split(".");
-  const [hr, min, sec] = rest.split(":");
-  return ((+ms / 1000) + +sec + (+min * 60) + (+hr * 60 * 60));
-};
-
+import {MediaSegmentsEditDialog} from "./MediaSegmentsEditDialog";
 
 declare type Segment = {
   start: number,
@@ -220,16 +214,12 @@ export const LinkedVideo = ({link}: { link: Link }) => {
         </Grid>
 
       </Grid>
-      <Modal
+      <MediaSegmentsEditDialog
         open={modalOpen}
         onClose={handleModalClose}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
-      >
-        <Typography component="h1">
-          Modal!
-        </Typography>
-      </Modal>
+        />
     </Grid>
   );
 };
