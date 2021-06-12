@@ -1,8 +1,8 @@
 import React, {useEffect, useRef, useState} from 'react';
 import useFetch from "use-http";
 
-import {Link} from "./api";
-import {Button, ButtonGroup, Grid, LinearProgress, ListItem, Modal, Typography} from "@material-ui/core";
+import {duration, Link, Segment} from "./api";
+import {Button, ButtonGroup, Grid, LinearProgress, ListItem, Typography} from "@material-ui/core";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import {Recorder} from "./Recorder";
 import EditIcon from '@material-ui/icons/Edit';
@@ -12,16 +12,6 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import PauseIcon from '@material-ui/icons/Pause';
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentsEditDialog} from "./MediaSegmentsEditDialog";
-
-declare type Segment = {
-  start: number,
-  end: number,
-  text: string,
-};
-
-function duration(segment: Segment): number {
-  return (segment.end - segment.start) / 1000;
-}
 
 export const LinkedVideo = ({link}: { link: Link }) => {
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -217,6 +207,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
       <MediaSegmentsEditDialog
         open={modalOpen}
         onClose={handleModalClose}
+        segments={segments}
         aria-labelledby="simple-modal-title"
         aria-describedby="simple-modal-description"
         />

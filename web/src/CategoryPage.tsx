@@ -12,80 +12,16 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-  useTheme
 } from "@material-ui/core";
-import {Recorder} from "./Recorder";
 import {useRouteMatch} from "react-router";
-import {CategoryDetails, Word} from "./api";
+import {CategoryDetails} from "./api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
 import {LinkedVideo} from "./LinkedVideo";
+import {SuzukiButton} from "./SuzukiButton";
+import {MoraSVG} from "./MoraSVG";
 
 type CategoryPageParams = string[];
-
-function moraAccentHigh(word: Word, index: number) {
-  if (!!word.accentMora) {
-    if (index === 0 && word.accentMora !== 1) {
-      return false;
-    }
-
-    return index + 1 <= word.accentMora;
-  } else {
-    // heiban starts low, the rest are high
-    return index > 0;
-  }
-}
-
-function MoraSVG({word}: {
-  word: Word
-}) {
-  const theme = useTheme();
-  const moraWidth = 40;
-  const high = 10;
-  const low = 30;
-
-
-  const points = word.morae.map((m, i) => {
-    const x = 20 + (i * moraWidth);
-    const y = word.accentMora !== null && moraAccentHigh(word, i) ? high : low;
-    return {x, y}
-  });
-
-  const strokeDashes = word.accentMora !== null ? "1 0" : "1 1";
-
-  const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
-
-
-  return (
-    <svg style={{display: "inline-block", width: 8 * moraWidth, height: 80}}>
-
-      {
-        word.accentMora !== null ?
-          points.map((p, i) => {
-            return <circle key={`point-${i}`} cx={p.x} cy={p.y} r="5" fill={theme.palette.primary.light}/>
-          }) : <></>
-      }
-      <path fill="none" stroke={theme.palette.primary.light} strokeDasharray={strokeDashes} strokeWidth={2} d={path}/>
-
-      {
-        word.morae.map((m, i) => {
-          return (
-            <text y="60"
-                  style={{
-                    fill: i + 1 === word.accentMora ? theme.palette.primary.light : theme.palette.grey["700"],
-                    fontWeight: i + 1 === word.accentMora ? theme.typography.fontWeightBold : theme.typography.fontWeightMedium,
-                    fontSize: 16,
-                    textAlign: "center"
-                  }}
-                  key={`text-${i}`}
-                  x={`${i * moraWidth + 10}`}>
-              {m}
-            </text>);
-        })
-      }
-    </svg>
-  );
-}
 
 function CategoryPage() {
   const match = useRouteMatch<CategoryPageParams>();
@@ -104,12 +40,6 @@ function CategoryPage() {
   useEffect(() => {
     initialize()
   }, [title]);
-
-  const formEl = useRef<HTMLFormElement>(null);
-
-  const submitForm = () => {
-    formEl.current?.submit();
-  };
 
   return (
     <Box m={2}>
@@ -134,51 +64,6 @@ function CategoryPage() {
             {title}
           </Typography>
 
-          <form action={category?.suzukiKunAction} method="post" target="_blank" ref={formEl}>
-            <input type="hidden"
-                   value={category?.words.map(w => w.word).join("\n") || ""}
-                   name="data[Phrasing][text]"
-            />
-
-            {
-              Object.entries({
-                "curve": "advanced",
-                "accent": "advanced",
-                "accent_mark": "all",
-                "estimation": "crf",
-                "analyze": "true",
-                "phrase_component": "invisible",
-                "param": "invisible",
-                "subscript": "visible",
-                "jeita": "invisible",
-              }).map(([k, v]) => {
-                return (<input type="hidden"
-                               key={k}
-                               value={v}
-                               name={`data[Phrasing][${k}]`}
-                />)
-              })
-            }
-            <Button onClick={submitForm} startIcon={<LinkIcon/>} variant="contained"
-                    color="secondary">
-
-              Open All in Suzuki-Kun
-            </Button>
-          </form>
-
-          <Box paddingY={2} width={1 / 3}>
-            <Typography variant="h4">
-              Quick Recording
-            </Typography>
-            <Box paddingY={2}>
-              <Card>
-                <CardContent>
-                  <Recorder beforeRecord={()=>{}}/>
-                </CardContent>
-              </Card>
-            </Box>
-          </Box>
-
           <Box paddingY={2}>
             <Typography variant="h4">
               Native Practice Recordings
@@ -202,6 +87,7 @@ function CategoryPage() {
               <Typography variant="h4">
                 Practice Items
               </Typography>
+              <SuzukiButton category={category}/>
               <List subheader={<li/>}>
                 {category?.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>

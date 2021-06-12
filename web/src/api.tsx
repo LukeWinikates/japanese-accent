@@ -25,3 +25,14 @@ export declare type CategoryDetails = {
   suzukiKunAction: string,
   links: Link[],
 }
+
+export declare type Segment = {
+  start: number,
+  end: number,
+  text: string,
+};
+
+
+export function duration(segment: Segment): number {
+  return (segment.end - segment.start) / 1000;
+}
