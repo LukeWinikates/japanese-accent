@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Box,
   Breadcrumbs,
@@ -22,24 +22,38 @@ import {SuzukiButton} from "./SuzukiButton";
 import {MoraSVG} from "./MoraSVG";
 
 type CategoryPageParams = string[];
+type Loading = { loading: true };
+type Loaded = { loading: false, category: CategoryDetails };
+type CategoryPageState = Loading | Loaded;
 
 function CategoryPage() {
   const match = useRouteMatch<CategoryPageParams>();
   const segments = match.params[0].split("/");
   const title = segments[segments.length - 1];
 
-  const [category, setCategory] = useState<CategoryDetails | null>(null);
+  const [pageState, setPageState] = useState<CategoryPageState>({loading: true});
 
-  const {get, response} = useFetch('/api/categories/' + encodeURIComponent(title));
+  const {get, response} = useFetch<CategoryDetails>('/api/categories/' + encodeURIComponent(title));
 
   async function initialize() {
     const initialCategory = await get('');
-    if (response.ok) setCategory(initialCategory)
+    if (response.ok) {
+      setPageState({
+        loading: false,
+        category: initialCategory
+      });
+    }
   }
 
   useEffect(() => {
     initialize()
   }, [title]);
+
+  if (pageState.loading) {
+    return (<>loading</>);
+  }
+
+  const {category} = pageState;
 
   return (
     <Box m={2}>
@@ -64,12 +78,12 @@ function CategoryPage() {
             {title}
           </Typography>
 
-          <Box paddingY={2}>
+          <Box paddingY={2} width={3 / 4}>
             <Typography variant="h4">
               Native Practice Recordings
             </Typography>
             <Box paddingY={2}>
-              {category?.links.map((l, i) => {
+              {category.links.map((l, i) => {
                 return (<Card key={i}>
                   <CardContent>
                     <LinkedVideo link={l}/>
@@ -89,7 +103,7 @@ function CategoryPage() {
               </Typography>
               <SuzukiButton category={category}/>
               <List subheader={<li/>}>
-                {category?.words.map((item, i) =>
+                {category.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>
                     <ListItemText
                       secondary={
