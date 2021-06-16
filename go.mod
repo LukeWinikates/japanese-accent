@@ -5,6 +5,7 @@ go 1.16
 require (
 	github.com/adrg/xdg v0.3.2
 	github.com/gin-gonic/gin v1.6.3
+	github.com/google/uuid v1.2.0
 	github.com/niemeyer/pretty v0.0.0-20200227124842-a10e7caefd8e // indirect
 	github.com/stretchr/testify v1.6.1
 	golang.org/x/sys v0.0.0-20210412220455-f1c623a9e750 // indirect

@@ -18,6 +18,7 @@ type Segment struct {
 	Start         int
 	End           int
 	Text          string
+	UUID          string
 }
 
 func InitializeDatabase(db gorm.DB) error {

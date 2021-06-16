@@ -30,6 +30,7 @@ export declare type Segment = {
   start: number,
   end: number,
   text: string,
+  uuid: string,
 };
 
 

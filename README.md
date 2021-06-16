@@ -4,11 +4,19 @@
 
 This git repository contains scripts and tools for making it easier to efficiently study Japanese pitch accent.
 
-## How-To
+## Development
 
-run the dictaphone:
+* install go
+* install node/nvm/yarn
+* install air
+* install make
 
-From the terminal, run `yarn server`, and then click one of the urls the pops up. 
+
+## Current UI work:
+
+* editable segments
+	* JSON deserialization of segments
+	* delete existing segment inventory and persist all the changes (or maybe use UUIDs for the segments to minimize changes and make sorting clearer) 
 
 ## Current Core Use Case:
 * [ ] I can record and listen back to myself based on native speech

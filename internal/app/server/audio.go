@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"github.com/LukeWinikates/japanese-accent/internal/app/core"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"io/ioutil"
 	"log"
@@ -42,6 +43,32 @@ func MakeAudioSegmentsGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	}
 }
 
+type SegmentEditRequest = []ApiSegment
+
+func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var newSegments SegmentEditRequest
+		if err := context.BindJSON(&newSegments); err != nil {
+			context.Status(500)
+		}
+
+		log.Print(len(newSegments))
+
+		//var segmentList *core.SegmentList
+		//
+		//youtubeID := context.Param("id")
+		//if db.Where("youtube_id = ?", youtubeID).Delete(&Segment{}).Error != nil {
+		//	context.Status(500)
+		//}
+		//
+		//log.Printf("segmentList: %v\n", len(segmentList.Segments))
+		//segments := apiSegments(segmentList)
+		//
+		//context.JSON(200, segments)
+
+	}
+}
+
 func apiSegments(list *core.SegmentList) []ApiSegment {
 	apiSegs := make([]ApiSegment, 0)
 
@@ -50,15 +77,12 @@ func apiSegments(list *core.SegmentList) []ApiSegment {
 			Start: segment.Start,
 			End:   segment.End,
 			Text:  segment.Text,
+			UUID:  segment.UUID,
 		})
 	}
 
 	return apiSegs
 }
-
-//func MakeAudioSegmentsPOST(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
-//
-//}
 
 func initializeSegments(mediaDirectory string, youtubeID string, segmentList *core.SegmentList, db gorm.DB) error {
 	segmentsFile, err := ioutil.ReadFile(mediaDirectory + "/" + youtubeID + ".ja.vtt")
@@ -80,6 +104,7 @@ func initializeSegments(mediaDirectory string, youtubeID string, segmentList *co
 			Start: start,
 			End:   end,
 			Text:  segment.Text,
+			UUID:  uuid.NewString(),
 		})
 	}
 	segmentList = &core.SegmentList{
@@ -124,6 +149,7 @@ type ApiSegment struct {
 	Start int    `json:"start"`
 	End   int    `json:"end"`
 	Text  string `json:"text"`
+	UUID  string `json:"uuid"`
 }
 
 func parseSegments(fileContent string) ([]Segment, error) {
