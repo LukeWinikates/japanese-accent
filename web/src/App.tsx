@@ -99,9 +99,6 @@ function CoreApp() {
         seen: false,
       }
     };
-    console.log("status", response.status);
-    console.log("error", error);
-    console.log("error", error?.message);
     setStatus(status);
   }
 

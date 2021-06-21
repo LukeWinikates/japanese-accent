@@ -1,17 +1,10 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {MouseEventHandler, ReactEventHandler, useEffect, useRef, useState} from 'react';
 import useFetch from "use-http";
 
 import {duration, Link, Segment} from "./api";
-import {
-  Button,
-  Grid,
-  IconButton,
-  LinearProgress,
-  ListItem,
-  makeStyles,
-  Typography
-} from "@material-ui/core";
+import {Button, Grid, IconButton, LinearProgress, ListItem, makeStyles, Typography} from "@material-ui/core";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
+import RewindIcon from '@material-ui/icons/ArrowLeft';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import {Recorder} from "./Recorder";
@@ -21,6 +14,7 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import PauseIcon from '@material-ui/icons/Pause';
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
+import {WrappedLineVisualization} from "./WrappedLineVisualization";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -33,22 +27,17 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   const classes = useStyles();
 
   const audioRef = useRef<HTMLAudioElement>(null);
+  const progressRef = useRef<HTMLDivElement>(null);
   const [segments, setSegments] = useState<Segment[]>([]);
-  const [modalOpen, setModalOpen] = useState(false);
+  const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
   const [playingSegment, setPlayingSegment] = useState(false);
   const [progress, setProgress] = useState(0);
   const lastIndex = segments.length - 1;
 
-  const {get, response} = useFetch('/media/audio/' + link.videoId + "/segments");
-  const handleSegmentChange = (event: any, segmentIndex: number) => {
-    audioRef.current?.pause();
-    setCurrentSegmentIndex(segmentIndex);
-    setCurrentSegment(segments[segmentIndex]);
-    audioRef.current?.play();
-  };
-
+  const {get, response} = useFetch<Segment[]>(
+    '/media/audio/' + link.videoId + "/segments");
 
   async function initialize() {
     const initialCategory = await get('');
@@ -94,7 +83,6 @@ export const LinkedVideo = ({link}: { link: Link }) => {
                   pause();
                   setCurrentSegment(segment);
                   setCurrentSegmentIndex(index);
-                  // play();
                 }}
       >
         <ListItemText
@@ -141,7 +129,6 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   };
 
   const ended = () => {
-    console.log("ended");
     if (currentSegment === null) {
       return;
     }
@@ -150,8 +137,9 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   };
 
 
-  function handleModalClose() {
-    setModalOpen(false);
+  async function handleModalClose() {
+    setEditingSegment(null);
+    await initialize();
   }
 
   const calculateProgress = () => {
@@ -161,14 +149,37 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     const current = audioRef.current.currentTime - (currentSegment.start / 1000);
     const total = (currentSegment.end / 1000) - (currentSegment.start / 1000);
     let progress = (current / total) * 100;
-    console.log("progress:", progress);
     return progress;
   };
 
   const PlayPauseIcon = playingSegment ? PauseIcon : PlayArrowIcon;
 
+  function rewindStart() {
+    if (audioRef.current !== null && currentSegment !== null) {
+      audioRef.current.currentTime = (currentSegment?.start / 1000);
+    }
+  }
+
+  const handleProgressClick = (event: any) => {
+    console.log(event.clientX, event.clientY);
+    if (progressRef.current !== null &&
+        audioRef.current !== null && currentSegment !== null) {
+      const {x, width} = progressRef.current.getBoundingClientRect();
+      const pct = (event.clientX - x) / width;
+      const total = (currentSegment.end / 1000) - (currentSegment.start / 1000);
+      const offset =  pct * total;
+      audioRef.current.currentTime = (currentSegment?.start / 1000) + offset;
+
+    }
+
+    // console.log(event.offsetX, event.offsetY);
+  };
+
   return (
     <Grid container spacing={1}>
+      {/*<Grid container item xs={12}>*/}
+        {/*<WrappedLineVisualization segments={segments} />*/}
+      {/*</Grid>*/}
       <Grid container item xs={6}>
         <Grid item xs={9}>
           <Typography variant="h5">
@@ -176,7 +187,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
           </Typography>
         </Grid>
         <Grid item xs={3}>
-          <Button endIcon={<EditIcon/>} onClick={() => setModalOpen(true)}>
+          <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
             Edit
           </Button>
         </Grid>
@@ -199,6 +210,9 @@ export const LinkedVideo = ({link}: { link: Link }) => {
                         onClick={() => setCurrentSegmentIndex(currentSegmentIndex - 1)}>
               <SkipPreviousIcon/>
             </IconButton>
+            <IconButton onClick={() => rewindStart()}>
+              <RewindIcon/>
+            </IconButton>
             <IconButton onClick={toggle} color="primary">
               <PlayPauseIcon fontSize="large"/>
             </IconButton>
@@ -209,7 +223,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
             </IconButton>
           </Grid>
           <Grid item xs={12}>
-            <LinearProgress variant="determinate" value={progress}/>
+            <LinearProgress ref={progressRef} onClick={handleProgressClick} variant="determinate" value={progress}/>
           </Grid>
         </Grid>
         <Grid item xs={12}>
@@ -221,11 +235,12 @@ export const LinkedVideo = ({link}: { link: Link }) => {
       </Grid>
 
       {
-        currentSegment !== null && currentSegment !== undefined ?
+        editingSegment !== null ?
           <MediaSegmentEditDialog
-            open={modalOpen}
+            open={!!editingSegment}
             onClose={handleModalClose}
-            segment={currentSegment}
+            segment={editingSegment}
+            setSegment={setEditingSegment}
             videoId={link.videoId}
             aria-labelledby="simple-modal-title"
             aria-describedby="simple-modal-description"

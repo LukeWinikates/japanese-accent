@@ -43,29 +43,79 @@ func MakeAudioSegmentsGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-type SegmentEditRequest = []ApiSegment
+type SegmentEditRequest = ApiSegment
 
 func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var newSegments SegmentEditRequest
-		if err := context.BindJSON(&newSegments); err != nil {
+		segmentID := context.Param("id")
+		//youtubeID := context.Param("audioId")
+		var segmentEditRequest SegmentEditRequest
+		if err := context.BindJSON(&segmentEditRequest); err != nil {
 			context.Status(500)
 		}
 
-		log.Print(len(newSegments))
+		log.Print(segmentEditRequest)
 
-		//var segmentList *core.SegmentList
+		var segment *core.Segment
 		//
 		//youtubeID := context.Param("id")
-		//if db.Where("youtube_id = ?", youtubeID).Delete(&Segment{}).Error != nil {
-		//	context.Status(500)
-		//}
+		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
+
+			log.Panicln(err.Error())
+			context.Status(404)
+		}
+
+		//if (segment.SegmentListID)
+
+		segment.Start = segmentEditRequest.Start
+		segment.Text = segmentEditRequest.Text
+		segment.End = segmentEditRequest.End
+
+		db.Save(segment)
+
+		// check
+
+		//if db.Preload("SegmentList").Where("uuid = ? ", segmentID).Find(&segment).Error != nil {
 		//
+		//	context.Status(404)
+		//}
+
 		//log.Printf("segmentList: %v\n", len(segmentList.Segments))
 		//segments := apiSegments(segmentList)
 		//
 		//context.JSON(200, segments)
 
+	}
+}
+func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		segmentID := context.Param("id")
+		//youtubeID := context.Param("audioId")
+		var segmentEditRequest SegmentEditRequest
+		if err := context.BindJSON(&segmentEditRequest); err != nil {
+			context.Status(500)
+		}
+
+		log.Print(segmentEditRequest)
+
+		var segment *core.Segment
+		//
+		//youtubeID := context.Param("id")
+		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
+
+			log.Println(err.Error())
+			context.Status(404)
+		}
+
+		db.Delete(segment)
+
+		if err := db.Delete(segment).Error; err != nil {
+
+			log.Println(err.Error())
+			context.Status(500)
+		}
+
+		context.Status(204)
 	}
 }
 
