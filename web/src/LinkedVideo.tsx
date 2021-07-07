@@ -1,10 +1,9 @@
-import React, {MouseEventHandler, ReactEventHandler, useEffect, useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import useFetch from "use-http";
 
 import {duration, Link, Segment} from "./api";
 import {Button, Grid, IconButton, LinearProgress, ListItem, makeStyles, Typography} from "@material-ui/core";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
-import RewindIcon from '@material-ui/icons/ArrowLeft';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import {Recorder} from "./Recorder";
@@ -14,7 +13,6 @@ import AutoSizer from "react-virtualized-auto-sizer";
 import PauseIcon from '@material-ui/icons/Pause';
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
-import {WrappedLineVisualization} from "./WrappedLineVisualization";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -27,7 +25,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   const classes = useStyles();
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const progressRef = useRef<HTMLDivElement>(null);
+  const playerProgressRef = useRef<HTMLDivElement>(null);
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
@@ -40,16 +38,17 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     '/media/audio/' + link.videoId + "/segments");
 
   async function initialize() {
-    const initialCategory = await get('');
-    if (response.ok) setSegments(initialCategory)
+    const segmentsResponse = await get('');
+    if (response.ok) {
+      setSegments(segmentsResponse);
+      setCurrentSegment(segmentsResponse[0]);
+      setCurrentSegmentIndex(0);
+      return segmentsResponse
+    }
   }
 
   useEffect(() => {
-    initialize().then(() => {
-        setCurrentSegment(segments[0]);
-        setCurrentSegmentIndex(0);
-      }
-    );
+    initialize();
   }, [link.videoId]);
 
   function audioUrl() {
@@ -57,10 +56,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   }
 
   function timeUpdate() {
-    // console.log(audioRef.current?.currentTime);
-    // console.log(currentSegment?.end);
-    // console.log(parseTime(currentSegment?.end || ""));
-    setProgress(calculateProgress());
+    setProgress(calculatePlayerProgress());
     if (currentSegment
       && audioRef.current
       && audioRef.current.currentTime >= currentSegment.end / 1000) {
@@ -71,7 +67,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
 
   function renderRow(props: ListChildComponentProps) {
     const {index, style} = props;
-    if (!segments.length) return (<></>);
+    if (segments.length === 0) return (<></>);
     const segment = segments[index];
 
     return (
@@ -86,7 +82,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
                 }}
       >
         <ListItemText
-          primaryTypographyProps={{noWrap: true}}
+          primaryTypographyProps={{noWrap: true, variant: "body2"}}
           primary={segment.text}
           secondary={Math.round(duration(segment)) + "s"}
         >
@@ -117,6 +113,18 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     }
   };
 
+  const currentIcon = () => {
+    if (playingSegment) {
+      return PauseIcon;
+    }
+
+    // if (calculatePlayerProgress() >= 1) {
+    //   return RestartIcon;
+    // }
+
+    return PlayArrowIcon;
+
+  };
 
   const play = () => {
     setPlayingSegment(true);
@@ -142,7 +150,7 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     await initialize();
   }
 
-  const calculateProgress = () => {
+  const calculatePlayerProgress = () => {
     if (audioRef.current === null || currentSegment === null) {
       return 0;
     }
@@ -152,7 +160,8 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     return progress;
   };
 
-  const PlayPauseIcon = playingSegment ? PauseIcon : PlayArrowIcon;
+
+  const PlayPauseIcon = currentIcon();
 
   function rewindStart() {
     if (audioRef.current !== null && currentSegment !== null) {
@@ -162,12 +171,12 @@ export const LinkedVideo = ({link}: { link: Link }) => {
 
   const handleProgressClick = (event: any) => {
     console.log(event.clientX, event.clientY);
-    if (progressRef.current !== null &&
-        audioRef.current !== null && currentSegment !== null) {
-      const {x, width} = progressRef.current.getBoundingClientRect();
+    if (playerProgressRef.current !== null &&
+      audioRef.current !== null && currentSegment !== null) {
+      const {x, width} = playerProgressRef.current.getBoundingClientRect();
       const pct = (event.clientX - x) / width;
       const total = (currentSegment.end / 1000) - (currentSegment.start / 1000);
-      const offset =  pct * total;
+      const offset = pct * total;
       audioRef.current.currentTime = (currentSegment?.start / 1000) + offset;
 
     }
@@ -175,12 +184,18 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     // console.log(event.offsetX, event.offsetY);
   };
 
+  function setSegmentByIndex(newIndex: number) {
+    let segment = segments[newIndex];
+    setCurrentSegmentIndex(newIndex);
+    setCurrentSegment(segment);
+  }
+
   return (
     <Grid container spacing={1}>
       {/*<Grid container item xs={12}>*/}
-        {/*<WrappedLineVisualization segments={segments} />*/}
+      {/*<WrappedLineVisualization segments={segments} />*/}
       {/*</Grid>*/}
-      <Grid container item xs={6}>
+      <Grid container item xs={5}>
         <Grid item xs={9}>
           <Typography variant="h5">
             Native Recordings
@@ -202,38 +217,50 @@ export const LinkedVideo = ({link}: { link: Link }) => {
         </Grid>
       </Grid>
 
-      <Grid container item xs={6} spacing={1}>
-        <Grid container item xs={12} justify="center" className={classes.playerControls}>
+      <Grid container item xs={7} spacing={1}>
+        <Grid container item xs={12} spacing={1}>
+          <Typography variant="h6" align="left">
+            {currentSegment?.text}
+          </Typography>
+        </Grid>
+        <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
           <audio ref={audioRef} src={audioUrl()} controls={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
-          <Grid item xs={6}>
-            <IconButton disabled={currentSegmentIndex === 0}
-                        onClick={() => setCurrentSegmentIndex(currentSegmentIndex - 1)}>
-              <SkipPreviousIcon/>
-            </IconButton>
-            <IconButton onClick={() => rewindStart()}>
-              <RewindIcon/>
-            </IconButton>
+          <Grid item xs={1}>
+            <Typography variant="body1">
+              Native:
+            </Typography>
+          </Grid>
+          <Grid item xs={3}>
+            {/*<IconButton onClick={() => rewindStart()}>*/}
+            {/*  <RewindIcon/>*/}
+            {/*</IconButton>*/}
             <IconButton onClick={toggle} color="primary">
               <PlayPauseIcon fontSize="large"/>
             </IconButton>
-
+          </Grid>
+          <Grid item xs={7}>
+            <LinearProgress ref={playerProgressRef} onClick={handleProgressClick} variant="determinate"
+                            value={progress}/>
+          </Grid>
+        </Grid>
+        <Grid container item xs={12} className={classes.playerControls}>
+          <Recorder beforeRecord={pause}/>
+        </Grid>
+        <Grid container item xs={12} justify="space-between">
+          <Grid item xs={1}>
+            <IconButton disabled={currentSegmentIndex === 0}
+                        onClick={() => setSegmentByIndex(currentSegmentIndex - 1)}>
+              <SkipPreviousIcon/>
+            </IconButton>
+          </Grid>
+          <Grid item xs={1}>
             <IconButton disabled={currentSegmentIndex === lastIndex}
-                        onClick={() => setCurrentSegmentIndex(currentSegmentIndex + 1)}>
+                        onClick={() => setSegmentByIndex(currentSegmentIndex + 1)}>
               <SkipNextIcon/>
             </IconButton>
           </Grid>
-          <Grid item xs={12}>
-            <LinearProgress ref={progressRef} onClick={handleProgressClick} variant="determinate" value={progress}/>
-          </Grid>
-        </Grid>
-        <Grid item xs={12}>
-          <Typography variant="h6">
-            Practice
-          </Typography>
-          <Recorder beforeRecord={pause}/>
         </Grid>
       </Grid>
-
       {
         editingSegment !== null ?
           <MediaSegmentEditDialog
