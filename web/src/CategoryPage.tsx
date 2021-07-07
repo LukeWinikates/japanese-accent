@@ -78,7 +78,7 @@ function CategoryPage() {
             {title}
           </Typography>
 
-          <Box paddingY={2} width={3 / 4}>
+          <Box paddingY={2}>
             <Typography variant="h4">
               Native Practice Recordings
             </Typography>
@@ -95,7 +95,7 @@ function CategoryPage() {
         </Box>
 
 
-        <Box paddingY={2} width={3 / 4}>
+        <Box paddingY={2}>
           <Card>
             <CardContent>
               <Typography variant="h4">
