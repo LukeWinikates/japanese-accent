@@ -1,11 +1,23 @@
 import React, {useRef, useState} from 'react';
 
 import {useReactMediaRecorder} from "react-media-recorder";
-import {Button} from "@material-ui/core";
-import {Pagination} from '@material-ui/lab';
+import {CircularProgress, Grid, IconButton, makeStyles} from "@material-ui/core";
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-// import StopIcon from '@material-ui/icons/Stop';
+import StopIcon from '@material-ui/icons/Stop';
 // import PlayArrowIcon from '@material-ui/icons/PlayArrow';
+
+const useStyles = makeStyles((theme) => ({
+  iconButtonWrapper: {
+    // margin: theme.spacing(1),
+    position: 'relative',
+  },
+  iconButtonProgress: {
+    position: 'absolute',
+    left: "calc(50% - 20px)",
+    top: "9px",
+  },
+}));
+
 
 declare type AudioRecording = {
   blob: Blob,
@@ -15,17 +27,15 @@ declare type AudioRecording = {
 
 export declare type RecorderProps = {
   beforeRecord: () => void
+  onProgress?: (state: { seconds: number }) => void
 };
 
 export const Recorder = (recorderProps: RecorderProps) => {
+  const classes = useStyles();
   const [recordings, setRecordings] = useState<AudioRecording[]>([]);
   const [page, setPage] = useState(recordings.length > 0 ? recordings.length : null);
 
   const audioRef = useRef<HTMLAudioElement>(null);
-  const handlePageChange = (event: any, page: number) => {
-    audioRef.current?.pause();
-    setPage(page);
-  };
 
   const {
     status,
@@ -34,6 +44,7 @@ export const Recorder = (recorderProps: RecorderProps) => {
   } = useReactMediaRecorder({
     audio: true,
     onStop: (blobUrl: string, blob: Blob) => {
+      console.log("onStop");
       recorderProps.beforeRecord();
       setRecordings([...recordings, {blobUrl, blob, timestamp: new Date()}]);
       audioRef.current?.play();
@@ -53,27 +64,22 @@ export const Recorder = (recorderProps: RecorderProps) => {
   const effectivePage = page ? page : recordings.length;
   const currentRecording = recordings[effectivePage - 1];
   const hasRecordings = recordings.length > 0;
-
+  const RecordStopButton = status === 'recording' ? StopIcon : RadioButtonCheckedIcon;
   return (
-    <>
-      <Button onClick={toggle} color="default" variant="contained" startIcon={<RadioButtonCheckedIcon/>}>
-        {status !== 'recording' ? "Record" : "Stop"}
-      </Button>
-      {/*<Button color="default" variant="outlined" onClick={stopRecording}>*/}
-      {/*  <StopIcon/>*/}
-      {/*  <PlayArrowIcon></PlayArrowIcon>*/}
-      {/*  Stop Recording & Play*/}
-      {/*</Button>*/}
-      {hasRecordings ? <>
-        <div>
-          <audio ref={audioRef} src={currentRecording.blobUrl || ""} controls={true}/>
-          <div>
-            {currentRecording.timestamp.toLocaleString()}
-          </div>
+    <Grid container alignItems="center">
+      <Grid item xs={3}>
+        <div className={classes.iconButtonWrapper}>
+          {status === 'recording' && <CircularProgress size={40} color="secondary" className={classes.iconButtonProgress}/>}
+          <IconButton onClick={toggle} color={status === 'recording' ? "secondary" : "primary"}>
+            <RecordStopButton fontSize="large"/>
+          </IconButton>
         </div>
-        <Pagination count={recordings.length} page={page || recordings.length} siblingCount={2} size="small"
-                    onChange={handlePageChange}/>
+      </Grid>
+      <Grid item xs={9}>
+      </Grid>
+      {hasRecordings ? <>
+        <audio ref={audioRef} src={currentRecording.blobUrl || ""} controls={false}/>
       </> : <></>}
-    </>
+    </Grid>
   );
 };
