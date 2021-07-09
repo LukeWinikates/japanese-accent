@@ -79,9 +79,6 @@ function CategoryPage() {
           </Typography>
 
           <Box paddingY={2}>
-            <Typography variant="h4">
-              Native Practice Recordings
-            </Typography>
             <Box paddingY={2}>
               {category.links.map((l, i) => {
                 return (<Card key={i}>

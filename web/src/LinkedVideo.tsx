@@ -1,18 +1,18 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
 import {duration, Link, Segment} from "./api";
-import {Button, Grid, IconButton, LinearProgress, ListItem, makeStyles, Typography} from "@material-ui/core";
+import {Button, FormControlLabel, Grid, IconButton, ListItem, makeStyles, Typography} from "@material-ui/core";
 import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
 import SkipNextIcon from '@material-ui/icons/SkipNext';
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import {Recorder} from "./Recorder";
+import {AudioRecording, Recorder} from "./Recorder";
 import EditIcon from '@material-ui/icons/Edit';
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";
-import PauseIcon from '@material-ui/icons/Pause';
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
+import {DummyPlayer, Player} from "./Player";
+import Checkbox from "@material-ui/core/Checkbox";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -23,15 +23,15 @@ const useStyles = makeStyles((theme) => ({
 
 export const LinkedVideo = ({link}: { link: Link }) => {
   const classes = useStyles();
-
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const playerProgressRef = useRef<HTMLDivElement>(null);
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
-  const [playingSegment, setPlayingSegment] = useState(false);
-  const [progress, setProgress] = useState(0);
+  const [recordings, setRecordings] = useState<AudioRecording[]>([]);
+  const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
+  const [autoRecord, setAutoRecord] = useState<boolean>(true);
+  const [autoplay, setAutoplay] = useState<boolean>(true);
+
   const lastIndex = segments.length - 1;
 
   const {get, response} = useFetch<Segment[]>(
@@ -55,14 +55,8 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     return `/media/audio/${link.videoId}` + (currentSegment ? `#t=${currentSegment.start / 1000},${currentSegment.end / 1000}` : "");
   }
 
-  function timeUpdate() {
-    setProgress(calculatePlayerProgress());
-    if (currentSegment
-      && audioRef.current
-      && audioRef.current.currentTime >= currentSegment.end / 1000) {
-      audioRef.current?.pause();
-      setPlayingSegment(false);
-    }
+  function pauseAll() {
+    document.querySelectorAll("audio").forEach(a => a.pause());
   }
 
   function renderRow(props: ListChildComponentProps) {
@@ -71,12 +65,11 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     const segment = segments[index];
 
     return (
-
       <ListItem style={style} key={index}
                 selected={currentSegmentIndex === index}
                 alignItems="flex-start"
                 onClick={() => {
-                  pause();
+                  pauseAll();
                   setCurrentSegment(segment);
                   setCurrentSegmentIndex(index);
                 }}
@@ -86,103 +79,15 @@ export const LinkedVideo = ({link}: { link: Link }) => {
           primary={segment.text}
           secondary={Math.round(duration(segment)) + "s"}
         >
-          {/*<Typography component="span" variant="caption" noWrap={true}>*/}
-          {/*  {segment.text}*/}
-          {/*</Typography>*/}
         </ListItemText>
-        {/*<ListItemSecondaryAction>*/}
-        {/*  <IconButton onClick={() => {*/}
-        {/*    pause();*/}
-        {/*    setCurrentSegment(segment);*/}
-        {/*    setCurrentSegmentIndex(index);*/}
-        {/*    play();*/}
-        {/*  }}>*/}
-        {/*    <PlayArrowIcon/>*/}
-        {/*  </IconButton>*/}
-        {/*</ListItemSecondaryAction>*/}
       </ListItem>
     );
   }
-
-
-  const toggle = () => {
-    if (!playingSegment) {
-      play();
-    } else {
-      pause();
-    }
-  };
-
-  const currentIcon = () => {
-    if (playingSegment) {
-      return PauseIcon;
-    }
-
-    // if (calculatePlayerProgress() >= 1) {
-    //   return RestartIcon;
-    // }
-
-    return PlayArrowIcon;
-
-  };
-
-  const play = () => {
-    setPlayingSegment(true);
-    audioRef.current?.play();
-  };
-
-  const pause = () => {
-    setPlayingSegment(false);
-    audioRef.current?.pause();
-  };
-
-  const ended = () => {
-    if (currentSegment === null) {
-      return;
-    }
-    setPlayingSegment(false);
-    audioRef.current?.fastSeek(currentSegment.start / 1000);
-  };
-
 
   async function handleModalClose() {
     setEditingSegment(null);
     await initialize();
   }
-
-  const calculatePlayerProgress = () => {
-    if (audioRef.current === null || currentSegment === null) {
-      return 0;
-    }
-    const current = audioRef.current.currentTime - (currentSegment.start / 1000);
-    const total = (currentSegment.end / 1000) - (currentSegment.start / 1000);
-    let progress = (current / total) * 100;
-    return progress;
-  };
-
-
-  const PlayPauseIcon = currentIcon();
-
-  function rewindStart() {
-    if (audioRef.current !== null && currentSegment !== null) {
-      audioRef.current.currentTime = (currentSegment?.start / 1000);
-    }
-  }
-
-  const handleProgressClick = (event: any) => {
-    console.log(event.clientX, event.clientY);
-    if (playerProgressRef.current !== null &&
-      audioRef.current !== null && currentSegment !== null) {
-      const {x, width} = playerProgressRef.current.getBoundingClientRect();
-      const pct = (event.clientX - x) / width;
-      const total = (currentSegment.end / 1000) - (currentSegment.start / 1000);
-      const offset = pct * total;
-      audioRef.current.currentTime = (currentSegment?.start / 1000) + offset;
-
-    }
-
-    // console.log(event.offsetX, event.offsetY);
-  };
 
   function setSegmentByIndex(newIndex: number) {
     let segment = segments[newIndex];
@@ -190,11 +95,18 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     setCurrentSegment(segment);
   }
 
+  if (currentSegment === null) {
+    return (<></>);
+  }
+
+  function saveRecording(recording: AudioRecording) {
+    let newRecording = {...recording};
+    setRecordings([...recordings, newRecording]);
+    setCurrentRecording(newRecording);
+  }
+
   return (
     <Grid container spacing={1}>
-      {/*<Grid container item xs={12}>*/}
-      {/*<WrappedLineVisualization segments={segments} />*/}
-      {/*</Grid>*/}
       <Grid container item xs={5}>
         <Grid item xs={9}>
           <Typography variant="h5">
@@ -224,27 +136,57 @@ export const LinkedVideo = ({link}: { link: Link }) => {
           </Typography>
         </Grid>
         <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
-          <audio ref={audioRef} src={audioUrl()} controls={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
           <Grid item xs={1}>
             <Typography variant="body1">
               Native:
             </Typography>
           </Grid>
-          <Grid item xs={3}>
-            {/*<IconButton onClick={() => rewindStart()}>*/}
-            {/*  <RewindIcon/>*/}
-            {/*</IconButton>*/}
-            <IconButton onClick={toggle} color="primary">
-              <PlayPauseIcon fontSize="large"/>
-            </IconButton>
+          <Grid item xs={11}>
+            <Player src={audioUrl()}
+                    duration={{startSec: currentSegment.start, endSec: currentSegment.end}}
+                    autoplayOnChange={false}
+            />
           </Grid>
-          <Grid item xs={7}>
-            <LinearProgress ref={playerProgressRef} onClick={handleProgressClick} variant="determinate"
-                            value={progress}/>
+        </Grid>
+        <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
+          <Grid item xs={1}>
+            <Typography variant="body1">
+              Practice:
+            </Typography>
+          </Grid>
+          <Grid item xs={11}>
+            {
+              currentRecording === null ?
+                <DummyPlayer/> :
+                <Player src={currentRecording.blobUrl}
+                        autoplayOnChange={autoplay}
+                        duration="auto"/>
+            }
+
           </Grid>
         </Grid>
         <Grid container item xs={12} className={classes.playerControls}>
-          <Recorder beforeRecord={pause}/>
+          <Recorder beforeRecord={pauseAll} onNewRecording={saveRecording}/>
+          <FormControlLabel
+            control={<Checkbox
+              checked={autoplay}
+              onChange={() => setAutoplay(!autoplay)}
+              color={autoplay ? "primary" : "default"}
+
+              inputProps={{'aria-label': 'autoplay'}}
+            />}
+            label={"Autoplay after recording"}
+          />
+          <FormControlLabel
+            control={<Checkbox
+              checked={autoRecord}
+              onChange={() => setAutoRecord(!autoRecord)}
+              color={autoplay ? "primary" : "default"}
+
+              inputProps={{'aria-label': 'autoRecord after playing native recording'}}
+            />}
+            label={"Autorecord after playing native recrording"}
+          />
         </Grid>
         <Grid container item xs={12} justify="space-between">
           <Grid item xs={1}>
