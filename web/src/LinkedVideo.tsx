@@ -2,36 +2,19 @@ import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
 import {duration, Link, Segment} from "./api";
-import {Button, FormControlLabel, Grid, IconButton, ListItem, makeStyles, Typography} from "@material-ui/core";
-import SkipPreviousIcon from '@material-ui/icons/SkipPrevious';
-import SkipNextIcon from '@material-ui/icons/SkipNext';
-import {AudioRecording, Recorder} from "./Recorder";
+import {Button, Grid, ListItem, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
-import {DummyPlayer, Player} from "./Player";
-import Checkbox from "@material-ui/core/Checkbox";
-
-
-const useStyles = makeStyles((theme) => ({
-  playerControls: {
-    textAlign: 'center',
-  },
-}));
+import {Dictaphone} from "./Dictaphone";
 
 export const LinkedVideo = ({link}: { link: Link }) => {
-  const classes = useStyles();
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
-  const [recordings, setRecordings] = useState<AudioRecording[]>([]);
-  const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
-  const [autoRecord, setAutoRecord] = useState<boolean>(true);
-  const [autoplay, setAutoplay] = useState<boolean>(true);
-
   const lastIndex = segments.length - 1;
 
   const {get, response} = useFetch<Segment[]>(
@@ -50,10 +33,6 @@ export const LinkedVideo = ({link}: { link: Link }) => {
   useEffect(() => {
     initialize();
   }, [link.videoId]);
-
-  function audioUrl() {
-    return `/media/audio/${link.videoId}` + (currentSegment ? `#t=${currentSegment.start / 1000},${currentSegment.end / 1000}` : "");
-  }
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -99,12 +78,6 @@ export const LinkedVideo = ({link}: { link: Link }) => {
     return (<></>);
   }
 
-  function saveRecording(recording: AudioRecording) {
-    let newRecording = {...recording};
-    setRecordings([...recordings, newRecording]);
-    setCurrentRecording(newRecording);
-  }
-
   return (
     <Grid container spacing={1}>
       <Grid container item xs={5}>
@@ -130,78 +103,12 @@ export const LinkedVideo = ({link}: { link: Link }) => {
       </Grid>
 
       <Grid container item xs={7} spacing={1}>
-        <Grid container item xs={12} spacing={1}>
-          <Typography variant="h6" align="left">
-            {currentSegment?.text}
-          </Typography>
-        </Grid>
-        <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
-          <Grid item xs={1}>
-            <Typography variant="body1">
-              Native:
-            </Typography>
-          </Grid>
-          <Grid item xs={11}>
-            <Player src={audioUrl()}
-                    duration={{startSec: currentSegment.start, endSec: currentSegment.end}}
-                    autoplayOnChange={false}
-            />
-          </Grid>
-        </Grid>
-        <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
-          <Grid item xs={1}>
-            <Typography variant="body1">
-              Practice:
-            </Typography>
-          </Grid>
-          <Grid item xs={11}>
-            {
-              currentRecording === null ?
-                <DummyPlayer/> :
-                <Player src={currentRecording.blobUrl}
-                        autoplayOnChange={autoplay}
-                        duration="auto"/>
-            }
-
-          </Grid>
-        </Grid>
-        <Grid container item xs={12} className={classes.playerControls}>
-          <Recorder beforeRecord={pauseAll} onNewRecording={saveRecording}/>
-          <FormControlLabel
-            control={<Checkbox
-              checked={autoplay}
-              onChange={() => setAutoplay(!autoplay)}
-              color={autoplay ? "primary" : "default"}
-
-              inputProps={{'aria-label': 'autoplay'}}
-            />}
-            label={"Autoplay after recording"}
-          />
-          <FormControlLabel
-            control={<Checkbox
-              checked={autoRecord}
-              onChange={() => setAutoRecord(!autoRecord)}
-              color={autoplay ? "primary" : "default"}
-
-              inputProps={{'aria-label': 'autoRecord after playing native recording'}}
-            />}
-            label={"Autorecord after playing native recrording"}
-          />
-        </Grid>
-        <Grid container item xs={12} justify="space-between">
-          <Grid item xs={1}>
-            <IconButton disabled={currentSegmentIndex === 0}
-                        onClick={() => setSegmentByIndex(currentSegmentIndex - 1)}>
-              <SkipPreviousIcon/>
-            </IconButton>
-          </Grid>
-          <Grid item xs={1}>
-            <IconButton disabled={currentSegmentIndex === lastIndex}
-                        onClick={() => setSegmentByIndex(currentSegmentIndex + 1)}>
-              <SkipNextIcon/>
-            </IconButton>
-          </Grid>
-        </Grid>
+        <Dictaphone
+          link={link}
+          segment={currentSegment}
+          setSegmentByIndex={setSegmentByIndex}
+          lastSegmentIndex={lastIndex}
+          segmentIndex={currentSegmentIndex}/>
       </Grid>
       {
         editingSegment !== null ?

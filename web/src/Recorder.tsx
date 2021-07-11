@@ -5,9 +5,8 @@ import {CircularProgress, Grid, IconButton, makeStyles} from "@material-ui/core"
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import StopIcon from '@material-ui/icons/Stop';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(() => ({
   iconButtonWrapper: {
-    // margin: theme.spacing(1),
     position: 'relative',
   },
   iconButtonProgress: {

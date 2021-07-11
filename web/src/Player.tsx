@@ -2,6 +2,7 @@ import {Grid, IconButton, LinearProgress, makeStyles} from "@material-ui/core";
 import React, {useRef, useState} from "react";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
+import ReplayIcon from '@material-ui/icons/Replay';
 
 const useStyles = makeStyles((theme) => ({
   playerControls: {
@@ -13,7 +14,6 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export declare type PlayerProps = {
-  // checkIsComplete: (audio: HTMLAudioElement) => boolean
   src: string
   duration: "auto" | { startSec: number, endSec: number }
   autoplayOnChange: boolean
@@ -48,18 +48,12 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
     }
   }
 
-
   const currentIcon = () => {
     if (playingSegment) {
       return PauseIcon;
     }
 
-    // if (calculatePlayerProgress() >= 1) {
-    //   return RestartIcon;
-    // }
-
     return PlayArrowIcon;
-
   };
 
   const PlayPauseIcon = currentIcon();
@@ -72,7 +66,7 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
 
   const toggle = () => {
     if (!playingSegment) {
-      play();
+      return play();
     } else {
       pause();
     }
@@ -138,9 +132,9 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
     <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
       <audio ref={audioRef} src={src} autoPlay={autoplayOnChange} onEnded={ended} onTimeUpdate={timeUpdate}/>
       <Grid item xs={3}>
-        {/*<IconButton onClick={() => rewindStart()}>*/}
-        {/*  <RewindIcon/>*/}
-        {/*</IconButton>*/}
+        <IconButton onClick={() => rewindStart()}>
+          <ReplayIcon/>
+        </IconButton>
         <IconButton onClick={toggle} color="primary">
           <PlayPauseIcon fontSize="large"/>
         </IconButton>
@@ -159,9 +153,9 @@ export const DummyPlayer = () => {
   return (
     <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
       <Grid item xs={3}>
-        {/*<IconButton onClick={() => rewindStart()}>*/}
-        {/*  <RewindIcon/>*/}
-        {/*</IconButton>*/}
+        <IconButton disabled>
+          <ReplayIcon/>
+        </IconButton>
         <IconButton disabled color="primary">
           <PlayArrowIcon fontSize="large"/>
         </IconButton>
@@ -173,4 +167,4 @@ export const DummyPlayer = () => {
       </Grid>
     </Grid>
   );
-}
+};
