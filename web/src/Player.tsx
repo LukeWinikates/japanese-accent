@@ -20,6 +20,14 @@ export declare type PlayerProps = {
   onComplete?: () => void
 };
 
+function secondsToHumanReadable(sec: number) {
+  const totalSeconds = Math.round(sec);
+  const seconds = totalSeconds % 60;
+  const minutes = Math.floor(totalSeconds / 60);
+
+  return `${minutes}:${("" + seconds).padStart(2, "0")}`;
+}
+
 export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProps) => {
   const classes = useStyles();
 
@@ -139,7 +147,10 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
           <PlayPauseIcon fontSize="large"/>
         </IconButton>
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={1}>
+        {audioRef.current ? secondsToHumanReadable(audioRef.current?.currentTime) : "--:--"}
+      </Grid>
+      <Grid item xs={6}>
         <LinearProgress ref={playerProgressRef} onClick={handleProgressClick} variant="determinate"
                         value={progress}/>
       </Grid>
@@ -160,7 +171,10 @@ export const DummyPlayer = () => {
           <PlayArrowIcon fontSize="large"/>
         </IconButton>
       </Grid>
-      <Grid item xs={7}>
+      <Grid item xs={1}>
+        --:--
+      </Grid>
+      <Grid item xs={6}>
         <LinearProgress variant="determinate"
                         className={classes.dummyProgress}
                         value={0}/>
