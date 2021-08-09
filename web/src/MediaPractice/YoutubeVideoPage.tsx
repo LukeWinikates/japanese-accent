@@ -83,8 +83,15 @@ export const YoutubeVideoPage = () => {
   }
 
   async function handleModalClose() {
+    if (editingSegment === null) {
+      return;
+    }
+    const editedSegment = editingSegment;
+    let newSegments = [...segments];
+    newSegments.splice(currentSegmentIndex, 1, editedSegment);
     setEditingSegment(null);
-    await initialize();
+    setSegments(newSegments);
+    setCurrentSegment(editedSegment);
   }
 
   function setSegmentByIndex(newIndex: number) {
