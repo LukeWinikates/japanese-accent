@@ -7,6 +7,8 @@ declare type SuzukiButtonProps = {
   category: CategoryDetails | null;
 };
 
+const BASE_URL="http://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index";
+
 export function SuzukiButton(props: SuzukiButtonProps) {
   const {
     category
@@ -17,7 +19,7 @@ export function SuzukiButton(props: SuzukiButtonProps) {
     formEl.current?.submit();
   };
 
-  return (<form action={category?.suzukiKunAction} method="post" target="_blank" ref={formEl}>
+  return (<form action={BASE_URL} method="post" target="_blank" ref={formEl}>
       <input type="hidden"
              value={category?.words.map(w => w.word).join("\n") || ""}
              name="data[Phrasing][text]"

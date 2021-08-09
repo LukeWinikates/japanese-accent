@@ -5,7 +5,7 @@ import {makeStyles, ThemeProvider, unstable_createMuiStrictModeTheme as createMu
 import {AppBar, Container, IconButton, Toolbar, Typography} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import useFetch from "use-http";
-import {CategoriesResponse, Category} from "./api";
+import {CategoriesResponse} from "./api";
 import {AppDrawer, DummyDrawer} from "./Layout/AppDrawer";
 import CategoryPage from "./VocabularyPractice/CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";

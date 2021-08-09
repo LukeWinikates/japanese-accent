@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
-import {duration, Media, Segment} from "../api";
-import {Box, Breadcrumbs, Button, Container, Grid, Link, ListItem, Typography} from "@material-ui/core";
+import {duration, Segment} from "../api";
+import {Box, Breadcrumbs, Button, Container, Grid, ListItem, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";

@@ -17,7 +17,6 @@ import {useRouteMatch} from "react-router";
 import {CategoryDetails} from "../api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
-import {YoutubeVideoPage} from "../MediaPractice/YoutubeVideoPage";
 import {SuzukiButton} from "./SuzukiButton";
 import {MoraSVG} from "./MoraSVG";
 
@@ -78,7 +77,6 @@ function CategoryPage() {
             {title}
           </Typography>
         </Box>
-
 
         <Box paddingY={2}>
           <Card>
