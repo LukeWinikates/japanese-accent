@@ -1,9 +1,15 @@
 import React from 'react';
 import {CategoriesResponse} from "../api";
 import {makeStyles} from '@material-ui/core/styles';
-import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
-import ChevronRightIcon from '@material-ui/icons/ChevronRight'
+import {
+  Divider,
+  Drawer,
+  List,
+  ListItem,
+  ListItemIcon,
+  ListItemText,
+  ListSubheader
+} from "@material-ui/core";
 import NoteIcon from '@material-ui/icons/Note';
 import {Link} from "react-router-dom";
 
@@ -13,26 +19,16 @@ type AppDrawerProps = {
   handleClose: () => void,
   theme: any,
 }
-const drawerWidth = 440;
 
 const useStyles = makeStyles((theme) => ({
   nested: {
     paddingLeft: theme.spacing(4),
   },
-  drawer: {
-    width: drawerWidth,
-    flexShrink: 0,
+  list: {
+    width: 250,
   },
-  drawerPaper: {
-    width: drawerWidth,
-  },
-  drawerHeader: {
-    display: 'flex',
-    alignItems: 'center',
-    padding: theme.spacing(0, 1),
-    // necessary for content to be below app bar
-    ...theme.mixins.toolbar,
-    justifyContent: 'flex-end',
+  fullList: {
+    width: 'auto',
   },
 }));
 
@@ -46,25 +42,13 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
   const classes = useStyles();
 
   return (
-
     <Drawer
-      className={classes.drawer}
-      variant="persistent"
       anchor="left"
       open={open}
-      classes={{
-        paper: classes.drawerPaper,
-      }}
-    >
-      <div
-        className={classes.drawerHeader}
-      >
-        <IconButton onClick={handleClose}>
-          {theme.direction === 'ltr' ? <ChevronLeftIcon/> : <ChevronRightIcon/>}
-        </IconButton>
-      </div>
+      onClose={handleClose}>
       <Divider/>
       <List>
+        <ListSubheader>Media</ListSubheader>
         {categories.media.map((link, index) => (
           <React.Fragment key={index}>
             <ListItem button>
@@ -78,6 +62,7 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
       </List>
       <Divider/>
       <List>
+        <ListSubheader>Word Lists</ListSubheader>
         {categories.categories.map((category, index) => (
           <React.Fragment key={index}>
             <ListItem button>

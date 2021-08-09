@@ -10,7 +10,6 @@ import {AppDrawer, DummyDrawer} from "./Layout/AppDrawer";
 import CategoryPage from "./VocabularyPractice/CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import HomePage from "./Layout/HomePage";
-import clsx from 'clsx';
 import {StatusBar, StatusProvider, useStatus} from "./Layout/StatusBar";
 import {YoutubeVideoPage} from "./MediaPractice/YoutubeVideoPage";
 
@@ -26,36 +25,6 @@ const useStyles = makeStyles((theme) => ({
   title: {
     flexGrow: 1,
   },
-  appBar: {
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-  },
-  appBarShift: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-    transition: theme.transitions.create(['margin', 'width'], {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-  },
-  content: {
-    flexGrow: 1,
-    padding: theme.spacing(3),
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
-    }),
-    marginLeft: drawerWidth,
-  },
-  contentShift: {
-    transition: theme.transitions.create('margin', {
-      easing: theme.transitions.easing.easeOut,
-      duration: theme.transitions.duration.enteringScreen,
-    }),
-    marginLeft: 0,
-  },
 }));
 
 const theme = createMuiTheme({
@@ -68,7 +37,6 @@ const theme = createMuiTheme({
     }
   }
 });
-
 
 function CoreApp() {
   const classes = useStyles();
@@ -115,9 +83,7 @@ function CoreApp() {
 
   return (
     <Container maxWidth={false} disableGutters={true}>
-      <AppBar position="fixed" className={clsx(classes.appBar, {
-        [classes.appBarShift]: open,
-      })}>
+      <AppBar position="fixed" >
         <StatusBar/>
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
@@ -129,9 +95,7 @@ function CoreApp() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <main className={clsx(classes.content, {
-        [classes.contentShift]: !open,
-      })}>
+      <main>
         {Drawer}
         <Switch>
           <Route exact path="/">
