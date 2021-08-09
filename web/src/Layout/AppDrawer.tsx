@@ -68,7 +68,7 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
         {categories.media.map((link, index) => (
           <React.Fragment key={index}>
             <ListItem button>
-              <Link to={`/media/${link.videoId}`}>
+              <Link to={`/media/${link.videoId}/${link.text}`}>
                 <ListItemText primary={link.text}/>
               </Link>
               {/*<ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}

@@ -10,13 +10,25 @@ import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
 import {Dictaphone} from "./Dictaphone";
 import {useRouteMatch} from "react-router";
+import {match} from "react-router/ts4.0";
 
 type YoutubeVideoPageParams = string[];
 
+function parseRouteSegments(match: match<YoutubeVideoPageParams>) {
+  const urlSegments = match.params[0].split("/");
+  const videoId = urlSegments[urlSegments.length - 2];
+  const title = urlSegments[urlSegments.length - 1];
+  return {
+    videoId,
+    title
+  };
+}
+
 export const YoutubeVideoPage = () => {
   const match = useRouteMatch<YoutubeVideoPageParams>();
-  const urlSegments = match.params[0].split("/");
-  const videoId = urlSegments[urlSegments.length - 1];
+  const {
+    videoId, title
+  } = parseRouteSegments(match);
 
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
@@ -93,7 +105,7 @@ export const YoutubeVideoPage = () => {
 
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
-            {videoId}
+            {title}
           </Typography>
         </Box>
 

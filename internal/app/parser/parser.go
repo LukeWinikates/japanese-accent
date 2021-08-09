@@ -55,7 +55,7 @@ func Parse(text string) (WordList, error) {
 			linkText := strings.TrimLeft(line, "-")
 			link, err := linkFromLine(linkText)
 			if err == nil {
-				link.Text = category.Name
+				link.Text = strings.ReplaceAll(category.Name, "#", "")
 				media = append(media, link)
 			}
 
