@@ -10,10 +10,10 @@ import (
 	"strings"
 )
 
-//type Category struct {
-//	Name       string     `json:"name"`
-//	Categories []Category `json:"categories"`
-//}
+type CategoriesListResponse struct {
+	Categories []parser.Category `json:"categories"`
+	Media      []ApiLink         `json:"media"`
+}
 
 func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 
@@ -56,7 +56,11 @@ func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 		//		}},
 		//	},
 		//}
-		context.JSON(200, wordlist.Categories)
+
+		context.JSON(200, CategoriesListResponse{
+			Categories: wordlist.Categories,
+			Media:      apiLinks(wordlist.Media),
+		})
 	}
 }
 
@@ -94,7 +98,6 @@ type ApiCategory struct {
 	Name            string `json:"name"`
 	Tag             string
 	Notes           string
-	Links           []ApiLink `json:"links"`
 	Words           []ApiWord `json:"words"`
 	SuzukiKunAction string    `json:"suzukiKunAction"`
 }
@@ -126,7 +129,6 @@ func MakeHandleCategoryGET(wordsFilePath, mediaDirPath string) gin.HandlerFunc {
 					Name:            category.Name,
 					Words:           apiWords(category.Words),
 					SuzukiKunAction: suzukiKunAction(category.Words),
-					Links:           apiLinks(category.Links),
 				}
 				context.JSON(200, categoryJSON)
 				return

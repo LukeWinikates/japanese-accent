@@ -1,5 +1,5 @@
 import React from 'react';
-import {Category} from "../api";
+import {CategoriesResponse, Category} from "../api";
 import {makeStyles} from '@material-ui/core/styles';
 import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'
@@ -8,7 +8,7 @@ import NoteIcon from '@material-ui/icons/Note';
 import {Link} from "react-router-dom";
 
 type AppDrawerProps = {
-  categories: Category[],
+  categories: CategoriesResponse,
   open: boolean,
   handleClose: () => void,
   theme: any,
@@ -36,6 +36,12 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
+export function DummyDrawer() {
+  return (
+    <div></div>
+  );
+}
+
 export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps) {
   const classes = useStyles();
 
@@ -59,7 +65,20 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
       </div>
       <Divider/>
       <List>
-        {categories.map((category, index) => (
+        {categories.media.map((link, index) => (
+          <React.Fragment key={index}>
+            <ListItem button>
+              <Link to={`/media/${link.videoId}`}>
+                <ListItemText primary={link.text}/>
+              </Link>
+              {/*<ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}
+            </ListItem>
+          </React.Fragment>
+        ))}
+      </List>
+      <Divider/>
+      <List>
+        {categories.categories.map((category, index) => (
           <React.Fragment key={index}>
             <ListItem button>
               <Link to={`/category/${encodeURIComponent(category.name.replaceAll("#", ""))}`}>

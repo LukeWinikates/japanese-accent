@@ -1,6 +1,13 @@
+import {Category} from "@material-ui/icons";
+
 export declare type Category = {
   name: string,
   categories: Category[],
+}
+
+export declare type CategoriesResponse = {
+  categories: Category[],
+  media: Media[],
 }
 
 export declare type Word = {
@@ -13,7 +20,7 @@ export declare type Word = {
   shiki: string,
 }
 
-export declare type Link = {
+export declare type Media = {
   text: string,
   url: string,
   videoId: string,
@@ -23,7 +30,6 @@ export declare type CategoryDetails = {
   name: string,
   words: Word[],
   suzukiKunAction: string,
-  links: Link[],
 }
 
 export declare type Segment = {

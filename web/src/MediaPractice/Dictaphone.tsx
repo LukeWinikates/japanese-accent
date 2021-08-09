@@ -4,7 +4,7 @@ import {AudioRecording, Recorder} from "./Recorder";
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import SkipPreviousIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import React, {useState} from "react";
-import {Link, Segment} from "../api";
+import {Media, Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 
 const useStyles = makeStyles(() => ({
@@ -14,14 +14,14 @@ const useStyles = makeStyles(() => ({
 }));
 
 export declare type DictaphoneProps = {
-  link: Link
+  videoId: string
   segment: Segment
   setSegmentByIndex: (newIndex: number) => void
   segmentIndex: number
   lastSegmentIndex: number
 };
 
-export const Dictaphone = ({link, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex}: DictaphoneProps) => {
+export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex}: DictaphoneProps) => {
   const [recordings, setRecordings] = useState<AudioRecording[]>([]);
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
   const [autoRecord, setAutoRecord] = useState<boolean>(true);
@@ -35,7 +35,7 @@ export const Dictaphone = ({link, segment, setSegmentByIndex, segmentIndex, last
   }
 
   function audioUrl() {
-    return `/media/audio/${link.videoId}` + (segment ? `#t=${segment.start / 1000},${segment.end / 1000}` : "");
+    return `/media/audio/${videoId}` + (segment ? `#t=${segment.start / 1000},${segment.end / 1000}` : "");
   }
 
   function pauseAll() {

@@ -21,17 +21,18 @@ type Category struct {
 	Name       string `json:"name"`
 	Tag        string
 	Notes      string
-	Links      []Link
 	Words      []core.Word
 	Categories []Category `json:"categories"`
 }
 
 type WordList struct {
 	Categories []Category
+	Media      []Link
 }
 
 func Parse(text string) (WordList, error) {
 	categories := make([]Category, 0)
+	media := make([]Link, 0)
 	category := newCategory()
 
 	scanner := bufio.NewScanner(strings.NewReader(text))
@@ -52,7 +53,12 @@ func Parse(text string) (WordList, error) {
 
 		if strings.HasPrefix(line, "-") {
 			linkText := strings.TrimLeft(line, "-")
-			category.Links = append(category.Links, linkFromLine(linkText))
+			link, err := linkFromLine(linkText)
+			if err == nil {
+				link.Text = category.Name
+				media = append(media, link)
+			}
+
 			continue
 		}
 
@@ -76,6 +82,7 @@ func Parse(text string) (WordList, error) {
 
 	var words = WordList{
 		Categories: categories,
+		Media:      media,
 	}
 
 	return words, nil
@@ -84,21 +91,27 @@ func Parse(text string) (WordList, error) {
 func newCategory() *Category {
 	return &Category{
 		Categories: []Category{},
-		Links:      []Link{},
 		Words:      []core.Word{},
 	}
 }
 
-func linkFromLine(line string) Link {
+func linkFromLine(line string) (Link, error) {
 	sp := strings.Split(line, " ")
 	linkText := sp[0]
+
+	if !strings.Contains(linkText, "=") {
+		fmt.Println("bad url: " + line)
+		fmt.Println("bad linkText: " + linkText)
+		return Link{}, fmt.Errorf("invalid URL")
+	}
+
 	if len(sp) > 1 {
 		linkText = sp[1]
 	}
 	return Link{
 		Text: linkText,
 		URL:  sp[0],
-	}
+	}, nil
 }
 
 func wordFromLine(line string) core.Word {
@@ -129,5 +142,4 @@ func wordFromLine(line string) core.Word {
 		Furigana:   line,
 		AccentMora: nil,
 	}
-
 }

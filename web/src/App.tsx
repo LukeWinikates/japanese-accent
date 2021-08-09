@@ -5,13 +5,14 @@ import {makeStyles, ThemeProvider, unstable_createMuiStrictModeTheme as createMu
 import {AppBar, Container, IconButton, Toolbar, Typography} from "@material-ui/core";
 import MenuIcon from '@material-ui/icons/Menu';
 import useFetch from "use-http";
-import {Category} from "./api";
-import {AppDrawer} from "./Layout/AppDrawer";
+import {CategoriesResponse, Category} from "./api";
+import {AppDrawer, DummyDrawer} from "./Layout/AppDrawer";
 import CategoryPage from "./VocabularyPractice/CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import HomePage from "./Layout/HomePage";
 import clsx from 'clsx';
 import {StatusBar, StatusProvider, useStatus} from "./Layout/StatusBar";
+import {YoutubeVideoPage} from "./MediaPractice/YoutubeVideoPage";
 
 const drawerWidth = 440;
 
@@ -72,7 +73,7 @@ const theme = createMuiTheme({
 function CoreApp() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
-  const [categories, setCategories] = useState<Category[]>([]);
+  const [categoriesResponse, setCategoriesResponse] = useState<CategoriesResponse | null>(null);
   const {setter: setStatus} = useStatus();
 
   const {get, response, loading, error} = useFetch('/api/categories');
@@ -91,7 +92,7 @@ function CoreApp() {
       error: null
     });
     const initialCategories = await get('');
-    if (response.ok) setCategories(initialCategories);
+    if (response.ok) setCategoriesResponse(initialCategories);
     let status = {
       spinner: loading,
       error: response.ok ? null : {
@@ -105,6 +106,12 @@ function CoreApp() {
   useEffect(() => {
     initialize()
   }, []);
+
+  let Drawer = <DummyDrawer/>
+
+  if (categoriesResponse !== null) {
+    Drawer = <AppDrawer categories={categoriesResponse} open={open} handleClose={handleDrawerClose} theme={theme}/>
+  }
 
   return (
     <Container maxWidth={false} disableGutters={true}>
@@ -125,14 +132,16 @@ function CoreApp() {
       <main className={clsx(classes.content, {
         [classes.contentShift]: !open,
       })}>
-
-        <AppDrawer categories={categories} open={open} handleClose={handleDrawerClose} theme={theme}/>
+        {Drawer}
         <Switch>
           <Route exact path="/">
             <HomePage/>
           </Route>
           <Route path="/category/*">
             <CategoryPage/>
+          </Route>
+          <Route path="/media/*">
+            <YoutubeVideoPage/>
           </Route>
         </Switch>
       </main>

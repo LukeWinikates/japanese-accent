@@ -77,18 +77,6 @@ function CategoryPage() {
           <Typography variant="h2">
             {title}
           </Typography>
-
-          <Box paddingY={2}>
-            <Box paddingY={2}>
-              {category.links.map((l, i) => {
-                return (<Card key={i}>
-                  <CardContent>
-                    <YoutubeVideoPage link={l}/>
-                  </CardContent>
-                </Card>)
-              })}
-            </Box>
-          </Box>
         </Box>
 
 

@@ -1,16 +1,23 @@
 import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
-import {duration, Link, Segment} from "../api";
-import {Button, Grid, ListItem, Typography} from "@material-ui/core";
+import {duration, Media, Segment} from "../api";
+import {Box, Breadcrumbs, Button, Container, Grid, Link, ListItem, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
 import {Dictaphone} from "./Dictaphone";
+import {useRouteMatch} from "react-router";
 
-export const YoutubeVideoPage = ({link}: { link: Link }) => {
+type YoutubeVideoPageParams = string[];
+
+export const YoutubeVideoPage = () => {
+  const match = useRouteMatch<YoutubeVideoPageParams>();
+  const urlSegments = match.params[0].split("/");
+  const videoId = urlSegments[urlSegments.length - 1];
+
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
@@ -18,7 +25,7 @@ export const YoutubeVideoPage = ({link}: { link: Link }) => {
   const lastIndex = segments.length - 1;
 
   const {get, response} = useFetch<Segment[]>(
-    '/media/audio/' + link.videoId + "/segments");
+    '/media/audio/' + videoId + "/segments");
 
   async function initialize() {
     const segmentsResponse = await get('');
@@ -32,7 +39,7 @@ export const YoutubeVideoPage = ({link}: { link: Link }) => {
 
   useEffect(() => {
     initialize();
-  }, [link.videoId]);
+  }, [videoId]);
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -79,50 +86,66 @@ export const YoutubeVideoPage = ({link}: { link: Link }) => {
   }
 
   return (
-    <Grid container spacing={1}>
-      <Grid container item xs={5}>
-        <Grid item xs={9}>
-          <Typography variant="h5">
-            Native Recordings
-          </Typography>
-        </Grid>
-        <Grid item xs={3}>
-          <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
-            Edit
-          </Button>
-        </Grid>
-        <Grid item xs={12}>
-          <AutoSizer disableHeight={true}>
-            {({width}) =>
-              <FixedSizeList height={300} width={width} itemSize={60} itemCount={segments.length}>
-                {renderRow}
-              </FixedSizeList>
-            }
-          </AutoSizer>
-        </Grid>
-      </Grid>
+    <Box m={2}>
+      <Container maxWidth='lg'>
+        <Breadcrumbs aria-label="breadcrumb">
+        </Breadcrumbs>
 
-      <Grid container item xs={7} spacing={1}>
-        <Dictaphone
-          link={link}
-          segment={currentSegment}
-          setSegmentByIndex={setSegmentByIndex}
-          lastSegmentIndex={lastIndex}
-          segmentIndex={currentSegmentIndex}/>
-      </Grid>
-      {
-        editingSegment !== null ?
-          <MediaSegmentEditDialog
-            open={!!editingSegment}
-            onClose={handleModalClose}
-            segment={editingSegment}
-            setSegment={setEditingSegment}
-            videoId={link.videoId}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          />
-          : <> </>
-      }
-    </Grid>
+        <Box paddingY={2} margin={0}>
+          <Typography variant="h2">
+            {videoId}
+          </Typography>
+        </Box>
+
+
+        <Box paddingY={2} margin={0}>
+          <Grid container spacing={1}>
+            <Grid container item xs={5}>
+              <Grid item xs={9}>
+                <Typography variant="h5">
+                  Native Recordings
+                </Typography>
+              </Grid>
+              <Grid item xs={3}>
+                <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
+                  Edit
+                </Button>
+              </Grid>
+              <Grid item xs={12}>
+                <AutoSizer disableHeight={true}>
+                  {({width}) =>
+                    <FixedSizeList height={300} width={width} itemSize={60} itemCount={segments.length}>
+                      {renderRow}
+                    </FixedSizeList>
+                  }
+                </AutoSizer>
+              </Grid>
+            </Grid>
+
+            <Grid container item xs={7} spacing={1}>
+              <Dictaphone
+                videoId={videoId}
+                segment={currentSegment}
+                setSegmentByIndex={setSegmentByIndex}
+                lastSegmentIndex={lastIndex}
+                segmentIndex={currentSegmentIndex}/>
+            </Grid>
+            {
+              editingSegment !== null ?
+                <MediaSegmentEditDialog
+                  open={!!editingSegment}
+                  onClose={handleModalClose}
+                  segment={editingSegment}
+                  setSegment={setEditingSegment}
+                  videoId={videoId}
+                  aria-labelledby="simple-modal-title"
+                  aria-describedby="simple-modal-description"
+                />
+                : <> </>
+            }
+          </Grid>
+        </Box>
+      </Container>
+    </Box>
   );
 };
