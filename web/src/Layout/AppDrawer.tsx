@@ -1,5 +1,5 @@
 import React from 'react';
-import {Category} from "./api";
+import {Category} from "../api";
 import {makeStyles} from '@material-ui/core/styles';
 import {Divider, Drawer, IconButton, List, ListItem, ListItemIcon, ListItemText} from "@material-ui/core";
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft'

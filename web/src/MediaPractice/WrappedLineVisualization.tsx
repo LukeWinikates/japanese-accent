@@ -1,6 +1,6 @@
 import React from 'react';
 
-import {duration, Segment} from "./api";
+import {duration, Segment} from "../api";
 import {makeStyles} from "@material-ui/core";
 
 

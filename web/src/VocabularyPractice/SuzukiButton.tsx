@@ -1,5 +1,5 @@
 import React, {useRef} from "react";
-import {CategoryDetails} from "./api";
+import {CategoryDetails} from "../api";
 import {Button} from "@material-ui/core";
 import LinkIcon from "@material-ui/core/SvgIcon/SvgIcon";
 

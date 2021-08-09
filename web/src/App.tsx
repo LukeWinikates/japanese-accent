@@ -6,12 +6,12 @@ import {AppBar, Container, IconButton, Toolbar, Typography} from "@material-ui/c
 import MenuIcon from '@material-ui/icons/Menu';
 import useFetch from "use-http";
 import {Category} from "./api";
-import {AppDrawer} from "./AppDrawer";
-import CategoryPage from "./CategoryPage";
+import {AppDrawer} from "./Layout/AppDrawer";
+import CategoryPage from "./VocabularyPractice/CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import HomePage from "./HomePage";
+import HomePage from "./Layout/HomePage";
 import clsx from 'clsx';
-import {StatusBar, StatusProvider, useStatus} from "./StatusBar";
+import {StatusBar, StatusProvider, useStatus} from "./Layout/StatusBar";
 
 const drawerWidth = 440;
 

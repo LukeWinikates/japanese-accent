@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
-import {duration, Link, Segment} from "./api";
+import {duration, Link, Segment} from "../api";
 import {Button, Grid, ListItem, Typography} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
@@ -10,7 +10,7 @@ import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
 import {Dictaphone} from "./Dictaphone";
 
-export const LinkedVideo = ({link}: { link: Link }) => {
+export const YoutubeVideoPage = ({link}: { link: Link }) => {
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);

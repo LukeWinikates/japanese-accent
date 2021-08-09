@@ -4,7 +4,7 @@ import {AudioRecording, Recorder} from "./Recorder";
 import Checkbox from "@material-ui/core/Checkbox/Checkbox";
 import SkipPreviousIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import React, {useState} from "react";
-import {Link, Segment} from "./api";
+import {Link, Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 
 const useStyles = makeStyles(() => ({

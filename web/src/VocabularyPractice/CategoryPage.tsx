@@ -14,10 +14,10 @@ import {
   Typography,
 } from "@material-ui/core";
 import {useRouteMatch} from "react-router";
-import {CategoryDetails} from "./api";
+import {CategoryDetails} from "../api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
-import {LinkedVideo} from "./LinkedVideo";
+import {YoutubeVideoPage} from "../MediaPractice/YoutubeVideoPage";
 import {SuzukiButton} from "./SuzukiButton";
 import {MoraSVG} from "./MoraSVG";
 
@@ -83,7 +83,7 @@ function CategoryPage() {
               {category.links.map((l, i) => {
                 return (<Card key={i}>
                   <CardContent>
-                    <LinkedVideo link={l}/>
+                    <YoutubeVideoPage link={l}/>
                   </CardContent>
                 </Card>)
               })}
