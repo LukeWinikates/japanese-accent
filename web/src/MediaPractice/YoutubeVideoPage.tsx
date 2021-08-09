@@ -123,12 +123,14 @@ export const YoutubeVideoPage = () => {
             </Grid>
 
             <Grid container item xs={7} spacing={1}>
+              {currentSegment &&
               <Dictaphone
                 videoId={videoId}
                 segment={currentSegment}
                 setSegmentByIndex={setSegmentByIndex}
                 lastSegmentIndex={lastIndex}
                 segmentIndex={currentSegmentIndex}/>
+              }
             </Grid>
             {
               editingSegment !== null ?
