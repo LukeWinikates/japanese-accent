@@ -10,7 +10,9 @@ import {
   ListItemText,
   ListSubheader
 } from "@material-ui/core";
-import NoteIcon from '@material-ui/icons/Note';
+import HouseIcon from '@material-ui/icons/House';
+import YoutubeIcon from '@material-ui/icons/YouTube';
+import NotesIcon from '@material-ui/icons/Notes';
 import {Link} from "react-router-dom";
 
 type AppDrawerProps = {
@@ -39,48 +41,62 @@ export function DummyDrawer() {
 }
 
 export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps) {
-  const classes = useStyles();
+  const classes = useStyles({
+    listSection: {
+      backgroundColor: 'inherit',
+    },
+  });
 
   return (
     <Drawer
       anchor="left"
       open={open}
       onClose={handleClose}>
+      <List>
+        <ListItem button>
+          <ListItemIcon>
+            <HouseIcon />
+          </ListItemIcon>
+          <Link to={`/`}>
+            <ListItemText primary="Home"/>
+          </Link>
+        </ListItem>
+      </List>
       <Divider/>
       <List>
-        <ListSubheader>Media</ListSubheader>
+        <ListSubheader disableSticky={true}>Media</ListSubheader>
         {categories.media.map((link, index) => (
           <React.Fragment key={index}>
             <ListItem button>
+              <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
               <Link to={`/media/${link.videoId}/${link.text}`}>
                 <ListItemText primary={link.text}/>
               </Link>
-              {/*<ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}
             </ListItem>
           </React.Fragment>
         ))}
       </List>
       <Divider/>
       <List>
-        <ListSubheader>Word Lists</ListSubheader>
+        <ListSubheader disableSticky={true}>Word Lists</ListSubheader>
         {categories.categories.map((category, index) => (
           <React.Fragment key={index}>
             <ListItem button>
+              <ListItemIcon><NotesIcon/></ListItemIcon>
               <Link to={`/category/${encodeURIComponent(category.name.replaceAll("#", ""))}`}>
                 <ListItemText primary={category.name}/>
               </Link>
-              {/*<ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}
             </ListItem>
-            <List>
-              {
-                category.categories.map((c, i) => (
-                  <ListItem button key={`${index}-${i}`} className={classes.nested}>
-                    <ListItemIcon>{<NoteIcon/>}</ListItemIcon>
-                    <ListItemText primary={c.name}/>
-                  </ListItem>
-                ))
-              }
-            </List>
+            {/*<List>*/}
+            {/*  {*/}
+            {/*    category.categories.map((c, i) => (*/}
+            {/*      <ListItem button key={`${index}-${i}`} className={classes.nested}>*/}
+            {/*        <ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}
+            {/*        <ListItemText primary={c.name}/>*/}
+            {/*      </ListItem>*/}
+            {/*    ))*/}
+            {/*  }*/}
+            {/*</List>*/}
           </React.Fragment>
         ))}
       </List>
