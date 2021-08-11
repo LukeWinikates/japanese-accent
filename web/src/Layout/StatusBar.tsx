@@ -66,7 +66,7 @@ export const StatusBar = () => {
   });
 
   return (
-    <>
+    <div style={{position: "fixed"}}>
       {state.spinner ? <LinearProgress/> : <></>}
       <Snackbar open={!!state.error && !state.error.seen} autoHideDuration={6000} onClose={handleCloseSnackBarError}>
         {state.error ?
@@ -75,6 +75,6 @@ export const StatusBar = () => {
           </Alert>
           : <></>}
       </Snackbar>
-    </>
+    </div>
   );
 };

@@ -13,8 +13,6 @@ import HomePage from "./Layout/HomePage";
 import {StatusBar, StatusProvider, useStatus} from "./Layout/StatusBar";
 import {YoutubeVideoPage} from "./MediaPractice/YoutubeVideoPage";
 
-const drawerWidth = 440;
-
 const useStyles = makeStyles((theme) => ({
   root: {
     flexGrow: 1,
@@ -24,6 +22,11 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  offset: theme.mixins.toolbar,
+  content: {
+    flexGrow: 1,
+    padding: theme.spacing(3),
   },
 }));
 
@@ -83,7 +86,7 @@ function CoreApp() {
 
   return (
     <Container maxWidth={false} disableGutters={true}>
-      <AppBar position="fixed" >
+      <AppBar position="fixed">
         <StatusBar/>
         <Toolbar>
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu"
@@ -95,7 +98,8 @@ function CoreApp() {
           </Typography>
         </Toolbar>
       </AppBar>
-      <main>
+      <div className={classes.offset}/>
+      <main className={classes.content}>
         {Drawer}
         <Switch>
           <Route exact path="/">
