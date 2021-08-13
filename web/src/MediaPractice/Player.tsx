@@ -36,13 +36,13 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
   const [playingSegment, setPlayingSegment] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  let checkIsComplete = duration === "auto" ?
-    () => {
+  function checkIsComplete() {
+    if (duration === "auto") {
       return audioRef.current?.ended || false;
-    } :
-    () => {
-      return (audioRef.current?.currentTime || 0) >= (duration.endSec / 1000);
-    };
+    }
+
+    return (audioRef.current?.currentTime || 0) >= (duration.endSec / 1000);
+  }
 
   function timeUpdate() {
     setProgress(calculatePlayerProgress());
@@ -53,6 +53,7 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
       audioRef.current?.pause();
       setPlayingSegment(false);
       onComplete && onComplete();
+      rewindStart();
     }
   }
 
@@ -81,6 +82,10 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
   };
 
   const play = () => {
+    if (audioRef.current === null) {
+      return
+    }
+
     setPlayingSegment(true);
     return audioRef.current?.play();
   };
@@ -92,7 +97,7 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
 
   const ended = () => {
     setPlayingSegment(false);
-    // audioRef.current?.fastSeek(duration === "auto" ? 0 : duration.startSec / 1000);
+    rewindStart();
   };
 
 

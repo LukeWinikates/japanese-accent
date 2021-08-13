@@ -11,12 +11,19 @@ This git repository contains scripts and tools for making it easier to efficient
 * install air
 * install make
 
+--------
 
-## Current UI work:
 
-* editable segments
-	* JSON deserialization of segments
-	* delete existing segment inventory and persist all the changes (or maybe use UUIDs for the segments to minimize changes and make sorting clearer) 
+## Current work:
+
+* adding new youtube videos ad-hoc
+* adding new words to quick-study, using FAB
+    * implies moving data model from text file into DB
+    * possibly change parsing logic into 'import/export' logic?
+    * allow pasting word lists
+* 'smart' rewind button - jumps back 5s, or to the last 'silence'
+
+
 
 ## Current Core Use Case:
 * [ ] I can record and listen back to myself based on native speech
