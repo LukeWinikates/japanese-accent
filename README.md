@@ -16,6 +16,11 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 
+* address issues with the data model
+    * Videos are called "videos"
+    * Word Lists are called "word lists"?
+    * everything is in the DB
+    * word lists could be linked by #hashtag?
 * adding new youtube videos ad-hoc
 * adding new words to quick-study, using FAB
     * implies moving data model from text file into DB

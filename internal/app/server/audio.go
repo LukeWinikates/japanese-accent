@@ -21,13 +21,13 @@ func MakeAudioGET(mediaDirectory string) gin.HandlerFunc {
 
 func MakeAudioSegmentsGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var segmentList *core.SegmentList
+		var video *core.Video
 
 		youtubeID := context.Param("id")
-		if db.Preload("Segments").Where("youtube_id = ?", youtubeID).First(&segmentList).Error != nil {
+		if db.Preload("Segments").Where("youtube_id = ?", youtubeID).First(&video).Error != nil {
 			log.Printf("no segment list")
 
-			err := initializeSegments(mediaDirectory, youtubeID, segmentList, db)
+			err := initializeSegments(mediaDirectory, youtubeID, video, db)
 			if err != nil {
 				context.Status(500)
 				log.Printf("Error: %s\n", err.Error())
@@ -35,15 +35,15 @@ func MakeAudioSegmentsGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			}
 		}
 
-		log.Printf("segmentList: %v\n", len(segmentList.Segments))
-		segments := MakeApiSegments(segmentList)
+		log.Printf("video: %v\n", len(video.Segments))
+		segments := MakeApiSegments(video)
 
 		context.JSON(200, segments)
 
 	}
 }
 
-type SegmentEditRequest = ApiSegment
+type SegmentEditRequest = ApiVideoSegment
 
 func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
@@ -56,7 +56,7 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 
 		log.Print(segmentEditRequest)
 
-		var segment *core.Segment
+		var segment *core.VideoSegment
 		//
 		//youtubeID := context.Param("id")
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
@@ -75,7 +75,7 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 
 		// check
 
-		//if db.Preload("SegmentList").Where("uuid = ? ", segmentID).Find(&segment).Error != nil {
+		//if db.Preload("Video").Where("uuid = ? ", segmentID).Find(&segment).Error != nil {
 		//
 		//	context.Status(404)
 		//}
@@ -98,7 +98,7 @@ func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
 
 		log.Print(segmentEditRequest)
 
-		var segment *core.Segment
+		var segment *core.VideoSegment
 		//
 		//youtubeID := context.Param("id")
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
@@ -119,11 +119,11 @@ func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func MakeApiSegments(list *core.SegmentList) []ApiSegment {
-	apiSegs := make([]ApiSegment, 0)
+func MakeApiSegments(list *core.Video) []ApiVideoSegment {
+	apiSegs := make([]ApiVideoSegment, 0)
 
 	for _, segment := range list.Segments {
-		apiSegs = append(apiSegs, ApiSegment{
+		apiSegs = append(apiSegs, ApiVideoSegment{
 			Start: segment.Start,
 			End:   segment.End,
 			Text:  segment.Text,
@@ -134,13 +134,13 @@ func MakeApiSegments(list *core.SegmentList) []ApiSegment {
 	return apiSegs
 }
 
-func initializeSegments(mediaDirectory string, youtubeID string, segmentList *core.SegmentList, db gorm.DB) error {
+func initializeSegments(mediaDirectory string, youtubeID string, segmentList *core.Video, db gorm.DB) error {
 	segmentsFile, err := ioutil.ReadFile(mediaDirectory + "/" + youtubeID + ".ja.vtt")
 	segments, err := parseSegments(string(segmentsFile))
 	if err != nil {
 		return err
 	}
-	dbSegments := make([]core.Segment, 0)
+	dbSegments := make([]core.VideoSegment, 0)
 	for _, segment := range segments {
 		start, err := parseSegmentTime(segment.Start)
 		if err != nil {
@@ -150,14 +150,14 @@ func initializeSegments(mediaDirectory string, youtubeID string, segmentList *co
 		if err != nil {
 			return err
 		}
-		dbSegments = append(dbSegments, core.Segment{
+		dbSegments = append(dbSegments, core.VideoSegment{
 			Start: start,
 			End:   end,
 			Text:  segment.Text,
 			UUID:  uuid.NewString(),
 		})
 	}
-	segmentList = &core.SegmentList{
+	segmentList = &core.Video{
 		YoutubeID: youtubeID,
 		Segments:  dbSegments,
 	}
@@ -193,13 +193,6 @@ type Segment struct {
 	Start string `json:"start"`
 	End   string `json:"end"`
 	Text  string `json:"text"`
-}
-
-type ApiSegment struct {
-	Start int    `json:"start"`
-	End   int    `json:"end"`
-	Text  string `json:"text"`
-	UUID  string `json:"uuid"`
 }
 
 func parseSegments(fileContent string) ([]Segment, error) {

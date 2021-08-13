@@ -7,7 +7,7 @@ import (
 	"log"
 )
 
-func MakeApiLinksFromDB(links []core.SegmentList) []ApiLink {
+func MakeApiLinksFromDB(links []core.Video) []ApiLink {
 	apiLinks := make([]ApiLink, 0)
 	for _, link := range links {
 		apiLinks = append(apiLinks, ApiLink{
@@ -21,7 +21,7 @@ func MakeApiLinksFromDB(links []core.SegmentList) []ApiLink {
 
 func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var videos *[]core.SegmentList
+		var videos *[]core.Video
 
 		if err := db.Find(&videos).Error; err != nil {
 			log.Println(err.Error())

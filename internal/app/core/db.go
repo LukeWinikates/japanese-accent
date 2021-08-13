@@ -5,24 +5,24 @@ import (
 	"gorm.io/gorm"
 )
 
-type SegmentList struct {
+type Video struct {
 	gorm.Model
 	YoutubeID string
 	URL       string
 	Text      string
-	Segments  []Segment
+	Segments  []VideoSegment
 }
 
-type Segment struct {
+type VideoSegment struct {
 	gorm.Model
 
-	SegmentListID uint
-	Start         int
-	End           int
-	Text          string
-	UUID          string
+	VideoID uint
+	Start   int
+	End     int
+	Text    string
+	UUID    string
 }
 
 func InitializeDatabase(db gorm.DB) error {
-	return db.AutoMigrate(SegmentList{}, Segment{})
+	return db.AutoMigrate(Video{}, VideoSegment{})
 }

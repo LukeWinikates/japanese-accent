@@ -28,12 +28,16 @@ func main() {
 }
 
 func prepareDatabase(databaseFile string) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(databaseFile), &gorm.Config{})
+	db, err := gorm.Open(sqlite.Open(databaseFile), &gorm.Config{
+		DisableForeignKeyConstraintWhenMigrating: true,
+	})
 	if err != nil {
+		log.Println(err.Error())
 		log.Fatal("failed to connect database")
 	}
 	err = core.InitializeDatabase(*db)
 	if err != nil {
+		log.Println(err.Error())
 		log.Fatal("failed to connect database")
 	}
 	return db
