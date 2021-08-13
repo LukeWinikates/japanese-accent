@@ -59,7 +59,7 @@ func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 
 		context.JSON(200, CategoriesListResponse{
 			Categories: wordlist.Categories,
-			Media:      apiLinks(wordlist.Media),
+			Media:      MapApiLinks(wordlist.Media),
 		})
 	}
 }
@@ -135,10 +135,9 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 
 		context.Status(404)
 	}
-
 }
 
-func apiLinks(links []parser.Link) []ApiLink {
+func MapApiLinks(links []parser.Link) []ApiLink {
 	apiLinks := make([]ApiLink, 0)
 	for _, link := range links {
 		apiLinks = append(apiLinks, ApiLink{

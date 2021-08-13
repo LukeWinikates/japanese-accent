@@ -9,7 +9,7 @@ import {CategoriesResponse} from "./api";
 import {AppDrawer, DummyDrawer} from "./Layout/AppDrawer";
 import CategoryPage from "./VocabularyPractice/CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
-import HomePage from "./Layout/HomePage";
+import HomePage from "./HomePage/HomePage";
 import {StatusBar, StatusProvider, useStatus} from "./Layout/StatusBar";
 import {YoutubeVideoPage} from "./MediaPractice/YoutubeVideoPage";
 

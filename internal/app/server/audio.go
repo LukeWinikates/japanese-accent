@@ -36,7 +36,7 @@ func MakeAudioSegmentsGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		}
 
 		log.Printf("segmentList: %v\n", len(segmentList.Segments))
-		segments := apiSegments(segmentList)
+		segments := MakeApiSegments(segmentList)
 
 		context.JSON(200, segments)
 
@@ -81,7 +81,7 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 		//}
 
 		//log.Printf("segmentList: %v\n", len(segmentList.Segments))
-		//segments := apiSegments(segmentList)
+		//segments := MakeApiSegments(segmentList)
 		//
 		//context.JSON(200, segments)
 
@@ -119,7 +119,7 @@ func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func apiSegments(list *core.SegmentList) []ApiSegment {
+func MakeApiSegments(list *core.SegmentList) []ApiSegment {
 	apiSegs := make([]ApiSegment, 0)
 
 	for _, segment := range list.Segments {

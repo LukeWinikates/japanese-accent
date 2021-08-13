@@ -8,6 +8,8 @@ import (
 type SegmentList struct {
 	gorm.Model
 	YoutubeID string
+	URL       string
+	Text      string
 	Segments  []Segment
 }
 

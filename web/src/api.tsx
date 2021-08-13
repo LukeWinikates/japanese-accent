@@ -36,6 +36,11 @@ export declare type Segment = {
   uuid: string,
 };
 
+export declare type Highlights = {
+  videos: Media[],
+  categories: Category[]
+}
+
 
 export function duration(segment: Segment): number {
   return (segment.end - segment.start) / 1000;
