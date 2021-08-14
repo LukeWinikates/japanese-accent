@@ -7,10 +7,10 @@ import (
 	"log"
 )
 
-func MakeApiLinksFromDB(links []core.Video) []ApiLink {
-	apiLinks := make([]ApiLink, 0)
+func MakeApiLinksFromDB(links []core.Video) []ApiVideo {
+	apiLinks := make([]ApiVideo, 0)
 	for _, link := range links {
-		apiLinks = append(apiLinks, ApiLink{
+		apiLinks = append(apiLinks, ApiVideo{
 			VideoID: link.YoutubeID,
 			URL:     link.URL,
 			Text:    link.Text,

@@ -1,7 +1,9 @@
 package server
 
+import "github.com/LukeWinikates/japanese-accent/internal/app/parser"
+
 type ApiHighlights struct {
-	Videos []ApiLink `json:"videos"`
+	Videos []ApiVideo `json:"videos"`
 }
 
 type ApiVideoSegment struct {
@@ -9,4 +11,32 @@ type ApiVideoSegment struct {
 	End   int    `json:"end"`
 	Text  string `json:"text"`
 	UUID  string `json:"uuid"`
+}
+
+type ApiVideo struct {
+	Text    string `json:"text"`
+	URL     string `json:"url"`
+	VideoID string `json:"videoId"`
+}
+
+type ApiWord struct {
+	Text       string   `json:"word"`
+	Furigana   string   `json:"furigana"`
+	AccentMora *int     `json:"accentMora"`
+	MoraCount  int      `json:"moraCount"`
+	Shiki      string   `json:"shiki"`
+	Morae      []string `json:"morae"`
+	Link       string   `json:"link"`
+}
+
+type ApiCategory struct {
+	Name  string `json:"name"`
+	Tag   string
+	Notes string
+	Words []ApiWord `json:"words"`
+}
+
+type CategoriesListResponse struct {
+	Categories []parser.Category `json:"categories"`
+	Media      []ApiVideo        `json:"media"`
 }

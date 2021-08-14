@@ -10,11 +10,6 @@ import (
 	"strings"
 )
 
-type CategoriesListResponse struct {
-	Categories []parser.Category `json:"categories"`
-	Media      []ApiLink         `json:"media"`
-}
-
 func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 
 	return func(context *gin.Context) {
@@ -64,22 +59,6 @@ func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 	}
 }
 
-type ApiLink struct {
-	Text    string `json:"text"`
-	URL     string `json:"url"`
-	VideoID string `json:"videoId"`
-}
-
-type ApiWord struct {
-	Text       string   `json:"word"`
-	Furigana   string   `json:"furigana"`
-	AccentMora *int     `json:"accentMora"`
-	MoraCount  int      `json:"moraCount"`
-	Shiki      string   `json:"shiki"`
-	Morae      []string `json:"morae"`
-	Link       string   `json:"link"`
-}
-
 func makeApiWord(word core.Word) ApiWord {
 	fmt.Printf("%s: %v\n", word.Text, word.MoraCount())
 	fmt.Printf("%s: %s\n", word.Text, word.Morae())
@@ -92,13 +71,6 @@ func makeApiWord(word core.Word) ApiWord {
 		Link:       word.ForvoURL(),
 		Shiki:      string(word.Shiki()),
 	}
-}
-
-type ApiCategory struct {
-	Name  string `json:"name"`
-	Tag   string
-	Notes string
-	Words []ApiWord `json:"words"`
 }
 
 func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
@@ -137,10 +109,10 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 	}
 }
 
-func MapApiLinks(links []parser.Link) []ApiLink {
-	apiLinks := make([]ApiLink, 0)
+func MapApiLinks(links []parser.Link) []ApiVideo {
+	apiLinks := make([]ApiVideo, 0)
 	for _, link := range links {
-		apiLinks = append(apiLinks, ApiLink{
+		apiLinks = append(apiLinks, ApiVideo{
 			Text:    link.Text,
 			URL:     link.URL,
 			VideoID: link.VideoID(),

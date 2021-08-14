@@ -48,7 +48,6 @@ type SegmentEditRequest = ApiVideoSegment
 func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		segmentID := context.Param("id")
-		//youtubeID := context.Param("audioId")
 		var segmentEditRequest SegmentEditRequest
 		if err := context.BindJSON(&segmentEditRequest); err != nil {
 			context.Status(500)
@@ -57,34 +56,16 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 		log.Print(segmentEditRequest)
 
 		var segment *core.VideoSegment
-		//
-		//youtubeID := context.Param("id")
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
-
-			log.Panicln(err.Error())
 			context.Status(404)
+			log.Panicln(err.Error())
 		}
-
-		//if (segment.SegmentListID)
 
 		segment.Start = segmentEditRequest.Start
 		segment.Text = segmentEditRequest.Text
 		segment.End = segmentEditRequest.End
 
 		db.Save(segment)
-
-		// check
-
-		//if db.Preload("Video").Where("uuid = ? ", segmentID).Find(&segment).Error != nil {
-		//
-		//	context.Status(404)
-		//}
-
-		//log.Printf("segmentList: %v\n", len(segmentList.Segments))
-		//segments := MakeApiSegments(segmentList)
-		//
-		//context.JSON(200, segments)
-
 	}
 }
 func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
@@ -100,7 +81,6 @@ func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
 
 		var segment *core.VideoSegment
 		//
-		//youtubeID := context.Param("id")
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
 
 			log.Println(err.Error())
