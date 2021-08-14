@@ -9,7 +9,7 @@ type Video struct {
 	gorm.Model
 	YoutubeID string
 	URL       string
-	Text      string
+	Title     string
 	Segments  []VideoSegment
 }
 

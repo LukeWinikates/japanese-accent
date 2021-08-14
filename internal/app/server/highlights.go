@@ -13,7 +13,7 @@ func MakeApiLinksFromDB(links []core.Video) []ApiVideo {
 		apiLinks = append(apiLinks, ApiVideo{
 			VideoID: link.YoutubeID,
 			URL:     link.URL,
-			Text:    link.Text,
+			Title:   link.Title,
 		})
 	}
 	return apiLinks

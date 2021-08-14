@@ -1,15 +1,7 @@
 import React from 'react';
 import {CategoriesResponse} from "../api";
 import {makeStyles} from '@material-ui/core/styles';
-import {
-  Divider,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  ListSubheader
-} from "@material-ui/core";
+import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@material-ui/core";
 import HouseIcon from '@material-ui/icons/House';
 import YoutubeIcon from '@material-ui/icons/YouTube';
 import NotesIcon from '@material-ui/icons/Notes';
@@ -65,12 +57,12 @@ export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps
       <Divider/>
       <List>
         <ListSubheader disableSticky={true}>Media</ListSubheader>
-        {categories.media.map((link, index) => (
+        {categories.media.map((video, index) => (
           <React.Fragment key={index}>
             <ListItem button>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
-              <Link to={`/media/${link.videoId}/${link.text}`}>
-                <ListItemText primary={link.text}/>
+              <Link to={`/media/${video.videoId}/${video.title}`}>
+                <ListItemText primary={video.title}/>
               </Link>
             </ListItem>
           </React.Fragment>

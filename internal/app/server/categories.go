@@ -113,7 +113,7 @@ func MapApiLinks(links []parser.Link) []ApiVideo {
 	apiLinks := make([]ApiVideo, 0)
 	for _, link := range links {
 		apiLinks = append(apiLinks, ApiVideo{
-			Text:    link.Text,
+			Title:   link.Text,
 			URL:     link.URL,
 			VideoID: link.VideoID(),
 		})

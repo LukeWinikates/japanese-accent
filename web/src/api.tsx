@@ -19,7 +19,7 @@ export declare type Word = {
 }
 
 export declare type Media = {
-  text: string,
+  title: string,
   url: string,
   videoId: string,
 }
