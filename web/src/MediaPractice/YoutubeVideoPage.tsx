@@ -94,6 +94,14 @@ export const YoutubeVideoPage = () => {
     setCurrentSegment(editedSegment);
   }
 
+  function removeCurrentSegment() {
+    setEditingSegment(null);
+    let newSegments = [...segments];
+    newSegments.splice(currentSegmentIndex,1)
+    setSegments(newSegments);
+    setCurrentSegment(segments[currentSegmentIndex - 1]);
+  }
+
   function setSegmentByIndex(newIndex: number) {
     let segment = segments[newIndex];
     setCurrentSegmentIndex(newIndex);
@@ -156,6 +164,7 @@ export const YoutubeVideoPage = () => {
                 <MediaSegmentEditDialog
                   open={!!editingSegment}
                   onClose={handleModalClose}
+                  onDestroy={removeCurrentSegment}
                   segment={editingSegment}
                   setSegment={setEditingSegment}
                   videoId={videoId}

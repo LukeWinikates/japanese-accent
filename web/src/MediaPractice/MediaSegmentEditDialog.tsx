@@ -2,19 +2,37 @@ import React from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {Segment} from "../api";
-import {Button, DialogContent, IconButton, makeStyles, TextField} from "@material-ui/core";
+import {
+  Button,
+  DialogContent,
+  FormControl,
+  IconButton,
+  Input,
+  InputLabel,
+  makeStyles,
+  TextField
+} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import TrashIcon from '@material-ui/icons/Delete';
 
 import useFetch from "use-http";
 import DialogActions from "@material-ui/core/DialogActions";
+import {Player} from "./Player";
+import InputAdornment from "@material-ui/core/InputAdornment";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
   onClose: () => void;
+  onDestroy: () => void;
   segment: Segment;
   setSegment: (segment: Segment) => void;
   videoId: string;
+}
+
+interface TimeInputProps {
+  onChange: any,
+  value: number,
+  label: string,
 }
 
 const useStyles = makeStyles(theme => (
@@ -28,8 +46,37 @@ const useStyles = makeStyles(theme => (
   }
 ));
 
+function TimeInput({value, onChange, label}: TimeInputProps) {
+  return (
+    <FormControl margin="normal">
+      <InputLabel>{label}</InputLabel>
+      <Input
+        startAdornment={
+          <InputAdornment position="start">
+            <Button size="small" variant="outlined" onClick={() => onChange(value - 1000)}>
+              -1s
+            </Button>
+            <Button size="small" variant="outlined" onClick={() => onChange(value - 500)}>
+              -.5s
+            </Button>
+          </InputAdornment>}
+        endAdornment={
+          <InputAdornment position="end">
+            <Button size="small" variant="outlined" onClick={() => onChange(value + 500)}>
+              +.5s
+            </Button>
+            <Button size="small" variant="outlined" onClick={() => onChange(value + 1000)}>
+              +1s
+            </Button>
+          </InputAdornment>}
+        onChange={(event) => onChange(event.target.value)}
+        value={value}/>
+    </FormControl>
+  );
+}
+
 export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
-  const {onClose, open, videoId, segment, setSegment} = props;
+  const {onClose, onDestroy, open, videoId, segment, setSegment} = props;
   const {post, delete: destroy} = useFetch('/media/audio/' + videoId + "/segments/" + segment.uuid);
   const classes = useStyles();
 
@@ -42,7 +89,7 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
   };
 
   const del = () => {
-    destroy().then(onClose);
+    destroy().then(onDestroy);
   };
 
   const handleTextChange = (text: string) => {
@@ -68,6 +115,9 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     });
   };
 
+  function audioUrl() {
+    return `/media/audio/${videoId}` + (segment ? `#t=${segment.start / 1000},${segment.end / 1000}` : "");
+  }
 
   return (
     <Dialog onClose={handleClose}
@@ -83,11 +133,16 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <TextField label="start" onChange={(event) => handleStartChange(event.target.value)} value={segment.start}/>
-        <TextField value={segment.text} fullWidth={true}
-                   onChange={(event) => handleTextChange(event.target.value)}/>
-        <TextField label="start" onChange={(event) => handleEndChange(event.target.value)} value={segment.end}/>
+        <Player src={audioUrl()}
+                duration={{startSec: segment.start, endSec: segment.end}}
+                autoplayOnChange={false}/>
 
+        <TimeInput label="Start" onChange={handleStartChange} value={segment.start}/>
+        <TimeInput label="End" onChange={handleEndChange} value={segment.end}/>
+        <TextField margin="normal"
+                   value={segment.text} fullWidth={true}
+                   multiline={true}
+                   onChange={(event) => handleTextChange(event.target.value)}/>
 
       </DialogContent>
       <DialogActions>
