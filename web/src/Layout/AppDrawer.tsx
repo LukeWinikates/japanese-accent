@@ -1,6 +1,5 @@
 import React from 'react';
 import {CategoriesResponse} from "../api";
-import {makeStyles} from '@material-ui/core/styles';
 import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@material-ui/core";
 import HouseIcon from '@material-ui/icons/House';
 import YoutubeIcon from '@material-ui/icons/YouTube';
@@ -13,32 +12,13 @@ type AppDrawerProps = {
   handleClose: () => void,
   theme: any,
 }
-
-const useStyles = makeStyles((theme) => ({
-  nested: {
-    paddingLeft: theme.spacing(4),
-  },
-  list: {
-    width: 250,
-  },
-  fullList: {
-    width: 'auto',
-  },
-}));
-
 export function DummyDrawer() {
   return (
-    <div></div>
+    <div/>
   );
 }
 
-export function AppDrawer({categories, open, handleClose, theme}: AppDrawerProps) {
-  const classes = useStyles({
-    listSection: {
-      backgroundColor: 'inherit',
-    },
-  });
-
+export function AppDrawer({categories, open, handleClose}: AppDrawerProps) {
   return (
     <Drawer
       anchor="left"

@@ -2,8 +2,19 @@ import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
 import {duration, Segment} from "../api";
-import {Box, Breadcrumbs, Button, Container, Grid, ListItem, Typography} from "@material-ui/core";
+import {
+  Box,
+  Breadcrumbs,
+  Button,
+  Container,
+  Grid,
+  IconButton,
+  ListItem,
+  ListItemSecondaryAction,
+  Typography
+} from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
 import {FixedSizeList, ListChildComponentProps} from 'react-window';
 import AutoSizer from "react-virtualized-auto-sizer";
 import ListItemText from "@material-ui/core/ListItemText";
@@ -97,9 +108,14 @@ export const YoutubeVideoPage = () => {
   function removeCurrentSegment() {
     setEditingSegment(null);
     let newSegments = [...segments];
-    newSegments.splice(currentSegmentIndex,1)
+    newSegments.splice(currentSegmentIndex, 1)
     setSegments(newSegments);
-    setCurrentSegment(segments[currentSegmentIndex - 1]);
+    setSegmentByIndex(currentSegmentIndex - 1);
+  }
+  function addSegment(newSegment: Segment) {
+    let newSegments = [...segments];
+    newSegments.splice(currentSegmentIndex+1, 0, newSegment)
+    setSegments(newSegments);
   }
 
   function setSegmentByIndex(newIndex: number) {
@@ -165,6 +181,7 @@ export const YoutubeVideoPage = () => {
                   open={!!editingSegment}
                   onClose={handleModalClose}
                   onDestroy={removeCurrentSegment}
+                  onAdd={addSegment}
                   segment={editingSegment}
                   setSegment={setEditingSegment}
                   videoId={videoId}

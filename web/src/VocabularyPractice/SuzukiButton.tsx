@@ -1,17 +1,16 @@
 import React, {useRef} from "react";
-import {CategoryDetails} from "../api";
 import {Button} from "@material-ui/core";
 import LinkIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 declare type SuzukiButtonProps = {
-  category: CategoryDetails | null;
+  items: string[]
 };
 
 const BASE_URL="http://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index";
 
 export function SuzukiButton(props: SuzukiButtonProps) {
   const {
-    category
+    items
   } = props;
   const formEl = useRef<HTMLFormElement>(null);
 
@@ -21,7 +20,7 @@ export function SuzukiButton(props: SuzukiButtonProps) {
 
   return (<form action={BASE_URL} method="post" target="_blank" ref={formEl}>
       <input type="hidden"
-             value={category?.words.map(w => w.word).join("\n") || ""}
+             value={items.join("\n") || ""}
              name="data[Phrasing][text]"
       />
 

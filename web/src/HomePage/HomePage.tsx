@@ -56,7 +56,7 @@ function HomePage() {
                           <ListItem key={video.videoId}>
                             <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
                             <Link to={`/media/${video.videoId}/${video.title}`}>
-                              <ListItemText primary={video.title}></ListItemText>
+                              <ListItemText primary={video.title}/>
                             </Link>
                           </ListItem>
                         );

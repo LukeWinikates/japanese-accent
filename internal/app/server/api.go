@@ -13,6 +13,13 @@ type ApiVideoSegment struct {
 	UUID  string `json:"uuid"`
 }
 
+type ApiVideoSegmentCreate struct {
+	Start   int    `json:"start"`
+	End     int    `json:"end"`
+	Text    string `json:"text"`
+	VideoID string `json:"videoId"`
+}
+
 type ApiVideo struct {
 	Title   string `json:"title"`
 	URL     string `json:"url"`

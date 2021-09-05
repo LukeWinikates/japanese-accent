@@ -14,6 +14,7 @@ import {
 } from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import TrashIcon from '@material-ui/icons/Delete';
+import CopyIcon from '@material-ui/icons/FileCopy';
 
 import useFetch from "use-http";
 import DialogActions from "@material-ui/core/DialogActions";
@@ -24,6 +25,7 @@ export interface MediaSegmentsEditDialogProps {
   open: boolean;
   onClose: () => void;
   onDestroy: () => void;
+  onAdd: (segment: Segment) => void;
   segment: Segment;
   setSegment: (segment: Segment) => void;
   videoId: string;
@@ -76,8 +78,9 @@ function TimeInput({value, onChange, label}: TimeInputProps) {
 }
 
 export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
-  const {onClose, onDestroy, open, videoId, segment, setSegment} = props;
+  const {onClose, onDestroy, onAdd, open, videoId, segment, setSegment} = props;
   const {post, delete: destroy} = useFetch('/media/audio/' + videoId + "/segments/" + segment.uuid);
+  const postClone = useFetch<Segment>('/media/audio/' + videoId + "/segments");
   const classes = useStyles();
 
   const handleClose = () => {
@@ -90,6 +93,18 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
 
   const del = () => {
     destroy().then(onDestroy);
+  };
+
+  const clone = () => {
+    let cloned = {
+      text: segment.text,
+      videoId: videoId,
+      start: segment.start,
+      end: segment.end,
+    };
+    postClone.post(cloned).then(response => {
+      onAdd(response)
+    });
   };
 
   const handleTextChange = (text: string) => {
@@ -148,6 +163,9 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       <DialogActions>
         <IconButton onClick={del}>
           <TrashIcon/>
+        </IconButton>
+        <IconButton onClick={clone}>
+          <CopyIcon/>
         </IconButton>
         <Button onClick={save}>
           Save

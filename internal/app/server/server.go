@@ -26,6 +26,7 @@ func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.D
 	{
 		media.GET("/audio/:id/segments", MakeAudioSegmentsGET(mediaDirPath, db))
 		media.POST("/audio/:audioId/segments/:id", MakeAudioSegmentsPOST(db))
+		media.POST("/audio/:audioId/segments/", MakeAudioSegmentsCREATE(db))
 		media.DELETE("/audio/:audioId/segments/:id", MakeAudioSegmentsDELETE(db))
 		media.GET("/audio/:id", MakeAudioGET(mediaDirPath))
 	}

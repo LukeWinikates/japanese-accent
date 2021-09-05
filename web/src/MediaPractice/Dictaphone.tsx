@@ -6,6 +6,7 @@ import SkipPreviousIcon from "@material-ui/core/SvgIcon/SvgIcon";
 import React, {useState} from "react";
 import {Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
+import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 
 const useStyles = makeStyles(() => ({
   playerControls: {
@@ -49,6 +50,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
       <Grid container item xs={12} spacing={1}>
         <Typography variant="h6" align="left">
           {segment?.text}
+          <SuzukiButton items={[segment?.text]}/>
         </Typography>
       </Grid>
       <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
@@ -99,9 +101,9 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
             onChange={() => setAutoRecord(!autoRecord)}
             color={autoplay ? "primary" : "default"}
 
-            inputProps={{'aria-label': 'autoRecord after playing native recording'}}
+            inputProps={{'aria-label': 'Start recording automatically after playing native example'}}
           />}
-          label={"Autorecord after playing native recrording"}
+          label={"Start recording automatically after playing native example"}
         />
       </Grid>
       <Grid container item xs={12} justify="space-between">

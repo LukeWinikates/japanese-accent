@@ -84,7 +84,7 @@ function CategoryPage() {
               <Typography variant="h4">
                 Practice Items
               </Typography>
-              <SuzukiButton category={category}/>
+              <SuzukiButton items={category.words.map(w => w.word)}/>
               <List subheader={<li/>}>
                 {category.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>

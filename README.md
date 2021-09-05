@@ -16,11 +16,15 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 
+* clear recording when switching to a new segment
+* more prominent "next" button (or smartly have a CTA for "re-record" or "next")
 * address issues with the data model
-    * Videos are called "videos"
-    * Word Lists are called "word lists"?
-    * everything is in the DB
     * word lists could be linked by #hashtag?
+* when paging through recordings using "next" button, automatically scroll the current one into view
+* remove checkboxes
+* move delete button to main page, and have a confirmation modal
+* move 'edit' to the action bar
+
 * adding new youtube videos ad-hoc
 * adding new words to quick-study, using FAB
     * implies moving data model from text file into DB

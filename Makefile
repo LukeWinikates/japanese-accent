@@ -7,4 +7,4 @@ test:
 	go test -v ./... -short
 
 watch:
-	$(go env GOPATH)/bin/air
+	~/go/bin/air
