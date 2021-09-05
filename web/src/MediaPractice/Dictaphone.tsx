@@ -24,9 +24,6 @@ export declare type DictaphoneProps = {
 export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex}: DictaphoneProps) => {
   const [recordings, setRecordings] = useState<AudioRecording[]>([]);
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
-  const [autoRecord, setAutoRecord] = useState<boolean>(true);
-  const [autoplay, setAutoplay] = useState<boolean>(true);
-
 
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
@@ -91,10 +88,9 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
             currentRecording === null ?
               <DummyPlayer/> :
               <Player src={currentRecording.blobUrl}
-                      autoplayOnChange={autoplay}
+                      autoplayOnChange={true}
                       duration="auto"/>
           }
-
         </Grid>
       </Grid>
 
