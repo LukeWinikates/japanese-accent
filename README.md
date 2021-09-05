@@ -21,7 +21,6 @@ This git repository contains scripts and tools for making it easier to efficient
 * address issues with the data model
     * word lists could be linked by #hashtag?
 * when paging through recordings using "next" button, automatically scroll the current one into view
-* remove checkboxes
 * move delete button to main page, and have a confirmation modal
 * move 'edit' to the action bar
 

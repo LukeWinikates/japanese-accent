@@ -9,6 +9,11 @@ import {
   Card,
   CardContent,
   Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
   IconButton,
   List,
   ListItem,
@@ -43,11 +48,12 @@ export const YoutubeVideoPage = () => {
 
   const [segments, setSegments] = useState<Segment[]>([]);
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
+  const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
   const lastIndex = segments.length - 1;
 
-  const {get, response} = useFetch<Segment[]>(
+  const {get, response, delete: destroy} = useFetch<Segment[]>(
     '/media/audio/' + videoId + "/segments");
 
   async function initialize() {
@@ -82,10 +88,16 @@ export const YoutubeVideoPage = () => {
 
   function removeCurrentSegment() {
     setEditingSegment(null);
+    removeSegmentByIndex(currentSegmentIndex);
+  }
+
+  function removeSegmentByIndex(index: number) {
     let newSegments = [...segments];
-    newSegments.splice(currentSegmentIndex, 1)
+    newSegments.splice(index, 1)
     setSegments(newSegments);
-    setSegmentByIndex(currentSegmentIndex - 1);
+    if (currentSegmentIndex === index) {
+      setSegmentByIndex(currentSegmentIndex - 1);
+    }
   }
 
   function addSegment(newSegment: Segment) {
@@ -102,6 +114,10 @@ export const YoutubeVideoPage = () => {
 
   if (currentSegment === null) {
     return (<></>);
+  }
+
+  function promptToDelete(segment: Segment, index: number) {
+    setPromptingSegmentDelete({segment, index});
   }
 
   let renderRow = (segment: Segment, index: number) => {
@@ -122,13 +138,22 @@ export const YoutubeVideoPage = () => {
         >
         </ListItemText>
         <ListItemSecondaryAction>
-          <IconButton edge="end" aria-label="delete">
+          <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
+            Edit
+          </Button>
+          <IconButton edge="end" aria-label="delete" onClick={() => promptToDelete(segment, index)}>
             <DeleteIcon/>
           </IconButton>
         </ListItemSecondaryAction>
       </ListItem>
     );
   };
+
+  function destroySegment(segment: Segment, index: number) {
+    destroy('/' + segment.uuid)
+      .then(() => removeSegmentByIndex(index))
+      .then(() => setPromptingSegmentDelete(null));
+  }
 
   return (
     <Box m={2}>
@@ -139,9 +164,6 @@ export const YoutubeVideoPage = () => {
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
             {title}
-            <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
-              Edit
-            </Button>
           </Typography>
         </Box>
 
@@ -166,7 +188,7 @@ export const YoutubeVideoPage = () => {
           </List>
 
           {
-            editingSegment !== null ?
+            editingSegment !== null &&
               <MediaSegmentEditDialog
                 open={!!editingSegment}
                 onClose={handleModalClose}
@@ -178,7 +200,32 @@ export const YoutubeVideoPage = () => {
                 aria-labelledby="simple-modal-title"
                 aria-describedby="simple-modal-description"
               />
-              : <> </>
+          }
+
+          {
+            promptingSegmentDelete !== null &&
+              <Dialog
+                open={true}
+                onClose={() => setPromptingSegmentDelete(null)}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+              >
+                <DialogTitle id="alert-dialog-title">{"Delete this segment?"}</DialogTitle>
+                <DialogContent>
+                  <DialogContentText id="alert-dialog-description">
+                    {promptingSegmentDelete.segment.text}
+                  </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                  <Button onClick={() => setPromptingSegmentDelete(null)} color="primary">
+                    Keep
+                  </Button>
+                  <Button onClick={() => destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index)}
+                          color="primary" autoFocus>
+                    Destroy
+                  </Button>
+                </DialogActions>
+              </Dialog>
           }
         </Box>
       </Container>
