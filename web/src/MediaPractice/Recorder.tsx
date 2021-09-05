@@ -11,7 +11,7 @@ const useStyles = makeStyles(() => ({
   },
   iconButtonProgress: {
     position: 'absolute',
-    left: "calc(50% - 45px)",
+    left: "calc(50% - 44px)",
     color: "white",
     zIndex: 200,
     top: "7px",

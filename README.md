@@ -15,14 +15,21 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
+* Youtube video add dialog
+  * paste youtube link
+  * on media page, if the link is not present, show a code snippet to download via youtube-dl
 
 * clear recording when switching to a new segment
-* more prominent "next" button (or smartly have a CTA for "re-record" or "next")
 * address issues with the data model
-    * word lists could be linked by #hashtag?
+      * word lists could be linked by #hashtag?
+* record practice sessions of different segments / show read/unread freshness
+
+
+## Redesign Ideas
+* consider making each entry in the recording list a "card", and when you move from card to card, they collapse/expand to show the player and recorder
+* more prominent "next" button (or smartly have a CTA for "re-record" or "next")
 * when paging through recordings using "next" button, automatically scroll the current one into view
-* move delete button to main page, and have a confirmation modal
-* move 'edit' to the action bar
+* grab thumbnails based on the video content, and show that along with clip
 
 * adding new youtube videos ad-hoc
 * adding new words to quick-study, using FAB
