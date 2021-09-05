@@ -3,6 +3,7 @@ package server
 import (
 	"bufio"
 	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -30,6 +31,28 @@ func MakeAudioGET(mediaDirectory string) gin.HandlerFunc {
 			context.Status(404)
 		}
 		context.File(mediaDirectory + "/" + files[0])
+	}
+}
+
+func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var videoCreateRequest ApiVideoCreate
+		if err := context.BindJSON(&videoCreateRequest); err != nil {
+			context.Status(500)
+			return
+		}
+		video := &core.Video{
+			YoutubeID: youtube.VideoIDFromURL(videoCreateRequest.URL),
+			URL:       videoCreateRequest.URL,
+			Title:     videoCreateRequest.Title,
+			Segments:  nil,
+		}
+
+		if err := db.Save(video).Error; err != nil {
+			log.Println(err.Error())
+			context.Status(500)
+			return
+		}
 	}
 }
 
