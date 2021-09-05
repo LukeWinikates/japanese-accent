@@ -1,16 +1,17 @@
 import React, {useRef} from "react";
 import {Button} from "@material-ui/core";
-import LinkIcon from "@material-ui/core/SvgIcon/SvgIcon";
 
 declare type SuzukiButtonProps = {
-  items: string[]
+  items: string[],
+  text: string,
 };
 
 const BASE_URL="http://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index";
 
 export function SuzukiButton(props: SuzukiButtonProps) {
   const {
-    items
+    items,
+    text
   } = props;
   const formEl = useRef<HTMLFormElement>(null);
 
@@ -43,10 +44,9 @@ export function SuzukiButton(props: SuzukiButtonProps) {
           />)
         })
       }
-      <Button onClick={submitForm} startIcon={<LinkIcon/>} variant="contained"
+      <Button onClick={submitForm} variant="contained"
               color="secondary">
-
-        Open All in Suzuki-Kun
+        {text}
       </Button>
     </form>
   );

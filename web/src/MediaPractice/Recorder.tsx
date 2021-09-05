@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {useReactMediaRecorder} from "react-media-recorder";
-import {CircularProgress, Grid, IconButton, makeStyles} from "@material-ui/core";
+import {Button, CircularProgress, makeStyles} from "@material-ui/core";
 import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
 import StopIcon from '@material-ui/icons/Stop';
 
@@ -11,8 +11,10 @@ const useStyles = makeStyles(() => ({
   },
   iconButtonProgress: {
     position: 'absolute',
-    left: "calc(50% - 20px)",
-    top: "9px",
+    left: "calc(50% - 45px)",
+    color: "white",
+    zIndex: 200,
+    top: "7px",
   },
 }));
 
@@ -54,18 +56,15 @@ export const Recorder = (recorderProps: RecorderProps) => {
 
   const RecordStopButton = status === 'recording' ? StopIcon : RadioButtonCheckedIcon;
   return (
-    <Grid container alignItems="center">
-      <Grid item xs={3}>
-        <div className={classes.iconButtonWrapper}>
-          {status === 'recording' &&
-          <CircularProgress size={40} color="secondary" className={classes.iconButtonProgress}/>}
-          <IconButton onClick={toggle} color={status === 'recording' ? "secondary" : "primary"}>
-            <RecordStopButton fontSize="large"/>
-          </IconButton>
-        </div>
-      </Grid>
-      <Grid item xs={9}>
-      </Grid>
-    </Grid>
+    <div className={classes.iconButtonWrapper}>
+      {status === 'recording' &&
+      <CircularProgress size={22} color="secondary" className={classes.iconButtonProgress}/>}
+      <Button variant="contained"
+              onClick={toggle}
+              color={status === 'recording' ? "secondary" : "primary"}
+              startIcon={<RecordStopButton/>}>
+        Record
+      </Button>
+    </div>
   );
 };

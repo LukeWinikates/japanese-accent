@@ -1,8 +1,7 @@
-import {FormControlLabel, Grid, IconButton, makeStyles, Typography} from "@material-ui/core";
+import {Button, Grid, makeStyles, Typography} from "@material-ui/core";
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
-import Checkbox from "@material-ui/core/Checkbox/Checkbox";
-import SkipPreviousIcon from "@material-ui/core/SvgIcon/SvgIcon";
+import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React, {useState} from "react";
 import {Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
@@ -47,13 +46,28 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
 
   return (
     <Grid container item spacing={1}>
-      <Grid container item xs={12} spacing={1}>
-        <Typography variant="h6" align="left">
-          {segment?.text}
-          <SuzukiButton items={[segment?.text]}/>
-        </Typography>
+      <Grid container item xs={12} spacing={1} justify="space-between">
+        <Grid item xs={1}>
+          <Button disabled={segmentIndex === 0}
+                  onClick={() => setSegmentByIndex(segmentIndex - 1)}
+                  startIcon={<SkipPreviousIcon/>}>
+            Previous
+          </Button>
+        </Grid>
+        <Grid container item xs={10} spacing={2}>
+          <strong style={{display: "inline-block", margin: "auto"}}>
+            「{segment?.text}」
+          </strong>
+        </Grid>
+        <Grid item xs={1}>
+          <Button disabled={segmentIndex === lastSegmentIndex}
+                  onClick={() => setSegmentByIndex(segmentIndex + 1)}
+                  endIcon={<SkipNextIcon/>}>
+            Next
+          </Button>
+        </Grid>
       </Grid>
-      <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
+      <Grid container item xs={6} justify="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
             Native:
@@ -66,7 +80,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
           />
         </Grid>
       </Grid>
-      <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
+      <Grid container item xs={6} justify="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
             Practice:
@@ -83,41 +97,13 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
 
         </Grid>
       </Grid>
-      <Grid container item xs={12} className={classes.playerControls}>
-        <Recorder beforeRecord={pauseAll} onNewRecording={saveRecording}/>
-        <FormControlLabel
-          control={<Checkbox
-            checked={autoplay}
-            onChange={() => setAutoplay(!autoplay)}
-            color={autoplay ? "primary" : "default"}
 
-            inputProps={{'aria-label': 'autoplay'}}
-          />}
-          label={"Autoplay after recording"}
-        />
-        <FormControlLabel
-          control={<Checkbox
-            checked={autoRecord}
-            onChange={() => setAutoRecord(!autoRecord)}
-            color={autoplay ? "primary" : "default"}
-
-            inputProps={{'aria-label': 'Start recording automatically after playing native example'}}
-          />}
-          label={"Start recording automatically after playing native example"}
-        />
-      </Grid>
-      <Grid container item xs={12} justify="space-between">
-        <Grid item xs={1}>
-          <IconButton disabled={segmentIndex === 0}
-                      onClick={() => setSegmentByIndex(segmentIndex - 1)}>
-            <SkipPreviousIcon/>
-          </IconButton>
+      <Grid container item xs={12} justify="flex-end">
+        <Grid item xs={2}>
+          <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
         </Grid>
-        <Grid item xs={1}>
-          <IconButton disabled={segmentIndex === lastSegmentIndex}
-                      onClick={() => setSegmentByIndex(segmentIndex + 1)}>
-            <SkipNextIcon/>
-          </IconButton>
+        <Grid container item xs={2}>
+          <Recorder beforeRecord={pauseAll} onNewRecording={saveRecording}/>
         </Grid>
       </Grid>
     </Grid>

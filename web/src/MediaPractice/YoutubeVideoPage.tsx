@@ -6,17 +6,17 @@ import {
   Box,
   Breadcrumbs,
   Button,
+  Card,
+  CardContent,
   Container,
-  Grid,
   IconButton,
+  List,
   ListItem,
   ListItemSecondaryAction,
   Typography
 } from "@material-ui/core";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
-import {FixedSizeList, ListChildComponentProps} from 'react-window';
-import AutoSizer from "react-virtualized-auto-sizer";
 import ListItemText from "@material-ui/core/ListItemText";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
 import {Dictaphone} from "./Dictaphone";
@@ -68,31 +68,6 @@ export const YoutubeVideoPage = () => {
     document.querySelectorAll("audio").forEach(a => a.pause());
   }
 
-  function renderRow(props: ListChildComponentProps) {
-    const {index, style} = props;
-    if (segments.length === 0) return (<></>);
-    const segment = segments[index];
-
-    return (
-      <ListItem style={style} key={index}
-                selected={currentSegmentIndex === index}
-                alignItems="flex-start"
-                onClick={() => {
-                  pauseAll();
-                  setCurrentSegment(segment);
-                  setCurrentSegmentIndex(index);
-                }}
-      >
-        <ListItemText
-          primaryTypographyProps={{noWrap: true, variant: "body2"}}
-          primary={segment.text}
-          secondary={Math.round(duration(segment)) + "s"}
-        >
-        </ListItemText>
-      </ListItem>
-    );
-  }
-
   async function handleModalClose() {
     if (editingSegment === null) {
       return;
@@ -112,9 +87,10 @@ export const YoutubeVideoPage = () => {
     setSegments(newSegments);
     setSegmentByIndex(currentSegmentIndex - 1);
   }
+
   function addSegment(newSegment: Segment) {
     let newSegments = [...segments];
-    newSegments.splice(currentSegmentIndex+1, 0, newSegment)
+    newSegments.splice(currentSegmentIndex + 1, 0, newSegment)
     setSegments(newSegments);
   }
 
@@ -128,6 +104,32 @@ export const YoutubeVideoPage = () => {
     return (<></>);
   }
 
+  let renderRow = (segment: Segment, index: number) => {
+    return (
+      <ListItem key={index}
+                selected={currentSegmentIndex === index}
+                alignItems="flex-start"
+                onClick={() => {
+                  pauseAll();
+                  setCurrentSegment(segment);
+                  setCurrentSegmentIndex(index);
+                }}
+      >
+        <ListItemText
+          primaryTypographyProps={{noWrap: true, variant: "body2"}}
+          primary={segment.text}
+          secondary={Math.round(duration(segment)) + "s"}
+        >
+        </ListItemText>
+        <ListItemSecondaryAction>
+          <IconButton edge="end" aria-label="delete">
+            <DeleteIcon/>
+          </IconButton>
+        </ListItemSecondaryAction>
+      </ListItem>
+    );
+  };
+
   return (
     <Box m={2}>
       <Container maxWidth='lg'>
@@ -137,60 +139,47 @@ export const YoutubeVideoPage = () => {
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
             {title}
+            <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
+              Edit
+            </Button>
           </Typography>
         </Box>
 
+        <Card>
+          <CardContent>
+            {currentSegment &&
+            <Dictaphone
+              videoId={videoId}
+              segment={currentSegment}
+              setSegmentByIndex={setSegmentByIndex}
+              lastSegmentIndex={lastIndex}
+              segmentIndex={currentSegmentIndex}/>
+            }
+          </CardContent>
+        </Card>
 
         <Box paddingY={2} margin={0}>
-          <Grid container spacing={1}>
-            <Grid container item xs={5}>
-              <Grid item xs={9}>
-                <Typography variant="h5">
-                  Native Recordings
-                </Typography>
-              </Grid>
-              <Grid item xs={3}>
-                <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
-                  Edit
-                </Button>
-              </Grid>
-              <Grid item xs={12}>
-                <AutoSizer disableHeight={true}>
-                  {({width}) =>
-                    <FixedSizeList height={300} width={width} itemSize={60} itemCount={segments.length}>
-                      {renderRow}
-                    </FixedSizeList>
-                  }
-                </AutoSizer>
-              </Grid>
-            </Grid>
-
-            <Grid container item xs={7} spacing={1}>
-              {currentSegment &&
-              <Dictaphone
-                videoId={videoId}
-                segment={currentSegment}
-                setSegmentByIndex={setSegmentByIndex}
-                lastSegmentIndex={lastIndex}
-                segmentIndex={currentSegmentIndex}/>
-              }
-            </Grid>
+          <List>
             {
-              editingSegment !== null ?
-                <MediaSegmentEditDialog
-                  open={!!editingSegment}
-                  onClose={handleModalClose}
-                  onDestroy={removeCurrentSegment}
-                  onAdd={addSegment}
-                  segment={editingSegment}
-                  setSegment={setEditingSegment}
-                  videoId={videoId}
-                  aria-labelledby="simple-modal-title"
-                  aria-describedby="simple-modal-description"
-                />
-                : <> </>
+              segments.map(renderRow)
             }
-          </Grid>
+          </List>
+
+          {
+            editingSegment !== null ?
+              <MediaSegmentEditDialog
+                open={!!editingSegment}
+                onClose={handleModalClose}
+                onDestroy={removeCurrentSegment}
+                onAdd={addSegment}
+                segment={editingSegment}
+                setSegment={setEditingSegment}
+                videoId={videoId}
+                aria-labelledby="simple-modal-title"
+                aria-describedby="simple-modal-description"
+              />
+              : <> </>
+          }
         </Box>
       </Container>
     </Box>
