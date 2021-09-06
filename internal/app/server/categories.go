@@ -5,13 +5,13 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/core"
 	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 	"io/ioutil"
 	"log"
 	"strings"
 )
 
-func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
-
+func MakeHandleCategoriesGET(wordsFilePath string, db gorm.DB) func(ctx *gin.Context) {
 	return func(context *gin.Context) {
 
 		content, err := ioutil.ReadFile(wordsFilePath)
@@ -29,32 +29,19 @@ func MakeHandleCategoriesGET(wordsFilePath string) func(ctx *gin.Context) {
 			return
 		}
 
-		//categories := []Category{
-		//	{
-		//		Name: "五味太郎",
-		//		Categories: []Category{{
-		//			Name:       "とうさん　まいご",
-		//			Categories: []Category{},
-		//		}},
-		//	},
-		//	{
-		//		Name: "Japanese Phonetics with Dogen",
-		//		Categories: []Category{{
-		//			Name:       "Ep 8",
-		//			Categories: []Category{},
-		//		}, {
-		//			Name:       "Ep 12",
-		//			Categories: []Category{},
-		//		}, {
-		//			Name:       "Ep 14",
-		//			Categories: []Category{},
-		//		}},
-		//	},
-		//}
+		var videos *[]core.Video
+
+		if db.Limit(10).Find(&videos).Error != nil {
+			if err != nil {
+				context.Status(500)
+				log.Printf("Error: %s\n", err.Error())
+				return
+			}
+		}
 
 		context.JSON(200, CategoriesListResponse{
 			Categories: wordlist.Categories,
-			Media:      MapApiLinks(wordlist.Media),
+			Media:      MakeApiLinksFromDB(*videos),
 		})
 	}
 }
@@ -107,18 +94,6 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 
 		context.Status(404)
 	}
-}
-
-func MapApiLinks(links []parser.Link) []ApiVideo {
-	apiLinks := make([]ApiVideo, 0)
-	for _, link := range links {
-		apiLinks = append(apiLinks, ApiVideo{
-			Title:   link.Text,
-			URL:     link.URL,
-			VideoID: link.VideoID(),
-		})
-	}
-	return apiLinks
 }
 
 func apiWords(words []core.Word) []ApiWord {
