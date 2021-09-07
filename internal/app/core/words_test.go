@@ -6,15 +6,19 @@ import (
 )
 
 var 暑い = Word{
-	Text:       "暑い",
-	Furigana:   "あつい",
-	AccentMora: 2,
+	Text:     "暑い",
+	Furigana: "あつい",
+	MoraAnalysis: &MoraAnalysis{
+		AccentMora: 2,
+	},
 }
 
 var 厚い = Word{
-	Text:       "厚い",
-	Furigana:   "あつい",
-	AccentMora: 0,
+	Text:     "厚い",
+	Furigana: "あつい",
+	MoraAnalysis: &MoraAnalysis{
+		AccentMora: 0,
+	},
 }
 
 func TestCategory(t *testing.T) {

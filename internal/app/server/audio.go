@@ -285,10 +285,9 @@ func parseSegments(fileContent string) ([]Segment, error) {
 			seg.Text = seg.Text + text
 			segments[len(segments)-1] = seg
 		}
-
 	}
 
-	log.Printf("segments: %s\n", len(segments))
+	log.Printf("segments: %v\n", len(segments))
 
 	return segments, nil
 }

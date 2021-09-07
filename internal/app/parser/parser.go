@@ -118,12 +118,14 @@ func wordFromLine(line string) core.Word {
 	segments := strings.Split(line, " ")
 	if len(segments) > 1 {
 		maybeAccentMora, err := strconv.Atoi(segments[len(segments)-1])
-		accentMora := &maybeAccentMora
+		var moraAnalysis *core.MoraAnalysis
 		text := segments[0]
 		furigana := segments[0]
 
-		if err != nil {
-			accentMora = nil
+		if err == nil {
+			moraAnalysis = &core.MoraAnalysis{
+				AccentMora: maybeAccentMora,
+			}
 		}
 
 		if len(segments) == 3 {
@@ -131,15 +133,15 @@ func wordFromLine(line string) core.Word {
 		}
 
 		return core.Word{
-			Text:       text,
-			Furigana:   furigana,
-			AccentMora: accentMora,
+			Text:         text,
+			Furigana:     furigana,
+			MoraAnalysis: moraAnalysis,
 		}
 	}
 
 	return core.Word{
-		Text:       line,
-		Furigana:   line,
-		AccentMora: nil,
+		Text:         line,
+		Furigana:     line,
+		MoraAnalysis: nil,
 	}
 }

@@ -4,11 +4,15 @@ import (
 	"net/url"
 )
 
+type MoraAnalysis struct {
+	AccentMora int
+}
+
 type Word struct {
-	Text       string
-	Furigana   string
-	AccentMora *int
-	moraCount  *int
+	Text         string
+	Furigana     string
+	MoraAnalysis *MoraAnalysis
+	moraCount    int
 }
 
 type Shiki string
@@ -22,10 +26,10 @@ const (
 )
 
 func (w Word) Shiki() Shiki {
-	if w.AccentMora == nil {
+	if w.MoraAnalysis == nil {
 		return 未定
 	}
-	switch *w.AccentMora {
+	switch w.MoraAnalysis.AccentMora {
 	case 0:
 		return 平板
 	case 1:
@@ -51,8 +55,8 @@ func isGlide(r rune) bool {
 }
 
 func (w Word) MoraCount() int {
-	if w.moraCount != nil {
-		return *w.moraCount
+	if w.moraCount > 0 {
+		return w.moraCount
 	}
 	count := 0
 	for _, r := range w.Furigana {
@@ -64,7 +68,8 @@ func (w Word) MoraCount() int {
 			count++
 		}
 	}
-	w.moraCount = &count
+	w.moraCount = count
+
 	return count
 }
 

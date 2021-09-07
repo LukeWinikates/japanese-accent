@@ -49,10 +49,14 @@ func MakeHandleCategoriesGET(wordsFilePath string, db gorm.DB) func(ctx *gin.Con
 func makeApiWord(word core.Word) ApiWord {
 	fmt.Printf("%s: %v\n", word.Text, word.MoraCount())
 	fmt.Printf("%s: %s\n", word.Text, word.Morae())
+	var accentMora *int
+	if word.MoraAnalysis != nil {
+		accentMora = &word.MoraAnalysis.AccentMora
+	}
 	return ApiWord{
 		Text:       word.Text,
 		Furigana:   word.Furigana,
-		AccentMora: word.AccentMora,
+		AccentMora: accentMora,
 		MoraCount:  word.MoraCount(),
 		Morae:      word.Morae(),
 		Link:       word.ForvoURL(),

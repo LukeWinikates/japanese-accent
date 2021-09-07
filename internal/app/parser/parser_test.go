@@ -59,12 +59,10 @@ func TestBasicParsing(t *testing.T) {
 	section := result.Categories[0]
 	assert.Equal(t, "#ごめんやさい", section.Name, nil)
 
-	assert.Equal(t, 2, len(section.Links), nil)
 	assert.Equal(t, 21, len(section.Words), nil)
 
 	section = result.Categories[1]
 	assert.Equal(t, "#とうさん　まいご", section.Name, nil)
 
-	assert.Equal(t, 0, len(section.Links), nil)
 	assert.Equal(t, 15, len(section.Words), nil)
 }
