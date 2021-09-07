@@ -1,5 +1,5 @@
 import {duration, Segment, Video} from "../api";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {
   Box,
   Breadcrumbs,
@@ -26,10 +26,9 @@ import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
-
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
-  const [currentSegment, setCurrentSegment] = useState<Segment | null>(null);
+  const [currentSegment, setCurrentSegment] = useState<Segment | null>(video.segments[0]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
   const lastIndex = video.segments.length - 1;
 
@@ -39,6 +38,10 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
   }
+
+  useEffect(() => {
+    setCurrentSegment(video.segments[0])
+  }, [video])
 
   async function handleModalClose() {
     if (editingSegment === null) {
@@ -86,10 +89,6 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
     let segment = video.segments[newIndex];
     setCurrentSegmentIndex(newIndex);
     setCurrentSegment(segment);
-  }
-
-  if (currentSegment === null) {
-    return (<></>);
   }
 
   function promptToDelete(segment: Segment, index: number) {

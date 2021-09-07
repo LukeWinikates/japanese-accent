@@ -7,16 +7,17 @@ import (
 	"log"
 )
 
-func MakeApiLinksFromDB(links []core.Video) []ApiVideo {
-	apiLinks := make([]ApiVideo, 0)
-	for _, link := range links {
-		apiLinks = append(apiLinks, ApiVideo{
-			VideoID: link.YoutubeID,
-			URL:     link.URL,
-			Title:   link.Title,
+func MakeApiVideoSummaries(videos []core.Video) []ApiVideoSummary {
+	apiVideoSummaries := make([]ApiVideoSummary, 0)
+	for _, video := range videos {
+		apiVideoSummaries = append(apiVideoSummaries, ApiVideoSummary{
+			Title:       video.Title,
+			URL:         video.URL,
+			VideoID:     video.YoutubeID,
+			VideoStatus: video.VideoStatus,
 		})
 	}
-	return apiLinks
+	return apiVideoSummaries
 }
 
 func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
@@ -31,7 +32,7 @@ func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
 		log.Println(videos)
 
 		context.JSON(200, ApiHighlights{
-			Videos: MakeApiLinksFromDB(*videos),
+			Videos: MakeApiVideoSummaries(*videos),
 		})
 	}
 }

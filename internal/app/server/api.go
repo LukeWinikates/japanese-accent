@@ -5,7 +5,7 @@ import (
 )
 
 type ApiHighlights struct {
-	Videos []ApiVideo `json:"videos"`
+	Videos []ApiVideoSummary `json:"videos"`
 }
 
 type ApiVideoSegment struct {
@@ -27,11 +27,19 @@ type ApiVideoCreate struct {
 	Title string `json:"title"`
 }
 
-type ApiVideo struct {
+type ApiVideoSummary struct {
 	Title       string `json:"title"`
 	URL         string `json:"url"`
 	VideoID     string `json:"videoId"`
 	VideoStatus string `json:"videoStatus"`
+}
+
+type ApiVideo struct {
+	Title       string            `json:"title"`
+	URL         string            `json:"url"`
+	VideoID     string            `json:"videoId"`
+	VideoStatus string            `json:"videoStatus"`
+	Segments    []ApiVideoSegment `json:"segments"`
 }
 
 type ApiWord struct {
@@ -53,5 +61,5 @@ type ApiCategory struct {
 
 type CategoriesListResponse struct {
 	Categories []parser.Category `json:"categories"`
-	Media      []ApiVideo        `json:"media"`
+	Media      []ApiVideoSummary `json:"media"`
 }

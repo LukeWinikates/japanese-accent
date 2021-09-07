@@ -41,7 +41,7 @@ export function AppDrawer({categories, open, handleClose}: AppDrawerProps) {
           <React.Fragment key={index}>
             <ListItem button>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
-              <Link to={`/media/${video.videoId}/${video.title}`}>
+              <Link to={`/media/${video.videoId}`}>
                 <ListItemText primary={video.title}/>
               </Link>
             </ListItem>

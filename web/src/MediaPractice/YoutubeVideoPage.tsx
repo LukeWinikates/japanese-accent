@@ -12,11 +12,9 @@ type YoutubeVideoPageParams = string[];
 
 function parseRouteSegments(match: match<YoutubeVideoPageParams>) {
   const urlSegments = match.params[0].split("/");
-  const videoId = urlSegments[urlSegments.length - 2];
-  const title = urlSegments[urlSegments.length - 1];
+  const videoId = urlSegments[urlSegments.length - 1];
   return {
     videoId,
-    title
   };
 }
 

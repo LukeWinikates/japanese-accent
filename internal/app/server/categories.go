@@ -41,7 +41,7 @@ func MakeHandleCategoriesGET(wordsFilePath string, db gorm.DB) func(ctx *gin.Con
 
 		context.JSON(200, CategoriesListResponse{
 			Categories: wordlist.Categories,
-			Media:      MakeApiLinksFromDB(*videos),
+			Media:      MakeApiVideoSummaries(*videos),
 		})
 	}
 }

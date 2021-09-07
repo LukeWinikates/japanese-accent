@@ -70,6 +70,8 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		log.Printf("segment count: %v\n", len(video.Segments))
+
 		if video.VideoStatus == core.Pending {
 			log.Printf("no segment list")
 			err := initializeSegments(mediaDirectory, youtubeID, video, db)
@@ -84,32 +86,6 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		apiVideo := MakeApiVideo(video)
 
 		context.JSON(200, apiVideo)
-	}
-}
-
-func MakeAudioSegmentsGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
-	return func(context *gin.Context) {
-		var video *core.Video
-
-		youtubeID := context.Param("id")
-		if db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
-			return db.Order("video_segments.start ASC")
-		}).Where("youtube_id = ?", youtubeID).First(&video).Error != nil || len(video.Segments) == 0 {
-			log.Printf("no segment list")
-
-			err := initializeSegments(mediaDirectory, youtubeID, video, db)
-			if err != nil {
-				context.Status(500)
-				log.Printf("Error: %s\n", err.Error())
-				return
-			}
-		}
-
-		log.Printf("video: %v\n", len(video.Segments))
-		segments := MakeApiSegments(video)
-
-		context.JSON(200, segments)
-
 	}
 }
 
@@ -211,21 +187,6 @@ func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func MakeApiSegments(list *core.Video) []ApiVideoSegment {
-	apiSegs := make([]ApiVideoSegment, 0)
-
-	for _, segment := range list.Segments {
-		apiSegs = append(apiSegs, ApiVideoSegment{
-			Start: segment.Start,
-			End:   segment.End,
-			Text:  segment.Text,
-			UUID:  segment.UUID,
-		})
-	}
-
-	return apiSegs
-}
-
 func MakeApiVideo(video *core.Video) ApiVideo {
 	apiSegs := make([]ApiVideoSegment, 0)
 
@@ -243,6 +204,7 @@ func MakeApiVideo(video *core.Video) ApiVideo {
 		URL:         video.URL,
 		VideoID:     video.YoutubeID,
 		VideoStatus: video.VideoStatus,
+		Segments:    apiSegs,
 	}
 }
 
