@@ -42,10 +42,11 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 		video := &core.Video{
-			YoutubeID: youtube.VideoIDFromURL(videoCreateRequest.URL),
-			URL:       videoCreateRequest.URL,
-			Title:     videoCreateRequest.Title,
-			Segments:  nil,
+			YoutubeID:   youtube.VideoIDFromURL(videoCreateRequest.URL),
+			URL:         videoCreateRequest.URL,
+			Title:       videoCreateRequest.Title,
+			Segments:    nil,
+			VideoStatus: core.Pending,
 		}
 
 		if err := db.Save(video).Error; err != nil {
@@ -53,6 +54,36 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 			context.Status(500)
 			return
 		}
+	}
+}
+
+func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var video *core.Video
+
+		youtubeID := context.Param("id")
+		if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
+			return db.Order("video_segments.start ASC")
+		}).Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
+			context.Status(500)
+			log.Printf("Error: %s\n", err.Error())
+			return
+		}
+
+		if video.VideoStatus == core.Pending {
+			log.Printf("no segment list")
+			err := initializeSegments(mediaDirectory, youtubeID, video, db)
+			if err != nil {
+				//context.Status(500)
+				log.Printf("Error: %s\n", err.Error())
+			} else {
+				video.VideoStatus = core.Imported
+			}
+		}
+
+		apiVideo := MakeApiVideo(video)
+
+		context.JSON(200, apiVideo)
 	}
 }
 
@@ -195,7 +226,27 @@ func MakeApiSegments(list *core.Video) []ApiVideoSegment {
 	return apiSegs
 }
 
-func initializeSegments(mediaDirectory string, youtubeID string, segmentList *core.Video, db gorm.DB) error {
+func MakeApiVideo(video *core.Video) ApiVideo {
+	apiSegs := make([]ApiVideoSegment, 0)
+
+	for _, segment := range video.Segments {
+		apiSegs = append(apiSegs, ApiVideoSegment{
+			Start: segment.Start,
+			End:   segment.End,
+			Text:  segment.Text,
+			UUID:  segment.UUID,
+		})
+	}
+
+	return ApiVideo{
+		Title:       video.Title,
+		URL:         video.URL,
+		VideoID:     video.YoutubeID,
+		VideoStatus: video.VideoStatus,
+	}
+}
+
+func initializeSegments(mediaDirectory string, youtubeID string, video *core.Video, db gorm.DB) error {
 	segmentsFile, err := ioutil.ReadFile(mediaDirectory + "/" + youtubeID + ".ja.vtt")
 	segments, err := parseSegments(string(segmentsFile))
 	if err != nil {
@@ -216,10 +267,10 @@ func initializeSegments(mediaDirectory string, youtubeID string, segmentList *co
 			End:     end,
 			Text:    segment.Text,
 			UUID:    uuid.NewString(),
-			VideoID: segmentList.ID,
+			VideoID: video.ID,
 		})
 	}
-	segmentList = &core.Video{
+	video = &core.Video{
 		YoutubeID: youtubeID,
 		Segments:  dbSegments,
 	}

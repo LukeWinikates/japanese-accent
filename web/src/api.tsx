@@ -5,7 +5,7 @@ export declare type Category = {
 
 export declare type CategoriesResponse = {
   categories: Category[],
-  media: Media[],
+  media: VideoSummary[],
 }
 
 export declare type Word = {
@@ -18,10 +18,19 @@ export declare type Word = {
   shiki: string,
 }
 
-export declare type Media = {
+export declare type VideoSummary = {
   title: string,
   url: string,
   videoId: string,
+}
+
+
+export declare type Video = {
+  title: string,
+  url: string,
+  videoId: string,
+  segments: Segment[],
+  videoStatus: "Pending" | "Imported";
 }
 
 export declare type CategoryDetails = {
@@ -37,7 +46,7 @@ export declare type Segment = {
 };
 
 export declare type Highlights = {
-  videos: Media[],
+  videos: VideoSummary[],
   categories: Category[]
 }
 

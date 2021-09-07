@@ -1,6 +1,8 @@
 package server
 
-import "github.com/LukeWinikates/japanese-accent/internal/app/parser"
+import (
+	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
+)
 
 type ApiHighlights struct {
 	Videos []ApiVideo `json:"videos"`
@@ -26,9 +28,10 @@ type ApiVideoCreate struct {
 }
 
 type ApiVideo struct {
-	Title   string `json:"title"`
-	URL     string `json:"url"`
-	VideoID string `json:"videoId"`
+	Title       string `json:"title"`
+	URL         string `json:"url"`
+	VideoID     string `json:"videoId"`
+	VideoStatus string `json:"videoStatus"`
 }
 
 type ApiWord struct {

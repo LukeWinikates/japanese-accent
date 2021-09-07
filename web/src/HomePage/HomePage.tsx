@@ -18,8 +18,7 @@ import YoutubeIcon from '@material-ui/icons/YouTube';
 import AddIcon from '@material-ui/icons/Add';
 import {Link} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
-
-declare type Loadable<T> = "loading" | { data: T };
+import {Loadable} from "../loadable";
 
 function HomePage() {
 
