@@ -17,12 +17,36 @@ This git repository contains scripts and tools for making it easier to efficient
 ## Current work:
 * Youtube video add dialog
   * paste youtube link
-  * on media page, if the link is not present, show a code snippet to download via youtube-dl
-
+  * option a
+    * state of video page depends on a status field on the video.
+      * if no media found, show youtube-dl instructions
+    * videos are initially created without their media downloaded
+    * once media are detected, it will automatically import subtitle file
+    * once subtitle file is imported, the status changes to "complete"
 * clear recording when switching to a new segment
+    * refactor the video page so that the model is a list of {segment, recordings} - then paging through the segments will also page through recordings
+* Smarter buttons
+  * "Play Example then Play My Recording"
+  * "Play Example and Record again"
+  * More convenient "Next" button
+  * "I want to practice this one more" sentiment -- pinning? boosting?
+* After going more than a few segments down, can't see snippets anymore
+  * Fixed height scrollable list of snippets
+    * or could do "sticky" scrolling of header
+  * auto scroll snippet into view
+* Instrumentation
+  * record each listen event
+    * its own DB entry
+    * last practiced at column on segment
+    * last practiced at column on video
+* Smart list
+  * combine from various lists
+  * prioritization
+    * things not yet studied
+    * things marked for re-review
+    * things last studied further back
 * address issues with the data model
       * word lists could be linked by #hashtag?
-* record practice sessions of different segments / show read/unread freshness
 
 
 ## Redesign Ideas
@@ -38,7 +62,9 @@ This git repository contains scripts and tools for making it easier to efficient
     * allow pasting word lists
 * 'smart' rewind button - jumps back 5s, or to the last 'silence'
 
-
+* Ingestion from external sources
+  * Forvo for single words
+  * Capture phrasal patterns from Suzuki-kun
 
 ## Current Core Use Case:
 * [ ] I can record and listen back to myself based on native speech

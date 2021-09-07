@@ -11,7 +11,16 @@ type Video struct {
 	URL       string
 	Title     string
 	Segments  []VideoSegment
+	VideoStatus VideoStatus
 }
+
+type VideoStatus = string
+
+const (
+	Pending = "Pending"
+	Imported = "Imported"
+)
+
 
 type VideoSegment struct {
 	gorm.Model
