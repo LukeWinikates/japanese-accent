@@ -24,7 +24,7 @@ func main() {
 	r := gin.Default()
 
 	server.Configure(r, config.WordsFilePath, config.MediaDirPath, *db)
-	log.Fatalln(r.Run().Error())
+	log.Fatalln(r.Run("localhost:8080").Error())
 }
 
 func prepareDatabase(databaseFile string) *gorm.DB {
