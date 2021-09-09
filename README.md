@@ -16,15 +16,9 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 * Youtube video add dialog
-  * paste youtube link
-  * support youtube link or id
-  * if there is no subtitle file available, still treat it as "imported"
+  * support youtube link, short link, or id
   * make copyable snippet text area for the youtube-dl command
-  * add link to original youtube-video to the video page
-  
-* clear recording when switching to a new segment
-    * refactor the video page so that the model is a list of {segment, recordings} - then paging through the segments will also page through recordings
-* Smarter buttons
+  * Smarter buttons
   * "Play Example then Play My Recording"
   * "Play Example and Record again"
   * More convenient "Next" button
@@ -44,12 +38,12 @@ This git repository contains scripts and tools for making it easier to efficient
     * things not yet studied
     * things marked for re-review
     * things last studied further back
-* address issues with the data model
-      * word lists could be linked by #hashtag?
 
 
 ## Redesign Ideas
+* allow tagging of videos, segments, words, word lists
 * consider making each entry in the recording list a "card", and when you move from card to card, they collapse/expand to show the player and recorder
+* consider a "playlist" analogy for communicating about queueing the study entries?
 * more prominent "next" button (or smartly have a CTA for "re-record" or "next")
 * when paging through recordings using "next" button, automatically scroll the current one into view
 * grab thumbnails based on the video content, and show that along with clip

@@ -2,7 +2,7 @@ import {Button, Grid, makeStyles, Typography} from "@material-ui/core";
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
@@ -30,6 +30,11 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
     setRecordings([...recordings, newRecording]);
     setCurrentRecording(newRecording);
   }
+
+  useEffect(()=>{
+    setRecordings([])
+    setCurrentRecording(null)
+  }, [segment])
 
   function audioUrl() {
     return `/media/audio/${videoId}` + (segment ? `#t=${segment.start / 1000},${segment.end / 1000}` : "");
