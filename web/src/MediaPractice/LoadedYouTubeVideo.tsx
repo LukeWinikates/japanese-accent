@@ -24,6 +24,8 @@ import {Dictaphone} from "./Dictaphone";
 import {MediaSegmentEditDialog} from "./MediaSegmentEditDialog";
 import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
+import YouTubeIcon from '@material-ui/icons/YouTube';
+import LaunchIcon from '@material-ui/icons/Launch';
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
@@ -140,6 +142,11 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
           <Typography variant="h2">
             {video.title}
           </Typography>
+          <Button href={video.url} color="secondary" target="_blank"
+                  startIcon={<YouTubeIcon/>} variant="text"
+                  endIcon={<LaunchIcon fontSize="small"/>}>
+            Open in YouTube
+          </Button>
         </Box>
 
         <Card>
