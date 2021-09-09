@@ -17,12 +17,10 @@ This git repository contains scripts and tools for making it easier to efficient
 ## Current work:
 * Youtube video add dialog
   * paste youtube link
-  * option a
-    * state of video page depends on a status field on the video.
-      * if no media found, show youtube-dl instructions
-    * videos are initially created without their media downloaded
-    * once media are detected, it will automatically import subtitle file
-    * once subtitle file is imported, the status changes to "complete"
+  * support youtube link or id
+  * if there is no subtitle file available, still treat it as "imported"
+  * make copyable snippet text area for the youtube-dl command
+  
 * clear recording when switching to a new segment
     * refactor the video page so that the model is a list of {segment, recordings} - then paging through the segments will also page through recordings
 * Smarter buttons
