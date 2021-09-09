@@ -9,18 +9,43 @@ import (
 
 func MakeAudioGET(mediaDirectory string) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		mediaDir := os.DirFS(mediaDirectory)
 		videoId := context.Param("id")
-		files, err := fs.Glob(mediaDir, videoId+"*.m*")
-		if err != nil {
-			log.Printf(err.Error())
+		findResult := FindMediaFile(mediaDirectory, videoId)
+		if findResult.Err != nil {
+			log.Printf(findResult.Err.Error())
 			context.Status(500)
 		}
 
-		if len(files) == 0 {
-			log.Println("no files found!")
-			context.Status(404)
-		}
-		context.File(mediaDirectory + "/" + files[0])
+		context.File(findResult.Path)
 	}
+}
+
+func FindMediaFile(mediaDirectory string, videoId string) MediaFileFindResult {
+	mediaDir := os.DirFS(mediaDirectory)
+	files, err := fs.Glob(mediaDir, videoId+"*.m*")
+	if err != nil {
+		return MediaFileFindResult{
+			IsFound: false,
+			Path:    "",
+			Err:     err,
+		}
+	}
+	if len(files) == 0 {
+		return MediaFileFindResult{
+			IsFound: false,
+			Path:    "",
+			Err:     nil,
+		}
+	}
+	return MediaFileFindResult{
+		IsFound: true,
+		Path:    mediaDirectory + "/" + files[0],
+		Err:     nil,
+	}
+}
+
+type MediaFileFindResult struct {
+	IsFound bool
+	Path    string
+	Err     error
 }

@@ -48,14 +48,14 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		log.Printf("segment count: %v\n", len(video.Segments))
-
 		if video.VideoStatus == core.Pending {
 			subtitleFilePath := mediaDirectory + "/" + youtubeID + ".ja.vtt"
 			subtitleFileContents, err := ioutil.ReadFile(subtitleFilePath)
-			//
 			if err != nil && os.IsNotExist(err) {
 				log.Printf("No subtitle file found; continuing")
+				if FindMediaFile(mediaDirectory, youtubeID).IsFound {
+					video.VideoStatus = core.Imported
+				}
 			} else if err = initializeSegments(string(subtitleFileContents), video, db); err != nil {
 				log.Printf("Error while importing subtitle file: %s\n", err.Error())
 			} else {
