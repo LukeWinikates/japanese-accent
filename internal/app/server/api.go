@@ -63,3 +63,7 @@ type CategoriesListResponse struct {
 	Categories []parser.Category `json:"categories"`
 	Media      []ApiVideoSummary `json:"media"`
 }
+
+type SegmentEditRequest = ApiVideoSegment
+
+type SegmentCreateRequest = ApiVideoSegmentCreate

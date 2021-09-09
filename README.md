@@ -20,6 +20,7 @@ This git repository contains scripts and tools for making it easier to efficient
   * support youtube link or id
   * if there is no subtitle file available, still treat it as "imported"
   * make copyable snippet text area for the youtube-dl command
+  * add link to original youtube-video to the video page
   
 * clear recording when switching to a new segment
     * refactor the video page so that the model is a list of {segment, recordings} - then paging through the segments will also page through recordings
