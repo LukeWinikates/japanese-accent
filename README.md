@@ -18,7 +18,7 @@ This git repository contains scripts and tools for making it easier to efficient
 * Youtube video add dialog
   * support youtube link, short link, or id
   * make copyable snippet text area for the youtube-dl command
-  * Smarter buttons
+* Smarter buttons
   * "Play Example then Play My Recording"
   * "Play Example and Record again"
   * More convenient "Next" button

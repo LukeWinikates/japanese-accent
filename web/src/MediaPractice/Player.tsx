@@ -1,5 +1,5 @@
 import {Grid, IconButton, LinearProgress, makeStyles} from "@material-ui/core";
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import ReplayIcon from '@material-ui/icons/Replay';
@@ -17,7 +17,9 @@ export declare type PlayerProps = {
   src: string
   duration: "auto" | { startSec: number, endSec: number }
   autoplayOnChange: boolean
-  onComplete?: () => void
+  onPlaybackEnded?: () => void
+  playing: boolean
+  onPlayerStateChanged: (playing: boolean) => void
 };
 
 function secondsToHumanReadable(sec: number) {
@@ -28,13 +30,21 @@ function secondsToHumanReadable(sec: number) {
   return `${minutes}:${("" + seconds).padStart(2, "0")}`;
 }
 
-export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProps) => {
+export const Player = ({src, duration, autoplayOnChange, onPlaybackEnded, playing, onPlayerStateChanged}: PlayerProps) => {
   const classes = useStyles();
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const playerProgressRef = useRef<HTMLDivElement>(null);
-  const [playingSegment, setPlayingSegment] = useState(false);
+  // const [playingSegment, setPlayingSegment] = useState(false);
   const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    if(playing) {
+      audioRef.current?.play()
+    } else {
+      audioRef.current?.pause();
+    }
+  }, [playing])
 
   function checkIsComplete() {
     if (duration === "auto") {
@@ -51,14 +61,14 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
     }
     if (checkIsComplete()) {
       audioRef.current?.pause();
-      setPlayingSegment(false);
-      onComplete && onComplete();
+      onPlayerStateChanged(false);
+      onPlaybackEnded && onPlaybackEnded();
       rewindStart();
     }
   }
 
   const currentIcon = () => {
-    if (playingSegment) {
+    if (playing) {
       return PauseIcon;
     }
 
@@ -74,7 +84,7 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
   }
 
   const toggle = () => {
-    if (!playingSegment) {
+    if (!playing) {
       return play();
     } else {
       pause();
@@ -86,17 +96,17 @@ export const Player = ({src, duration, autoplayOnChange, onComplete}: PlayerProp
       return
     }
 
-    setPlayingSegment(true);
+    onPlayerStateChanged(true);
     return audioRef.current?.play();
   };
 
   const pause = () => {
-    setPlayingSegment(false);
+    onPlayerStateChanged(false);
     audioRef.current?.pause();
   };
 
   const ended = () => {
-    setPlayingSegment(false);
+    onPlayerStateChanged(false);
     rewindStart();
   };
 

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {Segment} from "../api";
@@ -82,6 +82,8 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
   const {post, delete: destroy} = useFetch('/media/audio/' + videoId + "/segments/" + segment.uuid);
   const postClone = useFetch<Segment>('/media/audio/' + videoId + "/segments");
   const classes = useStyles();
+  const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
+
 
   const handleClose = () => {
     onClose();
@@ -150,6 +152,8 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       <DialogContent>
         <Player src={audioUrl()}
                 duration={{startSec: segment.start, endSec: segment.end}}
+                playing={segmentIsPlaying}
+                onPlayerStateChanged={setSegmentIsPlaying}
                 autoplayOnChange={false}/>
 
         <TimeInput label="Start" onChange={handleStartChange} value={segment.start}/>
