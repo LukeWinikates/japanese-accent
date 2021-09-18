@@ -38,7 +38,8 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   }
 
   useEffect(() => {
-    setCurrentRecording(null)
+    setCurrentRecording(null);
+    setActionQueue([]);
   }, [segment])
 
   function audioUrl() {
