@@ -83,8 +83,6 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 		}
 
 		categoryParam := strings.ReplaceAll(context.Params.ByName("category"), "/", "")
-		log.Printf("name: %s\n", categoryParam)
-
 		for _, category := range wordlist.Categories {
 			if strings.ReplaceAll(category.Name, "#", "") == categoryParam {
 				categoryJSON := ApiCategory{
