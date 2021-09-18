@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 
 import {useReactMediaRecorder} from "react-media-recorder";
 import {Button, CircularProgress, makeStyles} from "@material-ui/core";
@@ -27,10 +27,12 @@ export declare type AudioRecording = {
 
 export declare type RecorderProps = {
   beforeRecord: () => void
+  recording: boolean
+  onRecordingChange: (recording: boolean) => void
   onNewRecording: (newRecording: AudioRecording) => void
 };
 
-export const Recorder = (recorderProps: RecorderProps) => {
+export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingChange}: RecorderProps) => {
   const classes = useStyles();
   const {
     status,
@@ -39,19 +41,26 @@ export const Recorder = (recorderProps: RecorderProps) => {
   } = useReactMediaRecorder({
     audio: true,
     onStop: (blobUrl: string, blob: Blob) => {
-      recorderProps.beforeRecord();
+      beforeRecord();
       let newAudioRecording = {blobUrl, blob, timestamp: new Date()};
-      recorderProps.onNewRecording(newAudioRecording);
+      onNewRecording(newAudioRecording);
     }
   });
 
-  const toggle = () => {
-    if (status === 'recording') {
-      stopRecording();
-    } else {
-      recorderProps.beforeRecord();
+  console.log("recorder status: ", status);
+
+  useEffect(() => {
+    if (recording && (status === 'stopped' || status === 'idle')) {
+      beforeRecord();
       startRecording();
     }
+    if (!recording && status === 'recording') {
+      stopRecording();
+    }
+  }, [recording])
+
+  const toggle = () => {
+    onRecordingChange(!recording);
   };
 
   const RecordStopButton = status === 'recording' ? StopIcon : RadioButtonCheckedIcon;

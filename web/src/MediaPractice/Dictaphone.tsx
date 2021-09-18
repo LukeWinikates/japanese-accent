@@ -22,21 +22,22 @@ export declare type DictaphoneProps = {
   lastSegmentIndex: number
 };
 
+declare type Action = "PlaySegment" | "Record" | "PlayRecording";
+
 export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex}: DictaphoneProps) => {
-  const [recordings, setRecordings] = useState<AudioRecording[]>([]);
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
+  const [actionQueue, setActionQueue] = useState<Action[]>([]);
+  const [isRecording, setIsRecording] = useState<boolean>(false);
 
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
-    setRecordings([...recordings, newRecording]);
     setCurrentRecording(newRecording);
     setRecordingIsPlaying(true);
   }
 
   useEffect(() => {
-    setRecordings([])
     setCurrentRecording(null)
   }, [segment])
 
@@ -49,22 +50,47 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   }
 
   function practice() {
-    // 1. play current segment.
-    // 2. when current segment is done, record
-    // 3. when recording is done, play current segment
-    // 4. when current segment is done playing, play reference
-
-    // maybe we have an internal "playlist" state.
-    var playlist = ["playing segment", "recording segment", "playing segment", "playing recording"];
-
+    pauseAll();
+    setActionQueue(["PlaySegment", "Record", "PlaySegment", "PlayRecording"])
+    setSegmentIsPlaying(true);
   }
 
   function segmentPlaybackEnded() {
-    // if current playist && current playlist is playing segment, advance current playlist
+    setSegmentIsPlaying(false);
+    if (actionQueue[0] === "PlaySegment") {
+      const [, ...newActionQueue] = actionQueue;
+      setActionQueue(newActionQueue);
+      startAction(newActionQueue[0]);
+    }
+  }
+
+  function startAction(action: Action) {
+    switch (action) {
+      case "PlaySegment":
+        setRecordingIsPlaying(false);
+        setIsRecording(false);
+        setSegmentIsPlaying(true);
+        break;
+      case "Record":
+        setSegmentIsPlaying(false);
+        setRecordingIsPlaying(false);
+        setIsRecording(true);
+        break
+      case "PlayRecording":
+        setIsRecording(false);
+        setSegmentIsPlaying(false);
+        setRecordingIsPlaying(true);
+        break;
+    }
   }
 
   function recordingPlaybackEnded() {
-    // if current playist && current playlist is playing recording, advance current playlist
+    setRecordingIsPlaying(false);
+    if (actionQueue[0] === "Record" || actionQueue[0] === "PlayRecording") {
+      const [, ...newActionQueue] = actionQueue;
+      setActionQueue(newActionQueue);
+      startAction(newActionQueue[0]);
+    }
   }
 
   const classes = useStyles();
@@ -133,7 +159,12 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
           <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
         </Grid>
         <Grid container item xs={2}>
-          <Recorder beforeRecord={pauseAll} onNewRecording={saveRecording}/>
+          <Recorder
+            recording={isRecording}
+            onRecordingChange={setIsRecording}
+            beforeRecord={pauseAll}
+            onNewRecording={saveRecording}
+          />
         </Grid>
         <Grid item xs={2}>
           <Button variant="contained" color="primary" startIcon={<RecordVoiceOverIcon/>} onClick={practice}>
