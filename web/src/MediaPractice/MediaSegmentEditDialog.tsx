@@ -154,7 +154,7 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
                 duration={{startSec: segment.start, endSec: segment.end}}
                 playing={segmentIsPlaying}
                 onPlayerStateChanged={setSegmentIsPlaying}
-                autoplayOnChange={false}/>
+        />
 
         <TimeInput label="Start" onChange={handleStartChange} value={segment.start}/>
         <TimeInput label="End" onChange={handleEndChange} value={segment.end}/>

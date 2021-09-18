@@ -15,6 +15,10 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
+* After going more than a few segments down, can't see snippets anymore
+  * Fixed height scrollable list of snippets
+    * or could do "sticky" scrolling of header
+  * auto scroll snippet into view
 * Youtube video add dialog
   * support youtube link, short link, or id
   * make copyable snippet text area for the youtube-dl command
@@ -23,10 +27,6 @@ This git repository contains scripts and tools for making it easier to efficient
   * "Play Example and Record again"
   * More convenient "Next" button
   * "I want to practice this one more" sentiment -- pinning? boosting?
-* After going more than a few segments down, can't see snippets anymore
-  * Fixed height scrollable list of snippets
-    * or could do "sticky" scrolling of header
-  * auto scroll snippet into view
 * Instrumentation
   * record each listen event
     * its own DB entry

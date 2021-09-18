@@ -131,7 +131,6 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
                   onPlayerStateChanged={setSegmentIsPlaying}
                   playing={segmentIsPlaying}
                   onPlaybackEnded={segmentPlaybackEnded}
-                  autoplayOnChange={false}
           />
         </Grid>
       </Grid>
@@ -146,7 +145,6 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
             currentRecording === null ?
               <DummyPlayer/> :
               <Player src={currentRecording.blobUrl}
-                      autoplayOnChange={true}
                       playing={recordingIsPlaying}
                       onPlayerStateChanged={setRecordingIsPlaying}
                       onPlaybackEnded={recordingPlaybackEnded}

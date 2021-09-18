@@ -16,7 +16,6 @@ const useStyles = makeStyles((theme) => ({
 export declare type PlayerProps = {
   src: string
   duration: "auto" | { startSec: number, endSec: number }
-  autoplayOnChange: boolean
   onPlaybackEnded?: () => void
   playing: boolean
   onPlayerStateChanged: (playing: boolean) => void
@@ -30,12 +29,13 @@ function secondsToHumanReadable(sec: number) {
   return `${minutes}:${("" + seconds).padStart(2, "0")}`;
 }
 
-export const Player = ({src, duration, autoplayOnChange, onPlaybackEnded, playing, onPlayerStateChanged}: PlayerProps) => {
+function noop(){}
+
+export const Player = ({src, duration, onPlaybackEnded = noop, playing, onPlayerStateChanged}: PlayerProps) => {
   const classes = useStyles();
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const playerProgressRef = useRef<HTMLDivElement>(null);
-  // const [playingSegment, setPlayingSegment] = useState(false);
   const [progress, setProgress] = useState(0);
 
   useEffect(() => {
@@ -44,7 +44,7 @@ export const Player = ({src, duration, autoplayOnChange, onPlaybackEnded, playin
     } else {
       audioRef.current?.pause();
     }
-  }, [playing])
+  }, [playing, src])
 
   function checkIsComplete() {
     if (duration === "auto") {
@@ -62,7 +62,7 @@ export const Player = ({src, duration, autoplayOnChange, onPlaybackEnded, playin
     if (checkIsComplete()) {
       audioRef.current?.pause();
       onPlayerStateChanged(false);
-      onPlaybackEnded && onPlaybackEnded();
+      onPlaybackEnded();
       rewindStart();
     }
   }
@@ -153,7 +153,7 @@ export const Player = ({src, duration, autoplayOnChange, onPlaybackEnded, playin
 
   return (
     <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
-      <audio ref={audioRef} src={src} autoPlay={autoplayOnChange} onEnded={ended} onTimeUpdate={timeUpdate}/>
+      <audio ref={audioRef} src={src} autoPlay={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
       <Grid item xs={3}>
         <IconButton onClick={() => rewindStart()}>
           <ReplayIcon/>
