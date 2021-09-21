@@ -35,7 +35,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
   const lastIndex = video.segments.length - 1;
 
   const {delete: destroy} = useFetch<Segment>(
-    '/api/audio/' + video.videoId + "/segments");
+    '/media/audio/' + video.videoId + "/segments");
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
