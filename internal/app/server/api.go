@@ -71,3 +71,8 @@ type SegmentCreateRequest = ApiVideoSegmentCreate
 type BoostCreateRequest struct {
 	SegmentID string `json:"segmentId"`
 }
+
+type ActivityCreateRequest struct {
+	SegmentID    string `json:"segmentId"`
+	ActivityType string `json:"activityType"`
+}

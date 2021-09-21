@@ -39,6 +39,19 @@ type SegmentBoost struct {
 	BoostedAt time.Time
 }
 
+type SegmentActivity struct {
+	gorm.Model
+	SegmentID    uint
+	Segment      VideoSegment
+	ActivityType SegmentActivityType
+}
+
+type SegmentActivityType = string
+
+const (
+	PracticeStart SegmentActivityType = "PracticeStart"
+)
+
 func InitializeDatabase(db gorm.DB) error {
-	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{})
+	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{})
 }

@@ -31,7 +31,6 @@ This git repository contains scripts and tools for making it easier to efficient
   * "I want to practice this one more" sentiment -- pinning? boosting?
 * Instrumentation
   * record each listen event
-    * its own DB entry
     * last practiced at column on segment
     * last practiced at column on video
 * Smart list

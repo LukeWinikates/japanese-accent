@@ -3,7 +3,7 @@ import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React, {useEffect, useState} from "react";
-import {Segment} from "../api";
+import {Activity, Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
@@ -35,6 +35,9 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   const {post} = useFetch(
     '/api/boosts');
 
+  const {post: recordActivity} = useFetch<Activity>(
+    '/api/activity');
+
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
     setCurrentRecording(newRecording);
@@ -56,6 +59,10 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
 
   function practice() {
     pauseAll();
+    recordActivity({
+      segmentId: segment.uuid,
+      activityType: "PracticeStart"
+    });
     setActionQueue(["PlaySegment", "Record", "PlaySegment", "PlayRecording"])
     setSegmentIsPlaying(true);
   }

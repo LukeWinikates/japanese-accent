@@ -50,6 +50,10 @@ export declare type Highlights = {
   categories: Category[]
 }
 
+export declare type Activity = {
+  segmentId: string,
+  activityType: "PracticeStart"
+}
 
 export function duration(segment: Segment): number {
   return (segment.end - segment.start) / 1000;
