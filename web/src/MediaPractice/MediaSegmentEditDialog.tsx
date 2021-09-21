@@ -2,16 +2,7 @@ import React, {useState} from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {Segment} from "../api";
-import {
-  Button,
-  DialogContent,
-  FormControl,
-  IconButton,
-  Input,
-  InputLabel,
-  makeStyles,
-  TextField
-} from "@material-ui/core";
+import {Button, DialogContent, IconButton, makeStyles, TextField} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import TrashIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/FileCopy';
@@ -19,7 +10,7 @@ import CopyIcon from '@material-ui/icons/FileCopy';
 import useFetch from "use-http";
 import DialogActions from "@material-ui/core/DialogActions";
 import {Player} from "./Player";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import {TimeInput} from "./TimeInput";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -29,12 +20,6 @@ export interface MediaSegmentsEditDialogProps {
   segment: Segment;
   setSegment: (segment: Segment) => void;
   videoId: string;
-}
-
-interface TimeInputProps {
-  onChange: any,
-  value: number,
-  label: string,
 }
 
 const useStyles = makeStyles(theme => (
@@ -47,35 +32,6 @@ const useStyles = makeStyles(theme => (
     },
   }
 ));
-
-function TimeInput({value, onChange, label}: TimeInputProps) {
-  return (
-    <FormControl margin="normal">
-      <InputLabel>{label}</InputLabel>
-      <Input
-        startAdornment={
-          <InputAdornment position="start">
-            <Button size="small" variant="outlined" onClick={() => onChange(value - 1000)}>
-              -1s
-            </Button>
-            <Button size="small" variant="outlined" onClick={() => onChange(value - 500)}>
-              -.5s
-            </Button>
-          </InputAdornment>}
-        endAdornment={
-          <InputAdornment position="end">
-            <Button size="small" variant="outlined" onClick={() => onChange(value + 500)}>
-              +.5s
-            </Button>
-            <Button size="small" variant="outlined" onClick={() => onChange(value + 1000)}>
-              +1s
-            </Button>
-          </InputAdornment>}
-        onChange={(event) => onChange(event.target.value)}
-        value={value}/>
-    </FormControl>
-  );
-}
 
 export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
   const {onClose, onDestroy, onAdd, open, videoId, segment, setSegment} = props;
@@ -116,16 +72,16 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     });
   };
 
-  const handleStartChange = (startString: string) => {
-    const start = parseInt(startString);
+  const handleStartChange = (newStart: number) => {
+    const start = newStart;
     setSegment({
       ...segment,
       start
     });
   };
 
-  const handleEndChange = (endString: string) => {
-    const end = parseInt(endString);
+  const handleEndChange = (newEnd: number) => {
+    const end = newEnd;
     setSegment({
       ...segment,
       end

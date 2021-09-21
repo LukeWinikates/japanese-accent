@@ -3,6 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import ReplayIcon from '@material-ui/icons/Replay';
+import {secondsToHumanReadable} from "./time";
 
 const useStyles = makeStyles((theme) => ({
   playerControls: {
@@ -20,14 +21,6 @@ export declare type PlayerProps = {
   playing: boolean
   onPlayerStateChanged: (playing: boolean) => void
 };
-
-function secondsToHumanReadable(sec: number) {
-  const totalSeconds = Math.round(sec);
-  const seconds = totalSeconds % 60;
-  const minutes = Math.floor(totalSeconds / 60);
-
-  return `${minutes}:${("" + seconds).padStart(2, "0")}`;
-}
 
 function noop(){}
 
