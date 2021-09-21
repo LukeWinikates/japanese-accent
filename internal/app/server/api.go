@@ -67,3 +67,7 @@ type CategoriesListResponse struct {
 type SegmentEditRequest = ApiVideoSegment
 
 type SegmentCreateRequest = ApiVideoSegmentCreate
+
+type BoostCreateRequest struct {
+	SegmentID string `json:"segmentId"`
+}

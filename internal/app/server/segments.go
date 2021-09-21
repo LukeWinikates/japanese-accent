@@ -22,13 +22,17 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
+			return
 		}
 
 		segment.Start = segmentEditRequest.Start
 		segment.Text = segmentEditRequest.Text
 		segment.End = segmentEditRequest.End
 
-		db.Save(segment)
+		if err := db.Save(segment).Error; err != nil {
+			log.Println(err.Error())
+			context.Status(500)
+		}
 	}
 }
 func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {

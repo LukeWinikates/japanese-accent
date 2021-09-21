@@ -7,6 +7,8 @@ import {Segment} from "../api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
+import AddIcon from '@material-ui/icons/Add';
+import useFetch from "use-http";
 
 const useStyles = makeStyles(() => ({
   playerControls: {
@@ -30,6 +32,8 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
   const [actionQueue, setActionQueue] = useState<Action[]>([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const {post} = useFetch(
+    '/api/boosts');
 
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
@@ -95,6 +99,10 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   }
 
   const classes = useStyles();
+
+  function boostCurrentSegment() {
+    post({segmentId: segment.uuid})
+  }
 
   return (
     <Grid container item spacing={1}>
@@ -179,6 +187,14 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
             Previous
           </Button>
         </Grid>
+
+        <Grid item xs={1}>
+          <Button onClick={boostCurrentSegment}
+                  endIcon={<AddIcon/>}>
+            Boost
+          </Button>
+        </Grid>
+
         <Grid item xs={1}>
           <Button disabled={segmentIndex === lastSegmentIndex}
                   onClick={() => setSegmentByIndex(segmentIndex + 1)}

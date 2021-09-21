@@ -22,6 +22,7 @@ func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.D
 		api.GET("/categories/*category", MakeHandleCategoryGET(wordsFilePath))
 		api.POST("/videos/", MakeVideoPOST(db))
 		api.GET("/videos/:id", MakeVideoGET(mediaDirPath, db))
+		api.POST("/boosts", MakeBoostPOST(db))
 	}
 
 	media := engine.Group("/media")

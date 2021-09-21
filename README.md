@@ -15,6 +15,8 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
+* "Boosting"
+  * add an automated "smart" study list consisting of "boosted" clips 
 * After going more than a few segments down, can't see snippets anymore
   * Fixed height scrollable list of snippets
     * or could do "sticky" scrolling of header
