@@ -10,13 +10,13 @@ import {
   Typography
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import {Highlights} from "../api";
+import {Highlights, Playlist} from "../api";
 import useFetch from "use-http";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import AddIcon from '@material-ui/icons/Add';
-import {Link} from "react-router-dom";
+import {Link, useHistory} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../loadable";
 
@@ -24,12 +24,16 @@ function HomePage() {
 
   const {get, response} = useFetch<Highlights>(
     "/api/highlights");
+
+  const quick10 = useFetch<Playlist>("/api/playlists");
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
 
   function closeDialog() {
     setDialogOpen(false);
   }
+
+  const history = useHistory();
 
   useEffect(() => {
     async function initialize() {
@@ -41,6 +45,23 @@ function HomePage() {
 
     initialize();
   }, [highlights]);
+
+  function logErrorEvent(e: any) {
+    console.log(e)
+  }
+
+  async function createQuick10AndNavigate() {
+    await quick10.post({
+      count: 10
+    });
+
+    if (quick10.response.ok) {
+      if (quick10.response.data === undefined) return
+      history.push('/playlists/' + quick10.response.data.id)
+    } else {
+      logErrorEvent(quick10.error);
+    }
+  }
 
   return (
     <>
@@ -93,6 +114,10 @@ function HomePage() {
       <Fab variant="extended" onClick={() => setDialogOpen(true)}>
         <AddIcon/>
         Add YouTube video
+      </Fab>
+      <Fab variant="extended" onClick={createQuick10AndNavigate}>
+        <AddIcon/>
+        Quick 10
       </Fab>
       <YouTubeVideoAddModal open={dialogOpen} onClose={closeDialog}/>
     </>

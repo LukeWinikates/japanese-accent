@@ -10,8 +10,9 @@ import {AppDrawer, DummyDrawer} from "./Layout/AppDrawer";
 import CategoryPage from "./VocabularyPractice/CategoryPage";
 import {BrowserRouter as Router, Route, Switch} from "react-router-dom";
 import HomePage from "./HomePage/HomePage";
-import {StatusBar, StatusProvider, useStatus} from "./Layout/StatusBar";
+import {StatusBar} from "./Layout/StatusBar";
 import {YoutubeVideoPage} from "./MediaPractice/YoutubeVideoPage";
+import {PlaylistPage} from './Playlist/PlaylistPage';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -45,7 +46,7 @@ function CoreApp() {
   const classes = useStyles();
   const [open, setOpen] = useState(false);
   const [categoriesResponse, setCategoriesResponse] = useState<CategoriesResponse | null>(null);
-  const {setter: setStatus} = useStatus();
+  // const {setter: setStatus} = useStatus();
 
   const {get, response, loading, error} = useFetch('/api/categories');
 
@@ -58,10 +59,10 @@ function CoreApp() {
   };
 
   async function initialize() {
-    setStatus({
-      spinner: true,
-      error: null
-    });
+    // setStatus({
+    //   spinner: true,
+    //   error: null
+    // });
     const initialCategories = await get('');
     if (response.ok) setCategoriesResponse(initialCategories);
     let status = {
@@ -71,7 +72,7 @@ function CoreApp() {
         seen: false,
       }
     };
-    setStatus(status);
+    // setStatus(status);
   }
 
   useEffect(() => {
@@ -108,8 +109,11 @@ function CoreApp() {
           <Route path="/category/*">
             <CategoryPage/>
           </Route>
-          <Route path="/media/*">
+          <Route path="/media/:id">
             <YoutubeVideoPage/>
+          </Route>
+          <Route path="/playlists/:id">
+            <PlaylistPage/>
           </Route>
         </Switch>
       </main>
@@ -119,13 +123,13 @@ function CoreApp() {
 
 function App() {
   return (
-    <StatusProvider>
+    // <StatusProvider>
       <Router>
         <ThemeProvider theme={theme}>
           <CoreApp/>
         </ThemeProvider>
       </Router>
-    </StatusProvider>
+    // </StatusProvider>
   );
 }
 

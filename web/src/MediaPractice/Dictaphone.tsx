@@ -63,7 +63,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
       segmentId: segment.uuid,
       activityType: "PracticeStart"
     });
-    setActionQueue(["PlaySegment", "Record", "PlaySegment", "PlayRecording"])
+    setActionQueue(["PlaySegment", "Record", "PlaySegment"])
     setSegmentIsPlaying(true);
   }
 

@@ -3,26 +3,13 @@ import useFetch from "use-http";
 
 import {Video, VideoSummary} from "../api";
 import {useRouteMatch} from "react-router";
-import {match} from "react-router/ts4.0";
 import {Loadable} from "../loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 
-type YoutubeVideoPageParams = string[];
-
-function parseRouteSegments(match: match<YoutubeVideoPageParams>) {
-  const urlSegments = match.params[0].split("/");
-  const videoId = urlSegments[urlSegments.length - 1];
-  return {
-    videoId,
-  };
-}
-
 export const YoutubeVideoPage = () => {
-  const match = useRouteMatch<YoutubeVideoPageParams>();
-  const {
-    videoId
-  } = parseRouteSegments(match);
+  const match = useRouteMatch<{ id: string }>();
+  const videoId = match.params.id;
 
   const [video, setVideo] = useState<Loadable<Video>>("loading");
 

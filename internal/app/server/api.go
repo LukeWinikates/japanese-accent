@@ -9,10 +9,11 @@ type ApiHighlights struct {
 }
 
 type ApiVideoSegment struct {
-	Start int    `json:"start"`
-	End   int    `json:"end"`
-	Text  string `json:"text"`
-	UUID  string `json:"uuid"`
+	Start     int    `json:"start"`
+	End       int    `json:"end"`
+	Text      string `json:"text"`
+	UUID      string `json:"uuid"`
+	VideoUUID string `json:"videoUuid"`
 }
 
 type ApiVideoSegmentCreate struct {
@@ -59,17 +60,31 @@ type ApiCategory struct {
 	Words []ApiWord `json:"words"`
 }
 
+type ApiPlaylist struct {
+	//URL string `json:"url"`
+	ID       string            `json:"id"`
+	Segments []ApiVideoSegment `json:"segments"`
+}
+
 type CategoriesListResponse struct {
 	Categories []parser.Category `json:"categories"`
 	Media      []ApiVideoSummary `json:"media"`
 }
 
-type SegmentEditRequest = ApiVideoSegment
+type SegmentEditRequest struct {
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+	Text  string `json:"text"`
+	UUID  string `json:"uuid"`
+}
 
 type SegmentCreateRequest = ApiVideoSegmentCreate
 
 type BoostCreateRequest struct {
 	SegmentID string `json:"segmentId"`
+}
+type PlaylistCreateRequest struct {
+	Count int `json:"count"`
 }
 
 type ActivityCreateRequest struct {

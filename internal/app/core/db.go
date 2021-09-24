@@ -30,6 +30,7 @@ type VideoSegment struct {
 	End     int
 	Text    string
 	UUID    string
+	Video   Video
 }
 
 type SegmentBoost struct {
@@ -52,6 +53,13 @@ const (
 	PracticeStart SegmentActivityType = "PracticeStart"
 )
 
+type Playlist struct {
+	gorm.Model
+	UUID     string
+	Name     string
+	Segments []VideoSegment `gorm:"many2many:playlist_segments"`
+}
+
 func InitializeDatabase(db gorm.DB) error {
-	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{})
+	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{}, Playlist{})
 }

@@ -43,6 +43,7 @@ export declare type Segment = {
   end: number,
   text: string,
   uuid: string,
+  videoUuid: string,
 };
 
 export declare type Highlights = {
@@ -53,6 +54,12 @@ export declare type Highlights = {
 export declare type Activity = {
   segmentId: string,
   activityType: "PracticeStart"
+}
+
+export declare type Playlist = {
+  id: string,
+  title: string,
+  segments: Segment[],
 }
 
 export function duration(segment: Segment): number {
