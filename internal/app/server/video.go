@@ -74,10 +74,11 @@ func makeApiVideo(video *core.Video) ApiVideo {
 
 	for _, segment := range video.Segments {
 		apiSegs = append(apiSegs, ApiVideoSegment{
-			Start: segment.Start,
-			End:   segment.End,
-			Text:  segment.Text,
-			UUID:  segment.UUID,
+			Start:     segment.Start,
+			End:       segment.End,
+			Text:      segment.Text,
+			UUID:      segment.UUID,
+			VideoUUID: video.YoutubeID,
 		})
 	}
 

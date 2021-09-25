@@ -64,10 +64,11 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 		}
 
 		context.JSON(201, ApiVideoSegment{
-			UUID:  segment.UUID,
-			Start: segment.Start,
-			End:   segment.End,
-			Text:  segment.Text,
+			UUID:      segment.UUID,
+			Start:     segment.Start,
+			End:       segment.End,
+			Text:      segment.Text,
+			VideoUUID: video.YoutubeID,
 		})
 	}
 }

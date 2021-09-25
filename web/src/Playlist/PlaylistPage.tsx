@@ -5,7 +5,7 @@ import {Playlist, VideoSummary} from "../api";
 import useFetch from "use-http";
 import {useEventHistory} from "../Status/GlobalStatus";
 import {Typography} from "@material-ui/core";
-import {PlaylistPlayer} from "./PlaylistPlayer";
+import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 
 export const PlaylistPage = () => {
   const match = useRouteMatch<{ id: string }>();
@@ -42,7 +42,7 @@ export const PlaylistPage = () => {
       <Typography>
         Playlist: {playlistId}
       </Typography>
-      {(playlist !== 'loading') && <PlaylistPlayer playlist={playlist.data} onPlaylistChange={setData}/>}
+      {(playlist !== 'loading') && <LoadedPlaylistContent playlist={playlist.data} onPlaylistChange={setData}/>}
     </>
   );
 }

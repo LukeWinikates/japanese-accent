@@ -1,12 +1,10 @@
-import {duration, Playlist, Segment} from "../api";
+import {duration, Segment} from "../api";
 import React, {useEffect, useState} from "react";
 import {
   Box,
-  Breadcrumbs,
   Button,
   Card,
   CardContent,
-  Container,
   Dialog,
   DialogActions,
   DialogContent,
@@ -15,8 +13,7 @@ import {
   IconButton,
   List,
   ListItem,
-  ListItemSecondaryAction,
-  Typography
+  ListItemSecondaryAction
 } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import EditIcon from "@material-ui/core/SvgIcon";
@@ -25,15 +22,12 @@ import {MediaSegmentEditDialog} from "../MediaPractice/MediaSegmentEditDialog";
 import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
 
-export const PlaylistPlayer = ({
-                                 playlist,
-                                 onPlaylistChange
-                               }: { playlist: Playlist, onPlaylistChange: (p: Playlist) => void }) => {
+export const PlaylistPlayer = ({segments, onSegmentsChange}: { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void }) => {
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
-  const [currentSegment, setCurrentSegment] = useState<Segment | null>(playlist.segments[0]);
+  const [currentSegment, setCurrentSegment] = useState<Segment | null>(segments[0]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
-  const lastIndex = playlist.segments.length - 1;
+  const lastIndex = segments.length - 1;
 
   const {delete: destroy} = useFetch<Segment>(
     '/media/audio/');
@@ -43,21 +37,18 @@ export const PlaylistPlayer = ({
   }
 
   useEffect(() => {
-    setCurrentSegment(playlist.segments[0])
-  }, [playlist])
+    setCurrentSegment(segments[0])
+  }, [segments])
 
   async function handleModalClose() {
     if (editingSegment === null) {
       return;
     }
     const editedSegment = editingSegment;
-    let newSegments = [...playlist.segments];
+    let newSegments = [...segments];
     newSegments.splice(currentSegmentIndex, 1, editedSegment);
     setEditingSegment(null);
-    onPlaylistChange({
-      ...playlist,
-      segments: newSegments
-    });
+    onSegmentsChange(newSegments);
     setCurrentSegment(editedSegment);
   }
 
@@ -67,29 +58,22 @@ export const PlaylistPlayer = ({
   }
 
   function removeSegmentByIndex(index: number) {
-    let newSegments = [...playlist.segments];
+    let newSegments = [...segments];
     newSegments.splice(index, 1);
-    setVideoSegments(newSegments);
+    onSegmentsChange(newSegments);
     if (currentSegmentIndex === index) {
       setSegmentByIndex(currentSegmentIndex - 1);
     }
   }
 
-  function setVideoSegments(newSegments: Segment[]) {
-    onPlaylistChange({
-      ...playlist,
-      segments: newSegments
-    });
-  }
-
   function addSegment(newSegment: Segment) {
-    let newSegments = [...playlist.segments];
+    let newSegments = [...segments];
     newSegments.splice(currentSegmentIndex + 1, 0, newSegment)
-    setVideoSegments(newSegments);
+    onSegmentsChange(newSegments);
   }
 
   function setSegmentByIndex(newIndex: number) {
-    let segment = playlist.segments[newIndex];
+    let segment = segments[newIndex];
     setCurrentSegmentIndex(newIndex);
     setCurrentSegment(segment);
   }
@@ -134,84 +118,67 @@ export const PlaylistPlayer = ({
   }
 
   return (
-    <Box m={2}>
-      <Container maxWidth='lg'>
-        <Breadcrumbs aria-label="breadcrumb">
-        </Breadcrumbs>
-
-        <Box paddingY={2} margin={0}>
-          <Typography variant="h2">
-            {playlist.title}
-          </Typography>
-          {/*<Button href={playlist.url} color="secondary" target="_blank"*/}
-          {/*        startIcon={<YouTubeIcon/>} variant="text"*/}
-          {/*        endIcon={<LaunchIcon fontSize="small"/>}>*/}
-          {/*  Open in YouTube*/}
-          {/*</Button>*/}
-        </Box>
-
-        <Card>
-          <CardContent>
-            {currentSegment &&
-            <Dictaphone
-              videoId={currentSegment.videoUuid}
-              segment={currentSegment}
-              setSegmentByIndex={setSegmentByIndex}
-              lastSegmentIndex={lastIndex}
-              segmentIndex={currentSegmentIndex}/>
-            }
-          </CardContent>
-        </Card>
-
-        <Box paddingY={2} margin={0}>
-          <List>
-            {
-              playlist.segments.map(renderRow)
-            }
-          </List>
-
-          {
-            editingSegment !== null &&
-            <MediaSegmentEditDialog
-              open={!!editingSegment}
-              onClose={handleModalClose}
-              onDestroy={removeCurrentSegment}
-              onAdd={addSegment}
-              segment={editingSegment}
-              setSegment={setEditingSegment}
-              videoId={editingSegment.videoUuid}
-              aria-labelledby="simple-modal-title"
-              aria-describedby="simple-modal-description"
-            />
+    <>
+      <Card>
+        <CardContent>
+          {currentSegment &&
+          <Dictaphone
+            videoId={currentSegment.videoUuid}
+            segment={currentSegment}
+            setSegmentByIndex={setSegmentByIndex}
+            lastSegmentIndex={lastIndex}
+            segmentIndex={currentSegmentIndex}/>
           }
-
+        </CardContent>
+      </Card>
+      <Box paddingY={2} margin={0}>
+        <List>
           {
-            promptingSegmentDelete !== null &&
-            <Dialog
-              open={true}
-              onClose={() => setPromptingSegmentDelete(null)}
-              aria-labelledby="alert-dialog-title"
-              aria-describedby="alert-dialog-description"
-            >
-              <DialogTitle id="alert-dialog-title">{"Delete this segment?"}</DialogTitle>
-              <DialogContent>
-                <DialogContentText id="alert-dialog-description">
-                  {promptingSegmentDelete.segment.text}
-                </DialogContentText>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setPromptingSegmentDelete(null)} color="primary">
-                  Keep
-                </Button>
-                <Button onClick={() => destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index)}
-                        color="primary" autoFocus>
-                  Destroy
-                </Button>
-              </DialogActions>
-            </Dialog>
+            segments.map(renderRow)
           }
-        </Box>
-      </Container>
-    </Box>
+        </List>
+
+        {
+          editingSegment !== null &&
+          <MediaSegmentEditDialog
+            open={!!editingSegment}
+            onClose={handleModalClose}
+            onDestroy={removeCurrentSegment}
+            onAdd={addSegment}
+            segment={editingSegment}
+            setSegment={setEditingSegment}
+            videoId={editingSegment.videoUuid}
+            aria-labelledby="simple-modal-title"
+            aria-describedby="simple-modal-description"
+          />
+        }
+
+        {
+          promptingSegmentDelete !== null &&
+          <Dialog
+            open={true}
+            onClose={() => setPromptingSegmentDelete(null)}
+            aria-labelledby="alert-dialog-title"
+            aria-describedby="alert-dialog-description"
+          >
+            <DialogTitle id="alert-dialog-title">{"Delete this segment?"}</DialogTitle>
+            <DialogContent>
+              <DialogContentText id="alert-dialog-description">
+                {promptingSegmentDelete.segment.text}
+              </DialogContentText>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setPromptingSegmentDelete(null)} color="primary">
+                Keep
+              </Button>
+              <Button onClick={() => destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index)}
+                      color="primary" autoFocus>
+                Destroy
+              </Button>
+            </DialogActions>
+          </Dialog>
+        }
+      </Box>
+    </>
   );
 };
