@@ -1,24 +1,54 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {CategoriesResponse} from "../api";
 import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@material-ui/core";
 import HouseIcon from '@material-ui/icons/House';
 import YoutubeIcon from '@material-ui/icons/YouTube';
 import NotesIcon from '@material-ui/icons/Notes';
 import {Link} from "react-router-dom";
+import useFetch from "use-http";
 
 type AppDrawerProps = {
-  categories: CategoriesResponse,
   open: boolean,
   handleClose: () => void,
-  theme: any,
 }
+
 export function DummyDrawer() {
   return (
     <div/>
   );
 }
 
-export function AppDrawer({categories, open, handleClose}: AppDrawerProps) {
+export function AppDrawer({open, handleClose}: AppDrawerProps) {
+  const [categories, setCategories] = useState<CategoriesResponse | null>(null);
+  // const {setter: setStatus} = useStatus();
+
+  const {get, response, loading, error} = useFetch('/api/categories');
+
+  async function initialize() {
+    // setStatus({
+    //   spinner: true,
+    //   error: null
+    // });
+    const initialCategories = await get('');
+    if (response.ok) setCategories(initialCategories);
+    let status = {
+      spinner: loading,
+      error: response.ok ? null : {
+        message: error ? error.message : "unknown error",
+        seen: false,
+      }
+    };
+    // setStatus(status);
+  }
+
+  useEffect(() => {
+    initialize()
+  }, []);
+
+  if (categories === null) {
+    return (<DummyDrawer/>);
+  }
+
   return (
     <Drawer
       anchor="left"
@@ -27,7 +57,7 @@ export function AppDrawer({categories, open, handleClose}: AppDrawerProps) {
       <List>
         <ListItem button>
           <ListItemIcon>
-            <HouseIcon />
+            <HouseIcon/>
           </ListItemIcon>
           <Link to={`/`}>
             <ListItemText primary="Home"/>
