@@ -3,7 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import ReplayIcon from '@material-ui/icons/Replay';
-import {secondsToHumanReadable} from "./time";
+import {secondsToHumanReadable} from "../App/time";
 
 const useStyles = makeStyles((theme) => ({
   playerControls: {

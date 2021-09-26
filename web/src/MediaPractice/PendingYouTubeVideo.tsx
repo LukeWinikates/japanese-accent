@@ -1,4 +1,4 @@
-import {Video} from "../api";
+import {Video} from "../App/api";
 import React from "react";
 
 export const PendingYouTubeVideo = ({video}: { video: Video }) => {

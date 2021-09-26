@@ -1,4 +1,4 @@
-import {Segment, Video} from "../api";
+import {Segment, Video} from "../App/api";
 import React from "react";
 import {Box, Breadcrumbs, Button, Container, Typography} from "@material-ui/core";
 import YouTubeIcon from '@material-ui/icons/YouTube';

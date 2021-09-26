@@ -1,4 +1,4 @@
-import {duration, Segment} from "../api";
+import {duration, Segment} from "../App/api";
 import React, {useEffect, useState} from "react";
 import {
   Box,

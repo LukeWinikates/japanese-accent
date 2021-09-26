@@ -14,7 +14,7 @@ import {
   Typography,
 } from "@material-ui/core";
 import {useRouteMatch} from "react-router";
-import {CategoryDetails} from "../api";
+import {CategoryDetails} from "../App/api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
 import {SuzukiButton} from "./SuzukiButton";

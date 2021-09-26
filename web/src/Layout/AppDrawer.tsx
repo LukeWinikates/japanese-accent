@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {CategoriesResponse} from "../api";
+import {CategoriesResponse} from "../App/api";
 import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@material-ui/core";
 import HouseIcon from '@material-ui/icons/House';
 import YoutubeIcon from '@material-ui/icons/YouTube';
@@ -22,23 +22,11 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
   const [categories, setCategories] = useState<CategoriesResponse | null>(null);
   // const {setter: setStatus} = useStatus();
 
-  const {get, response, loading, error} = useFetch('/api/categories');
+  const {get, response} = useFetch('/api/categories');
 
   async function initialize() {
-    // setStatus({
-    //   spinner: true,
-    //   error: null
-    // });
     const initialCategories = await get('');
     if (response.ok) setCategories(initialCategories);
-    let status = {
-      spinner: loading,
-      error: response.ok ? null : {
-        message: error ? error.message : "unknown error",
-        seen: false,
-      }
-    };
-    // setStatus(status);
   }
 
   useEffect(() => {

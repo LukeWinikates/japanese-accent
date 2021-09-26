@@ -1,6 +1,6 @@
 import {Box, Breadcrumbs, Container, Typography} from "@material-ui/core";
 import React from "react";
-import {Playlist, Segment} from "../api";
+import {Playlist, Segment} from "../App/api";
 import {PlaylistPlayer} from "./PlaylistPlayer";
 
 export const LoadedPlaylistContent = ({

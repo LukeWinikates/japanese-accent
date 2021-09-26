@@ -1,4 +1,4 @@
-import {Word} from "../api";
+import {Word} from "../App/api";
 import {useTheme} from "@material-ui/core";
 import React from "react";
 

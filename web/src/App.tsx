@@ -4,14 +4,19 @@ import './App.css';
 import {ThemeProvider} from '@material-ui/core/styles';
 import {BrowserRouter as Router} from "react-router-dom";
 import {CoreApp, theme} from "./Layout/CoreApp";
+import {EventHistoryProvider, useServerInteractionHistory} from "./Status/useServerInteractionHistory";
 
 function App() {
+  useServerInteractionHistory();
+
   return (
-    <Router>
-      <ThemeProvider theme={theme}>
-        <CoreApp/>
-      </ThemeProvider>
-    </Router>
+    <EventHistoryProvider>
+      <Router>
+        <ThemeProvider theme={theme}>
+          <CoreApp/>
+        </ThemeProvider>
+      </Router>
+    </EventHistoryProvider>
   );
 }
 

@@ -3,7 +3,7 @@ import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React, {useEffect, useState} from "react";
-import {Activity, Segment} from "../api";
+import {Activity, Segment} from "../App/api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';

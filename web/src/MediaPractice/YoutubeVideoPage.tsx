@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
-import {Video, VideoSummary} from "../api";
+import {Video, VideoSummary} from "../App/api";
 import {useRouteMatch} from "react-router";
-import {Loadable} from "../loadable";
+import {Loadable} from "../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 

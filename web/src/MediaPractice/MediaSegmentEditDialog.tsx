@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import {Segment} from "../api";
+import {Segment} from "../App/api";
 import {Button, DialogContent, IconButton, makeStyles, TextField} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import TrashIcon from '@material-ui/icons/Delete';
