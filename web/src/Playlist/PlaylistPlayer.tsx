@@ -1,5 +1,5 @@
 import {duration, Segment} from "../App/api";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {
   Box,
   Button,
@@ -22,7 +22,9 @@ import {MediaSegmentEditDialog} from "../MediaPractice/MediaSegmentEditDialog";
 import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
 
-export const PlaylistPlayer = ({segments, onSegmentsChange}: { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void }) => {
+type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void };
+
+export const PlaylistPlayer = ({segments, onSegmentsChange}: PlaylistPlayerProps) => {
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(segments[0]);
@@ -38,7 +40,15 @@ export const PlaylistPlayer = ({segments, onSegmentsChange}: { segments: Segment
 
   useEffect(() => {
     setCurrentSegment(segments[0])
-  }, [segments])
+  }, [segments]);
+
+  const listRef = useRef<HTMLElement>();
+
+  useEffect(() => {
+    listRef.current?.querySelectorAll(`li`)[currentSegmentIndex]?.scrollIntoView({
+      behavior: 'smooth',
+    });
+  }, [currentSegmentIndex])
 
   async function handleModalClose() {
     if (editingSegment === null) {
@@ -118,7 +128,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange}: { segments: Segment
   }
 
   return (
-    <>
+    <Box>
       <Card>
         <CardContent>
           {currentSegment &&
@@ -131,54 +141,55 @@ export const PlaylistPlayer = ({segments, onSegmentsChange}: { segments: Segment
           }
         </CardContent>
       </Card>
-      <Box paddingY={2} margin={0}>
-        <List>
-          {
-            segments.map(renderRow)
-          }
-        </List>
-
-        {
-          editingSegment !== null &&
-          <MediaSegmentEditDialog
-            open={!!editingSegment}
-            onClose={handleModalClose}
-            onDestroy={removeCurrentSegment}
-            onAdd={addSegment}
-            segment={editingSegment}
-            setSegment={setEditingSegment}
-            videoId={editingSegment.videoUuid}
-            aria-labelledby="simple-modal-title"
-            aria-describedby="simple-modal-description"
-          />
-        }
-
-        {
-          promptingSegmentDelete !== null &&
-          <Dialog
-            open={true}
-            onClose={() => setPromptingSegmentDelete(null)}
-            aria-labelledby="alert-dialog-title"
-            aria-describedby="alert-dialog-description"
-          >
-            <DialogTitle id="alert-dialog-title">{"Delete this segment?"}</DialogTitle>
-            <DialogContent>
-              <DialogContentText id="alert-dialog-description">
-                {promptingSegmentDelete.segment.text}
-              </DialogContentText>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={() => setPromptingSegmentDelete(null)} color="primary">
-                Keep
-              </Button>
-              <Button onClick={() => destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index)}
-                      color="primary" autoFocus>
-                Destroy
-              </Button>
-            </DialogActions>
-          </Dialog>
-        }
+      <Box marginY={2} height='50vh' style={{overflowY: 'scroll'}}>
+        <Card ref={listRef}>
+          <List>
+            {
+              segments.map(renderRow)
+            }
+          </List>
+        </Card>
       </Box>
-    </>
+      {
+        editingSegment !== null &&
+        <MediaSegmentEditDialog
+          open={!!editingSegment}
+          onClose={handleModalClose}
+          onDestroy={removeCurrentSegment}
+          onAdd={addSegment}
+          segment={editingSegment}
+          setSegment={setEditingSegment}
+          videoId={editingSegment.videoUuid}
+          aria-labelledby="simple-modal-title"
+          aria-describedby="simple-modal-description"
+        />
+      }
+
+      {
+        promptingSegmentDelete !== null &&
+        <Dialog
+          open={true}
+          onClose={() => setPromptingSegmentDelete(null)}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Delete this segment?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              {promptingSegmentDelete.segment.text}
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={() => setPromptingSegmentDelete(null)} color="primary">
+              Keep
+            </Button>
+            <Button onClick={() => destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index)}
+                    color="primary" autoFocus>
+              Destroy
+            </Button>
+          </DialogActions>
+        </Dialog>
+      }
+    </Box>
   );
 };
