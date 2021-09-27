@@ -47,6 +47,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange}: PlaylistPlayerProps
   useEffect(() => {
     listRef.current?.querySelectorAll(`li`)[currentSegmentIndex]?.scrollIntoView({
       behavior: 'smooth',
+      block: 'nearest',
     });
   }, [currentSegmentIndex])
 
