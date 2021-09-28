@@ -19,12 +19,13 @@ export declare type PlayerProps = {
   duration: "auto" | { startSec: number, endSec: number }
   onPlaybackEnded?: () => void
   playing: boolean
-  onPlayerStateChanged: (playing: boolean) => void
+  onPlayerStateChanged: (playing: boolean) => void,
+  preferredStartTime?: number
 };
 
 function noop(){}
 
-export const Player = ({src, duration, onPlaybackEnded = noop, playing, onPlayerStateChanged}: PlayerProps) => {
+export const Player = ({src, duration, onPlaybackEnded = noop, playing, onPlayerStateChanged, preferredStartTime}: PlayerProps) => {
   const classes = useStyles();
 
   const audioRef = useRef<HTMLAudioElement>(null);
@@ -38,6 +39,13 @@ export const Player = ({src, duration, onPlaybackEnded = noop, playing, onPlayer
       audioRef.current?.pause();
     }
   }, [playing, src])
+
+  useEffect(()=>{
+    if(preferredStartTime && audioRef.current) {
+      audioRef.current.currentTime = (preferredStartTime / 1000);
+    }
+  }, [preferredStartTime])
+
 
   function checkIsComplete() {
     if (duration === "auto") {

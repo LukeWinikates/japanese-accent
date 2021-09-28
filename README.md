@@ -15,20 +15,23 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
+* keyboard shortcuts for the main dictaphone interaction
+* "progress bar" / some indicator of how far you are through the current playlist
+  * (maybe at the very top, use the MUI progress bar indicator) 
+* Bugs:
+  * editing resets the player to the top segment - it should just keep the current one
 * "Boosting"
   * add an automated "smart" study list consisting of "boosted" clips 
-* After going more than a few segments down, can't see snippets anymore
-  * Fixed height scrollable list of snippets
-    * or could do "sticky" scrolling of header
-  * auto scroll snippet into view
+  * query uses boosts, inclusion in other playlists, and recent study time
+* Chore: database cleanup
+* Editing improvements
+  * automatically push end out by 1s if beginning < end
+    * show some indicator that this is happening
+  * batch delete
+* "Draft" vs "Finished" state for youtube videos/segments
 * Youtube video add dialog
   * support youtube link, short link, or id
   * make copyable snippet text area for the youtube-dl command
-* Smarter buttons
-  * "Play Example then Play My Recording"
-  * "Play Example and Record again"
-  * More convenient "Next" button
-  * "I want to practice this one more" sentiment -- pinning? boosting?
 * Instrumentation
   * record each listen event
     * last practiced at column on segment
@@ -43,6 +46,9 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Redesign Ideas
 * allow tagging of videos, segments, words, word lists
+* what is the future of hardcoded word lists?
+* add "notes" to different items?
+* maybe instead of "quick 10" interaction, we show highlighted items based on boosting, and have a button to start a playlist/session from those
 * consider making each entry in the recording list a "card", and when you move from card to card, they collapse/expand to show the player and recorder
 * consider a "playlist" analogy for communicating about queueing the study entries?
 * more prominent "next" button (or smartly have a CTA for "re-record" or "next")

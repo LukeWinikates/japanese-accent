@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {Segment} from "../App/api";
@@ -11,6 +11,7 @@ import useFetch from "use-http";
 import DialogActions from "@material-ui/core/DialogActions";
 import {Player} from "./Player";
 import {TimeInput} from "./TimeInput";
+import {msToHumanReadable} from "../App/time";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -20,6 +21,8 @@ export interface MediaSegmentsEditDialogProps {
   segment: Segment;
   setSegment: (segment: Segment) => void;
   videoId: string;
+  previousSegmentEnd: number;
+  nextSegmentStart: number;
 }
 
 const useStyles = makeStyles(theme => (
@@ -33,13 +36,20 @@ const useStyles = makeStyles(theme => (
   }
 ));
 
-export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
-  const {onClose, onDestroy, onAdd, open, videoId, segment, setSegment} = props;
+export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId, segment, setSegment, previousSegmentEnd, nextSegmentStart}: MediaSegmentsEditDialogProps) {
   const {post, delete: destroy} = useFetch('/media/audio/' + videoId + "/segments/" + segment.uuid);
   const postClone = useFetch<Segment>('/media/audio/' + videoId + "/segments");
   const classes = useStyles();
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
+  const [preferredStartTime, setPreferredStartTime] = useState<number|undefined>(undefined);
+  const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
 
+  useEffect(()=>{
+    const timer = setTimeout(() => {
+      setSegmentIsPlaying(true);
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [playerStartDebounce])
 
   const handleClose = () => {
     onClose();
@@ -86,6 +96,8 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       ...segment,
       end
     });
+    setPreferredStartTime(newEnd - 1000);
+    setPlayerStartDebounce(new Date())
   };
 
   function audioUrl() {
@@ -110,10 +122,18 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
                 duration={{startSec: segment.start, endSec: segment.end}}
                 playing={segmentIsPlaying}
                 onPlayerStateChanged={setSegmentIsPlaying}
+                preferredStartTime={preferredStartTime}
         />
 
         <TimeInput label="Start" onChange={handleStartChange} value={segment.start}/>
+        <Button onClick={() => handleStartChange(previousSegmentEnd)}>
+          Align Start to Previous Segment End: {msToHumanReadable(previousSegmentEnd)}
+        </Button>
+
         <TimeInput label="End" onChange={handleEndChange} value={segment.end}/>
+        <Button onClick={() => handleEndChange(nextSegmentStart)}>
+          Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}
+        </Button>
         <TextField margin="normal"
                    value={segment.text} fullWidth={true}
                    multiline={true}
