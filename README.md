@@ -16,8 +16,6 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 * keyboard shortcuts for the main dictaphone interaction
-* "progress bar" / some indicator of how far you are through the current playlist
-  * (maybe at the very top, use the MUI progress bar indicator) 
 * Bugs:
   * editing resets the player to the top segment - it should just keep the current one
 * "Boosting"

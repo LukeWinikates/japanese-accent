@@ -11,9 +11,11 @@ import {
   DialogContentText,
   DialogTitle,
   IconButton,
+  LinearProgress,
   List,
   ListItem,
-  ListItemSecondaryAction
+  ListItemSecondaryAction,
+  Typography
 } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import EditIcon from "@material-ui/core/SvgIcon";
@@ -128,17 +130,29 @@ export const PlaylistPlayer = ({segments, onSegmentsChange}: PlaylistPlayerProps
       .then(() => setPromptingSegmentDelete(null));
   }
 
+  let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
+
+  console.log(currentSegmentIndex);
+  console.log(segments.length);
+  console.log(segmentsProgress);
+
   return (
     <Box>
       <Card>
+        <LinearProgress variant="determinate" value={segmentsProgress}/>
         <CardContent>
           {currentSegment &&
-          <Dictaphone
-            videoId={currentSegment.videoUuid}
-            segment={currentSegment}
-            setSegmentByIndex={setSegmentByIndex}
-            lastSegmentIndex={lastIndex}
-            segmentIndex={currentSegmentIndex}/>
+          <>
+            <Typography>
+              #{currentSegmentIndex + 1} / {segments.length}
+            </Typography>
+            <Dictaphone
+              videoId={currentSegment.videoUuid}
+              segment={currentSegment}
+              setSegmentByIndex={setSegmentByIndex}
+              lastSegmentIndex={lastIndex}
+              segmentIndex={currentSegmentIndex}/>
+          </>
           }
         </CardContent>
       </Card>
