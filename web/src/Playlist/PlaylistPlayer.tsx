@@ -24,9 +24,9 @@ import {MediaSegmentEditDialog} from "../MediaPractice/MediaSegmentEditDialog";
 import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
 
-type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void };
+type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void , parentId: string};
 
-export const PlaylistPlayer = ({segments, onSegmentsChange}: PlaylistPlayerProps) => {
+export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistPlayerProps) => {
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(segments[0]);
@@ -42,7 +42,8 @@ export const PlaylistPlayer = ({segments, onSegmentsChange}: PlaylistPlayerProps
 
   useEffect(() => {
     setCurrentSegment(segments[0])
-  }, [segments]);
+    setCurrentSegmentIndex(0);
+  }, [parentId]);
 
   const listRef = useRef<HTMLElement>();
 

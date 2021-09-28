@@ -29,7 +29,7 @@ export const LoadedPlaylistContent = ({
         </Box>
       </Container>
 
-      <PlaylistPlayer segments={playlist.segments} onSegmentsChange={setSegments}/>
+      <PlaylistPlayer parentId={playlist.id} segments={playlist.segments} onSegmentsChange={setSegments}/>
     </Box>
   );
 }

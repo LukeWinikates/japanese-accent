@@ -30,7 +30,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
           </Button>
         </Box>
 
-        <PlaylistPlayer segments={video.segments} onSegmentsChange={setVideoSegments}/>
+        <PlaylistPlayer parentId={video.videoId} segments={video.segments} onSegmentsChange={setVideoSegments}/>
       </Container>
     </Box>
   );
