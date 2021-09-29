@@ -1,12 +1,12 @@
-import {Segment, Video} from "../App/api";
+import {Segment, Video} from "../../App/api";
 import React from "react";
 import {Box, Breadcrumbs, Button, Container, Typography} from "@material-ui/core";
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import LaunchIcon from '@material-ui/icons/Launch';
-import {PlaylistPlayer} from "../Playlist/PlaylistPlayer";
+import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 import DoneIcon from '@material-ui/icons/Done';
 import {useFetch} from "use-http";
-import {useServerInteractionHistory} from "../Status/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
@@ -41,7 +41,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
             {video.title}
-            {video.videoStatus == "Imported" &&
+            {video.videoStatus === "Imported" &&
             <Button startIcon={<DoneIcon/>} onClick={markComplete}>
               Mark Video as Complete
             </Button>

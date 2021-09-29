@@ -1,7 +1,7 @@
 import {Button, FormControl, Input, InputLabel} from "@material-ui/core";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import React from "react";
-import {msToHumanReadable} from "../App/time";
+import {msToHumanReadable} from "../../App/time";
 
 interface TimeInputProps {
   onChange: (newTime: number) => void,

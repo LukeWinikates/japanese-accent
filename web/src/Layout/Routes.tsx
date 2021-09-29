@@ -1,8 +1,8 @@
 import {Route, Switch} from "react-router-dom";
-import HomePage from "../HomePage/HomePage";
-import CategoryPage from "../VocabularyPractice/CategoryPage";
-import {YoutubeVideoPage} from "../MediaPractice/YoutubeVideoPage";
-import {PlaylistPage} from "../Playlist/PlaylistPage";
+import HomePage from "../Pages/HomePage/HomePage";
+import CategoryPage from "../Pages/CategoryPage";
+import {YoutubeVideoPage} from "../Pages/YouTube/YoutubeVideoPage";
+import {PlaylistPage} from "../Pages/Playlist/PlaylistPage";
 import React from "react";
 
 export function Routes() {

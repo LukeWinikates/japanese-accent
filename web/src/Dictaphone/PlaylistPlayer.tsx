@@ -19,8 +19,8 @@ import {
 } from "@material-ui/core";
 import ListItemText from "@material-ui/core/ListItemText";
 import EditIcon from "@material-ui/core/SvgIcon";
-import {Dictaphone} from "../MediaPractice/Dictaphone";
-import {MediaSegmentEditDialog} from "../MediaPractice/MediaSegmentEditDialog";
+import {Dictaphone} from "./Dictaphone";
+import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
 import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
 

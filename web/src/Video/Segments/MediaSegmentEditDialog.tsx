@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
-import {Segment} from "../App/api";
+import {Segment} from "../../App/api";
 import {Button, DialogContent, IconButton, makeStyles, TextField} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import TrashIcon from '@material-ui/icons/Delete';
@@ -9,9 +9,9 @@ import CopyIcon from '@material-ui/icons/FileCopy';
 
 import useFetch from "use-http";
 import DialogActions from "@material-ui/core/DialogActions";
-import {Player} from "./Player";
+import {Player} from "../../Dictaphone/Player";
 import {TimeInput} from "./TimeInput";
-import {msToHumanReadable} from "../App/time";
+import {msToHumanReadable} from "../../App/time";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -45,6 +45,9 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
 
   useEffect(()=>{
+    if(!playerStartDebounce) {
+      return
+    }
     const timer = setTimeout(() => {
       setSegmentIsPlaying(true);
     }, 300);

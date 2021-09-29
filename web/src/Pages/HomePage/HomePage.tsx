@@ -10,15 +10,15 @@ import {
   Typography
 } from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
-import {Highlights, Playlist} from "../App/api";
+import {Highlights, Playlist} from "../../App/api";
 import useFetch from "use-http";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
 import AddIcon from '@material-ui/icons/Add';
 import {Link, useHistory} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
-import {Loadable} from "../App/loadable";
-import {StatusIcon} from "../Video/StatusIcon";
+import {Loadable} from "../../App/loadable";
+import {StatusIcon} from "../../Video/StatusIcon";
 
 function HomePage() {
 

@@ -41,7 +41,11 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Redesign Ideas
 * allow tagging of videos, segments, words, word lists
+* Look into these examples for the progress bar for a playlist:
+  * https://v4.mui.com/components/progress/#linear-with-label
+  * https://v4.mui.com/components/progress/#linear-buffer
 * what is the future of hardcoded word lists?
+* introduce a version number that monotonically increases and can be used to invalidate the caches on pages when needed
 * add "notes" to different items?
 * maybe instead of "quick 10" interaction, we show highlighted items based on boosting, and have a button to start a playlist/session from those
 * consider making each entry in the recording list a "card", and when you move from card to card, they collapse/expand to show the player and recorder

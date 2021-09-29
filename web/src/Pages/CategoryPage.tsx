@@ -17,8 +17,8 @@ import {useRouteMatch} from "react-router";
 import {CategoryDetails} from "../App/api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
-import {SuzukiButton} from "./SuzukiButton";
-import {MoraSVG} from "./MoraSVG";
+import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
+import {MoraSVG} from "../VocabularyPractice/MoraSVG";
 
 type CategoryPageParams = string[];
 type Loading = { loading: true };

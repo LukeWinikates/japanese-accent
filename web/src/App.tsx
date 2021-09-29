@@ -4,7 +4,7 @@ import './App.css';
 import {ThemeProvider} from '@material-ui/core/styles';
 import {BrowserRouter as Router} from "react-router-dom";
 import {CoreApp, theme} from "./Layout/CoreApp";
-import {EventHistoryProvider, useServerInteractionHistory} from "./Status/useServerInteractionHistory";
+import {EventHistoryProvider, useServerInteractionHistory} from "./Layout/useServerInteractionHistory";
 
 function App() {
   useServerInteractionHistory();

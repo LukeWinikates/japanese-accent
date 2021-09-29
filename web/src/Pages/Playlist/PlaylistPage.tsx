@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {useRouteMatch} from "react-router";
-import {Loadable} from "../App/loadable";
-import {Playlist} from "../App/api";
+import {Loadable} from "../../App/loadable";
+import {Playlist} from "../../App/api";
 import useFetch from "use-http";
-import {useServerInteractionHistory} from "../Status/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {Typography} from "@material-ui/core";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 

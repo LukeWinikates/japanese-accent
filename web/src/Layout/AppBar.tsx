@@ -3,7 +3,7 @@ import MenuIcon from "@material-ui/icons/Menu";
 import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import NotificationsIcon from '@material-ui/icons/Notifications';
-import {useServerInteractionHistory} from "../Status/useServerInteractionHistory";
+import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
 const useStyles = makeStyles((theme) => ({
   root: {
