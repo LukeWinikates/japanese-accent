@@ -87,9 +87,11 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
 
   const handleStartChange = (newStart: number) => {
     const start = newStart;
+    const end = start >= segment.end ? start + 1000 : segment.end
     setSegment({
       ...segment,
-      start
+      start,
+      end
     });
   };
 
