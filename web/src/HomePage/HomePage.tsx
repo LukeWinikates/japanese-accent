@@ -14,11 +14,11 @@ import {Highlights, Playlist} from "../App/api";
 import useFetch from "use-http";
 import ListItem from "@material-ui/core/ListItem";
 import ListItemText from "@material-ui/core/ListItemText";
-import YouTubeIcon from '@material-ui/icons/YouTube';
 import AddIcon from '@material-ui/icons/Add';
 import {Link, useHistory} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../App/loadable";
+import {StatusIcon} from "../Video/StatusIcon";
 
 function HomePage() {
 
@@ -90,7 +90,7 @@ function HomePage() {
                         {highlights.data.videos.map(video => {
                           return (
                             <ListItem key={video.videoId}>
-                              <ListItemIcon>{<YouTubeIcon/>}</ListItemIcon>
+                              <ListItemIcon>{<StatusIcon status={video.videoStatus}/>}</ListItemIcon>
                               <Link to={`/media/${video.videoId}`}>
                                 <ListItemText primary={video.title}/>
                               </Link>

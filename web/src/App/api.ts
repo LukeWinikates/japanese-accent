@@ -22,15 +22,18 @@ export declare type VideoSummary = {
   title: string,
   url: string,
   videoId: string,
+  videoStatus: VideoStatus
 }
 
+
+export type VideoStatus = "Pending" | "Imported" | "Complete";
 
 export declare type Video = {
   title: string,
   url: string,
   videoId: string,
   segments: Segment[],
-  videoStatus: "Pending" | "Imported";
+  videoStatus: VideoStatus;
 }
 
 export declare type CategoryDetails = {

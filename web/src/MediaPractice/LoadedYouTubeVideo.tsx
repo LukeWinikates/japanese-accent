@@ -4,13 +4,32 @@ import {Box, Breadcrumbs, Button, Container, Typography} from "@material-ui/core
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import LaunchIcon from '@material-ui/icons/Launch';
 import {PlaylistPlayer} from "../Playlist/PlaylistPlayer";
+import DoneIcon from '@material-ui/icons/Done';
+import {useFetch} from "use-http";
+import {useServerInteractionHistory} from "../Status/useServerInteractionHistory";
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
+  const {logError} = useServerInteractionHistory();
+
   function setVideoSegments(newSegments: Segment[]) {
     onVideoChange({
       ...video,
       segments: newSegments
     });
+  }
+
+  const publish = useFetch('/api/videos/' + video.videoId + '/publish');
+
+  async function markComplete() {
+    await publish.post()
+    if (publish.response.ok) {
+      onVideoChange({
+        ...video,
+        videoStatus: "Complete"
+      })
+      return;
+    }
+    logError(publish.error?.message);
   }
 
   return (
@@ -22,6 +41,11 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
             {video.title}
+            {video.videoStatus == "Imported" &&
+            <Button startIcon={<DoneIcon/>} onClick={markComplete}>
+              Mark Video as Complete
+            </Button>
+            }
           </Typography>
           <Button href={video.url} color="secondary" target="_blank"
                   startIcon={<YouTubeIcon/>} variant="text"

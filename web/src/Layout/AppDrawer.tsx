@@ -6,6 +6,7 @@ import YoutubeIcon from '@material-ui/icons/YouTube';
 import NotesIcon from '@material-ui/icons/Notes';
 import {Link} from "react-router-dom";
 import useFetch from "use-http";
+import {StatusIcon} from "../Video/StatusIcon";
 
 type AppDrawerProps = {
   open: boolean,
@@ -54,11 +55,12 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
       </List>
       <Divider/>
       <List>
-        <ListSubheader disableSticky={true}>Media</ListSubheader>
+        <ListSubheader disableSticky={true}>Videos</ListSubheader>
         {categories.media.map((video, index) => (
           <React.Fragment key={index}>
             <ListItem button>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
+              <ListItemIcon><StatusIcon status={video.videoStatus} /></ListItemIcon>
               <Link to={`/media/${video.videoId}`}>
                 <ListItemText primary={video.title}/>
               </Link>

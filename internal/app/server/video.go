@@ -35,6 +35,35 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
+func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var video *core.Video
+		youtubeID := context.Param("id")
+		if err := db.Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
+			context.Status(404)
+			log.Printf("Error: %s\n", err.Error())
+			return
+		}
+
+		if video.VideoStatus != core.Imported {
+			log.Printf("Error: Can't Publish this video because it's in the wrong status (%s)\n", video.VideoStatus)
+			context.Status(500)
+		}
+
+		video.VideoStatus = core.Complete
+
+		if err := db.Save(&video).Error; err != nil {
+			context.Status(500)
+			log.Printf("Error: %s\n", err.Error())
+			return
+		}
+
+		apiVideo := makeApiVideo(video)
+
+		context.JSON(200, apiVideo)
+	}
+}
+
 func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var video *core.Video

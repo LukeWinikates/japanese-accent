@@ -20,6 +20,7 @@ type VideoStatus = string
 const (
 	Pending  = "Pending"
 	Imported = "Imported"
+	Complete = "Complete"
 )
 
 type VideoSegment struct {

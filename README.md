@@ -16,8 +16,6 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 * keyboard shortcuts for the main dictaphone interaction
-* Bugs:
-  * editing resets the player to the top segment - it should just keep the current one
 * "Boosting"
   * add an automated "smart" study list consisting of "boosted" clips 
   * query uses boosts, inclusion in other playlists, and recent study time
@@ -26,7 +24,6 @@ This git repository contains scripts and tools for making it easier to efficient
   * automatically push end out by 1s if beginning < end
     * show some indicator that this is happening
   * batch delete
-* "Draft" vs "Finished" state for youtube videos/segments
 * Youtube video add dialog
   * support youtube link, short link, or id
   * make copyable snippet text area for the youtube-dl command
