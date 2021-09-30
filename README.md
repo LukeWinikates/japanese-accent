@@ -16,6 +16,14 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 * keyboard shortcuts for the main dictaphone interaction
+* Revamp of AppDrawer:
+  * priority-based ordering for recently added videos (based on last activity date)
+  * list pages for videos
+  * Remove category pages for now?
+* Revamp of Home Page:
+  * Design for new user welcome
+  * Recently created playlists, top videos
+    * possibly spotify-style horizontal lists, rather than vertical?
 * "Boosting"
   * add an automated "smart" study list consisting of "boosted" clips 
   * query uses boosts, inclusion in other playlists, and recent study time
