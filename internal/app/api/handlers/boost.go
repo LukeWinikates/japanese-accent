@@ -1,7 +1,8 @@
-package server
+package handlers
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -10,21 +11,21 @@ import (
 
 func MakeBoostPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var boostRequest BoostCreateRequest
+		var boostRequest types.BoostCreateRequest
 		if err := context.BindJSON(&boostRequest); err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 			return
 		}
 
-		var segment *core.VideoSegment
+		var segment *database.VideoSegment
 		if err := db.Where("uuid = ? ", boostRequest.SegmentID).Find(&segment).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return
 		}
 
-		boost := core.SegmentBoost{
+		boost := database.SegmentBoost{
 			Segment:   *segment,
 			BoostedAt: time.Now(),
 		}

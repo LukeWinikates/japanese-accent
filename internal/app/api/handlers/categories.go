@@ -1,8 +1,9 @@
-package server
+package handlers
 
 import (
 	"fmt"
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
@@ -29,9 +30,8 @@ func MakeHandleCategoriesGET(wordsFilePath string, db gorm.DB) func(ctx *gin.Con
 			return
 		}
 
-		var videos *[]core.Video
-
-		if db.Limit(10).Find(&videos).Error != nil {
+		videos, err := queries.RecentlyActiveVideos(db, 5)
+		if err != nil {
 			if err != nil {
 				context.Status(500)
 				log.Printf("Error: %s\n", err.Error())
@@ -39,21 +39,21 @@ func MakeHandleCategoriesGET(wordsFilePath string, db gorm.DB) func(ctx *gin.Con
 			}
 		}
 
-		context.JSON(200, CategoriesListResponse{
+		context.JSON(200, types.CategoriesListResponse{
 			Categories: wordlist.Categories,
 			Media:      MakeApiVideoSummaries(*videos),
 		})
 	}
 }
 
-func makeApiWord(word core.Word) ApiWord {
+func makeApiWord(word parser.Word) types.Word {
 	fmt.Printf("%s: %v\n", word.Text, word.MoraCount())
 	fmt.Printf("%s: %s\n", word.Text, word.Morae())
 	var accentMora *int
 	if word.MoraAnalysis != nil {
 		accentMora = &word.MoraAnalysis.AccentMora
 	}
-	return ApiWord{
+	return types.Word{
 		Text:       word.Text,
 		Furigana:   word.Furigana,
 		AccentMora: accentMora,
@@ -85,7 +85,7 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 		categoryParam := strings.ReplaceAll(context.Params.ByName("category"), "/", "")
 		for _, category := range wordlist.Categories {
 			if strings.ReplaceAll(category.Name, "#", "") == categoryParam {
-				categoryJSON := ApiCategory{
+				categoryJSON := types.Category{
 					Name:  category.Name,
 					Words: apiWords(category.Words),
 				}
@@ -98,8 +98,8 @@ func MakeHandleCategoryGET(wordsFilePath string) gin.HandlerFunc {
 	}
 }
 
-func apiWords(words []core.Word) []ApiWord {
-	apiWords := make([]ApiWord, 0)
+func apiWords(words []parser.Word) []types.Word {
+	apiWords := make([]types.Word, 0)
 	for _, w := range words {
 		apiWords = append(apiWords, makeApiWord(w))
 	}

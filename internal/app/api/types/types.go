@@ -1,15 +1,15 @@
-package server
+package types
 
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
 	"time"
 )
 
-type ApiHighlights struct {
-	Videos []ApiVideoSummary `json:"videos"`
+type Highlights struct {
+	Videos []VideoSummary `json:"videos"`
 }
 
-type ApiVideoSegment struct {
+type VideoSegment struct {
 	Start          int       `json:"start"`
 	End            int       `json:"end"`
 	Text           string    `json:"text"`
@@ -18,19 +18,19 @@ type ApiVideoSegment struct {
 	LastActivityAt time.Time `json:"LastActivityAt"`
 }
 
-type ApiVideoSegmentCreate struct {
+type VideoSegmentCreate struct {
 	Start   int    `json:"start"`
 	End     int    `json:"end"`
 	Text    string `json:"text"`
 	VideoID string `json:"videoId"`
 }
 
-type ApiVideoCreate struct {
+type VideoCreate struct {
 	URL   string `json:"url"`
 	Title string `json:"title"`
 }
 
-type ApiVideoSummary struct {
+type VideoSummary struct {
 	Title          string    `json:"title"`
 	URL            string    `json:"url"`
 	VideoID        string    `json:"videoId"`
@@ -38,16 +38,16 @@ type ApiVideoSummary struct {
 	LastActivityAt time.Time `json:"lastActivityAt"`
 }
 
-type ApiVideo struct {
-	Title          string            `json:"title"`
-	URL            string            `json:"url"`
-	VideoID        string            `json:"videoId"`
-	VideoStatus    string            `json:"videoStatus"`
-	Segments       []ApiVideoSegment `json:"segments"`
-	LastActivityAt time.Time         `json:"lastActivityAt"`
+type Video struct {
+	Title          string         `json:"title"`
+	URL            string         `json:"url"`
+	VideoID        string         `json:"videoId"`
+	VideoStatus    string         `json:"videoStatus"`
+	Segments       []VideoSegment `json:"segments"`
+	LastActivityAt time.Time      `json:"lastActivityAt"`
 }
 
-type ApiWord struct {
+type Word struct {
 	Text       string   `json:"word"`
 	Furigana   string   `json:"furigana"`
 	AccentMora *int     `json:"accentMora"`
@@ -57,22 +57,22 @@ type ApiWord struct {
 	Link       string   `json:"link"`
 }
 
-type ApiCategory struct {
+type Category struct {
 	Name  string `json:"name"`
 	Tag   string
 	Notes string
-	Words []ApiWord `json:"words"`
+	Words []Word `json:"words"`
 }
 
-type ApiPlaylist struct {
+type Playlist struct {
 	//URL string `json:"url"`
-	ID       string            `json:"id"`
-	Segments []ApiVideoSegment `json:"segments"`
+	ID       string         `json:"id"`
+	Segments []VideoSegment `json:"segments"`
 }
 
 type CategoriesListResponse struct {
 	Categories []parser.Category `json:"categories"`
-	Media      []ApiVideoSummary `json:"media"`
+	Media      []VideoSummary    `json:"media"`
 }
 
 type SegmentEditRequest struct {
@@ -82,7 +82,7 @@ type SegmentEditRequest struct {
 	UUID  string `json:"uuid"`
 }
 
-type SegmentCreateRequest = ApiVideoSegmentCreate
+type SegmentCreateRequest = VideoSegmentCreate
 
 type BoostCreateRequest struct {
 	SegmentID string `json:"segmentId"`

@@ -1,27 +1,11 @@
-package server
+package recordings
 
 import (
-	"fmt"
 	"github.com/gin-gonic/gin"
 	"mime/multipart"
-	"net/http"
 )
 
 const dataDirectory = "./data/recordings/"
-
-func HandleRecordingUpload(context *gin.Context) {
-	form, _ := context.MultipartForm()
-	files := form.File["file[]"]
-	err := PersistFiles(files, NewContextPersister(context))
-
-	if err != nil {
-		fmt.Print(err.Error())
-		context.Status(http.StatusInternalServerError)
-		return
-	}
-
-	context.Status(http.StatusAccepted)
-}
 
 type GinContextPersister struct {
 	context *gin.Context
@@ -46,4 +30,8 @@ func PersistFiles(files []*multipart.FileHeader, persister Persister) error {
 		}
 	}
 	return nil
+}
+
+type Persister interface {
+	PersistFile(file *multipart.FileHeader) error
 }

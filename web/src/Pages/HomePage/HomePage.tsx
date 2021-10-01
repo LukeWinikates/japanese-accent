@@ -1,24 +1,13 @@
 import React, {useEffect, useState} from "react";
-import {
-  Box,
-  Breadcrumbs,
-  Container,
-  Fab,
-  Link as BreadcrumbLink,
-  List,
-  ListItemIcon,
-  Typography
-} from "@material-ui/core";
+import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {Highlights, Playlist} from "../../App/api";
 import useFetch from "use-http";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
 import AddIcon from '@material-ui/icons/Add';
 import {Link, useHistory} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
-import {StatusIcon} from "../../Video/StatusIcon";
+import {VideoList} from "../VideosIndex/VideoList";
 
 function HomePage() {
 
@@ -91,18 +80,7 @@ function HomePage() {
                   </Typography>
                   {
                     highlights === "loading" ? null :
-                      <List>
-                        {highlights.data.videos.map(video => {
-                          return (
-                            <ListItem key={video.videoId}>
-                              <ListItemIcon>{<StatusIcon status={video.videoStatus}/>}</ListItemIcon>
-                              <Link to={`/media/${video.videoId}`}>
-                                <ListItemText primary={video.title}/>
-                              </Link>
-                            </ListItem>
-                          );
-                        })}
-                      </List>
+                      <VideoList videos={highlights.data.videos}/>
                   }
                 </Grid>
                 <Grid container item xs={6}>

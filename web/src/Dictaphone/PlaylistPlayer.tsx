@@ -34,7 +34,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   const lastIndex = segments.length - 1;
 
   const {delete: destroy} = useFetch<Segment>(
-    '/media/audio/');
+    '/api/video/');
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());

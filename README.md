@@ -61,7 +61,12 @@ This git repository contains scripts and tools for making it easier to efficient
 * more prominent "next" button (or smartly have a CTA for "re-record" or "next")
 * when paging through recordings using "next" button, automatically scroll the current one into view
 * grab thumbnails based on the video content, and show that along with clip
-
+* exporters
+  * Anki deck
+  * Flat file
+  * Audio practice file
+  * share with teacher
+  * Japanese app (plus notes for pronunciation)
 * adding new youtube videos ad-hoc
 * adding new words to quick-study, using FAB
     * implies moving data model from text file into DB

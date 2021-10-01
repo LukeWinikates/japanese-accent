@@ -1,7 +1,9 @@
-package server
+package handlers
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
@@ -15,17 +17,17 @@ import (
 
 func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var videoCreateRequest ApiVideoCreate
+		var videoCreateRequest types.VideoCreate
 		if err := context.BindJSON(&videoCreateRequest); err != nil {
 			context.Status(500)
 			return
 		}
-		video := &core.Video{
+		video := &database.Video{
 			YoutubeID:      youtube.VideoIDFromURL(videoCreateRequest.URL),
 			URL:            videoCreateRequest.URL,
 			Title:          videoCreateRequest.Title,
 			Segments:       nil,
-			VideoStatus:    core.Pending,
+			VideoStatus:    database.Pending,
 			LastActivityAt: time.Now(),
 		}
 
@@ -39,20 +41,20 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 
 func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var video *core.Video
-		youtubeID := context.Param("id")
+		var video *database.Video
+		youtubeID := context.Param("videoUUid")
 		if err := db.Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
 			context.Status(404)
 			log.Printf("Error: %s\n", err.Error())
 			return
 		}
 
-		if video.VideoStatus != core.Imported {
+		if video.VideoStatus != database.Imported {
 			log.Printf("Error: Can't Publish this video because it's in the wrong status (%s)\n", video.VideoStatus)
 			context.Status(500)
 		}
 
-		video.VideoStatus = core.Complete
+		video.VideoStatus = database.Complete
 
 		if err := db.Save(&video).Error; err != nil {
 			context.Status(500)
@@ -68,10 +70,9 @@ func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
 
 func MakeVideoListGET(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var videos *[]core.Video
-		if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
-			return db.Order("video_segments.start ASC")
-		}).Order("last_activity_at DESC").Limit(20).Find(&videos).Error; err != nil {
+		videos, err := queries.RecentlyActiveVideos(db, 20)
+
+		if err != nil {
 			context.Status(500)
 			log.Printf("Error: %s\n", err.Error())
 			return
@@ -85,9 +86,9 @@ func MakeVideoListGET(db gorm.DB) gin.HandlerFunc {
 
 func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var video *core.Video
+		var video *database.Video
 
-		youtubeID := context.Param("id")
+		youtubeID := context.Param("videoUuid")
 		if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
 			return db.Order("video_segments.start ASC")
 		}).Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
@@ -96,18 +97,18 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		if video.VideoStatus == core.Pending {
+		if video.VideoStatus == database.Pending {
 			subtitleFilePath := mediaDirectory + "/" + youtubeID + ".ja.vtt"
 			subtitleFileContents, err := ioutil.ReadFile(subtitleFilePath)
 			if err != nil && os.IsNotExist(err) {
 				log.Printf("No subtitle file found; continuing")
 				if FindMediaFile(mediaDirectory, youtubeID).IsFound {
-					video.VideoStatus = core.Imported
+					video.VideoStatus = database.Imported
 				}
 			} else if err = initializeSegments(string(subtitleFileContents), video, db); err != nil {
 				log.Printf("Error while importing subtitle file: %s\n", err.Error())
 			} else {
-				video.VideoStatus = core.Imported
+				video.VideoStatus = database.Imported
 			}
 		}
 
@@ -117,11 +118,11 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func makeApiVideo(video *core.Video) ApiVideo {
-	apiSegs := make([]ApiVideoSegment, 0)
+func makeApiVideo(video *database.Video) types.Video {
+	apiSegs := make([]types.VideoSegment, 0)
 
 	for _, segment := range video.Segments {
-		apiSegs = append(apiSegs, ApiVideoSegment{
+		apiSegs = append(apiSegs, types.VideoSegment{
 			Start:          segment.Start,
 			End:            segment.End,
 			Text:           segment.Text,
@@ -131,7 +132,7 @@ func makeApiVideo(video *core.Video) ApiVideo {
 		})
 	}
 
-	return ApiVideo{
+	return types.Video{
 		Title:          video.Title,
 		URL:            video.URL,
 		VideoID:        video.YoutubeID,
@@ -141,15 +142,15 @@ func makeApiVideo(video *core.Video) ApiVideo {
 	}
 }
 
-func initializeSegments(subtitleFile string, video *core.Video, db gorm.DB) error {
+func initializeSegments(subtitleFile string, video *database.Video, db gorm.DB) error {
 
 	segments, err := vtt.ParseSegments(subtitleFile)
 	if err != nil {
 		return err
 	}
-	dbSegments := make([]core.VideoSegment, 0)
+	dbSegments := make([]database.VideoSegment, 0)
 	for _, segment := range segments {
-		dbSegments = append(dbSegments, core.VideoSegment{
+		dbSegments = append(dbSegments, database.VideoSegment{
 			Start:   segment.Start,
 			End:     segment.End,
 			Text:    segment.Text,

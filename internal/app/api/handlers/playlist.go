@@ -1,8 +1,9 @@
-package server
+package handlers
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
-	"github.com/LukeWinikates/japanese-accent/internal/playlists"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -12,13 +13,13 @@ import (
 
 func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var playlistCreate PlaylistCreateRequest
+		var playlistCreate types.PlaylistCreateRequest
 		if err := context.BindJSON(&playlistCreate); err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 			return
 		}
-		segments, err := playlists.MakeSmartPlaylist(db, playlistCreate.Count)
+		segments, err := queries.FindSegmentsForPlaylist(db, playlistCreate.Count)
 
 		if err != nil {
 			log.Println(err.Error())
@@ -28,7 +29,7 @@ func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {
 
 		newString := uuid.NewString()
 
-		playlist := core.Playlist{
+		playlist := database.Playlist{
 			UUID:     newString,
 			Name:     "New Playlist: " + time.Now().Format(time.RFC822),
 			Segments: segments,
@@ -40,7 +41,7 @@ func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		context.JSON(200, ApiPlaylist{
+		context.JSON(200, types.Playlist{
 			ID: newString,
 		})
 	}
@@ -48,7 +49,7 @@ func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {
 
 func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var playlist core.Playlist
+		var playlist database.Playlist
 		playlistID := context.Param("id")
 		if err := db.Preload("Segments.Video").Where("uuid = ?", playlistID).First(&playlist).Error; err != nil {
 			context.Status(500)
@@ -56,10 +57,10 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiSegments := make([]ApiVideoSegment, len(playlist.Segments))
+		apiSegments := make([]types.VideoSegment, len(playlist.Segments))
 
 		for i, segment := range playlist.Segments {
-			apiSegments[i] = ApiVideoSegment{
+			apiSegments[i] = types.VideoSegment{
 				Start:     segment.Start,
 				End:       segment.End,
 				Text:      segment.Text,
@@ -68,7 +69,7 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 			}
 		}
 
-		context.JSON(200, ApiPlaylist{
+		context.JSON(200, types.Playlist{
 			ID:       playlistID,
 			Segments: apiSegments,
 		})

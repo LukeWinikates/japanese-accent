@@ -2,7 +2,6 @@ package vtt
 
 import (
 	"bufio"
-	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -75,8 +74,6 @@ func ParseSegments(fileContent string) ([]Segment, error) {
 			segments[len(segments)-1] = seg
 		}
 	}
-
-	log.Printf("segments: %v\n", len(segments))
 
 	return segments, nil
 }

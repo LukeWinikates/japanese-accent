@@ -1,16 +1,18 @@
-package server
+package handlers
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
 )
 
-func MakeApiVideoSummaries(videos []core.Video) []ApiVideoSummary {
-	apiVideoSummaries := make([]ApiVideoSummary, 0)
+func MakeApiVideoSummaries(videos []database.Video) []types.VideoSummary {
+	apiVideoSummaries := make([]types.VideoSummary, 0)
 	for _, video := range videos {
-		apiVideoSummaries = append(apiVideoSummaries, ApiVideoSummary{
+		apiVideoSummaries = append(apiVideoSummaries, types.VideoSummary{
 			Title:          video.Title,
 			URL:            video.URL,
 			VideoID:        video.YoutubeID,
@@ -23,16 +25,15 @@ func MakeApiVideoSummaries(videos []core.Video) []ApiVideoSummary {
 
 func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var videos *[]core.Video
-
-		if err := db.Find(&videos).Error; err != nil {
+		videos, err := queries.RecentlyActiveVideos(db, 8)
+		if err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 		}
 
 		log.Println(videos)
 
-		context.JSON(200, ApiHighlights{
+		context.JSON(200, types.Highlights{
 			Videos: MakeApiVideoSummaries(*videos),
 		})
 	}

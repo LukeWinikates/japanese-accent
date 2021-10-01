@@ -1,22 +1,10 @@
 import React, {useEffect, useState} from "react";
-import {
-  Box,
-  Breadcrumbs,
-  Container,
-  Fab,
-  Link as BreadcrumbLink,
-  List,
-  ListItemIcon,
-  Typography
-} from "@material-ui/core";
+import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@material-ui/core";
 import Grid from "@material-ui/core/Grid";
 import {VideoSummary} from "../../App/api";
 import useFetch from "use-http";
-import ListItem from "@material-ui/core/ListItem";
-import ListItemText from "@material-ui/core/ListItemText";
-import {Link} from "react-router-dom";
 import {Loadable} from "../../App/loadable";
-import {StatusIcon} from "../../Video/StatusIcon";
+import {VideoList} from "./VideoList";
 
 export default function VideosIndexPage() {
   const {get, response} = useFetch<VideoSummary[]>(
@@ -32,14 +20,6 @@ export default function VideosIndexPage() {
 
     initialize();
   }, []);
-
-  function formatDate(video: VideoSummary) {
-    const lastActivityAt = video.lastActivityAt;
-    if (lastActivityAt !== "0001-01-01T00:00:00Z") {
-      return "Last Practiced at: " + new Date(lastActivityAt).toLocaleDateString();
-    }
-    return "no practice activity"
-  }
 
   return (
     <>
@@ -64,18 +44,7 @@ export default function VideosIndexPage() {
                   </Typography>
                   {
                     videos === "loading" ? null :
-                      <List>
-                        {videos.data.map(video => {
-                          return (
-                            <ListItem key={video.videoId}>
-                              <ListItemIcon>{<StatusIcon status={video.videoStatus}/>}</ListItemIcon>
-                              <Link to={`/media/${video.videoId}`}>
-                                <ListItemText primary={video.title} secondary={formatDate(video)}/>
-                              </Link>
-                            </ListItem>
-                          );
-                        })}
-                      </List>
+                      <VideoList videos={videos.data}/>
                   }
                 </Grid>
               </Grid>

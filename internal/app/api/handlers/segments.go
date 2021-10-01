@@ -1,7 +1,8 @@
-package server
+package handlers
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -11,14 +12,14 @@ import (
 func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		segmentID := context.Param("id")
-		var segmentEditRequest SegmentEditRequest
+		var segmentEditRequest types.SegmentEditRequest
 		if err := context.BindJSON(&segmentEditRequest); err != nil {
 			context.Status(500)
 		}
 
 		log.Print(segmentEditRequest)
 
-		var segment *core.VideoSegment
+		var segment *database.VideoSegment
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
@@ -37,11 +38,11 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 }
 func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var createRequest SegmentCreateRequest
+		var createRequest types.SegmentCreateRequest
 		if err := context.BindJSON(&createRequest); err != nil {
 			context.Status(500)
 		}
-		var video *core.Video
+		var video *database.Video
 
 		if err := db.Where("youtube_id = ? ", createRequest.VideoID).Find(&video).Error; err != nil {
 			context.Status(404)
@@ -50,7 +51,7 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 		}
 		log.Print(createRequest)
 
-		var segment = core.VideoSegment{
+		var segment = database.VideoSegment{
 			UUID:  uuid.NewString(),
 			Start: createRequest.Start,
 			Text:  createRequest.Text,
@@ -63,7 +64,7 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		context.JSON(201, ApiVideoSegment{
+		context.JSON(201, types.VideoSegment{
 			UUID:      segment.UUID,
 			Start:     segment.Start,
 			End:       segment.End,
@@ -77,16 +78,13 @@ func MakeAudioSegmentsDELETE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		segmentID := context.Param("id")
 
-		var segment *core.VideoSegment
-		//
+		var segment *database.VideoSegment
 		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
 
 			log.Println(err.Error())
 			context.Status(404)
 			return
 		}
-
-		//db.Delete(segment)
 
 		if err := db.Delete(segment).Error; err != nil {
 

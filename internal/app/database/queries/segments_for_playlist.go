@@ -1,14 +1,14 @@
-package playlists
+package queries
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"gorm.io/gorm"
 )
 
-func MakeSmartPlaylist(db gorm.DB, count int) ([]core.VideoSegment, error) {
-	segments := make([]core.VideoSegment, 0)
+func FindSegmentsForPlaylist(db gorm.DB, count int) ([]database.VideoSegment, error) {
+	segments := make([]database.VideoSegment, 0)
 
-	var boosts []core.SegmentBoost
+	var boosts []database.SegmentBoost
 
 	if err := db.Limit(count).
 		Order("boosted_at").

@@ -3,32 +3,9 @@ package parser
 import (
 	"bufio"
 	"fmt"
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
 	"strconv"
 	"strings"
 )
-
-type Link struct {
-	Text string
-	URL  string
-}
-
-func (link Link) VideoID() string {
-	return strings.Split(link.URL, "=")[1]
-}
-
-type Category struct {
-	Name       string `json:"name"`
-	Tag        string
-	Notes      string
-	Words      []core.Word
-	Categories []Category `json:"categories"`
-}
-
-type WordList struct {
-	Categories []Category
-	Media      []Link
-}
 
 func Parse(text string) (WordList, error) {
 	categories := make([]Category, 0)
@@ -91,7 +68,7 @@ func Parse(text string) (WordList, error) {
 func newCategory() *Category {
 	return &Category{
 		Categories: []Category{},
-		Words:      []core.Word{},
+		Words:      []Word{},
 	}
 }
 
@@ -114,16 +91,16 @@ func linkFromLine(line string) (Link, error) {
 	}, nil
 }
 
-func wordFromLine(line string) core.Word {
+func wordFromLine(line string) Word {
 	segments := strings.Split(line, " ")
 	if len(segments) > 1 {
 		maybeAccentMora, err := strconv.Atoi(segments[len(segments)-1])
-		var moraAnalysis *core.MoraAnalysis
+		var moraAnalysis *MoraAnalysis
 		text := segments[0]
 		furigana := segments[0]
 
 		if err == nil {
-			moraAnalysis = &core.MoraAnalysis{
+			moraAnalysis = &MoraAnalysis{
 				AccentMora: maybeAccentMora,
 			}
 		}
@@ -132,14 +109,14 @@ func wordFromLine(line string) core.Word {
 			furigana = segments[1]
 		}
 
-		return core.Word{
+		return Word{
 			Text:         text,
 			Furigana:     furigana,
 			MoraAnalysis: moraAnalysis,
 		}
 	}
 
-	return core.Word{
+	return Word{
 		Text:         line,
 		Furigana:     line,
 		MoraAnalysis: nil,

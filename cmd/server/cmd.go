@@ -1,8 +1,8 @@
 package main
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/core"
-	"github.com/LukeWinikates/japanese-accent/internal/app/server"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/adrg/xdg"
 	"github.com/gin-gonic/gin"
 	"gorm.io/driver/sqlite"
@@ -23,7 +23,7 @@ func main() {
 
 	r := gin.Default()
 
-	server.Configure(r, config.WordsFilePath, config.MediaDirPath, *db)
+	api.Configure(r, config.WordsFilePath, config.MediaDirPath, *db)
 	log.Fatalln(r.Run("localhost:8080").Error())
 }
 
@@ -35,7 +35,7 @@ func prepareDatabase(databaseFile string) *gorm.DB {
 		log.Println(err.Error())
 		log.Fatal("failed to connect database")
 	}
-	err = core.InitializeDatabase(*db)
+	err = database.InitializeDatabase(*db)
 	if err != nil {
 		log.Println(err.Error())
 		log.Fatal("failed to connect database")
