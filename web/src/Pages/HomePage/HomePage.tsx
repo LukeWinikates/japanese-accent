@@ -83,6 +83,11 @@ function HomePage() {
                 <Grid item xs={6}>
                   <Typography variant="h4">
                     Youtube Videos
+                    <Typography variant="subtitle1">
+                      <Link to="/videos">
+                        See all
+                      </Link>
+                    </Typography>
                   </Typography>
                   {
                     highlights === "loading" ? null :

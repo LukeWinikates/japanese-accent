@@ -11,10 +11,11 @@ func MakeApiVideoSummaries(videos []core.Video) []ApiVideoSummary {
 	apiVideoSummaries := make([]ApiVideoSummary, 0)
 	for _, video := range videos {
 		apiVideoSummaries = append(apiVideoSummaries, ApiVideoSummary{
-			Title:       video.Title,
-			URL:         video.URL,
-			VideoID:     video.YoutubeID,
-			VideoStatus: video.VideoStatus,
+			Title:          video.Title,
+			URL:            video.URL,
+			VideoID:        video.YoutubeID,
+			VideoStatus:    video.VideoStatus,
+			LastActivityAt: video.LastActivityAt,
 		})
 	}
 	return apiVideoSummaries

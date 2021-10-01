@@ -2,6 +2,7 @@ package server
 
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
+	"time"
 )
 
 type ApiHighlights struct {
@@ -9,11 +10,12 @@ type ApiHighlights struct {
 }
 
 type ApiVideoSegment struct {
-	Start     int    `json:"start"`
-	End       int    `json:"end"`
-	Text      string `json:"text"`
-	UUID      string `json:"uuid"`
-	VideoUUID string `json:"videoUuid"`
+	Start          int       `json:"start"`
+	End            int       `json:"end"`
+	Text           string    `json:"text"`
+	UUID           string    `json:"uuid"`
+	VideoUUID      string    `json:"videoUuid"`
+	LastActivityAt time.Time `json:"LastActivityAt"`
 }
 
 type ApiVideoSegmentCreate struct {
@@ -29,18 +31,20 @@ type ApiVideoCreate struct {
 }
 
 type ApiVideoSummary struct {
-	Title       string `json:"title"`
-	URL         string `json:"url"`
-	VideoID     string `json:"videoId"`
-	VideoStatus string `json:"videoStatus"`
+	Title          string    `json:"title"`
+	URL            string    `json:"url"`
+	VideoID        string    `json:"videoId"`
+	VideoStatus    string    `json:"videoStatus"`
+	LastActivityAt time.Time `json:"lastActivityAt"`
 }
 
 type ApiVideo struct {
-	Title       string            `json:"title"`
-	URL         string            `json:"url"`
-	VideoID     string            `json:"videoId"`
-	VideoStatus string            `json:"videoStatus"`
-	Segments    []ApiVideoSegment `json:"segments"`
+	Title          string            `json:"title"`
+	URL            string            `json:"url"`
+	VideoID        string            `json:"videoId"`
+	VideoStatus    string            `json:"videoStatus"`
+	Segments       []ApiVideoSegment `json:"segments"`
+	LastActivityAt time.Time         `json:"lastActivityAt"`
 }
 
 type ApiWord struct {

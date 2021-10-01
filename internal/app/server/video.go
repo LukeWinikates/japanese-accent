@@ -10,6 +10,7 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"time"
 )
 
 func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
@@ -20,11 +21,12 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 		video := &core.Video{
-			YoutubeID:   youtube.VideoIDFromURL(videoCreateRequest.URL),
-			URL:         videoCreateRequest.URL,
-			Title:       videoCreateRequest.Title,
-			Segments:    nil,
-			VideoStatus: core.Pending,
+			YoutubeID:      youtube.VideoIDFromURL(videoCreateRequest.URL),
+			URL:            videoCreateRequest.URL,
+			Title:          videoCreateRequest.Title,
+			Segments:       nil,
+			VideoStatus:    core.Pending,
+			LastActivityAt: time.Now(),
 		}
 
 		if err := db.Save(video).Error; err != nil {
@@ -61,6 +63,23 @@ func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
 		apiVideo := makeApiVideo(video)
 
 		context.JSON(200, apiVideo)
+	}
+}
+
+func MakeVideoListGET(db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var videos *[]core.Video
+		if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
+			return db.Order("video_segments.start ASC")
+		}).Order("last_activity_at DESC").Limit(20).Find(&videos).Error; err != nil {
+			context.Status(500)
+			log.Printf("Error: %s\n", err.Error())
+			return
+		}
+
+		apiVideos := MakeApiVideoSummaries(*videos)
+
+		context.JSON(200, apiVideos)
 	}
 }
 
@@ -103,20 +122,22 @@ func makeApiVideo(video *core.Video) ApiVideo {
 
 	for _, segment := range video.Segments {
 		apiSegs = append(apiSegs, ApiVideoSegment{
-			Start:     segment.Start,
-			End:       segment.End,
-			Text:      segment.Text,
-			UUID:      segment.UUID,
-			VideoUUID: video.YoutubeID,
+			Start:          segment.Start,
+			End:            segment.End,
+			Text:           segment.Text,
+			UUID:           segment.UUID,
+			VideoUUID:      video.YoutubeID,
+			LastActivityAt: segment.LastActivityAt,
 		})
 	}
 
 	return ApiVideo{
-		Title:       video.Title,
-		URL:         video.URL,
-		VideoID:     video.YoutubeID,
-		VideoStatus: video.VideoStatus,
-		Segments:    apiSegs,
+		Title:          video.Title,
+		URL:            video.URL,
+		VideoID:        video.YoutubeID,
+		VideoStatus:    video.VideoStatus,
+		Segments:       apiSegs,
+		LastActivityAt: video.LastActivityAt,
 	}
 }
 

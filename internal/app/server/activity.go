@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
+	"time"
 )
 
 func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
@@ -23,7 +24,7 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 		}
 
 		var segment *core.VideoSegment
-		if err := db.Where("uuid = ? ", activityCreate.SegmentID).Find(&segment).Error; err != nil {
+		if err := db.Where("uuid = ? ", activityCreate.SegmentID).Preload("Video").Find(&segment).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return
@@ -35,6 +36,15 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 		}
 
 		if err := db.Create(&activity).Error; err != nil {
+			log.Println(err.Error())
+			context.Status(500)
+			return
+		}
+
+		segment.LastActivityAt = time.Now()
+		segment.Video.LastActivityAt = time.Now()
+
+		if err := db.Save(segment).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 			return

@@ -8,11 +8,12 @@ import (
 
 type Video struct {
 	gorm.Model
-	YoutubeID   string
-	URL         string
-	Title       string
-	Segments    []VideoSegment
-	VideoStatus VideoStatus
+	YoutubeID      string
+	URL            string
+	Title          string
+	Segments       []VideoSegment
+	VideoStatus    VideoStatus
+	LastActivityAt time.Time
 }
 
 type VideoStatus = string
@@ -26,12 +27,13 @@ const (
 type VideoSegment struct {
 	gorm.Model
 
-	VideoID uint
-	Start   int
-	End     int
-	Text    string
-	UUID    string
-	Video   Video
+	VideoID        uint
+	Start          int
+	End            int
+	Text           string
+	UUID           string
+	Video          Video
+	LastActivityAt time.Time
 }
 
 type SegmentBoost struct {

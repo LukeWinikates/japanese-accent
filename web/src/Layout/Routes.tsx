@@ -4,6 +4,7 @@ import CategoryPage from "../Pages/CategoryPage";
 import {YoutubeVideoPage} from "../Pages/YouTube/YoutubeVideoPage";
 import {PlaylistPage} from "../Pages/Playlist/PlaylistPage";
 import React from "react";
+import VideosIndexPage from "../Pages/VideosIndex/VideosIndexPage";
 
 export function Routes() {
   return <Switch>
@@ -15,6 +16,10 @@ export function Routes() {
     </Route>
     <Route path="/media/:id">
       <YoutubeVideoPage/>
+    </Route>
+
+    <Route path="/videos">
+      <VideosIndexPage/>
     </Route>
     <Route path="/playlists/:id">
       <PlaylistPage/>
