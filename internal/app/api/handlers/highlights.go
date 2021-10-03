@@ -31,8 +31,6 @@ func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
 			context.Status(500)
 		}
 
-		log.Println(videos)
-
 		context.JSON(200, types.Highlights{
 			Videos: MakeApiVideoSummaries(*videos),
 		})
