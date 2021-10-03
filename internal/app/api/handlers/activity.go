@@ -50,6 +50,11 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 			context.Status(500)
 			return
 		}
+		if err := db.Save(segment.Video).Error; err != nil {
+			log.Println(err.Error())
+			context.Status(500)
+			return
+		}
 
 		context.Status(200)
 	}
