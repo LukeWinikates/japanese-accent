@@ -15,14 +15,14 @@ type VideoSegment struct {
 	Text           string    `json:"text"`
 	UUID           string    `json:"uuid"`
 	VideoUUID      string    `json:"videoUuid"`
-	LastActivityAt time.Time `json:"LastActivityAt"`
+	LastActivityAt time.Time `json:"lastActivityAt"`
 }
 
 type VideoSegmentCreate struct {
 	Start   int    `json:"start"`
 	End     int    `json:"end"`
 	Text    string `json:"text"`
-	VideoID string `json:"videoId"`
+	VideoID string `json:"videoUuid"`
 }
 
 type VideoCreate struct {

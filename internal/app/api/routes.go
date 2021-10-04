@@ -30,7 +30,7 @@ func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.D
 		api.GET("/videos/:videoUuid", handlers.MakeVideoGET(mediaDirPath, db))
 		api.POST("/videos/:videoUuid/publish", handlers.MakeVideoPublishPOST(db))
 		api.POST("/videos/:videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
-		api.POST("/videos/:videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))
+		api.PUT("/videos/:videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))
 		api.DELETE("/videos/:videoUUid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
 	}
 

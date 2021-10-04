@@ -37,8 +37,8 @@ const useStyles = makeStyles(theme => (
 ));
 
 export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId, segment, setSegment, previousSegmentEnd, nextSegmentStart}: MediaSegmentsEditDialogProps) {
-  const {post, delete: destroy} = useFetch('/api/video/' + videoId + "/segments/" + segment.uuid);
-  const postClone = useFetch<Segment>('/api/video/' + videoId + "/segments");
+  const {put, delete: destroy} = useFetch('/api/videos/' + videoId + "/segments/" + segment.uuid);
+  const postClone = useFetch<Segment>('/api/videos/' + videoId + "/segments");
   const classes = useStyles();
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
   const [preferredStartTime, setPreferredStartTime] = useState<number|undefined>(undefined);
@@ -59,7 +59,7 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
   };
 
   const save = () => {
-    post(segment).then(onClose);
+    put(segment).then(onClose);
   };
 
   const del = () => {
