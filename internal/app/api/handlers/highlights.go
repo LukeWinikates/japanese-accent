@@ -29,10 +29,19 @@ func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
 		if err != nil {
 			log.Println(err.Error())
 			context.Status(500)
+			return
+		}
+
+		wordLists, err := queries.RecentlyActiveWordLists(db, 8)
+		if err != nil {
+			log.Println(err.Error())
+			context.Status(500)
+			return
 		}
 
 		context.JSON(200, types.Highlights{
-			Videos: MakeApiVideoSummaries(*videos),
+			Videos:    MakeApiVideoSummaries(*videos),
+			WordLists: MakeApiWordLists(*wordLists),
 		})
 	}
 }

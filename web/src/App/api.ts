@@ -4,8 +4,8 @@ export declare type Category = {
 }
 
 export declare type CategoriesResponse = {
-  categories: Category[],
-  media: VideoSummary[],
+  wordLists: WordList[],
+  videos: VideoSummary[],
 }
 
 export declare type Word = {
@@ -25,7 +25,6 @@ export declare type VideoSummary = {
   videoStatus: VideoStatus
   lastActivityAt: string
 }
-
 
 export type VideoStatus = "Pending" | "Imported" | "Complete";
 
@@ -54,7 +53,7 @@ export declare type Segment = {
 
 export declare type Highlights = {
   videos: VideoSummary[],
-  categories: Category[]
+  wordLists: WordList[]
 }
 
 export declare type Activity = {
@@ -66,6 +65,12 @@ export declare type Playlist = {
   id: string,
   title: string,
   segments: Segment[],
+}
+
+export declare type WordList = {
+  id: number,
+  name: string
+  words: Word[]
 }
 
 export function duration(segment: Segment): number {

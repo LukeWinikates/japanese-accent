@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {CategoriesResponse} from "../App/api";
+import {Highlights} from "../App/api";
 import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@material-ui/core";
 import HouseIcon from '@material-ui/icons/House';
 import YoutubeIcon from '@material-ui/icons/YouTube';
@@ -20,10 +20,10 @@ export function DummyDrawer() {
 }
 
 export function AppDrawer({open, handleClose}: AppDrawerProps) {
-  const [categories, setCategories] = useState<CategoriesResponse | null>(null);
+  const [categories, setCategories] = useState<Highlights | null>(null);
   // const {setter: setStatus} = useStatus();
 
-  const {get, response} = useFetch('/api/categories');
+  const {get, response} = useFetch('/api/highlights');
 
   async function initialize() {
     const initialCategories = await get('');
@@ -56,7 +56,7 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
       <Divider/>
       <List>
         <ListSubheader disableSticky={true}>Videos</ListSubheader>
-        {categories.media.map((video, index) => (
+        {categories.videos.map((video, index) => (
           <React.Fragment key={index}>
             <ListItem button>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
@@ -71,12 +71,12 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
       <Divider/>
       <List>
         <ListSubheader disableSticky={true}>Word Lists</ListSubheader>
-        {categories.categories.map((category, index) => (
+        {categories.wordLists.map((wordList, index) => (
           <React.Fragment key={index}>
             <ListItem button>
               <ListItemIcon><NotesIcon/></ListItemIcon>
-              <Link to={`/category/${encodeURIComponent(category.name.replaceAll("#", ""))}`}>
-                <ListItemText primary={category.name}/>
+              <Link to={`/wordlists/${wordList.id}`}>
+                <ListItemText primary={wordList.name}/>
               </Link>
             </ListItem>
             {/*<List>*/}

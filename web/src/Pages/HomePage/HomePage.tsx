@@ -8,6 +8,7 @@ import {Link, useHistory} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
+import {WordListList} from "../WordList/WordListList";
 
 function HomePage() {
 
@@ -83,10 +84,19 @@ function HomePage() {
                       <VideoList videos={highlights.data.videos}/>
                   }
                 </Grid>
-                <Grid container item xs={6}>
+                <Grid item xs={6}>
                   <Typography variant="h4">
                     Word Lists
+                    <Typography variant="subtitle1">
+                      <Link to="/wordlists">
+                        See all
+                      </Link>
+                    </Typography>
                   </Typography>
+                  {
+                    highlights === "loading" ? null :
+                      <WordListList wordLists={highlights.data.wordLists}/>
+                  }
                 </Grid>
 
               </Grid>

@@ -6,7 +6,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.DB) {
+func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 	engine.Static("/public", "./web/public")
 	engine.StaticFile("/", "./web/public/index.html")
 
@@ -15,9 +15,6 @@ func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.D
 		api.GET("/highlights", handlers.MakeHandleHighlightsGET(db))
 		api.POST("/recordings", handlers.HandleRecordingUpload)
 
-		api.GET("/categories", handlers.MakeHandleCategoriesGET(wordsFilePath, db))
-		api.GET("/categories/*category", handlers.MakeHandleCategoryGET(wordsFilePath))
-
 		api.POST("/boosts", handlers.MakeBoostPOST(db))
 
 		api.POST("/activity", handlers.MakeActivityPost(db))
@@ -25,13 +22,22 @@ func Configure(engine *gin.Engine, wordsFilePath, mediaDirPath string, db gorm.D
 		api.POST("/playlists", handlers.MakePlaylistPost(db))
 		api.GET("/playlists/:id", handlers.MakePlaylistGET(db))
 
-		api.POST("/videos/", handlers.MakeVideoPOST(db))
-		api.GET("/videos/", handlers.MakeVideoListGET(db))
-		api.GET("/videos/:videoUuid", handlers.MakeVideoGET(mediaDirPath, db))
-		api.POST("/videos/:videoUuid/publish", handlers.MakeVideoPublishPOST(db))
-		api.POST("/videos/:videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
-		api.PUT("/videos/:videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))
-		api.DELETE("/videos/:videoUUid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
+		videos := api.Group("/videos/")
+		{
+			videos.POST("", handlers.MakeVideoPOST(db))
+			videos.GET("", handlers.MakeVideoListGET(db))
+			videos.GET(":videoUuid", handlers.MakeVideoGET(mediaDirPath, db))
+			videos.POST(":videoUuid/publish", handlers.MakeVideoPublishPOST(db))
+			videos.POST(":videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
+			videos.PUT(":videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))
+			videos.DELETE(":videoUUid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
+		}
+
+		wordLists := api.Group("/wordlists/")
+		{
+			wordLists.GET(":id", handlers.MakeWordListGET(db))
+			wordLists.GET("", handlers.MakeWordListListGET(db))
+		}
 	}
 
 	media := engine.Group("/media")

@@ -1,12 +1,12 @@
 package types
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/parser"
 	"time"
 )
 
 type Highlights struct {
-	Videos []VideoSummary `json:"videos"`
+	Videos    []VideoSummary `json:"videos"`
+	WordLists []WordList     `json:"wordLists"`
 }
 
 type VideoSegment struct {
@@ -54,7 +54,6 @@ type Word struct {
 	MoraCount  int      `json:"moraCount"`
 	Shiki      string   `json:"shiki"`
 	Morae      []string `json:"morae"`
-	Link       string   `json:"link"`
 }
 
 type Category struct {
@@ -68,11 +67,6 @@ type Playlist struct {
 	//URL string `json:"url"`
 	ID       string         `json:"id"`
 	Segments []VideoSegment `json:"segments"`
-}
-
-type CategoriesListResponse struct {
-	Categories []parser.Category `json:"categories"`
-	Media      []VideoSummary    `json:"media"`
 }
 
 type SegmentEditRequest struct {
@@ -94,4 +88,10 @@ type PlaylistCreateRequest struct {
 type ActivityCreateRequest struct {
 	SegmentID    string `json:"segmentId"`
 	ActivityType string `json:"activityType"`
+}
+
+type WordList struct {
+	ID    uint   `json:"id"`
+	Name  string `json:"name"`
+	Words []Word `json:"words"`
 }

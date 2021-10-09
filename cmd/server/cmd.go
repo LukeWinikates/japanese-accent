@@ -11,9 +11,8 @@ import (
 )
 
 type config struct {
-	WordsFilePath string
-	MediaDirPath  string
-	DatabaseFile  string
+	MediaDirPath string
+	DatabaseFile string
 }
 
 func main() {
@@ -23,7 +22,7 @@ func main() {
 
 	r := gin.Default()
 
-	api.Configure(r, config.WordsFilePath, config.MediaDirPath, *db)
+	api.Configure(r, config.MediaDirPath, *db)
 	log.Fatalln(r.Run("localhost:8080").Error())
 }
 
@@ -44,10 +43,6 @@ func prepareDatabase(databaseFile string) *gorm.DB {
 }
 
 func readConfig() config {
-	wordsFilePath, err := xdg.DataFile("japanese-accent/data/words.txt")
-	if err != nil {
-		log.Fatal(err)
-	}
 	mediaPath, err := xdg.DataFile("japanese-accent/data/media")
 	if err != nil {
 		log.Fatal(err)
@@ -59,8 +54,7 @@ func readConfig() config {
 	}
 
 	return config{
-		WordsFilePath: wordsFilePath,
-		MediaDirPath:  mediaPath,
-		DatabaseFile:  databaseFile,
+		MediaDirPath: mediaPath,
+		DatabaseFile: databaseFile,
 	}
 }
