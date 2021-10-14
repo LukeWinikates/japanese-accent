@@ -15,7 +15,7 @@ import {useRouteMatch} from "react-router";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
-import {MoraSVG} from "../../VocabularyPractice/MoraSVG";
+import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";
 import {WordList} from "../../App/api";
 
@@ -72,7 +72,7 @@ function CategoryPage() {
                           <Typography variant="body1" component="span">{item.shiki}式</Typography>
                         </>
                       }
-                      primary={<MoraSVG word={item}/>}
+                      primary={<WordMoraSVG word={item}/>}
                     />
                     <ListItemSecondaryAction>
                       <Button

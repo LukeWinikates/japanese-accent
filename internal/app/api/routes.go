@@ -30,8 +30,10 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 			videos.POST(":videoUuid/publish", handlers.MakeVideoPublishPOST(db))
 			videos.POST(":videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
 			videos.PUT(":videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))
-			videos.DELETE(":videoUUid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
+			videos.DELETE(":videoUuid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
 		}
+
+		api.POST("/segments/:id/pitches", handlers.MakeSegmentPitchesCREATE(db))
 
 		wordLists := api.Group("/wordlists/")
 		{

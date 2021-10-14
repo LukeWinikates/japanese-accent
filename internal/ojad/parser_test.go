@@ -43,7 +43,7 @@ func TestParsing(t *testing.T) {
 	assert.Equal(t, 5, len(parse[0].Morae), nil)
 	expected := []PitchedMora{{
 		Mora:    "め",
-		HighLow: "high",
+		HighLow: "kernel",
 	}, {
 		Mora:    "が",
 		HighLow: "low",
@@ -52,7 +52,7 @@ func TestParsing(t *testing.T) {
 		HighLow: "low",
 	}, {
 		Mora:    "た",
-		HighLow: "high",
+		HighLow: "kernel",
 	}, {
 		Mora:    "い",
 		HighLow: "low",

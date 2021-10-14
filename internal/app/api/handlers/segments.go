@@ -58,7 +58,7 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 			End:   createRequest.End,
 		}
 
-		if err := db.Model(video).Association("Segments").Append(&segment); err != nil {
+		if err := db.Model(&video).Association("Segments").Append(&segment); err != nil {
 			context.Status(500)
 			log.Println(err.Error())
 			return

@@ -33,7 +33,7 @@ func Parse(resp io.Reader) ([]Pitch, error) {
 		for _, span := range spans {
 			highlow := "low"
 			if cascadia.MustCompile(".accent_top").Match(span) {
-				highlow = "high"
+				highlow = "kernel"
 			}
 			if cascadia.MustCompile(".accent_plain").Match(span) {
 				highlow = "high"

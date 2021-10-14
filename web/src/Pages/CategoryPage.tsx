@@ -18,7 +18,7 @@ import {CategoryDetails} from "../App/api";
 import useFetch from "use-http";
 import LinkIcon from '@material-ui/icons/Link';
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
-import {MoraSVG} from "../VocabularyPractice/MoraSVG";
+import {WordMoraSVG} from "../VocabularyPractice/MoraSVG";
 
 type CategoryPageParams = string[];
 type Loading = { loading: true };
@@ -95,7 +95,7 @@ function CategoryPage() {
                           <Typography variant="body1" component="span">{item.shiki}式</Typography>
                         </>
                       }
-                      primary={<MoraSVG word={item}/>}
+                      primary={<WordMoraSVG word={item}/>}
                     />
                     <ListItemSecondaryAction>
                       <Button

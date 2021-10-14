@@ -15,14 +15,14 @@ function moraAccentHigh(word: Word, index: number) {
   }
 }
 
-export function MoraSVG({word}: {
+const moraWidth = 40;
+const high = 10;
+const low = 30;
+
+export function WordMoraSVG({word}: {
   word: Word
 }) {
   const theme = useTheme();
-  const moraWidth = 40;
-  const high = 10;
-  const low = 30;
-
 
   const points = word.morae.map((m, i) => {
     const x = 20 + (i * moraWidth);
@@ -64,4 +64,43 @@ export function MoraSVG({word}: {
       }
     </svg>
   );
+}
+
+export function RawMoraSVG({morae, pattern}: { morae: string[], pattern: string }) {
+  const theme = useTheme();
+  const points = pattern.split("").map((m, i) => {
+    const x = 20 + (i * moraWidth);
+    const y = m === 'h' || m === 'k' ? high : low;
+    return {x, y}
+  });
+
+  const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
+
+  return (
+    <svg style={{display: "inline-block", width: morae.length * moraWidth, height: 80}}>
+
+      {
+        points.map((p, i) => {
+          return <circle key={`point-${i}`} cx={p.x} cy={p.y} r="5" fill={theme.palette.primary.light}/>
+        })
+      }
+      <path fill="none" stroke={theme.palette.primary.light} strokeDasharray={"1 1"} strokeWidth={2} d={path}/>
+
+      {
+        morae.map((m, i) => {
+          return (
+            <text y="60"
+                  style={{
+                    fill: pattern[i] === 'k' ? theme.palette.primary.light : theme.palette.grey["700"],
+                    fontWeight: pattern[i] === 'k' ? theme.typography.fontWeightBold : theme.typography.fontWeightMedium,
+                    fontSize: 16,
+                    textAlign: "center"
+                  }}
+                  key={`text-${i}`}
+                  x={`${(i * moraWidth) + 10}`}>
+              {m}
+            </text>);
+        })
+      }
+    </svg>);
 }

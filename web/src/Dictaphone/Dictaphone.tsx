@@ -9,6 +9,7 @@ import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AddIcon from '@material-ui/icons/Add';
 import useFetch from "use-http";
+import {RawMoraSVG} from "../VocabularyPractice/MoraSVG";
 
 const useStyles = makeStyles(() => ({
   playerControls: {
@@ -37,6 +38,9 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
 
   const {post: recordActivity} = useFetch<Activity>(
     '/api/activity');
+
+  const {post: fetchOJAD} = useFetch<Activity>(
+    '/api/segments');
 
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
@@ -111,6 +115,10 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
     post({segmentId: segment.uuid})
   }
 
+  function fetchOJADPronunciation() {
+    fetchOJAD(`${segment.uuid}/pitches`)
+  }
+
   return (
     <Grid container item spacing={1}>
       <Grid container item xs={12} spacing={1} justify="space-between">
@@ -132,6 +140,13 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
                   endIcon={<SkipNextIcon/>}>
             Next
           </Button>
+        </Grid>
+      </Grid>
+      <Grid container item xs={12} spacing={1} justify="space-between">
+        <Grid container item xs={10} spacing={2}>
+          {segment.pitch &&
+          <RawMoraSVG morae={segment.pitch.morae.split(' ')} pattern={segment.pitch.pattern}/>
+          }
         </Grid>
       </Grid>
       <Grid container item xs={6} justify="center" alignItems="center" className={classes.playerControls}>
@@ -169,6 +184,14 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
       </Grid>
 
       <Grid container item xs={12} justify="flex-end">
+
+        {!segment.pitch &&
+        <Grid item xs={2}>
+          <Button onClick={fetchOJADPronunciation}>
+            Fetch pronunciation
+          </Button>
+        </Grid>
+        }
         <Grid item xs={2}>
           <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
         </Grid>

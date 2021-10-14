@@ -42,6 +42,11 @@ export declare type CategoryDetails = {
   words: Word[],
 }
 
+export declare type Pitch = {
+  pattern: string
+  morae: string
+}
+
 export declare type Segment = {
   start: number,
   end: number,
@@ -49,6 +54,7 @@ export declare type Segment = {
   uuid: string,
   videoUuid: string,
   lastActivityAt: Date
+  pitch: Pitch
 };
 
 export declare type Highlights = {

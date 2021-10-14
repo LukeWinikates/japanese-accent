@@ -42,7 +42,7 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var video *database.Video
-		youtubeID := context.Param("videoUUid")
+		youtubeID := context.Param("videoUuid")
 		if err := db.Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
 			context.Status(404)
 			log.Printf("Error: %s\n", err.Error())
@@ -91,7 +91,7 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		youtubeID := context.Param("videoUuid")
 		if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
 			return db.Order("video_segments.start ASC")
-		}).Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
+		}).Preload("Segments.SegmentPitch").Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
 			context.Status(500)
 			log.Printf("Error: %s\n", err.Error())
 			return
@@ -112,6 +112,10 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			}
 		}
 
+		if err := db.Save(&video).Error; err != nil {
+			log.Printf("Error: %s\n", err.Error())
+		}
+
 		apiVideo := makeApiVideo(video)
 
 		context.JSON(200, apiVideo)
@@ -120,8 +124,16 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 
 func makeApiVideo(video *database.Video) types.Video {
 	apiSegs := make([]types.VideoSegment, 0)
-
 	for _, segment := range video.Segments {
+		var pitch *types.VideoSegmentPitch = nil
+
+		if segment.SegmentPitch != nil {
+			pitch = &types.VideoSegmentPitch{
+				Pattern: segment.SegmentPitch.Pattern,
+				Morae:   segment.SegmentPitch.Morae,
+			}
+		}
+
 		apiSegs = append(apiSegs, types.VideoSegment{
 			Start:          segment.Start,
 			End:            segment.End,
@@ -129,6 +141,7 @@ func makeApiVideo(video *database.Video) types.Video {
 			UUID:           segment.UUID,
 			VideoUUID:      video.YoutubeID,
 			LastActivityAt: segment.LastActivityAt,
+			Pitch:          pitch,
 		})
 	}
 

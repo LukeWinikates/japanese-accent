@@ -10,12 +10,18 @@ type Highlights struct {
 }
 
 type VideoSegment struct {
-	Start          int       `json:"start"`
-	End            int       `json:"end"`
-	Text           string    `json:"text"`
-	UUID           string    `json:"uuid"`
-	VideoUUID      string    `json:"videoUuid"`
-	LastActivityAt time.Time `json:"lastActivityAt"`
+	Start          int                `json:"start"`
+	End            int                `json:"end"`
+	Text           string             `json:"text"`
+	UUID           string             `json:"uuid"`
+	VideoUUID      string             `json:"videoUuid"`
+	LastActivityAt time.Time          `json:"lastActivityAt"`
+	Pitch          *VideoSegmentPitch `json:"pitch"`
+}
+
+type VideoSegmentPitch struct {
+	Pattern string `json:"pattern"`
+	Morae   string `json:"morae"`
 }
 
 type VideoSegmentCreate struct {

@@ -34,6 +34,7 @@ type VideoSegment struct {
 	UUID           string
 	Video          Video
 	LastActivityAt time.Time
+	SegmentPitch   *SegmentPitch `gorm:"foreignKey:SegmentID"`
 }
 
 type SegmentBoost struct {
@@ -56,6 +57,15 @@ const (
 	PracticeStart SegmentActivityType = "PracticeStart"
 )
 
+type SegmentPitch struct {
+	gorm.Model
+	SegmentID uint
+	//Segment   VideoSegment
+	Pattern string
+	Source  string
+	Morae   string
+}
+
 type Playlist struct {
 	gorm.Model
 	UUID     string
@@ -77,5 +87,5 @@ type WordList struct {
 }
 
 func InitializeDatabase(db gorm.DB) error {
-	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{}, Playlist{}, Word{}, WordList{})
+	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{}, Playlist{}, Word{}, WordList{}, SegmentPitch{})
 }

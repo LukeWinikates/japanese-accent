@@ -69,7 +69,7 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
   const clone = () => {
     let cloned = {
       text: segment.text,
-      videoId: videoId,
+      videoUuid: videoId,
       start: segment.start,
       end: segment.end,
     };

@@ -15,6 +15,14 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
+* using Forvo api to find pronunciations for individual words
+  * entering Forvo API key; enabling settings
+* Batch requesting of pronunciations
+* Improve rendering of pronunciations in Dictaphone
+* Batch deleting of imported segments
+* improvements to VTT import
+  * interactive importer
+    * automatically hide zero-duration ones
 * keyboard shortcuts for the main dictaphone interaction
 * Revamp of AppDrawer:
   * priority-based ordering for recently added videos (based on last activity date)
