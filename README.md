@@ -19,7 +19,10 @@ This git repository contains scripts and tools for making it easier to efficient
   * entering Forvo API key; enabling settings
 * Batch requesting of pronunciations
 * Improve rendering of pronunciations in Dictaphone
+  * Add OJAD attribution
 * Batch deleting of imported segments
+* Fix typesafety of golang route parameters?
+* Connect more of the HTTP calls to 
 * improvements to VTT import
   * interactive importer
     * automatically hide zero-duration ones

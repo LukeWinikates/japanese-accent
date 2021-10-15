@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/ojad"
 	"github.com/gin-gonic/gin"
@@ -53,6 +54,13 @@ func MakeSegmentPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		context.Status(204)
+		context.JSON(201, makeApiPitch(dbPitch))
+	}
+}
+
+func makeApiPitch(pitch database.SegmentPitch) types.VideoSegmentPitch {
+	return types.VideoSegmentPitch{
+		Pattern: pitch.Pattern,
+		Morae:   pitch.Morae,
 	}
 }

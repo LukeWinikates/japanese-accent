@@ -3,7 +3,7 @@ import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React, {useEffect, useState} from "react";
-import {Activity, Segment} from "../App/api";
+import {Activity, Pitch, Segment} from "../App/api";
 import SkipNextIcon from '@material-ui/icons/SkipNext';
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
@@ -20,6 +20,7 @@ const useStyles = makeStyles(() => ({
 export declare type DictaphoneProps = {
   videoId: string
   segment: Segment
+  updateSegment: (index: number, segment : Segment) => void
   setSegmentByIndex: (newIndex: number) => void
   segmentIndex: number
   lastSegmentIndex: number
@@ -27,7 +28,7 @@ export declare type DictaphoneProps = {
 
 declare type Action = "PlaySegment" | "Record" | "PlayRecording";
 
-export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex}: DictaphoneProps) => {
+export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex, updateSegment}: DictaphoneProps) => {
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
@@ -39,7 +40,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   const {post: recordActivity} = useFetch<Activity>(
     '/api/activity');
 
-  const {post: fetchOJAD} = useFetch<Activity>(
+  const {post: fetchOJAD} = useFetch<Pitch>(
     '/api/segments');
 
   function saveRecording(recording: AudioRecording) {
@@ -116,7 +117,12 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   }
 
   function fetchOJADPronunciation() {
-    fetchOJAD(`${segment.uuid}/pitches`)
+    fetchOJAD(`${segment.uuid}/pitches`).then((p: Pitch) => {
+      updateSegment(segmentIndex, {
+        ...segment,
+        pitch: p
+      })
+    })
   }
 
   return (

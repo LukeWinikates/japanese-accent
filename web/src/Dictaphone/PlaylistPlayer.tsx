@@ -71,6 +71,15 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     removeSegmentByIndex(currentSegmentIndex);
   }
 
+  function mutateSegmentAtIndex(index: number, newValue: Segment) {
+    const newSegments = [...segments];
+    newSegments[index] = newValue;
+    onSegmentsChange(newSegments);
+    if (index === currentSegmentIndex) {
+      setCurrentSegment(newValue);
+    }
+  }
+
   function removeSegmentByIndex(index: number) {
     let newSegments = [...segments];
     newSegments.splice(index, 1);
@@ -150,6 +159,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
             <Dictaphone
               videoId={currentSegment.videoUuid}
               segment={currentSegment}
+              updateSegment={mutateSegmentAtIndex}
               setSegmentByIndex={setSegmentByIndex}
               lastSegmentIndex={lastIndex}
               segmentIndex={currentSegmentIndex}/>
