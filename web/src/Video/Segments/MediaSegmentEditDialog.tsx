@@ -12,6 +12,7 @@ import DialogActions from "@material-ui/core/DialogActions";
 import {Player} from "../../Dictaphone/Player";
 import {TimeInput} from "./TimeInput";
 import {msToHumanReadable} from "../../App/time";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -38,6 +39,7 @@ const useStyles = makeStyles(theme => (
 
 export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId, segment, setSegment, previousSegmentEnd, nextSegmentStart}: MediaSegmentsEditDialogProps) {
   const {put, delete: destroy} = useFetch('/api/videos/' + videoId + "/segments/" + segment.uuid);
+  const {logError} = useServerInteractionHistory();
   const postClone = useFetch<Segment>('/api/videos/' + videoId + "/segments");
   const classes = useStyles();
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
@@ -45,6 +47,7 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
 
   useEffect(()=>{
+    setSegmentIsPlaying(false);
     if(!playerStartDebounce) {
       return
     }
@@ -75,7 +78,7 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
     };
     postClone.post(cloned).then(response => {
       onAdd(response)
-    });
+    }).catch(logError);
   };
 
   const handleTextChange = (text: string) => {

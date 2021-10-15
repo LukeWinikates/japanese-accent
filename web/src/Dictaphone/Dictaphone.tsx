@@ -10,6 +10,7 @@ import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AddIcon from '@material-ui/icons/Add';
 import useFetch from "use-http";
 import {RawMoraSVG} from "../VocabularyPractice/MoraSVG";
+import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 
 const useStyles = makeStyles(() => ({
   playerControls: {
@@ -43,6 +44,8 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   const {post: fetchOJAD} = useFetch<Pitch>(
     '/api/segments');
 
+  const {logError} = useServerInteractionHistory();
+
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
     setCurrentRecording(newRecording);
@@ -67,7 +70,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
     recordActivity({
       segmentId: segment.uuid,
       activityType: "PracticeStart"
-    });
+    }).catch(e => logError(e, "warning"));
     setActionQueue(["PlaySegment", "Record", "PlaySegment"])
     setSegmentIsPlaying(true);
   }
@@ -113,7 +116,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
   const classes = useStyles();
 
   function boostCurrentSegment() {
-    post({segmentId: segment.uuid})
+    post({segmentId: segment.uuid}).catch(e => logError(e, "warning"))
   }
 
   function fetchOJADPronunciation() {
@@ -122,7 +125,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
         ...segment,
         pitch: p
       })
-    })
+    }).catch(logError)
   }
 
   return (

@@ -5,8 +5,11 @@ import {WordList} from "../../App/api";
 import useFetch from "use-http";
 import {Loadable} from "../../App/loadable";
 import {WordListList} from "./WordListList";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 export default function WordListsIndexPage() {
+  const {logError} = useServerInteractionHistory();
+
   const {get, response} = useFetch<WordList[]>(
     "/api/wordlists");
   const [wordLists, setWordLists] = useState<Loadable<WordList[]>>("loading");
@@ -15,6 +18,8 @@ export default function WordListsIndexPage() {
       const wordLists = await get('');
       if (response.ok) {
         setWordLists({data: wordLists});
+      } else {
+        logError("could not load wordlists")
       }
     }
 

@@ -6,8 +6,10 @@ import {useRouteMatch} from "react-router";
 import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 export const YoutubeVideoPage = () => {
+  const {logError} = useServerInteractionHistory();
   const match = useRouteMatch<{ id: string }>();
   const videoId = match.params.id;
 
@@ -27,6 +29,8 @@ export const YoutubeVideoPage = () => {
     if (response.ok) {
       setVideoData(videoResponse);
       return videoResponse
+    } else {
+      logError("could not load video")
     }
   }
 

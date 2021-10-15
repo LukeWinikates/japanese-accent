@@ -18,9 +18,11 @@ import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";
 import {WordList} from "../../App/api";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 
 function CategoryPage() {
+  const {logError} = useServerInteractionHistory();
   const match = useRouteMatch<{ id: string }>();
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
 
@@ -32,6 +34,8 @@ function CategoryPage() {
       setWordListData({
         data: wordList
       });
+    } else {
+      logError("could not load wordlist")
     }
   }
 

@@ -5,8 +5,10 @@ import {VideoSummary} from "../../App/api";
 import useFetch from "use-http";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 export default function VideosIndexPage() {
+  const {logError} = useServerInteractionHistory();
   const {get, response} = useFetch<VideoSummary[]>(
     "/api/videos");
   const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
@@ -15,6 +17,8 @@ export default function VideosIndexPage() {
       const videosResponse = await get('');
       if (response.ok) {
         setVideos({data: videosResponse});
+      } else {
+        logError("could not load videos")
       }
     }
 

@@ -9,13 +9,16 @@ import {
 } from "@material-ui/core";
 import React, {useState} from "react";
 import useFetch from "use-http";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
+  const {logError} = useServerInteractionHistory();
+
   function createNewVideo() {
     post({
       url: videoURL,
       title: videoTitle,
-    }).then(onClose);
+    }).then(onClose).catch(logError);
   }
 
   const {post} = useFetch(

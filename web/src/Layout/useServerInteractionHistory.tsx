@@ -2,6 +2,7 @@ import React, {createContext, useContext, useState} from 'react';
 
 export interface HistoryEvent {
   text: string,
+  severity: "info" | "debug" | "warning" | "error";
 }
 
 let noOp = () => {
@@ -28,7 +29,7 @@ export function useServerInteractionHistory() {
 
 export declare type ServerInteractionHistory = {
   events: HistoryEvent[],
-  logError: (errorMessage: string) => void
+  logError: (errorMessage: string, severity?: "info" | "debug" | "warning" | "error") => void
   pendingHttpRequests: number,
   incrementRequests: () => void
   decrementRequests: () => void
@@ -41,10 +42,12 @@ export const EventHistoryProvider = ({children}: any) => {
   let eventHistory = {
     events,
     pendingHttpRequests,
-    logError: (error: string) => {
-      let keptHistory = [{
-        text: error
-      }, ...events.slice(9)];
+    logError: (error: string, severity: "info" | "debug" | "warning" | "error" = "error") => {
+      let newItem : HistoryEvent = {
+        text: error,
+        severity: severity,
+      };
+      let keptHistory = [newItem, ...events.slice(9)];
       setEvents(keptHistory);
     },
     incrementRequests: () => setPendingHttpRequests(pendingHttpRequests - 1),

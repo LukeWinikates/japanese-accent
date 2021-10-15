@@ -9,9 +9,10 @@ import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
+import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 function HomePage() {
-
+  const {logError} = useServerInteractionHistory();
   const {get, response} = useFetch<Highlights>(
     "/api/highlights");
 
@@ -30,15 +31,13 @@ function HomePage() {
       const highlightsResponse = await get('');
       if (response.ok) {
         setHighlights({data: highlightsResponse});
+      } else {
+        logError("unable to load homepage data")
       }
     }
 
     initialize();
   }, [highlights]);
-
-  function logErrorEvent(e: any) {
-    console.log(e)
-  }
 
   async function createQuick10AndNavigate() {
     await quick10.post({
@@ -49,7 +48,7 @@ function HomePage() {
       if (quick10.response.data === undefined) return
       history.push('/playlists/' + quick10.response.data.id)
     } else {
-      logErrorEvent(quick10.error);
+      logError("unable to create playlist");
     }
   }
 
