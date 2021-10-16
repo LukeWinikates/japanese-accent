@@ -1,5 +1,5 @@
 import {Segment, Video} from "../../App/api";
-import React from "react";
+import React, {useState} from "react";
 import {Box, Breadcrumbs, Button, Container, Typography} from "@material-ui/core";
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import LaunchIcon from '@material-ui/icons/Launch';
@@ -7,9 +7,12 @@ import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 import DoneIcon from '@material-ui/icons/Done';
 import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import AddIcon from "@material-ui/icons/Add";
+import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
+  const [isDraftDialogOpen, setIsDraftDialogOpen] = useState(false);
 
   function setVideoSegments(newSegments: Segment[]) {
     onVideoChange({
@@ -54,6 +57,12 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
           </Button>
         </Box>
 
+        <Button onClick={() => setIsDraftDialogOpen(true)}>
+          Add Segment <AddIcon/>
+        </Button>
+        {
+          isDraftDialogOpen && <DraftSegmentDialog videoId={video.videoId} onClose={()=> setIsDraftDialogOpen(false)}/>
+        }
         <PlaylistPlayer parentId={video.videoId} segments={video.segments} onSegmentsChange={setVideoSegments}/>
       </Container>
     </Box>

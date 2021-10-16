@@ -1,18 +1,16 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Dialog from '@material-ui/core/Dialog';
 import {Segment} from "../../App/api";
-import {Button, DialogContent, IconButton, makeStyles, TextField} from "@material-ui/core";
+import {Button, DialogContent, IconButton, makeStyles} from "@material-ui/core";
 import CloseIcon from '@material-ui/icons/Close';
 import TrashIcon from '@material-ui/icons/Delete';
 import CopyIcon from '@material-ui/icons/FileCopy';
 
 import useFetch from "use-http";
 import DialogActions from "@material-ui/core/DialogActions";
-import {Player} from "../../Dictaphone/Player";
-import {TimeInput} from "./TimeInput";
-import {msToHumanReadable} from "../../App/time";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {SegmentEditor} from "./SegmentEditor";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -37,29 +35,22 @@ const useStyles = makeStyles(theme => (
   }
 ));
 
-export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId, segment, setSegment, previousSegmentEnd, nextSegmentStart}: MediaSegmentsEditDialogProps) {
+export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
+  const {
+    onClose,
+    onDestroy,
+    onAdd,
+    open,
+    videoId,
+    segment,
+    setSegment,
+    previousSegmentEnd,
+    nextSegmentStart
+  } = props;
   const {put, delete: destroy} = useFetch('/api/videos/' + videoId + "/segments/" + segment.uuid);
   const {logError} = useServerInteractionHistory();
-  const postClone = useFetch<Segment>('/api/videos/' + videoId + "/segments");
+  const {post: createSegmentPOST} = useFetch<Segment>('/api/videos/' + videoId + "/segments");
   const classes = useStyles();
-  const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
-  const [preferredStartTime, setPreferredStartTime] = useState<number|undefined>(undefined);
-  const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
-
-  useEffect(()=>{
-    setSegmentIsPlaying(false);
-    if(!playerStartDebounce) {
-      return
-    }
-    const timer = setTimeout(() => {
-      setSegmentIsPlaying(true);
-    }, 300);
-    return () => clearTimeout(timer);
-  }, [playerStartDebounce])
-
-  const handleClose = () => {
-    onClose();
-  };
 
   const save = () => {
     put(segment).then(onClose);
@@ -76,44 +67,13 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
       start: segment.start,
       end: segment.end,
     };
-    postClone.post(cloned).then(response => {
+    createSegmentPOST(cloned).then(response => {
       onAdd(response)
     }).catch(logError);
   };
 
-  const handleTextChange = (text: string) => {
-    setSegment({
-      ...segment,
-      text
-    });
-  };
-
-  const handleStartChange = (newStart: number) => {
-    const start = newStart;
-    const end = start >= segment.end ? start + 1000 : segment.end
-    setSegment({
-      ...segment,
-      start,
-      end
-    });
-  };
-
-  const handleEndChange = (newEnd: number) => {
-    const end = newEnd;
-    setSegment({
-      ...segment,
-      end
-    });
-    setPreferredStartTime(newEnd - 1000);
-    setPlayerStartDebounce(new Date())
-  };
-
-  function audioUrl() {
-    return `/media/audio/${videoId}` + (segment ? `#t=${segment.start / 1000},${segment.end / 1000}` : "");
-  }
-
   return (
-    <Dialog onClose={handleClose}
+    <Dialog onClose={onClose}
             aria-labelledby="simple-dialog-title"
             disableEscapeKeyDown={false}
             open={open}
@@ -126,27 +86,12 @@ export function MediaSegmentEditDialog({onClose, onDestroy, onAdd, open, videoId
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Player src={audioUrl()}
-                duration={{startSec: segment.start, endSec: segment.end}}
-                playing={segmentIsPlaying}
-                onPlayerStateChanged={setSegmentIsPlaying}
-                preferredStartTime={preferredStartTime}
+        <SegmentEditor
+          segment={segment}
+          setSegment={setSegment}
+          previousSegmentEnd={previousSegmentEnd}
+          nextSegmentStart={nextSegmentStart}
         />
-
-        <TimeInput label="Start" onChange={handleStartChange} value={segment.start}/>
-        <Button onClick={() => handleStartChange(previousSegmentEnd)}>
-          Align Start to Previous Segment End: {msToHumanReadable(previousSegmentEnd)}
-        </Button>
-
-        <TimeInput label="End" onChange={handleEndChange} value={segment.end}/>
-        <Button onClick={() => handleEndChange(nextSegmentStart)}>
-          Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}
-        </Button>
-        <TextField margin="normal"
-                   value={segment.text} fullWidth={true}
-                   multiline={true}
-                   onChange={(event) => handleTextChange(event.target.value)}/>
-
       </DialogContent>
       <DialogActions>
         <IconButton onClick={del}>

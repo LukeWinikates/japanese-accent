@@ -142,10 +142,6 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
 
   let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
 
-  console.log(currentSegmentIndex);
-  console.log(segments.length);
-  console.log(segmentsProgress);
-
   return (
     <Box>
       <Card>
@@ -157,7 +153,6 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
               #{currentSegmentIndex + 1} / {segments.length}
             </Typography>
             <Dictaphone
-              videoId={currentSegment.videoUuid}
               segment={currentSegment}
               updateSegment={mutateSegmentAtIndex}
               setSegmentByIndex={setSegmentByIndex}

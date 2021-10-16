@@ -11,6 +11,7 @@ import AddIcon from '@material-ui/icons/Add';
 import useFetch from "use-http";
 import {RawMoraSVG} from "../VocabularyPractice/MoraSVG";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
+import audioURL from "../App/audioURL";
 
 const useStyles = makeStyles(() => ({
   playerControls: {
@@ -19,7 +20,6 @@ const useStyles = makeStyles(() => ({
 }));
 
 export declare type DictaphoneProps = {
-  videoId: string
   segment: Segment
   updateSegment: (index: number, segment : Segment) => void
   setSegmentByIndex: (newIndex: number) => void
@@ -29,7 +29,7 @@ export declare type DictaphoneProps = {
 
 declare type Action = "PlaySegment" | "Record" | "PlayRecording";
 
-export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, lastSegmentIndex, updateSegment}: DictaphoneProps) => {
+export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmentIndex, updateSegment}: DictaphoneProps) => {
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
@@ -56,10 +56,6 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
     setCurrentRecording(null);
     setActionQueue([]);
   }, [segment])
-
-  function audioUrl() {
-    return `/media/audio/${videoId}` + (segment ? `#t=${segment.start / 1000},${segment.end / 1000}` : "");
-  }
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -165,7 +161,7 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
           </Typography>
         </Grid>
         <Grid item xs={11}>
-          <Player src={audioUrl()}
+          <Player src={audioURL(segment)}
                   duration={{startSec: segment.start, endSec: segment.end}}
                   onPlayerStateChanged={setSegmentIsPlaying}
                   playing={segmentIsPlaying}
@@ -241,12 +237,6 @@ export const Dictaphone = ({videoId, segment, setSegmentByIndex, segmentIndex, l
             Next
           </Button>
         </Grid>
-
-        {/*<Button variant="contained" disabled={segmentIndex === lastSegmentIndex}*/}
-        {/*        onClick={() => setSegmentByIndex(segmentIndex + 1)}*/}
-        {/*        endIcon={<><SkipNextIcon/><RecordVoiceOverIcon/></>}>*/}
-        {/*  Next*/}
-        {/*</Button>*/}
       </Grid>
     </Grid>
   );
