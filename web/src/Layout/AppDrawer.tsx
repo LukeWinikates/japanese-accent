@@ -7,6 +7,7 @@ import NotesIcon from '@material-ui/icons/Notes';
 import {Link} from "react-router-dom";
 import useFetch from "use-http";
 import {StatusIcon} from "../Video/StatusIcon";
+import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
 type AppDrawerProps = {
   open: boolean,
@@ -21,7 +22,7 @@ export function DummyDrawer() {
 
 export function AppDrawer({open, handleClose}: AppDrawerProps) {
   const [categories, setCategories] = useState<Highlights | null>(null);
-  // const {setter: setStatus} = useStatus();
+  const {logError} = useServerInteractionHistory();
 
   const {get, response} = useFetch('/api/highlights');
 
@@ -31,7 +32,7 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
   }
 
   useEffect(() => {
-    initialize()
+    initialize().catch(logError)
   }, []);
 
   if (categories === null) {
@@ -79,16 +80,6 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
                 <ListItemText primary={wordList.name}/>
               </Link>
             </ListItem>
-            {/*<List>*/}
-            {/*  {*/}
-            {/*    category.categories.map((c, i) => (*/}
-            {/*      <ListItem button key={`${index}-${i}`} className={classes.nested}>*/}
-            {/*        <ListItemIcon>{<NoteIcon/>}</ListItemIcon>*/}
-            {/*        <ListItemText primary={c.name}/>*/}
-            {/*      </ListItem>*/}
-            {/*    ))*/}
-            {/*  }*/}
-            {/*</List>*/}
           </React.Fragment>
         ))}
       </List>

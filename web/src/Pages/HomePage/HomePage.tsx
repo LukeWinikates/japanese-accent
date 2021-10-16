@@ -11,7 +11,7 @@ import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
-function HomePage() {
+export default function HomePage() {
   const {logError} = useServerInteractionHistory();
   const {get, response} = useFetch<Highlights>(
     "/api/highlights");
@@ -36,7 +36,7 @@ function HomePage() {
       }
     }
 
-    initialize();
+    initialize().catch(logError);
   }, [highlights]);
 
   async function createQuick10AndNavigate() {
@@ -72,11 +72,11 @@ function HomePage() {
                 <Grid item xs={6}>
                   <Typography variant="h4">
                     Youtube Videos
-                    <Typography variant="subtitle1">
-                      <Link to="/videos">
-                        See all
-                      </Link>
-                    </Typography>
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <Link to="/videos">
+                      See all
+                    </Link>
                   </Typography>
                   {
                     highlights === "loading" ? null :
@@ -86,11 +86,11 @@ function HomePage() {
                 <Grid item xs={6}>
                   <Typography variant="h4">
                     Word Lists
-                    <Typography variant="subtitle1">
-                      <Link to="/wordlists">
-                        See all
-                      </Link>
-                    </Typography>
+                  </Typography>
+                  <Typography variant="subtitle1">
+                    <Link to="/wordlists">
+                      See all
+                    </Link>
                   </Typography>
                   {
                     highlights === "loading" ? null :
@@ -115,5 +115,3 @@ function HomePage() {
     </>
   );
 }
-
-export default HomePage;
