@@ -45,7 +45,26 @@ func GetPitches(phrase string) ([]Pitch, error) {
 
 	if err != nil {
 		log.Println(err.Error())
+		return nil, err
 	}
 
-	return Parse(resp.Body)
+	parseResult, err := Parse(resp.Body)
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
+
+	return normalize(phrase, parseResult), nil
+}
+
+func normalize(phrase string, parseResult []Pitch) []Pitch {
+	normalized := make([]PitchedMora, 0)
+	for _, pitch := range parseResult {
+		for _, mora := range pitch.Morae {
+			normalized = append(normalized, mora)
+		}
+	}
+	return []Pitch{
+		{Morae: normalized},
+	}
 }

@@ -39,7 +39,7 @@ func Parse(resp io.Reader) ([]Pitch, error) {
 				highlow = "high"
 			}
 			morae = append(morae, PitchedMora{
-				Mora:    cascadia.Query(span, cascadia.MustCompile(".char")).FirstChild.Data,
+				Mora:    parseChars(span),
 				HighLow: highlow,
 			})
 		}
@@ -49,4 +49,12 @@ func Parse(resp io.Reader) ([]Pitch, error) {
 	}
 
 	return pitches, nil
+}
+
+func parseChars(span *html.Node) string {
+	moraString := ""
+	for _, node := range cascadia.QueryAll(span, cascadia.MustCompile(".char")) {
+		moraString = moraString + node.FirstChild.Data
+	}
+	return moraString
 }
