@@ -15,6 +15,18 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
+* drop "URL" field from video database entity
+* Fix CI on GitHub
+* improvements to VTT import
+  * interactive importer
+  * automatically collapse zero-duration ones
+  * allow opting out of VTT import
+* alternative segment editor concept
+  * positioning splits within the audio
+    * get duration from browser audio api
+    * generate waveform without playing back?
+    * dragging to position "splits"
+    * enter full text, then split text into chunks
 * using Forvo api to find pronunciations for individual words
   * entering Forvo API key; enabling settings
 * Batch requesting of pronunciations
@@ -22,10 +34,6 @@ This git repository contains scripts and tools for making it easier to efficient
   * Add OJAD attribution
 * Batch deleting of imported segments
 * Fix typesafety of golang route parameters?
-* Connect more of the HTTP calls to 
-* improvements to VTT import
-  * interactive importer
-    * automatically hide zero-duration ones
 * keyboard shortcuts for the main dictaphone interaction
 * Revamp of AppDrawer:
   * priority-based ordering for recently added videos (based on last activity date)
