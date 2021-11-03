@@ -5,7 +5,6 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
-	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -23,8 +22,7 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 		video := &database.Video{
-			YoutubeID:      youtube.VideoIDFromURL(videoCreateRequest.URL),
-			URL:            videoCreateRequest.URL,
+			YoutubeID:      videoCreateRequest.YoutubeID,
 			Title:          videoCreateRequest.Title,
 			Segments:       nil,
 			VideoStatus:    database.Pending,

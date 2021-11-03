@@ -19,12 +19,12 @@ export default function HomePage() {
   const quick10 = useFetch<Playlist>("/api/playlists");
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
+  const history = useHistory();
 
   function closeDialog() {
     setDialogOpen(false);
   }
 
-  const history = useHistory();
 
   useEffect(() => {
     async function initialize() {

@@ -32,8 +32,8 @@ type VideoSegmentCreate struct {
 }
 
 type VideoCreate struct {
-	URL   string `json:"url"`
-	Title string `json:"title"`
+	YoutubeID string `json:"youtubeId"`
+	Title     string `json:"title"`
 }
 
 type VideoSummary struct {

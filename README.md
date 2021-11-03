@@ -43,9 +43,6 @@ This git repository contains scripts and tools for making it easier to efficient
   * automatically push end out by 1s if beginning < end
     * show some indicator that this is happening
   * batch delete
-* Youtube video add dialog
-  * support youtube link, short link, or id
-  * make copyable snippet text area for the youtube-dl command
 * Instrumentation
   * record each listen event
     * last practiced at column on segment
