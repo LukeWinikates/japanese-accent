@@ -5,6 +5,7 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
+	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
@@ -145,7 +146,7 @@ func makeApiVideo(video *database.Video) types.Video {
 
 	return types.Video{
 		Title:          video.Title,
-		URL:            video.URL,
+		URL:            youtube.URL(video.YoutubeID),
 		VideoID:        video.YoutubeID,
 		VideoStatus:    video.VideoStatus,
 		Segments:       apiSegs,

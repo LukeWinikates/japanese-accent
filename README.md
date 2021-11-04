@@ -15,7 +15,6 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
-* drop "URL" field from video database entity
 * Fix CI on GitHub
 * improvements to VTT import
   * interactive importer
@@ -61,7 +60,7 @@ This git repository contains scripts and tools for making it easier to efficient
     * things not yet studied
     * things marked for re-review
     * things last studied further back
-
+* Create practice recordings, and place them into a spotify-accessible folder
 
 ## Redesign Ideas
 * allow tagging of videos, segments, words, word lists

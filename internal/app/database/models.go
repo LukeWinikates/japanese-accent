@@ -9,7 +9,6 @@ import (
 type Video struct {
 	gorm.Model
 	YoutubeID      string
-	URL            string
 	Title          string
 	Segments       []VideoSegment
 	VideoStatus    VideoStatus

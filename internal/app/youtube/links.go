@@ -1,7 +1,5 @@
 package youtube
 
-import "strings"
-
-func VideoIDFromURL(URL string) string {
-	return strings.Split(URL, "=")[1]
+func URL(id string) string {
+	return "https://www.youtube.com/watch?v=" + id
 }
