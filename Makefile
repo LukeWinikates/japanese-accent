@@ -1,7 +1,10 @@
-server:
-	go build -o bin/server cmd/server/cmd.go
+bin/server:
+	go build -o $@ cmd/server/cmd.go
 
-.PHONY: test watch
+.PHONY: test watch integration-test
+
+integration-test:
+	go test ./... --tags=integration
 
 test:
 	go test -v ./... -short
