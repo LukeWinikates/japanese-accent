@@ -51,7 +51,10 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var playlist database.Playlist
 		playlistID := context.Param("id")
-		if err := db.Preload("Segments.Video").Where("uuid = ?", playlistID).First(&playlist).Error; err != nil {
+		if err := db.Preload("Segments.Video").
+			Preload("Segments.SegmentPitch").
+			Where("uuid = ?", playlistID).
+			First(&playlist).Error; err != nil {
 			context.Status(500)
 			log.Printf("Error: %s\n", err.Error())
 			return
@@ -60,12 +63,18 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 		apiSegments := make([]types.VideoSegment, len(playlist.Segments))
 
 		for i, segment := range playlist.Segments {
+			var maybePitch *types.VideoSegmentPitch
+			if segment.SegmentPitch != nil {
+				var pitch = makeApiPitch(*segment.SegmentPitch)
+				maybePitch = &pitch
+			}
 			apiSegments[i] = types.VideoSegment{
 				Start:     segment.Start,
 				End:       segment.End,
 				Text:      segment.Text,
 				UUID:      segment.UUID,
 				VideoUUID: segment.Video.YoutubeID,
+				Pitch:     maybePitch,
 			}
 		}
 
