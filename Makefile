@@ -1,7 +1,8 @@
-bin/server:
-	go build -o $@ cmd/server/cmd.go
-
 .PHONY: test watch integration-test
+
+.PHONY: server
+server:
+	go build -o bin/server cmd/server/cmd.go
 
 integration-test:
 	go test ./... --tags=integration
