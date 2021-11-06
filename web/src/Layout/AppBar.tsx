@@ -4,6 +4,7 @@ import React from "react";
 import {makeStyles} from "@material-ui/core/styles";
 import NotificationsIcon from '@material-ui/icons/Notifications';
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
+import {Link} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -14,6 +15,10 @@ const useStyles = makeStyles((theme) => ({
   },
   title: {
     flexGrow: 1,
+  },
+  link: {
+    color: 'inherit',
+    textDecoration: 'none',
   },
   offset: theme.mixins.toolbar,
 }));
@@ -32,7 +37,9 @@ export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
             <MenuIcon/>
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            Japanese Accent Practice
+            <Link to={`/`} className={classes.link}>
+              Japanese Accent Practice
+            </Link>
           </Typography>
           {hasPendingRequest && <CircularProgress color="inherit" size={18}/>}
           <IconButton edge="start" className={classes.menuButton} color="inherit" aria-label="menu">

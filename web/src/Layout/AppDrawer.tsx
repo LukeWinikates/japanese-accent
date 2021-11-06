@@ -43,6 +43,7 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
     <Drawer
       anchor="left"
       open={open}
+      onClick={handleClose}
       onClose={handleClose}>
       <List>
         <ListItem button>
@@ -56,7 +57,9 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
       </List>
       <Divider/>
       <List>
-        <ListSubheader disableSticky={true}>Videos</ListSubheader>
+        <ListSubheader disableSticky={true}>
+          Videos <Link to="/videos">(see all)</Link>
+        </ListSubheader>
         {categories.videos.map((video, index) => (
           <React.Fragment key={index}>
             <ListItem button>
@@ -71,7 +74,9 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
       </List>
       <Divider/>
       <List>
-        <ListSubheader disableSticky={true}>Word Lists</ListSubheader>
+        <ListSubheader disableSticky={true}>
+          Word Lists <Link to="/wordlists">(see all)</Link>
+        </ListSubheader>
         {categories.wordLists.map((wordList, index) => (
           <React.Fragment key={index}>
             <ListItem button>

@@ -15,7 +15,6 @@ This git repository contains scripts and tools for making it easier to efficient
 
 
 ## Current work:
-* Fix CI on GitHub
 * improvements to VTT import
   * interactive importer
   * automatically collapse zero-duration ones
@@ -36,7 +35,6 @@ This git repository contains scripts and tools for making it easier to efficient
 * keyboard shortcuts for the main dictaphone interaction
 * Revamp of AppDrawer:
   * priority-based ordering for recently added videos (based on last activity date)
-  * list pages for videos
   * Remove category pages for now?
 * Revamp of Home Page:
   * Design for new user welcome
