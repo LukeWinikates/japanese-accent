@@ -16,7 +16,7 @@ export default function HomePage() {
   const {get, response} = useFetch<Highlights>(
     "/api/highlights");
 
-  const quick10 = useFetch<Playlist>("/api/playlists");
+  const autoPlaylist = useFetch<Playlist>("/api/playlists");
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const history = useHistory();
@@ -39,14 +39,14 @@ export default function HomePage() {
     initialize().catch(logError);
   }, [highlights]);
 
-  async function createQuick10AndNavigate() {
-    await quick10.post({
-      count: 10
+  async function createQuick20AndNavigate() {
+    await autoPlaylist.post({
+      count: 20
     });
 
-    if (quick10.response.ok) {
-      if (quick10.response.data === undefined) return
-      history.push('/playlists/' + quick10.response.data.id)
+    if (autoPlaylist.response.ok) {
+      if (autoPlaylist.response.data === undefined) return
+      history.push('/playlists/' + autoPlaylist.response.data.id)
     } else {
       logError("unable to create playlist");
     }
@@ -107,9 +107,9 @@ export default function HomePage() {
         <AddIcon/>
         Add YouTube video
       </Fab>
-      <Fab variant="extended" onClick={createQuick10AndNavigate}>
+      <Fab variant="extended" onClick={createQuick20AndNavigate}>
         <AddIcon/>
-        Quick 10
+        Quick 20
       </Fab>
       <YouTubeVideoAddModal open={dialogOpen} onClose={closeDialog}/>
     </>
