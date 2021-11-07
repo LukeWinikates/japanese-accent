@@ -33,8 +33,9 @@ export declare type Video = {
   url: string,
   videoId: string,
   segments: Segment[],
-  videoStatus: VideoStatus;
+  videoStatus: VideoStatus
   lastActivityAt: string
+  text: string
 }
 
 export declare type CategoryDetails = {

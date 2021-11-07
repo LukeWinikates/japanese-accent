@@ -38,6 +38,34 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
+func MakeVideoPUT(db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+
+		var videoEdit types.VideoEdit
+		if err := context.BindJSON(&videoEdit); err != nil {
+			context.Status(500)
+			return
+		}
+
+		var video *database.Video
+		youtubeID := context.Param("videoUuid")
+		if err := db.Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
+			context.Status(404)
+			log.Printf("Error: %s\n", err.Error())
+			return
+		}
+
+		video.Text = videoEdit.Text
+		video.Title = videoEdit.Title
+
+		if err := db.Save(video).Error; err != nil {
+			log.Println(err.Error())
+			context.Status(500)
+			return
+		}
+	}
+}
+
 func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var video *database.Video
@@ -151,6 +179,7 @@ func makeApiVideo(video *database.Video) types.Video {
 		VideoStatus:    video.VideoStatus,
 		Segments:       apiSegs,
 		LastActivityAt: video.LastActivityAt,
+		Text:           video.Text,
 	}
 }
 

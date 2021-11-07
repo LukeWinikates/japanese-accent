@@ -12,6 +12,7 @@ type Video struct {
 	Title          string
 	Segments       []VideoSegment
 	VideoStatus    VideoStatus
+	Text           string
 	LastActivityAt time.Time
 }
 

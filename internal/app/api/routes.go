@@ -27,6 +27,7 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 			videos.POST("", handlers.MakeVideoPOST(db))
 			videos.GET("", handlers.MakeVideoListGET(db))
 			videos.GET(":videoUuid", handlers.MakeVideoGET(mediaDirPath, db))
+			videos.PUT(":videoUuid", handlers.MakeVideoPUT(db))
 			videos.POST(":videoUuid/publish", handlers.MakeVideoPublishPOST(db))
 			videos.POST(":videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
 			videos.PUT(":videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))

@@ -35,6 +35,10 @@ type VideoCreate struct {
 	YoutubeID string `json:"youtubeId"`
 	Title     string `json:"title"`
 }
+type VideoEdit struct {
+	Title string `json:"title"`
+	Text  string `json:"text"`
+}
 
 type VideoSummary struct {
 	Title          string    `json:"title"`
@@ -51,6 +55,7 @@ type Video struct {
 	VideoStatus    string         `json:"videoStatus"`
 	Segments       []VideoSegment `json:"segments"`
 	LastActivityAt time.Time      `json:"lastActivityAt"`
+	Text           string         `json:"text"`
 }
 
 type Word struct {
