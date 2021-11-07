@@ -1,53 +1,37 @@
-import {Video} from "../../App/api";
-import React, {ChangeEvent, useEffect, useState} from "react";
-import {Box, Breadcrumbs, Button, CircularProgress, Container, Grid, TextField, Typography} from "@material-ui/core";
+import {Segment, Video} from "../../App/api";
+import React, {useState} from "react";
+import {Box, Breadcrumbs, Button, Container, Grid, IconButton, Switch, Typography} from "@material-ui/core";
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import LaunchIcon from '@material-ui/icons/Launch';
 import DoneIcon from '@material-ui/icons/Done';
 import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import CheckIcon from '@material-ui/icons/Check';
-import ErrorIcon from '@material-ui/icons/Error';
+import {SegmentEditor} from "../../Video/Segments/SegmentEditor";
+import {AutoSavingTextField} from "./AutoSavingTextField";
+import {DragDropComposableText} from "./DragDropComposableText";
 
-const Indicator = ({status}:{status:IndicatorStatus}) => {
-  switch (status){
-    case "busy":
-      return <CircularProgress size={16} color="inherit" style={{padding: 5} }/>;
-    case "error":
-      return <ErrorIcon/>;
-    case "idle":
-      return <></>
-    case "success":
-      return <CheckIcon color="primary"/>;
-  }
+function PlayableSegment({
+                           segment,
+                           setCurrentSegment
+                         }: { segment: Segment, setCurrentSegment: (segment: Segment) => void }) {
+  return (
+    <div key={segment.uuid} onClick={() => setCurrentSegment(segment)}>
+      {segment.start}
+      {segment.text}
+      {segment.end}
+      <IconButton>
+      </IconButton>
+    </div>
+  );
 }
-
-type IndicatorStatus = "idle" | "busy" | "success" | "error";
 
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
   const publish = useFetch('/api/videos/' + video.videoId + '/publish');
   const {put} = useFetch('/api/videos/' + video.videoId);
-  // const publish = useFetch('/api/videos/' + video.videoId + '/publish');
-  const [lastTextEditTime, setLastTextEditTime] = useState<Date | undefined>();
-  const [networkActivity, setNetworkActivity] = useState<IndicatorStatus>("idle");
-
-  useEffect(() => {
-    if (!lastTextEditTime) {
-      return
-    }
-    const timer = setTimeout(() => {
-      saveText();
-    }, 2000);
-    return () => clearTimeout(timer);
-  }, [lastTextEditTime])
-
-  const saveText = () => {
-    put(video).then(() => setNetworkActivity("success")).catch(e => {
-      logError(e);
-      setNetworkActivity("error")
-    });
-  }
+  const [currentSegment, setCurrentSegment] = useState<Segment>(video.segments[0]);
+  const [currentSegmentIndex, setCurrentSegmentIndex] = useState(0);
+  const [mode, setMode] = useState<"editing" | "composing">("editing");
 
   async function markComplete() {
     await publish.post()
@@ -61,14 +45,32 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
     logError(publish.error?.message);
   }
 
-  const setVideoText = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setNetworkActivity("busy")
-    const {value} = event.target;
+  const modifyCurrentSegment = (segment: Segment) => {
+    const editedSegment = segment;
+    let newSegments = [...video.segments];
+    newSegments.splice(currentSegmentIndex, 1, editedSegment);
     onVideoChange({
       ...video,
-      text: value
+      segments: newSegments
     });
-    setLastTextEditTime(new Date());
+    setCurrentSegment(editedSegment)
+  }
+
+  const setVideoText = (text: string) => {
+    onVideoChange({
+      ...video,
+      text
+    });
+  }
+
+  const saveVideo = () => {
+    return put({
+      ...video,
+    });
+  };
+
+  function toggleMode() {
+    setMode(mode === "editing" ? "composing" : "editing");
   }
 
   return (
@@ -92,22 +94,34 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
             Open in YouTube
           </Button>
         </Box>
+        <SegmentEditor
+          segment={currentSegment}
+          setSegment={modifyCurrentSegment}
+          previousSegmentEnd={video.segments[currentSegmentIndex - 1]?.end ?? 0}
+          nextSegmentStart={video.segments[currentSegmentIndex + 1]?.start ?? 0}
+        />
 
-        <Grid container>
-          <Grid item xs={6}>
+        <Grid container style={{height: 600}}>
+          <Grid item xs={6} style={{overflowY:"auto", height:"100%"}}>
             {
-              video.segments.map(seg => {
-                return (<div key={seg.uuid}>
-                  {seg.start}
-                  {seg.text}
-                  {seg.end}
-                </div>);
-              })
+              video.segments.map(segment => <PlayableSegment segment={segment} setCurrentSegment={setCurrentSegment}
+                                                             key={segment.uuid}/>)
             }
           </Grid>
-          <Grid item xs={6}>
-            <TextField multiline rows={15} fullWidth variant='outlined' onChange={setVideoText} value={video.text}/>
-            <Indicator status={networkActivity}/>
+          <Grid item xs={6} style={{overflowY:"auto", height:"100%"}}>
+            {
+              mode === "editing" ?
+                <AutoSavingTextField value={video.text} setText={setVideoText} save={saveVideo}/> :
+                <DragDropComposableText text={video.text}/>
+            }
+            <Grid component="label" container alignItems="center" spacing={1}>
+              <Grid item>Editing</Grid>
+              <Grid item>
+                <Switch checked={mode === "composing"} onChange={toggleMode} name="mode" color="primary"/>
+              </Grid>
+              <Grid item>Composing</Grid>
+            </Grid>
+
           </Grid>
         </Grid>
 
