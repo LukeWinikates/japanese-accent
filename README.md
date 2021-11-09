@@ -16,6 +16,8 @@ This git repository contains scripts and tools for making it easier to efficient
 
 ## Current work:
 * New Editor Experience
+  * VTT import goes to a different table (not "segments")
+  * Drag-drop 'trashcan' section for destroying unwanted segments
   * improvements to VTT import
     * interactive importer
     * automatically collapse zero-duration ones
@@ -27,13 +29,16 @@ This git repository contains scripts and tools for making it easier to efficient
       * dragging to position "splits"
       * enter full text, then split text into chunks
 
+* "Video Vocabulary"
+
 * Practice Experience
   * keyboard shortcuts for the main dictaphone interaction 
   * generating UI feedback sounds:
     * https://modernweb.com/creating-sound-web-audio-api-oscillators/
   * automatically finish recording after a certain amount of time has passed and the audio falls silent
 
-* Individual Words
+* Vocabulary Items
+  * Videos can have associated vocabulary items. individual segments can as well. 
   * using Forvo api to find pronunciations for individual words
     * entering Forvo API key; enabling settings
 
@@ -44,13 +49,16 @@ This git repository contains scripts and tools for making it easier to efficient
   * Revamp of Home Page:
       * Recently created playlists, top videos
           * possibly spotify-style horizontal lists, rather than vertical?
-  * Filtering videos by "ready" state    
+      * Only show videos that are ready to practice by default.   
+      * remove "word lists" here for now - these are low value     
 
 * Spectrograph
   * figure out how to do a spectrograph visualization 
 
 * Editing Videos
   * batch delete segments? 
+  * hamburger icon for each item on the playlist - use that for delete/jump to youtube
+  * open segment in youtube at the position, using `https://youtu.be/$VIDEO_ID?t=89` pattern
 
 * Create pracitce recordings for on the go
   * generate MP3 and put it in a specified sharing directory
@@ -68,6 +76,7 @@ This git repository contains scripts and tools for making it easier to efficient
   * query uses boosts, inclusion in other playlists, and recent study time
   * how do we indicate "I'm satisfied" with my practicing for now?
     * "un"-boosting?
+  * maybe boosting is like "queue 10 practices" - that could be a clearer call to action for that button
 
 * Pitch Indicator
   * allow manual editing 
