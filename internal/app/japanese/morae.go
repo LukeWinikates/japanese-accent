@@ -1,5 +1,7 @@
 package japanese
 
+import "strings"
+
 func MoraCount(furigana string) int {
 	count := 0
 	for _, r := range furigana {
@@ -64,4 +66,42 @@ func AnalyzeShiki(accentMora *int, morae []string) Shiki {
 	default:
 	}
 	return 中高
+}
+
+func PatternString(accentMora int, wordLength int) string {
+	value := ""
+	if accentMora == 0 {
+		value += "l"
+		for i := 1; i < wordLength; i++ {
+			value += "h"
+		}
+		return value
+	}
+
+	if accentMora == 1 {
+		value += "k"
+		for i := 1; i < wordLength; i++ {
+			value += "l"
+		}
+		return value
+	}
+
+	value += "l"
+
+	for i := 1; i < wordLength; i++ {
+		if i+1 < accentMora {
+			value += "h"
+			continue
+		}
+		if i+1 == accentMora {
+			value += "k"
+			continue
+		}
+		value += "l"
+	}
+	return value
+}
+
+func AccentedMoraFromPattern(pattern string) int {
+	return strings.Index(pattern, "k") + 1
 }

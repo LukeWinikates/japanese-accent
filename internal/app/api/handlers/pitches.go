@@ -7,7 +7,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
-	"strings"
 )
 
 func MakeSegmentPitchesCREATE(db gorm.DB) gin.HandlerFunc {
@@ -34,17 +33,11 @@ func MakeSegmentPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 			context.Status(500)
 		}
 
-		pitchString := ""
-		moraSlice := make([]string, 0)
-
-		for _, mora := range pitches[0].Morae {
-			moraSlice = append(moraSlice, mora.Mora)
-			pitchString = pitchString + string(mora.HighLow[0])
-		}
+		normalized := ojad.MakePitchAndMoraStrings(pitches)
 
 		dbPitch := database.SegmentPitch{
-			Morae:   strings.Join(moraSlice, " "),
-			Pattern: pitchString,
+			Morae:   normalized.Morae,
+			Pattern: normalized.Pitch,
 			Source:  "OJAD",
 		}
 		if err := db.Model(&segment).Association("SegmentPitch").Replace(&dbPitch); err != nil {

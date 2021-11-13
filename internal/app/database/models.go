@@ -3,8 +3,14 @@ package database
 import (
 	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
+	"log"
 	"time"
 )
+
+type Settings struct {
+	gorm.Model
+	ForvoApiKey *string
+}
 
 type Video struct {
 	gorm.Model
@@ -14,6 +20,7 @@ type Video struct {
 	VideoStatus    VideoStatus
 	Text           string
 	LastActivityAt time.Time
+	Words          []Word `gorm:"many2many:video_words"`
 }
 
 type VideoStatus = string
@@ -73,11 +80,21 @@ type Playlist struct {
 	Segments []VideoSegment `gorm:"many2many:playlist_segments"`
 }
 
+type AudioLink struct {
+	gorm.Model
+	WordID               uint
+	SpeakerGender        string
+	SpeakerUsername      string
+	URL                  string
+	ForvoPronunciationID string
+}
+
 type Word struct {
 	gorm.Model
 	DisplayText string
 	Furigana    string
 	AccentMora  *int
+	AudioLinks  []AudioLink
 }
 
 type WordList struct {
@@ -87,5 +104,22 @@ type WordList struct {
 }
 
 func InitializeDatabase(db gorm.DB) error {
-	return db.AutoMigrate(Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{}, Playlist{}, Word{}, WordList{}, SegmentPitch{})
+	return db.AutoMigrate(
+		Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{},
+		Playlist{}, Word{}, WordList{}, SegmentPitch{}, AudioLink{},
+
+		Settings{},
+	)
+}
+
+func EnsureDatabaseReady(db gorm.DB) error {
+	var settings *Settings
+	if err := db.First(&settings).Error; err != nil {
+		log.Println("initializing settings")
+		if err := db.Save(&Settings{}).Error; err != nil {
+			return err
+		}
+	}
+
+	return nil
 }

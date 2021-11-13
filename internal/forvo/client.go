@@ -3,12 +3,18 @@ package forvo
 import (
 	"encoding/json"
 	"fmt"
-	"golang.org/x/net/idna"
 	"net/http"
+	url2 "net/url"
 )
+
+const urlFormat = "https://apifree.forvo.com/action/word-pronunciations/format/json/word/%s/id_lang_speak/76/key/%s/"
 
 type Client struct {
 	key string
+}
+
+func MakeClient(key string) Client {
+	return Client{key: key}
 }
 
 //goland:noinspection SpellCheckingInspection
@@ -36,12 +42,9 @@ type PronunciationList struct {
 
 func (client Client) GetPronunciations(word string) ([]Pronunciation, error) {
 	var pronunciations PronunciationList
-	ascii, err := idna.ToASCII(word)
-	if err != nil {
-		return nil, err
-	}
-
-	resp, err := http.Get(client.wordUrl(ascii))
+	url := client.wordUrl(word)
+	fmt.Println(url)
+	resp, err := http.Get(url)
 
 	if err != nil {
 		return nil, err
@@ -59,6 +62,8 @@ func (client Client) GetPronunciations(word string) ([]Pronunciation, error) {
 	return pronunciations.Items, err
 }
 
-func (client Client) wordUrl(ascii string) string {
-	return fmt.Sprintf("https://apifree.forvo.com/action/word-pronunciations/format/json/word/%s/id_lang_speak/76/key/%s/", ascii, client.key)
+func (client Client) wordUrl(word string) string {
+	return fmt.Sprintf(urlFormat,
+		url2.QueryEscape(word),
+		client.key)
 }

@@ -2,11 +2,20 @@ package api
 
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/handlers"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
+	"log"
 )
 
 func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
+
+	settings, err := LoadSettings(db)
+
+	if err != nil {
+		log.Fatalln("unable to load settings")
+	}
+
 	engine.Static("/public", "./web/public")
 	engine.StaticFile("/", "./web/public/index.html")
 
@@ -21,6 +30,10 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 
 		api.POST("/playlists", handlers.MakePlaylistPost(db))
 		api.GET("/playlists/:id", handlers.MakePlaylistGET(db))
+
+		api.POST("word-analysis", handlers.MakeWordAnalysisCREATE(db, settings))
+
+		api.POST("video-word-links", handlers.MakeVideoWordLinkCREATE(db))
 
 		videos := api.Group("/videos/")
 		{
@@ -47,4 +60,12 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 	{
 		media.GET("/audio/:id", handlers.MakeAudioGET(mediaDirPath))
 	}
+}
+
+func LoadSettings(db gorm.DB) (database.Settings, error) {
+	var settings *database.Settings
+	if err := db.Find(&settings).Error; err != nil {
+		return database.Settings{}, err
+	}
+	return *settings, nil
 }

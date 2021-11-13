@@ -106,3 +106,27 @@ type WordList struct {
 	Name  string `json:"name"`
 	Words []Word `json:"words"`
 }
+
+type AudioLinks struct {
+	URL                  string `json:"url"`
+	SpeakerUsername      string `json:"speakerUsername"`
+	SpeakerGender        string `json:"speakerGender"`
+	ForvoPronunciationID string `json:"ForvoPronunciationId"`
+}
+
+type WordAnalysisRequest struct {
+	Text string `json:"text"`
+}
+
+type WordAnalysis struct {
+	Text     string       `json:"text"`
+	Pattern  string       `json:"pattern"`
+	Morae    string       `json:"morae"`
+	Audio    []AudioLinks `json:"audio"`
+	Furigana string       `json:"furigana"`
+}
+
+type VideoWordLinkCreateRequest struct {
+	Word    string `json:"word"`
+	VideoID string `json:"videoId"`
+}

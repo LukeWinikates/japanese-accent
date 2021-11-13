@@ -39,6 +39,13 @@ func prepareDatabase(databaseFile string) *gorm.DB {
 		log.Println(err.Error())
 		log.Fatal("failed to connect database")
 	}
+
+	err = database.EnsureDatabaseReady(*db)
+	if err != nil {
+		log.Println(err.Error())
+		log.Fatal("failed to initialize database")
+	}
+
 	return db
 }
 

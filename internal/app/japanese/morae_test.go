@@ -6,11 +6,6 @@ import (
 	"testing"
 )
 
-type Word struct {
-	Text     string
-	Furigana string
-}
-
 var two = 2
 
 var 暑い = database.Word{
@@ -50,4 +45,11 @@ func TestMoraeCount(t *testing.T) {
 	assert.Equal(t, []string{"じ", "しょ"}, Morae("じしょ"), "they should be equal")
 	assert.Equal(t, []string{"が", "っ", "こ", "う"}, Morae("がっこう"), "they should be equal")
 	assert.Equal(t, []string{"が", "っ", "こ", "う"}, Morae("がっこう"), "they should be equal")
+}
+
+func TestPatternString(t *testing.T) {
+	assert.Equal(t, "kll", PatternString(1, 3))
+	assert.Equal(t, "lhh", PatternString(0, 3))
+	assert.Equal(t, "lklll", PatternString(2, 5))
+	assert.Equal(t, "lhhkl", PatternString(4, 5))
 }

@@ -9,10 +9,12 @@ import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import AddIcon from "@material-ui/icons/Add";
 import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
+import AddWordDialog from "../WordList/AddWordDialog";
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
   const [isDraftDialogOpen, setIsDraftDialogOpen] = useState(false);
+  const [isAddWordDialogOpen, setIsAddWordDialogOpen] = useState(false);
 
   function setVideoSegments(newSegments: Segment[]) {
     onVideoChange({
@@ -34,6 +36,14 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
     }
     logError(publish.error?.message);
   }
+
+  function openAddWordDialog() {
+    setIsAddWordDialogOpen(true)
+  }
+
+  const onClose = () => {
+    setIsAddWordDialogOpen(false);
+  };
 
   return (
     <Box m={2}>
@@ -60,8 +70,15 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         <Button onClick={() => setIsDraftDialogOpen(true)}>
           Add Segment <AddIcon/>
         </Button>
+
+        <Button onClick={openAddWordDialog}>
+          Add Word <AddIcon/>
+        </Button>
         {
-          isDraftDialogOpen && <DraftSegmentDialog videoId={video.videoId} onClose={()=> setIsDraftDialogOpen(false)}/>
+          isDraftDialogOpen && <DraftSegmentDialog videoId={video.videoId} onClose={() => setIsDraftDialogOpen(false)}/>
+        }
+        {
+          isAddWordDialogOpen && <AddWordDialog videoId={video.videoId} onClose={onClose}/>
         }
         <PlaylistPlayer parentId={video.videoId} segments={video.segments} onSegmentsChange={setVideoSegments}/>
       </Container>
