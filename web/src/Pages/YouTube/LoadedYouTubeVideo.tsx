@@ -1,6 +1,6 @@
 import {Segment, Video} from "../../App/api";
 import React, {useState} from "react";
-import {Box, Breadcrumbs, Button, Container, Typography} from "@material-ui/core";
+import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@material-ui/core";
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import LaunchIcon from '@material-ui/icons/Launch';
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
@@ -10,11 +10,15 @@ import {useServerInteractionHistory} from "../../Layout/useServerInteractionHist
 import AddIcon from "@material-ui/icons/Add";
 import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
 import AddWordDialog from "../WordList/AddWordDialog";
+import {WordListPlayer} from "../../Dictaphone/WordListPlayer";
+
+type TabTypes = "segments" | "words" | "notes";
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
   const [isDraftDialogOpen, setIsDraftDialogOpen] = useState(false);
   const [isAddWordDialogOpen, setIsAddWordDialogOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<TabTypes>("segments");
 
   function setVideoSegments(newSegments: Segment[]) {
     onVideoChange({
@@ -80,7 +84,33 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         {
           isAddWordDialogOpen && <AddWordDialog videoId={video.videoId} onClose={onClose}/>
         }
-        <PlaylistPlayer parentId={video.videoId} segments={video.segments} onSegmentsChange={setVideoSegments}/>
+        <Tabs
+          value={activeTab}
+          onChange={(_, value) => setActiveTab(value)}
+          indicatorColor="primary"
+          textColor="primary"
+          centered
+        >
+          <Tab label="Video Segments" value="segments"/>
+          <Tab label="Vocabulary" value="words"/>
+          <Tab label="Notes" value="notes"/>
+        </Tabs>
+        <Box marginY={2}>
+          {
+            activeTab === "segments" &&
+            <PlaylistPlayer parentId={video.videoId} segments={video.segments} onSegmentsChange={setVideoSegments}/>
+          }
+          {
+            activeTab === "words" &&
+            <WordListPlayer words={video.words}/>
+          }
+          {
+            activeTab === "notes" &&
+            <strong>
+              notes will go here
+            </strong>
+          }
+        </Box>
       </Container>
     </Box>
   );

@@ -22,6 +22,7 @@ import {Player} from "../../Dictaphone/Player";
 import {Pagination, Skeleton} from "@material-ui/lab";
 import KeyboardArrowLeftIcon from '@material-ui/icons/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@material-ui/icons/KeyboardArrowRight';
+import {Audio, WordAnalysis} from "../../App/api";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
@@ -35,18 +36,6 @@ const useStyles = makeStyles(theme => (
     },
   }
 ));
-
-type Audio = {
-  url: string,
-  speakerUsername: string,
-  speakerGender: string,
-};
-
-type WordAnalysis = {
-  pattern: string,
-  morae: string,
-  audio: [Audio],
-}
 
 function ClickableAudio({audio}: { audio: Audio }) {
   const [isPlaying, setIsPlaying] = useState(false);

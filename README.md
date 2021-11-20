@@ -13,6 +13,10 @@ This git repository contains scripts and tools for making it easier to efficient
 
 --------
 
+* Possibly split the card that holds pronunciation info out of the dictaphone.
+  * Then, pitch-related actions and visualizations could appear in their own card and be type-specific more easily
+
+* Change "petch pronunciations / open in Suzuku-kun" buttons to a combo button
 
 ## Current work:
 * New Editor Experience
@@ -30,6 +34,18 @@ This git repository contains scripts and tools for making it easier to efficient
       * enter full text, then split text into chunks
 
 * "Video Vocabulary"
+  * separate "tab" with its own player?
+  * ephemeral forvo URL handling
+    * need to implement read-through cache of per-word forvo pronunciations
+    * remove forvo pronunciations from DB
+    * pre-fetching?
+  * Per phrase word linking 
+  * TTL cache
+  * Unified data mode for pitch patterns for phrases and words
+    Maybe a unified data model for videos and other kinds of content 
+
+* Settings Page
+    * managing Forvo API key
 
 * Practice Experience
   * keyboard shortcuts for the main dictaphone interaction 
@@ -40,7 +56,6 @@ This git repository contains scripts and tools for making it easier to efficient
 * Vocabulary Items
   * Videos can have associated vocabulary items. individual segments can as well. 
   * using Forvo api to find pronunciations for individual words
-    * entering Forvo API key; enabling settings
 
 * Navigation
   * Revamp of AppDrawer:
@@ -77,6 +92,10 @@ This git repository contains scripts and tools for making it easier to efficient
   * how do we indicate "I'm satisfied" with my practicing for now?
     * "un"-boosting?
   * maybe boosting is like "queue 10 practices" - that could be a clearer call to action for that button
+  * Rewrite the playlist picker query to pick newer stuff
+  * Also make it query in batches and then loop until it has enough items
+  * Consider rephrasing boosting as pinning
+
 
 * Pitch Indicator
   * allow manual editing 
@@ -119,18 +138,6 @@ This git repository contains scripts and tools for making it easier to efficient
             * [ ] heiban/odaka/atamadaka/nakadaka
             * [ ] parts of speech
             * [ ] \# of mora
-    * [ ] user-defined 'practice items'
-        * [ ] name (click to edit)
-        * [ ] description + resource links (markdown text, links open in a new tab, click to edit)
-        * [ ] stats about last time practiced
-    * [ ] pitch indicator
-        * [ ] allow manual entry?
-        * [ ] pull from macOS dictionary if available
-        * [ ] pull from suzuki-kun if available (for now, click a button)
-    * [ ] external links
-        * [x] suzuki-kun
-        * [x] Forvo
-        * [ ] macOS dictionary (if on macOS)
     * [ ] dictaphone
         * [x] click to record
         * [ ] when in record mode, can stop, stop and play, or stop and trash

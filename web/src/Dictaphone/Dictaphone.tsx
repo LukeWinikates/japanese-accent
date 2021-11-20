@@ -1,15 +1,11 @@
 import {Button, Grid, makeStyles, Typography} from "@material-ui/core";
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
-import SkipPreviousIcon from "@material-ui/icons/SkipPrevious";
 import React, {useEffect, useState} from "react";
-import {Activity, Pitch, Segment} from "../App/api";
-import SkipNextIcon from '@material-ui/icons/SkipNext';
-import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
+import {Activity, Audio, Segment} from "../App/api";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AddIcon from '@material-ui/icons/Add';
 import useFetch from "use-http";
-import {RawMoraSVG} from "../VocabularyPractice/MoraSVG";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import audioURL from "../App/audioURL";
 
@@ -19,17 +15,60 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
+type DictaphoneSupported = Segment  | Audio
+
+type DictaphoneParams = {
+  boostPostBody: any,
+  activityPostBody: any,
+  src: string,
+  duration: {startSec: number, endSec: number} | "auto",
+}
+
+const makeParamsForSegment = (segment: Segment): DictaphoneParams => {
+  return {
+    boostPostBody: {
+      segment
+    },
+    activityPostBody: {
+      segmentId: segment.uuid,
+    },
+    src: audioURL(segment),
+    duration: {startSec: segment.start, endSec: segment.end},
+  }
+}
+
+const makeParamsForAudio = (audio: Audio): DictaphoneParams => {
+  return {
+    boostPostBody: {
+      // wordId: analysis.wordId
+    },
+    activityPostBody: {
+      // wordId: analysis.wordId
+    },
+    src: audio?.url || "",
+    duration: "auto",
+  }
+}
+
 export declare type DictaphoneProps = {
-  segment: Segment
-  updateSegment: (index: number, segment : Segment) => void
-  setSegmentByIndex: (newIndex: number) => void
-  segmentIndex: number
-  lastSegmentIndex: number
+  item: DictaphoneSupported,
 };
 
 declare type Action = "PlaySegment" | "Record" | "PlayRecording";
 
-export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmentIndex, updateSegment}: DictaphoneProps) => {
+function makeParams(item: DictaphoneSupported) {
+  if ("videoUuid" in item) {
+    let segment = item as Segment;
+    return makeParamsForSegment(segment);
+  }
+  console.log("got here!")
+  return makeParamsForAudio(item as Audio)
+}
+
+export function Dictaphone({item}: DictaphoneProps) {
+  const {
+    activityPostBody, boostPostBody, src, duration
+  } = makeParams(item);
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
@@ -40,9 +79,6 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
 
   const {post: recordActivity} = useFetch<Activity>(
     '/api/activity');
-
-  const {post: fetchOJAD} = useFetch<Pitch>(
-    '/api/segments');
 
   const {logError} = useServerInteractionHistory();
 
@@ -55,7 +91,7 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
   useEffect(() => {
     setCurrentRecording(null);
     setActionQueue([]);
-  }, [segment])
+  }, [item])
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -64,7 +100,7 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
   function practice() {
     pauseAll();
     recordActivity({
-      segmentId: segment.uuid,
+      ...activityPostBody,
       activityType: "PracticeStart"
     }).catch(e => logError(e, "warning"));
     setActionQueue(["PlaySegment", "Record", "PlaySegment"])
@@ -112,48 +148,14 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
   const classes = useStyles();
 
   function boostCurrentSegment() {
-    post({segmentId: segment.uuid}).catch(e => logError(e, "warning"))
-  }
-
-  function fetchOJADPronunciation() {
-    fetchOJAD(`${segment.uuid}/pitches`).then((p: Pitch) => {
-      updateSegment(segmentIndex, {
-        ...segment,
-        pitch: p
-      })
-    }).catch(logError)
+    post({
+        ...boostPostBody
+      }
+    ).catch(e => logError(e, "warning"))
   }
 
   return (
     <Grid container item spacing={1}>
-      <Grid container item xs={12} spacing={1} justify="space-between">
-        <Grid item xs={1}>
-          <Button disabled={segmentIndex === 0}
-                  onClick={() => setSegmentByIndex(segmentIndex - 1)}
-                  startIcon={<SkipPreviousIcon/>}>
-            Previous
-          </Button>
-        </Grid>
-        <Grid container item xs={10} spacing={2}>
-          <strong style={{display: "inline-block", margin: "auto"}}>
-            「{segment?.text}」
-          </strong>
-        </Grid>
-        <Grid item xs={1}>
-          <Button disabled={segmentIndex === lastSegmentIndex}
-                  onClick={() => setSegmentByIndex(segmentIndex + 1)}
-                  endIcon={<SkipNextIcon/>}>
-            Next
-          </Button>
-        </Grid>
-      </Grid>
-      <Grid container item xs={12} spacing={1} justify="space-between">
-        <Grid container item xs={10} spacing={2}>
-          {segment.pitch &&
-          <RawMoraSVG morae={segment.pitch.morae.split(' ')} pattern={segment.pitch.pattern}/>
-          }
-        </Grid>
-      </Grid>
       <Grid container item xs={6} justify="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
@@ -161,8 +163,8 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
           </Typography>
         </Grid>
         <Grid item xs={11}>
-          <Player src={audioURL(segment)}
-                  duration={{startSec: segment.start, endSec: segment.end}}
+          <Player src={src}
+                  duration={duration}
                   onPlayerStateChanged={setSegmentIsPlaying}
                   playing={segmentIsPlaying}
                   onPlaybackEnded={segmentPlaybackEnded}
@@ -189,16 +191,11 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
       </Grid>
 
       <Grid container item xs={12} justify="flex-end">
-
-        {!segment.pitch &&
-        <Grid item xs={2}>
-          <Button onClick={fetchOJADPronunciation}>
-            Fetch pronunciation
+        <Grid container item xs={2}>
+          <Button onClick={boostCurrentSegment}
+                  startIcon={<AddIcon/>}>
+            Boost
           </Button>
-        </Grid>
-        }
-        <Grid item xs={2}>
-          <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
         </Grid>
         <Grid container item xs={2}>
           <Recorder
@@ -213,31 +210,6 @@ export const Dictaphone = ({segment, setSegmentByIndex, segmentIndex, lastSegmen
             Practice
           </Button>
         </Grid> </Grid>
-
-      <Grid container item xs={12} justify="space-between">
-        <Grid item xs={1}>
-          <Button disabled={segmentIndex === 0}
-                  onClick={() => setSegmentByIndex(segmentIndex - 1)}
-                  startIcon={<SkipPreviousIcon/>}>
-            Previous
-          </Button>
-        </Grid>
-
-        <Grid item xs={1}>
-          <Button onClick={boostCurrentSegment}
-                  endIcon={<AddIcon/>}>
-            Boost
-          </Button>
-        </Grid>
-
-        <Grid item xs={1}>
-          <Button disabled={segmentIndex === lastSegmentIndex}
-                  onClick={() => setSegmentByIndex(segmentIndex + 1)}
-                  endIcon={<SkipNextIcon/>}>
-            Next
-          </Button>
-        </Grid>
-      </Grid>
     </Grid>
   );
-};
+}

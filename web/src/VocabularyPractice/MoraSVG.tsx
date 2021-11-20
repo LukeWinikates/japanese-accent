@@ -104,3 +104,41 @@ export function RawMoraSVG({morae, pattern}: { morae: string[], pattern: string 
       }
     </svg>);
 }
+
+export function SkeletonMoraSVG() {
+  const theme = useTheme();
+  const points = [1, 2, 3, 4, 5].map((m, i) => {
+    const x = 20 + (i * moraWidth);
+    const y = low;
+    return {x, y}
+  });
+
+  const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
+
+  return (
+    <svg style={{display: "inline-block", width: 5 * moraWidth, height: 80}}>
+
+      {
+        points.map((p, i) => {
+          return <circle key={`point-${i}`} cx={p.x} cy={p.y} r="5" fill={theme.palette.grey["700"]}/>
+        })
+      }
+      <path fill="none" stroke={theme.palette.grey["700"]} strokeDasharray={"1 1"} strokeWidth={2} d={path}/>
+
+      {
+        "     ".split("").map((m, i) => {
+          return (
+            <text y="60"
+                  style={{
+                    fill: theme.palette.grey["700"],
+                    fontSize: 16,
+                    textAlign: "center"
+                  }}
+                  key={`text-${i}`}
+                  x={`${(i * moraWidth) + 10}`}>
+              {m}
+            </text>);
+        })
+      }
+    </svg>);
+}

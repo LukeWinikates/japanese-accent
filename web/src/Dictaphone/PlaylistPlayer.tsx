@@ -9,7 +9,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle,
+  DialogTitle, Grid,
   IconButton,
   LinearProgress,
   List,
@@ -23,15 +23,18 @@ import {Dictaphone} from "./Dictaphone";
 import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
 import useFetch from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
+import {PitchDetails} from "./PitchDetails";
+import {PagingTitle} from "./PagingTitle";
+import {Pager} from "./Pager";
 
-type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void , parentId: string};
+type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
 
 export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistPlayerProps) => {
   const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
   const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(segments[0]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
-  const lastIndex = segments.length - 1;
+  let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
 
   const {delete: destroy} = useFetch<Segment>(
     '/api/videos/');
@@ -140,29 +143,35 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
       .then(() => setPromptingSegmentDelete(null));
   }
 
-  let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
+
+  if (!currentSegment) {
+    return (
+      <Typography>
+        Nothing here yet
+      </Typography>
+    )
+  }
 
   return (
-    <Box>
+    <>
       <Card>
         <LinearProgress variant="determinate" value={segmentsProgress}/>
         <CardContent>
-          {currentSegment &&
-          <>
-            <Typography>
-              #{currentSegmentIndex + 1} / {segments.length}
-            </Typography>
-            <Dictaphone
-              segment={currentSegment}
-              updateSegment={mutateSegmentAtIndex}
-              setSegmentByIndex={setSegmentByIndex}
-              lastSegmentIndex={lastIndex}
-              segmentIndex={currentSegmentIndex}/>
-          </>
-          }
+          <PagingTitle
+            segment={currentSegment}
+            currentSegmentIndex={currentSegmentIndex}
+            segments={segments}
+            setSegmentByIndex={setSegmentByIndex}
+          />
+          <PitchDetails segment={currentSegment}
+                        updateSegment={(p) => mutateSegmentAtIndex(currentSegmentIndex, p)}/>
+          <Dictaphone item={currentSegment}/>
+          <Pager currentIndex={currentSegmentIndex}
+                 maxIndex={segments.length - 1}
+                 setByIndex={setSegmentByIndex}/>
         </CardContent>
       </Card>
-      <Box marginY={2} height='50vh' style={{overflowY: 'scroll'}}>
+      <Box marginY={2} height='30vh' style={{overflowY: 'scroll'}}>
         <Card ref={listRef}>
           <List>
             {
@@ -213,6 +222,6 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           </DialogActions>
         </Dialog>
       }
-    </Box>
+    </>
   );
 };

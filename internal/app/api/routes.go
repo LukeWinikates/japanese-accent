@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/handlers"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
+	"github.com/LukeWinikates/japanese-accent/internal/forvo"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -11,9 +12,14 @@ import (
 func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 
 	settings, err := LoadSettings(db)
-
 	if err != nil {
 		log.Fatalln("unable to load settings")
+	}
+
+	forvoClient := forvo.EmptyClient()
+
+	if settings.ForvoApiKey != nil {
+		forvoClient = forvo.MakeCachingClient(*settings.ForvoApiKey)
 	}
 
 	engine.Static("/public", "./web/public")
@@ -31,7 +37,8 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 		api.POST("/playlists", handlers.MakePlaylistPost(db))
 		api.GET("/playlists/:id", handlers.MakePlaylistGET(db))
 
-		api.POST("word-analysis", handlers.MakeWordAnalysisCREATE(db, settings))
+		api.POST("word-analysis", handlers.MakeWordAnalysisCREATE(db, forvoClient))
+		api.GET("word-analysis/:word", handlers.MakeWordAnalysisGET(db, forvoClient))
 
 		api.POST("video-word-links", handlers.MakeVideoWordLinkCREATE(db))
 

@@ -7,40 +7,21 @@ import (
 	url2 "net/url"
 )
 
-const urlFormat = "https://apifree.forvo.com/action/word-pronunciations/format/json/word/%s/id_lang_speak/76/key/%s/"
-
-type Client struct {
+type BaseClient struct {
 	key string
 }
 
-func MakeClient(key string) Client {
-	return Client{key: key}
+func MakeClient(key string) BaseClient {
+	return BaseClient{key: key}
+}
+
+type Client interface {
+	GetPronunciations(word string) ([]Pronunciation, error)
 }
 
 //goland:noinspection SpellCheckingInspection
-type Pronunciation struct {
-	Id               int    `json:"id"`
-	Word             string `json:"word"`
-	Original         string `json:"original"`
-	AddTime          string `json:"addtime"`
-	Hits             int    `json:"hits"`
-	Username         string `json:"username"`
-	Sex              string `json:"sex"`
-	Country          string `json:"country"`
-	Code             string `json:"code"`
-	LangName         string `json:"langname"`
-	PathMP3          string `json:"pathmp3"`
-	PathOgg          string `json:"pathogg"`
-	Rate             int    `json:"rate"`
-	NumVotes         int    `json:"num_votes"`
-	NumPositiveVotes int    `json:"num_positive_votes"`
-}
 
-type PronunciationList struct {
-	Items []Pronunciation `json:"items"`
-}
-
-func (client Client) GetPronunciations(word string) ([]Pronunciation, error) {
+func (client BaseClient) GetPronunciations(word string) ([]Pronunciation, error) {
 	var pronunciations PronunciationList
 	url := client.wordUrl(word)
 	fmt.Println(url)
@@ -62,7 +43,7 @@ func (client Client) GetPronunciations(word string) ([]Pronunciation, error) {
 	return pronunciations.Items, err
 }
 
-func (client Client) wordUrl(word string) string {
+func (client BaseClient) wordUrl(word string) string {
 	return fmt.Sprintf(urlFormat,
 		url2.QueryEscape(word),
 		client.key)

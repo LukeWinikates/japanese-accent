@@ -3,12 +3,8 @@ export declare type Category = {
   categories: Category[],
 }
 
-export declare type CategoriesResponse = {
-  wordLists: WordList[],
-  videos: VideoSummary[],
-}
-
 export declare type Word = {
+  id: string,
   word: string,
   furigana: string,
   morae: string[],
@@ -33,14 +29,10 @@ export declare type Video = {
   url: string,
   videoId: string,
   segments: Segment[],
+  words: Word[],
   videoStatus: VideoStatus
   lastActivityAt: string
   text: string
-}
-
-export declare type CategoryDetails = {
-  name: string,
-  words: Word[],
 }
 
 export declare type Pitch = {
@@ -82,4 +74,18 @@ export declare type WordList = {
 
 export function duration(segment: Segment): number {
   return (segment.end - segment.start) / 1000;
+}
+
+export type Audio = {
+  id: string,
+  url: string,
+  speakerUsername: string,
+  speakerGender: string,
+};
+
+export type WordAnalysis = {
+  wordId: number,
+  pattern: string,
+  morae: string,
+  audio: [Audio],
 }

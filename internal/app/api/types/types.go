@@ -56,15 +56,17 @@ type Video struct {
 	Segments       []VideoSegment `json:"segments"`
 	LastActivityAt time.Time      `json:"lastActivityAt"`
 	Text           string         `json:"text"`
+	Words          []Word         `json:"words"`
 }
 
 type Word struct {
-	Text       string   `json:"word"`
-	Furigana   string   `json:"furigana"`
-	AccentMora *int     `json:"accentMora"`
-	MoraCount  int      `json:"moraCount"`
-	Shiki      string   `json:"shiki"`
-	Morae      []string `json:"morae"`
+	Text       string      `json:"word"`
+	Furigana   string      `json:"furigana"`
+	AccentMora *int        `json:"accentMora"`
+	MoraCount  int         `json:"moraCount"`
+	Shiki      string      `json:"shiki"`
+	Morae      []string    `json:"morae"`
+	Audio      []AudioLink `json:"audio"`
 }
 
 type Category struct {
@@ -107,7 +109,7 @@ type WordList struct {
 	Words []Word `json:"words"`
 }
 
-type AudioLinks struct {
+type AudioLink struct {
 	URL                  string `json:"url"`
 	SpeakerUsername      string `json:"speakerUsername"`
 	SpeakerGender        string `json:"speakerGender"`
@@ -119,11 +121,11 @@ type WordAnalysisRequest struct {
 }
 
 type WordAnalysis struct {
-	Text     string       `json:"text"`
-	Pattern  string       `json:"pattern"`
-	Morae    string       `json:"morae"`
-	Audio    []AudioLinks `json:"audio"`
-	Furigana string       `json:"furigana"`
+	Text     string      `json:"text"`
+	Pattern  string      `json:"pattern"`
+	Morae    string      `json:"morae"`
+	Audio    []AudioLink `json:"audio"`
+	Furigana string      `json:"furigana"`
 }
 
 type VideoWordLinkCreateRequest struct {

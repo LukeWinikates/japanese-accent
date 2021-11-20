@@ -13,7 +13,8 @@ import (
 	"strings"
 )
 
-func MakeWordAnalysisCREATE(db gorm.DB, settings database.Settings) gin.HandlerFunc {
+func MakeWordAnalysisCREATE(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {
+
 	return func(context *gin.Context) {
 		var analysisRequest types.WordAnalysisRequest
 
@@ -28,21 +29,16 @@ func MakeWordAnalysisCREATE(db gorm.DB, settings database.Settings) gin.HandlerF
 		}
 
 		if existingWord != nil {
-			context.JSON(200, wordAnalysisFromDatabaseWord(existingWord))
+			context.JSON(200, wordAnalysisFromDatabaseWord(existingWord, forvoClient))
 			return
 		}
 
-		audio := make([]types.AudioLinks, 0)
-		if settings.ForvoApiKey != nil {
-			log.Println("making forvo api call...")
-			forvoClient := forvo.MakeClient(*settings.ForvoApiKey)
-			pronunciations, err := forvoClient.GetPronunciations(analysisRequest.Text)
-			if err != nil {
-				log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
-			}
-
-			audio = makeApiForvoLinks(pronunciations)
+		pronunciations, err := forvoClient.GetPronunciations(analysisRequest.Text)
+		if err != nil {
+			log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
 		}
+
+		audio := makeApiForvoLinks(pronunciations)
 
 		pitches, err := ojad.GetPitches(analysisRequest.Text)
 
@@ -68,12 +64,59 @@ func MakeWordAnalysisCREATE(db gorm.DB, settings database.Settings) gin.HandlerF
 			log.Printf("couldn't save analysis here due to error: %s \n", err.Error())
 		}
 
-		//links := makeAudioLinks(analysis.Audio)
-		//
-		//if err := db.Model(&wordFromAnalysis).Association("AudioLinks").
-		//	Append(&links); err != nil {
-		//	log.Printf("couldn't save links here due to error: %s \n", err.Error())
-		//}
+		context.JSON(201, analysis)
+	}
+}
+
+func MakeWordAnalysisGET(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {
+
+	return func(context *gin.Context) {
+
+		var wordText = context.Param("word")
+
+		pronunciations, err := forvoClient.GetPronunciations(wordText)
+		if err != nil {
+			log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
+		}
+
+		audio := makeApiForvoLinks(pronunciations)
+
+		var existingWord *database.Word
+		if err := db.Where("display_text", wordText).Where(&existingWord).Error; err != nil {
+
+		}
+
+		if existingWord != nil {
+			response := wordAnalysisFromDatabaseWord(existingWord, forvoClient)
+			response.Audio = audio
+			context.JSON(200, response)
+			return
+		}
+
+
+		pitches, err := ojad.GetPitches(wordText)
+
+		if err != nil {
+			log.Printf("unable to get ojad pronunciations: %s \n", err.Error())
+		}
+
+		if len(pitches) < 1 {
+			log.Printf("no ojad pronunciations for: %s \n", wordText)
+		}
+
+		moraAndPitchStrings := ojad.MakePitchAndMoraStrings(pitches)
+
+		analysis := types.WordAnalysis{
+			Text:    wordText,
+			Pattern: moraAndPitchStrings.Pitch,
+			Morae:   moraAndPitchStrings.Morae,
+			Audio:   audio,
+		}
+
+		wordFromAnalysis := makeDatabaseWordFromAnalysis(analysis)
+		if err := db.Save(&wordFromAnalysis).Error; err != nil {
+			log.Printf("couldn't save analysis here due to error: %s \n", err.Error())
+		}
 
 		context.JSON(201, analysis)
 	}
@@ -85,54 +128,35 @@ func makeDatabaseWordFromAnalysis(analysis types.WordAnalysis) database.Word {
 		DisplayText: analysis.Text,
 		Furigana:    strings.ReplaceAll(analysis.Morae, " ", ""),
 		AccentMora:  &accentedMora,
-		AudioLinks:  makeAudioLinks(analysis.Audio),
 	}
 }
 
-func makeAudioLinks(links []types.AudioLinks) []database.AudioLink {
-	result := make([]database.AudioLink, 0)
-	for _, link := range links {
-		result = append(result, database.AudioLink{
-			WordID:               0,
-			SpeakerGender:        link.SpeakerGender,
-			SpeakerUsername:      link.SpeakerUsername,
-			URL:                  link.URL,
-			ForvoPronunciationID: link.ForvoPronunciationID,
-		})
-	}
-	return result
-}
-
-func wordAnalysisFromDatabaseWord(word *database.Word) types.WordAnalysis {
+func wordAnalysisFromDatabaseWord(word *database.Word, forvoClient forvo.Client) types.WordAnalysis {
 	morae := japanese.Morae(word.Furigana)
 	pattern := ""
 	if word.AccentMora != nil {
 		pattern = japanese.PatternString(*word.AccentMora, len(morae))
 	}
+
+	pronunciations, err := forvoClient.GetPronunciations(word.DisplayText)
+
+	links := make([]types.AudioLink, 0)
+
+	if err == nil {
+		links = makeApiForvoLinks(pronunciations)
+	}
+
 	return types.WordAnalysis{
 		Text:     word.DisplayText,
 		Furigana: word.Furigana,
 		Pattern:  pattern,
 		Morae:    strings.Join(morae, " "),
-		Audio:    makeApiAudioLinks(word.AudioLinks),
+		Audio:    links,
 	}
 }
 
-func makeApiAudioLinks(links []database.AudioLink) []types.AudioLinks {
-	result := make([]types.AudioLinks, 0)
-	for _, link := range links {
-		result = append(result, types.AudioLinks{
-			URL:                  link.URL,
-			SpeakerUsername:      link.SpeakerUsername,
-			SpeakerGender:        link.SpeakerGender,
-			ForvoPronunciationID: link.ForvoPronunciationID,
-		})
-	}
-	return result
-}
-
-func makeApiForvoLinks(pronunciations []forvo.Pronunciation) []types.AudioLinks {
-	audio := make([]types.AudioLinks, 0)
+func makeApiForvoLinks(pronunciations []forvo.Pronunciation) []types.AudioLink {
+	audio := make([]types.AudioLink, 0)
 
 	for _, p := range pronunciations {
 		audio = append(audio, makeApiForvoLink(p))
@@ -141,8 +165,8 @@ func makeApiForvoLinks(pronunciations []forvo.Pronunciation) []types.AudioLinks 
 	return audio
 }
 
-func makeApiForvoLink(p forvo.Pronunciation) types.AudioLinks {
-	return types.AudioLinks{
+func makeApiForvoLink(p forvo.Pronunciation) types.AudioLink {
+	return types.AudioLink{
 		URL:                  p.PathMP3,
 		SpeakerUsername:      p.Username,
 		SpeakerGender:        p.Sex,

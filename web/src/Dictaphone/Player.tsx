@@ -4,6 +4,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow';
 import PauseIcon from '@material-ui/icons/Pause';
 import ReplayIcon from '@material-ui/icons/Replay';
 import {secondsToHumanReadable} from "../App/time";
+import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 
 const useStyles = makeStyles((theme) => ({
   playerControls: {
@@ -23,25 +24,38 @@ export declare type PlayerProps = {
   preferredStartTime?: number
 };
 
-function noop(){}
+function noop() {
+}
 
-export const Player = ({src, duration, onPlaybackEnded = noop, playing, onPlayerStateChanged, preferredStartTime}: PlayerProps) => {
+export const Player = ({
+                         src,
+                         duration,
+                         onPlaybackEnded = noop,
+                         playing,
+                         onPlayerStateChanged,
+                         preferredStartTime
+                       }: PlayerProps) => {
   const classes = useStyles();
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const playerProgressRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
+  const {logError} = useServerInteractionHistory();
 
   useEffect(() => {
-    if(playing) {
-      audioRef.current?.play()
+    if (playing) {
+      audioRef.current?.play().catch(e => {
+          logError(e);
+          onPlayerStateChanged(false);
+        }
+      );
     } else {
       audioRef.current?.pause();
     }
   }, [playing, src])
 
-  useEffect(()=>{
-    if(preferredStartTime && audioRef.current) {
+  useEffect(() => {
+    if (preferredStartTime && audioRef.current) {
       audioRef.current.currentTime = (preferredStartTime / 1000);
     }
   }, [preferredStartTime])
@@ -98,7 +112,7 @@ export const Player = ({src, duration, onPlaybackEnded = noop, playing, onPlayer
     }
 
     onPlayerStateChanged(true);
-    return audioRef.current?.play();
+    return audioRef.current?.play().catch(logError);
   };
 
   const pause = () => {

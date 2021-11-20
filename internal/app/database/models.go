@@ -80,21 +80,11 @@ type Playlist struct {
 	Segments []VideoSegment `gorm:"many2many:playlist_segments"`
 }
 
-type AudioLink struct {
-	gorm.Model
-	WordID               uint
-	SpeakerGender        string
-	SpeakerUsername      string
-	URL                  string
-	ForvoPronunciationID string
-}
-
 type Word struct {
 	gorm.Model
 	DisplayText string
 	Furigana    string
 	AccentMora  *int
-	AudioLinks  []AudioLink
 }
 
 type WordList struct {
@@ -106,7 +96,7 @@ type WordList struct {
 func InitializeDatabase(db gorm.DB) error {
 	return db.AutoMigrate(
 		Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{},
-		Playlist{}, Word{}, WordList{}, SegmentPitch{}, AudioLink{},
+		Playlist{}, Word{}, WordList{}, SegmentPitch{},
 
 		Settings{},
 	)

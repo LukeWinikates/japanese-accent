@@ -118,7 +118,8 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		youtubeID := context.Param("videoUuid")
 		if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
 			return db.Order("video_segments.start ASC")
-		}).Preload("Segments.SegmentPitch").Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
+		}).Preload("Segments.SegmentPitch").
+			Preload("Words").Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
 			context.Status(500)
 			log.Printf("Error: %s\n", err.Error())
 			return
@@ -180,6 +181,7 @@ func makeApiVideo(video *database.Video) types.Video {
 		Segments:       apiSegs,
 		LastActivityAt: video.LastActivityAt,
 		Text:           video.Text,
+		Words:          MakeApiWords(video.Words),
 	}
 }
 
