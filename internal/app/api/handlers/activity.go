@@ -45,6 +45,8 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 		segment.LastActivityAt = time.Now()
 		segment.Video.LastActivityAt = time.Now()
 
+		segment.Priority = segment.Priority + database.ActivityPriority
+
 		if err := db.Save(segment).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)

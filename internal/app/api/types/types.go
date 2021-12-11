@@ -17,6 +17,7 @@ type VideoSegment struct {
 	VideoUUID      string             `json:"videoUuid"`
 	LastActivityAt time.Time          `json:"lastActivityAt"`
 	Pitch          *VideoSegmentPitch `json:"pitch"`
+	Priority       int                `json:"priority"`
 }
 
 type VideoSegmentPitch struct {

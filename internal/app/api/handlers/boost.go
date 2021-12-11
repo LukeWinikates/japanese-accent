@@ -36,6 +36,10 @@ func MakeBoostPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
+		segment.Priority = segment.Priority + database.BoostPriority
+
+		db.Save(&segment)
+
 		context.Status(200)
 	}
 }

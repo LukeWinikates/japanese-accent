@@ -42,6 +42,7 @@ type VideoSegment struct {
 	Video          Video
 	LastActivityAt time.Time
 	SegmentPitch   *SegmentPitch `gorm:"foreignKey:SegmentID"`
+	Priority       int
 }
 
 type SegmentBoost struct {

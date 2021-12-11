@@ -5,7 +5,7 @@ import React, {useEffect, useState} from "react";
 import {Activity, Audio, Segment} from "../App/api";
 import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
 import AddIcon from '@material-ui/icons/Add';
-import useFetch from "use-http";
+import useFetch, {CachePolicies} from "use-http";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import audioURL from "../App/audioURL";
 
@@ -75,10 +75,10 @@ export function Dictaphone({item}: DictaphoneProps) {
   const [actionQueue, setActionQueue] = useState<Action[]>([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const {post} = useFetch(
-    '/api/boosts');
+    '/api/boosts', {cachePolicy:CachePolicies.NO_CACHE});
 
   const {post: recordActivity} = useFetch<Activity>(
-    '/api/activity');
+    '/api/activity', {cachePolicy:CachePolicies.NO_CACHE});
 
   const {logError} = useServerInteractionHistory();
 

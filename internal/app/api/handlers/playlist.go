@@ -8,6 +8,7 @@ import (
 	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
+	"sort"
 	"time"
 )
 
@@ -75,8 +76,13 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 				UUID:      segment.UUID,
 				VideoUUID: segment.Video.YoutubeID,
 				Pitch:     maybePitch,
+				Priority:  segment.Priority,
 			}
 		}
+
+		sort.Slice(apiSegments, func(i, j int) bool {
+			return apiSegments[i].Priority > apiSegments[j].Priority
+		})
 
 		context.JSON(200, types.Playlist{
 			ID:       playlistID,
