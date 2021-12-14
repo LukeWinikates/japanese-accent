@@ -2,7 +2,6 @@ package forvo
 
 import (
 	"encoding/json"
-	"github.com/LukeWinikates/japanese-accent/internal/ojad"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
@@ -188,7 +187,7 @@ const exampleJSON = `
 `
 
 func TestJsonParsing(t *testing.T) {
-	var pronunciations ojad.PronunciationList
+	var pronunciations PronunciationList
 	err := json.Unmarshal([]byte(exampleJSON), &pronunciations)
 
 	if err != nil {
