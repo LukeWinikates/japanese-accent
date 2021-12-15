@@ -42,6 +42,17 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 
 		api.POST("video-word-links", handlers.MakeVideoWordLinkCREATE(db))
 
+		appSettings := api.Group("/application-settings")
+		{
+			appSettings.GET("", handlers.MakeAppSettingsGET(db))
+			appSettings.PUT("", handlers.MakeAppSettingsPUT(db))
+		}
+
+		debug := api.Group("/debug")
+		{
+			debug.POST("refresh-metrics", handlers.MakeRefreshMetricsPOST(db))
+		}
+
 		videos := api.Group("/videos/")
 		{
 			videos.POST("", handlers.MakeVideoPOST(db))

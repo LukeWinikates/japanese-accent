@@ -89,3 +89,7 @@ export type WordAnalysis = {
   morae: string,
   audio: [Audio],
 }
+
+export type AppSettings = {
+  forvoApiKey: string,
+}

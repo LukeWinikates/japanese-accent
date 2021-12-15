@@ -133,3 +133,11 @@ type VideoWordLinkCreateRequest struct {
 	Word    string `json:"word"`
 	VideoID string `json:"videoId"`
 }
+
+type ApplicationSettings struct {
+	ForvoAPIKey *string `json:"forvoApiKey"`
+}
+
+type ApplicationSettingsChangeRequest struct {
+	ForvoAPIKey *string `json:"forvoApiKey"`
+}
