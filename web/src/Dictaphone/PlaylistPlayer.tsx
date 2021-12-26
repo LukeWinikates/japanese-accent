@@ -9,7 +9,7 @@ import {
   DialogActions,
   DialogContent,
   DialogContentText,
-  DialogTitle, Grid,
+  DialogTitle,
   IconButton,
   LinearProgress,
   List,
@@ -171,7 +171,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
                  setByIndex={setSegmentByIndex}/>
         </CardContent>
       </Card>
-      <Box marginY={2} height='30vh' style={{overflowY: 'scroll'}}>
+      <Box marginY={2} height='50vh' style={{overflowY: 'scroll'}}>
         <Card ref={listRef}>
           <List>
             {
