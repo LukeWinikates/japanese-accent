@@ -43,13 +43,13 @@ export const YoutubeVideoPage = () => {
     return (<>loading...</>);
   }
 
-  if (video.data.videoStatus === "Pending") {
+  if (!video.data.files.hasMediaFile) {
     return (
       <PendingYouTubeVideo video={video.data}/>
     );
   }
 
-  if (video.data.videoStatus === "Imported") {
+  if (video.data.videoStatus !== "Complete") {
     return (
       <YouTubeVideoEditor video={video.data} onVideoChange={setVideoData}/>
     );

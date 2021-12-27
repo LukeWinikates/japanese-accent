@@ -1,16 +1,16 @@
-import {Segment, Video} from "../../App/api";
-import React, {useState} from "react";
+import {Segment, Video, VttTimeline} from "../../App/api";
+import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Button, Container, Grid, makeStyles, Paper, Switch, Typography} from "@material-ui/core";
 import YouTubeIcon from '@material-ui/icons/YouTube';
 import LaunchIcon from '@material-ui/icons/Launch';
 import DoneIcon from '@material-ui/icons/Done';
 import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import {SegmentEditor} from "../../Video/Segments/SegmentEditor";
 import {AutoSavingTextField} from "./AutoSavingTextField";
 import {DragDropComposableText} from "./DragDropComposableText";
 import {PlayableSegment} from "./PlayableSegment";
 import {WithIndex} from "../../App/WithIndex";
+import {Timeline} from "./Timeline";
 
 const useStyles = makeStyles(() => ({
   deleteBox: {
@@ -21,12 +21,18 @@ const useStyles = makeStyles(() => ({
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
   const publish = useFetch('/api/videos/' + video.videoId + '/publish');
+  const timelineFetch = useFetch('/api/videos/' + video.videoId + '/vtt-timings');
   const {put} = useFetch('/api/videos/' + video.videoId);
   const [currentSegment, setCurrentSegment] = useState<WithIndex<Segment>>({value: video.segments[0], index: 0});
   const {value: segment, index: currentSegmentIndex} = currentSegment;
   const [mode, setMode] = useState<"editing" | "composing">("editing");
+  const [timeline, setTimeline] = useState<VttTimeline | null>();
 
   const classes = useStyles();
+
+  useEffect(() => {
+    timelineFetch.get().then(timelineResponse => setTimeline(timelineResponse))
+  }, [video.videoId])
 
   async function markComplete() {
     await publish.post()
@@ -92,15 +98,24 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
             Open in YouTube
           </Button>
         </Box>
-        <SegmentEditor
-          segment={segment}
-          setSegment={modifyCurrentSegment}
-          previousSegmentEnd={video.segments[currentSegmentIndex - 1]?.end ?? 0}
-          nextSegmentStart={video.segments[currentSegmentIndex + 1]?.start ?? 0}
-        />
+        {/*<SegmentEditor*/}
+        {/*  segment={segment}*/}
+        {/*  setSegment={modifyCurrentSegment}*/}
+        {/*  previousSegmentEnd={video.segments[currentSegmentIndex - 1]?.end ?? 0}*/}
+        {/*  nextSegmentStart={video.segments[currentSegmentIndex + 1]?.start ?? 0}*/}
+        {/*/>*/}
+
+        {
+          !!timeline ?
+            <>
+              <Timeline duration={timeline.durationSec}/>
+            </> :
+            <></>
+        }
+
 
         <Grid container style={{height: 100}}>
-          <Grid item xs={5} />
+          <Grid item xs={5}/>
           <Grid item xs={5}>
             Video Text
             <Grid component="label" container alignItems="center" spacing={1}>

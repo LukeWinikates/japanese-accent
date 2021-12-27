@@ -32,7 +32,13 @@ export declare type Video = {
   words: Word[],
   videoStatus: VideoStatus
   lastActivityAt: string
-  text: string
+  text: string,
+  files: Files
+}
+
+export declare type Files = {
+  hasMediaFile: boolean,
+  hasSubtitleFile: boolean
 }
 
 export declare type Pitch = {
@@ -92,4 +98,15 @@ export type WordAnalysis = {
 
 export type AppSettings = {
   forvoApiKey: string,
+}
+
+export type VttTimeline = {
+  durationSec: number
+  segments: VttSegment[],
+}
+
+export type VttSegment = {
+  start: number,
+  end: number,
+  text: string,
 }

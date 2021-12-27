@@ -49,15 +49,33 @@ type VideoSummary struct {
 	LastActivityAt time.Time `json:"lastActivityAt"`
 }
 
+type Files struct {
+	HasMediaFile    bool `json:"hasMediaFile"`
+	HasSubtitleFile bool `json:"hasSubtitleFile"`
+}
+
 type Video struct {
 	Title          string         `json:"title"`
 	URL            string         `json:"url"`
 	VideoID        string         `json:"videoId"`
 	VideoStatus    string         `json:"videoStatus"`
+	Files          Files          `json:"files"`
 	Segments       []VideoSegment `json:"segments"`
 	LastActivityAt time.Time      `json:"lastActivityAt"`
 	Text           string         `json:"text"`
 	Words          []Word         `json:"words"`
+	Status         string         `json:"status"`
+}
+
+type VttSegment struct {
+	Start int    `json:"start"`
+	End   int    `json:"end"`
+	Text  string `json:"text"`
+}
+
+type VttTimeline struct {
+	Segments    []VttSegment `json:"segments"`
+	DurationSec int          `json:"durationSec"`
 }
 
 type Word struct {

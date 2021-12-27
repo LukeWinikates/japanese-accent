@@ -4,14 +4,11 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
-	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
+	"github.com/LukeWinikates/japanese-accent/internal/app/media"
 	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"io/ioutil"
 	"log"
-	"os"
 	"time"
 )
 
@@ -66,7 +63,7 @@ func MakeVideoPUT(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
+func MakeVideoPublishPOST(mediaDirPath string, db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var video *database.Video
 		youtubeID := context.Param("videoUuid")
@@ -89,7 +86,7 @@ func MakeVideoPublishPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiVideo := makeApiVideo(video)
+		apiVideo := makeApiVideo(video, media.FindFiles(mediaDirPath, youtubeID))
 
 		context.JSON(200, apiVideo)
 	}
@@ -125,32 +122,19 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		if video.VideoStatus == database.Pending {
-			subtitleFilePath := mediaDirectory + "/" + youtubeID + ".ja.vtt"
-			subtitleFileContents, err := ioutil.ReadFile(subtitleFilePath)
-			if err != nil && os.IsNotExist(err) {
-				log.Printf("No subtitle file found; continuing")
-				if FindMediaFile(mediaDirectory, youtubeID).IsFound {
-					video.VideoStatus = database.Imported
-				}
-			} else if err = initializeSegments(string(subtitleFileContents), video, db); err != nil {
-				log.Printf("Error while importing subtitle file: %s\n", err.Error())
-			} else {
-				video.VideoStatus = database.Imported
-			}
-		}
-
 		if err := db.Save(&video).Error; err != nil {
 			log.Printf("Error: %s\n", err.Error())
 		}
 
-		apiVideo := makeApiVideo(video)
+		files := media.FindFiles(mediaDirectory, youtubeID)
+
+		apiVideo := makeApiVideo(video, files)
 
 		context.JSON(200, apiVideo)
 	}
 }
 
-func makeApiVideo(video *database.Video) types.Video {
+func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Video {
 	apiSegs := make([]types.VideoSegment, 0)
 	for _, segment := range video.Segments {
 		var pitch *types.VideoSegmentPitch = nil
@@ -182,27 +166,9 @@ func makeApiVideo(video *database.Video) types.Video {
 		LastActivityAt: video.LastActivityAt,
 		Text:           video.Text,
 		Words:          MakeApiWords(video.Words),
+		Files: types.Files{
+			HasMediaFile:    files.HasMediaFile,
+			HasSubtitleFile: files.HasSubtitleFile,
+		},
 	}
-}
-
-func initializeSegments(subtitleFile string, video *database.Video, db gorm.DB) error {
-
-	segments, err := vtt.ParseSegments(subtitleFile)
-	if err != nil {
-		return err
-	}
-	dbSegments := make([]database.VideoSegment, 0)
-	for _, segment := range segments {
-		dbSegments = append(dbSegments, database.VideoSegment{
-			Start:   segment.Start,
-			End:     segment.End,
-			Text:    segment.Text,
-			UUID:    uuid.NewString(),
-			VideoID: video.ID,
-		})
-	}
-
-	return db.Model(video).
-		Association("Segments").
-		Replace(dbSegments)
 }
