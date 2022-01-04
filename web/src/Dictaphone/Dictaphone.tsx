@@ -27,7 +27,7 @@ type DictaphoneParams = {
 const makeParamsForSegment = (segment: Segment): DictaphoneParams => {
   return {
     boostPostBody: {
-      segment
+      segmentId: segment.uuid,
     },
     activityPostBody: {
       segmentId: segment.uuid,
