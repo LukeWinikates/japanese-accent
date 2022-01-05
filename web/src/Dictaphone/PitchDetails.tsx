@@ -1,10 +1,11 @@
 import {Pitch, Segment} from "../App/api";
-import React from "react";
+import React, {useState} from "react";
 import {Button, Grid} from "@material-ui/core";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
 import useFetch from "use-http";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
+import AddWordDialog from "../Pages/WordList/AddWordDialog";
 
 
 export const PitchDetails = ({
@@ -15,6 +16,7 @@ export const PitchDetails = ({
     '/api/segments');
 
   const {logError} = useServerInteractionHistory();
+  const [isAddingWord, setIsAddingWord] = useState(false);
 
   function fetchOJADPronunciation() {
     if (!segment) {
@@ -45,11 +47,15 @@ export const PitchDetails = ({
           <Button onClick={fetchOJADPronunciation}>
             Fetch pronunciation
           </Button>
+          <Button onClick={()=> setIsAddingWord(true)}>
+            Add Word
+          </Button>
         </Grid>
         <Grid item xs={4}>
           <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
         </Grid>
       </Grid>
+      { isAddingWord && <AddWordDialog onClose={()=> setIsAddingWord(false)} videoId={segment.videoUuid}/>}
     </Grid>
   );
 }
