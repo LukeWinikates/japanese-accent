@@ -39,6 +39,9 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   const {delete: destroy} = useFetch<Segment>(
     '/api/videos/');
 
+  const exportsAPI = useFetch(
+    '/api/exports/');
+
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
   }
@@ -152,6 +155,12 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     )
   }
 
+  function startExport() {
+    return exportsAPI.post({
+      videoUuid: parentId
+    });
+  }
+
   return (
     <>
       <Card>
@@ -169,6 +178,9 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           <Pager currentIndex={currentSegmentIndex}
                  maxIndex={segments.length - 1}
                  setByIndex={setSegmentByIndex}/>
+          <Button onClick={startExport}>
+            Export
+          </Button>
         </CardContent>
       </Card>
       <Box marginY={2} height='50vh' style={{overflowY: 'scroll'}}>

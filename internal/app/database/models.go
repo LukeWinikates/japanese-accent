@@ -9,7 +9,8 @@ import (
 
 type Settings struct {
 	gorm.Model
-	ForvoApiKey *string
+	ForvoApiKey     *string
+	AudioExportPath *string
 }
 
 type Video struct {

@@ -37,10 +37,16 @@ const useStyles = makeStyles(theme => (
 export default function SettingsDialog({onClose}: { onClose: () => void }) {
   const classes = useStyles();
   const [apiKey, setApiKeyData] = useState<Loadable<string>>("loading");
+  const [audioExportPath, setAudioExportPathData] = useState<Loadable<string>>("loading");
   const [showApiKey, setShowApiKey] = useState(false);
   const setApiKey = (key: string) => {
     setApiKeyData({
       data: key
+    })
+  }
+  const setAudioExportPath = (audioExportPath: string) => {
+    setAudioExportPathData({
+      data: audioExportPath
     })
   }
 
@@ -54,6 +60,9 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
       setApiKey(
         settings.forvoApiKey
       )
+      setAudioExportPath(
+        settings.audioExportPath
+      )
     });
   }, [])
 
@@ -65,16 +74,26 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
     if (apiKey === "loading") {
       return;
     }
-    settingsApi.post({
+    settingsApi.put({
       forvoApiKey: apiKey.data
     }).catch(logError)
   }
 
-  // loading of the settings panel
-  // use loadable -> if we have loaded the settings, render the settings panel
+  const saveExportPath = () => {
+    if (audioExportPath === "loading") {
+      return;
+    }
+    settingsApi.put({
+      audioExportPath: audioExportPath.data
+    }).catch(logError)
+  }
 
   let handleApiKeyChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setApiKey(e.target.value)
+  };
+
+  let handleAudioExportPathChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setAudioExportPath(e.target.value)
   };
 
   return (
@@ -129,6 +148,33 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
                   />
                 </FormControl>
                 <Button onClick={saveForvoApiKey}>
+                  Save
+                </Button>
+              </>
+          }
+        </Box>
+
+        <Divider/>
+        <Box m={1}>
+          <Typography variant="h5">
+            Audio Export
+          </Typography>
+          <Typography variant="body1">
+            Japanese Accent Practice can export audio practice files for playback on your mobile device or music player
+
+          </Typography>
+
+          {
+            audioExportPath === "loading" ?
+              <>loading...</> :
+              <>
+                <FormControl>
+                  <Input
+                    value={audioExportPath.data}
+                    onChange={handleAudioExportPathChange}
+                  />
+                </FormControl>
+                <Button onClick={saveExportPath}>
                   Save
                 </Button>
               </>

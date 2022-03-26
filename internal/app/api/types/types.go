@@ -153,9 +153,15 @@ type VideoWordLinkCreateRequest struct {
 }
 
 type ApplicationSettings struct {
-	ForvoAPIKey *string `json:"forvoApiKey"`
+	ForvoAPIKey     *string `json:"forvoApiKey"`
+	AudioExportPath *string `json:"audioExportPath"`
 }
 
 type ApplicationSettingsChangeRequest struct {
-	ForvoAPIKey *string `json:"forvoApiKey"`
+	ForvoAPIKey     *string `json:"forvoApiKey"`
+	AudioExportPath *string `json:"audioExportPath"`
+}
+
+type ExportCreateRequest struct {
+	VideoUUID string `json:"videoUuid"`
 }

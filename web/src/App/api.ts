@@ -87,6 +87,7 @@ export type Audio = {
   url: string,
   speakerUsername: string,
   speakerGender: string,
+  wordId: number,
 };
 
 export type WordAnalysis = {
@@ -98,6 +99,7 @@ export type WordAnalysis = {
 
 export type AppSettings = {
   forvoApiKey: string,
+  audioExportPath: string,
 }
 
 export type VttTimeline = {

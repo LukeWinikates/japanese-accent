@@ -20,7 +20,8 @@ func MakeAppSettingsGET(db gorm.DB) gin.HandlerFunc {
 		}
 
 		context.JSON(200, types.ApplicationSettings{
-			ForvoAPIKey: settings.ForvoApiKey,
+			ForvoAPIKey:     settings.ForvoApiKey,
+			AudioExportPath: settings.AudioExportPath,
 		})
 	}
 }
@@ -43,8 +44,13 @@ func MakeAppSettingsPUT(db gorm.DB) gin.HandlerFunc {
 			log.Printf("Error: %s\n", err.Error())
 			return
 		}
+		if request.ForvoAPIKey != nil {
+			settings.ForvoApiKey = request.ForvoAPIKey
+		}
 
-		settings.ForvoApiKey = request.ForvoAPIKey
+		if request.AudioExportPath != nil {
+			settings.AudioExportPath = request.AudioExportPath
+		}
 
 		if err := db.Save(&settings).Error; err != nil {
 			context.Status(500)
@@ -52,7 +58,8 @@ func MakeAppSettingsPUT(db gorm.DB) gin.HandlerFunc {
 		}
 
 		context.JSON(200, types.ApplicationSettings{
-			ForvoAPIKey: settings.ForvoApiKey,
+			ForvoAPIKey:     settings.ForvoApiKey,
+			AudioExportPath: settings.AudioExportPath,
 		})
 	}
 }

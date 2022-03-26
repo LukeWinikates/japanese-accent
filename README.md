@@ -75,9 +75,6 @@ This git repository contains scripts and tools for making it easier to efficient
   * hamburger icon for each item on the playlist - use that for delete/jump to youtube
   * open segment in youtube at the position, using `https://youtu.be/$VIDEO_ID?t=89` pattern
 
-* Create pracitce recordings for on the go
-  * generate MP3 and put it in a specified sharing directory
-
 * Tech Enhancements
   * Fix typesafety of golang route parameters?
   * Chore: database cleanup
@@ -103,7 +100,6 @@ This git repository contains scripts and tools for making it easier to efficient
 * Exporting
     * Anki deck
     * Flat file
-    * Audio practice file
     * share with teacher
     * Japanese app (plus notes for pronunciation)
   
