@@ -165,3 +165,7 @@ type ApplicationSettingsChangeRequest struct {
 type ExportCreateRequest struct {
 	VideoUUID string `json:"videoUuid"`
 }
+
+type ExportCreateResponse struct {
+	ID string `json:"id"`
+}

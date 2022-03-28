@@ -1,7 +1,6 @@
 package worker
 
 import (
-	"fmt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/export"
 	"gorm.io/gorm"
@@ -42,7 +41,8 @@ func WithDB(db gorm.DB) Worker {
 func (w realWorker) Run(videoPath string, video *database.Video) error {
 	recipe := export.Recipe{
 		FilePath:        videoPath,
-		DestinationPath: w.ExportPath + "/" + video.YoutubeID,
+		Title:           video.Title,
+		DestinationPath: w.ExportPath + "/" + video.Title,
 		Segments:        segmentsFromVideo(video),
 	}
 	return export.WriteToPath(recipe)
@@ -51,9 +51,9 @@ func (w realWorker) Run(videoPath string, video *database.Video) error {
 func segmentsFromVideo(video *database.Video) []export.RecipeSegment {
 	segments := make([]export.RecipeSegment, 0)
 
-	for i, segment := range video.Segments {
+	for _, segment := range video.Segments {
 		segments = append(segments, export.RecipeSegment{
-			Name:  fmt.Sprintf("%v", i),
+			Name:  segment.Text,
 			Start: segment.Start,
 			End:   segment.End,
 		})
