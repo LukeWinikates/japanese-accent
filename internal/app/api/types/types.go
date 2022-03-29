@@ -169,3 +169,9 @@ type ExportCreateRequest struct {
 type ExportCreateResponse struct {
 	ID string `json:"id"`
 }
+
+type ExportGetResponse struct {
+	ID       string `json:"id"`
+	Progress string `json:"progress"`
+	Done     bool   `json:"done"`
+}

@@ -1,4 +1,4 @@
-import {duration, Segment} from "../App/api";
+import {duration, Export, Segment} from "../App/api";
 import React, {useEffect, useRef, useState} from "react";
 import {
   Box,
@@ -21,11 +21,12 @@ import ListItemText from "@material-ui/core/ListItemText";
 import EditIcon from "@material-ui/core/SvgIcon";
 import {Dictaphone} from "./Dictaphone";
 import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
-import useFetch from "use-http";
+import useFetch, {CachePolicies} from "use-http";
 import DeleteIcon from '@material-ui/icons/Delete';
 import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
+import {useInterval} from "../App/useInterval";
 
 type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
 
@@ -34,13 +35,15 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
   const [currentSegment, setCurrentSegment] = useState<Segment | null>(segments[0]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
+  const [watchingExport, setWatchingExport] = useState(false);
+  const [exportProgress, setExportProgress] = useState<Export | null>(null);
   let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
 
   const {delete: destroy} = useFetch<Segment>(
     '/api/videos/');
 
   const exportsAPI = useFetch(
-    '/api/exports/');
+    '/api/exports', {cachePolicy: CachePolicies.NO_CACHE});
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -59,6 +62,13 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
       block: 'nearest',
     });
   }, [currentSegmentIndex])
+
+  useInterval(() => {
+    exportsAPI.get(parentId).then((e: Export) => {
+      setExportProgress(e);
+      e.done && setWatchingExport(false)
+    });
+  }, watchingExport ? 200 : null);
 
   async function handleModalClose() {
     if (editingSegment === null) {
@@ -158,7 +168,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   function startExport() {
     return exportsAPI.post({
       videoUuid: parentId
-    });
+    }).then(() => setWatchingExport(true));
   }
 
   return (
@@ -178,8 +188,8 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           <Pager currentIndex={currentSegmentIndex}
                  maxIndex={segments.length - 1}
                  setByIndex={setSegmentByIndex}/>
-          <Button onClick={startExport}>
-            Export
+          <Button onClick={startExport} disabled={watchingExport}>
+            {watchingExport ? (exportProgress?.progress || "Starting export")  : "Export"}
           </Button>
         </CardContent>
       </Card>

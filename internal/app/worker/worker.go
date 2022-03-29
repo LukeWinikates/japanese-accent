@@ -14,12 +14,12 @@ type realWorker struct {
 type nullWorker struct {
 }
 
-func (w nullWorker) Run(_ string, _ *database.Video) error {
+func (w nullWorker) Run(_ string, _ *database.Video, _ chan export.Progress) error {
 	return nil
 }
 
 type Worker interface {
-	Run(videoPath string, video *database.Video) error
+	Run(videoPath string, video *database.Video, watch chan export.Progress) error
 }
 
 func WithDB(db gorm.DB) Worker {
@@ -38,14 +38,14 @@ func WithDB(db gorm.DB) Worker {
 	}
 }
 
-func (w realWorker) Run(videoPath string, video *database.Video) error {
+func (w realWorker) Run(videoPath string, video *database.Video, watcher chan export.Progress) error {
 	recipe := export.Recipe{
 		FilePath:        videoPath,
 		Title:           video.Title,
 		DestinationPath: w.ExportPath + "/" + video.Title,
 		Segments:        segmentsFromVideo(video),
 	}
-	return export.WriteToPath(recipe)
+	return export.WriteToPath(recipe, watcher)
 }
 
 func segmentsFromVideo(video *database.Video) []export.RecipeSegment {

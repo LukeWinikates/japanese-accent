@@ -112,3 +112,9 @@ export type VttSegment = {
   end: number,
   text: string,
 }
+
+export type Export = {
+  id: string,
+  progress: string,
+  done: boolean,
+}

@@ -43,6 +43,7 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 		api.POST("video-word-links", handlers.MakeVideoWordLinkCREATE(db))
 
 		api.POST("exports", handlers.MakeExportCREATE(mediaDirPath, db))
+		api.GET("exports/:videoUUID", handlers.MakeExportGET())
 
 		appSettings := api.Group("/application-settings")
 		{
