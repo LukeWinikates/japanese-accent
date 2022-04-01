@@ -140,8 +140,8 @@ func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Vide
 		}
 
 		apiSegs = append(apiSegs, types.VideoSegment{
-			Start:          segment.Start,
-			End:            segment.End,
+			StartMS:        segment.Start,
+			EndMS:          segment.End,
 			Text:           segment.Text,
 			UUID:           segment.UUID,
 			VideoUUID:      video.YoutubeID,

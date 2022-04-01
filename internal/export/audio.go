@@ -60,10 +60,12 @@ func (progress *Progress) Describe() string {
 
 	}
 	return fmt.Sprintf("%d%% (%d/%d).",
-		100*(progress.CurrentSegment/progress.Total), progress.CurrentSegment, progress.Total)
+		(100*progress.CurrentSegment)/progress.Total, progress.CurrentSegment, progress.Total)
 }
 
 func WriteToPath(recipe Recipe, watcher chan Progress) error {
+	defer close(watcher)
+
 	fmt.Println(os.Mkdir(recipe.DestinationPath, 0750))
 
 	progress := newProgress(recipe)
@@ -71,12 +73,12 @@ func WriteToPath(recipe Recipe, watcher chan Progress) error {
 		segmentNo := i + 1
 		watcher <- progress.setCurrent(segmentNo)
 		streams := make([]*ffmpeg.Stream, 0)
-		for i := 0; i < 2; i++ {
+		for i := 0; i < 3; i++ {
 			streams = append(streams, ffmpeg.Input(recipe.FilePath, ffmpeg.KwArgs{
 				"ss": strconv.Itoa(segment.Start) + "ms",
 				"t":  strconv.Itoa(segment.End-segment.Start) + "ms",
 			}))
-			silenceDuration := (segment.End - segment.Start) * 2
+			silenceDuration := ((segment.End - segment.Start) * 12) / 10
 			streams = append(streams,
 				ffmpeg.Input(
 					fmt.Sprintf("anullsrc=duration=%sms",
@@ -88,7 +90,13 @@ func WriteToPath(recipe Recipe, watcher chan Progress) error {
 		err := ffmpeg.Concat(streams, ffmpeg.KwArgs{
 			"a": 1,
 			"v": 0,
-		}).Output(recipe.DestinationPath+"/"+segment.Name+".mp3", ffmpeg.KwArgs{
+		}).Filter(
+			"loudnorm",
+			ffmpeg.Args{},
+			ffmpeg.KwArgs{
+				"i": "-5.0",
+			},
+		).Output(fileName(recipe, segmentNo, segment), ffmpeg.KwArgs{
 			"metadata": []string{
 				fmt.Sprintf("title=%s", segment.Name),
 				fmt.Sprintf("album=%s", recipe.Title),
@@ -107,4 +115,8 @@ func WriteToPath(recipe Recipe, watcher chan Progress) error {
 
 	watcher <- progress.finished()
 	return nil
+}
+
+func fileName(recipe Recipe, segmentNo int, segment RecipeSegment) string {
+	return fmt.Sprintf("%s/%03d-%s.m4a", recipe.DestinationPath, segmentNo, segment.Name)
 }

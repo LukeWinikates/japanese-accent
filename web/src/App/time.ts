@@ -11,5 +11,9 @@ export function msToHumanReadable(ms: number) {
   const seconds = totalSeconds % 60;
   const minutes = Math.floor(totalSeconds / 60);
 
-  return `${minutes}:${("" + seconds).padStart(2, "0")}.${ms % 1000}`;
+  return `${minutes}:${("" + seconds).padStart(2, "0")}.${Math.round((ms % 1000) / 100)}`;
+}
+
+export function rangeToHumanReadable(startMS: number, endMS: number)  {
+  return `${msToHumanReadable(startMS)}-${msToHumanReadable(endMS)} (${msToHumanReadable(endMS-startMS)})`
 }

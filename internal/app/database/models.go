@@ -21,7 +21,8 @@ type Video struct {
 	VideoStatus    VideoStatus
 	Text           string
 	LastActivityAt time.Time
-	Words          []Word `gorm:"many2many:video_words"`
+	Words          []Word      `gorm:"many2many:video_words"`
+	Draft          *VideoDraft `gorm:"foreignKey:VideoID"`
 }
 
 type VideoStatus = string
@@ -95,10 +96,25 @@ type WordList struct {
 	Words []Word `gorm:"many2many:wordlist_words"`
 }
 
+type DraftSegment struct {
+	gorm.Model
+	VideoDraftID uint
+	StartMS      uint
+	EndMS        uint
+	Text         string
+	UUID         string
+}
+
+type VideoDraft struct {
+	gorm.Model
+	VideoID       uint
+	DraftSegments []DraftSegment
+}
+
 func InitializeDatabase(db gorm.DB) error {
 	return db.AutoMigrate(
 		Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{},
-		Playlist{}, Word{}, WordList{}, SegmentPitch{},
+		Playlist{}, Word{}, WordList{}, SegmentPitch{}, DraftSegment{}, VideoDraft{},
 
 		Settings{},
 	)

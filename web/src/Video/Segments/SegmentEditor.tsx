@@ -7,8 +7,8 @@ import {msToHumanReadable} from "../../App/time";
 import audioURL from "../../App/audioURL";
 
 interface Segmentish {
-  start: number;
-  end: number;
+  startMS: number;
+  endMS: number;
   videoUuid: string;
   text: string;
 }
@@ -46,20 +46,18 @@ export function SegmentEditor<T extends Segmentish>({segment, setSegment, previo
   };
 
   const handleStartChange = (newStart: number) => {
-    const start = newStart;
-    const end = start >= segment.end ? start + 1000 : segment.end
+    const end = newStart >= segment.endMS ? newStart + 1000 : segment.endMS
     setSegment({
       ...segment,
-      start,
-      end
+      startMS: newStart,
+      endMS: end
     });
   };
 
   const handleEndChange = (newEnd: number) => {
-    const end = newEnd;
     setSegment({
       ...segment,
-      end
+      endMS: newEnd
     });
     setPreferredStartTime(newEnd - 1000);
     setPlayerStartDebounce(new Date())
@@ -68,20 +66,20 @@ export function SegmentEditor<T extends Segmentish>({segment, setSegment, previo
   return (
     <>
       <Player src={audioURL(segment)}
-              duration={{startSec: segment.start, endSec: segment.end}}
+              duration={{startSec: segment.startMS, endSec: segment.endMS}}
               playing={segmentIsPlaying}
               onPlayerStateChanged={setSegmentIsPlaying}
               preferredStartTime={preferredStartTime}
       />
 
-      <TimeInput label="Start" onChange={handleStartChange} value={segment.start}/>
+      <TimeInput label="Start" onChange={handleStartChange} value={segment.startMS}/>
       {
         previousSegmentEnd &&
         <Button onClick={() => handleStartChange(previousSegmentEnd)}>
           Align Start to Previous Segment End: {msToHumanReadable(previousSegmentEnd)}
         </Button>
       }
-      <TimeInput label="End" onChange={handleEndChange} value={segment.end}/>
+      <TimeInput label="End" onChange={handleEndChange} value={segment.endMS}/>
       {nextSegmentStart &&
       <Button onClick={() => handleEndChange(nextSegmentStart)}>
         Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}

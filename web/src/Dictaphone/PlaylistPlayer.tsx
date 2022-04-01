@@ -212,8 +212,8 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           segment={editingSegment}
           setSegment={setEditingSegment}
           videoId={editingSegment.videoUuid}
-          previousSegmentEnd={segments[currentSegmentIndex - 1]?.end ?? 0}
-          nextSegmentStart={segments[currentSegmentIndex + 1]?.start ?? 0}
+          previousSegmentEnd={segments[currentSegmentIndex - 1]?.endMS ?? 0}
+          nextSegmentStart={segments[currentSegmentIndex + 1]?.startMS ?? 0}
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         />

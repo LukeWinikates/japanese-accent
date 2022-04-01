@@ -47,13 +47,20 @@ export declare type Pitch = {
 }
 
 export declare type Segment = {
-  start: number,
-  end: number,
+  startMS: number,
+  endMS: number,
   text: string,
   uuid: string,
   videoUuid: string,
   lastActivityAt: Date
   pitch: Pitch
+};
+
+export declare type DraftSegment = {
+  startMS: number,
+  endMS: number,
+  text: string,
+  uuid: string
 };
 
 export declare type Highlights = {
@@ -79,7 +86,7 @@ export declare type WordList = {
 }
 
 export function duration(segment: Segment): number {
-  return (segment.end - segment.start) / 1000;
+  return (segment.endMS - segment.startMS) / 1000;
 }
 
 export type Audio = {
@@ -102,19 +109,27 @@ export type AppSettings = {
   audioExportPath: string,
 }
 
-export type VttTimeline = {
-  durationSec: number
-  segments: VttSegment[],
-}
-
-export type VttSegment = {
-  start: number,
-  end: number,
-  text: string,
-}
-
 export type Export = {
   id: string,
   progress: string,
   done: boolean,
+}
+
+export type Waveform = {
+  samples: number[],
+  sampleRate: number
+}
+
+export type Timing = {
+  timeMS: number,
+  labels: string[],
+}
+
+export type VideoAdvice = {
+  suggestedSegments: DraftSegment[],
+  timings: Timing[]
+}
+
+export type VideoDraft = {
+  draftSegments: DraftSegment[]
 }

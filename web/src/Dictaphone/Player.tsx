@@ -22,6 +22,7 @@ export declare type PlayerProps = {
   playing: boolean
   onPlayerStateChanged: (playing: boolean) => void,
   preferredStartTime?: number
+  onPositionChange?: (ms: number) => void,
 };
 
 function noop() {
@@ -33,7 +34,8 @@ export const Player = ({
                          onPlaybackEnded = noop,
                          playing,
                          onPlayerStateChanged,
-                         preferredStartTime
+                         preferredStartTime,
+                         onPositionChange
                        }: PlayerProps) => {
   const classes = useStyles();
 
@@ -66,7 +68,7 @@ export const Player = ({
       return audioRef.current?.ended || false;
     }
 
-    return (audioRef.current?.currentTime || 0) >= (duration.endSec / 1000);
+    return (audioRef.current?.currentTime || 0) >= duration.endSec;
   }
 
   function timeUpdate() {
@@ -74,6 +76,7 @@ export const Player = ({
     if (audioRef.current === undefined || audioRef.current === null) {
       return;
     }
+    onPositionChange && onPositionChange(audioRef.current.currentTime * 1000)
     if (checkIsComplete()) {
       audioRef.current?.pause();
       onPlayerStateChanged(false);
@@ -94,7 +97,7 @@ export const Player = ({
 
   function rewindStart() {
     if (audioRef.current !== null) {
-      audioRef.current.currentTime = (duration === "auto" ? 0 : duration.startSec / 1000);
+      audioRef.current.currentTime = (duration === "auto" ? 0 : duration.startSec);
     }
   }
 
@@ -133,14 +136,14 @@ export const Player = ({
     let startSec, endSec;
     if (duration === "auto") {
       startSec = 0;
-      endSec = audioRef.current.duration * 1000;
+      endSec = audioRef.current.duration;
     } else {
       startSec = duration.startSec;
       endSec = duration.endSec;
     }
 
-    const current = audioRef.current.currentTime - (startSec / 1000);
-    const total = (endSec / 1000) - (startSec / 1000);
+    const current = audioRef.current.currentTime - startSec;
+    const total = endSec - startSec;
     return (current / total) * 100;
   };
 
@@ -159,9 +162,9 @@ export const Player = ({
 
       const {x, width} = playerProgressRef.current.getBoundingClientRect();
       const pct = (event.clientX - x) / width;
-      const total = (endSec / 1000) - (startSec / 1000);
+      const total = endSec - startSec;
       const offset = pct * total;
-      audioRef.current.currentTime = (startSec / 1000) + offset;
+      audioRef.current.currentTime = startSec + offset;
 
     }
   };

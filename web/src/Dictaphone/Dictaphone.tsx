@@ -33,7 +33,7 @@ const makeParamsForSegment = (segment: Segment): DictaphoneParams => {
       segmentId: segment.uuid,
     },
     src: audioURL(segment),
-    duration: {startSec: segment.start, endSec: segment.end},
+    duration: {startSec: segment.startMS / 1000, endSec: segment.endMS / 1000},
   }
 }
 

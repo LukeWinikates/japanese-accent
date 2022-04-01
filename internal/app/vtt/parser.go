@@ -7,33 +7,10 @@ import (
 	"strings"
 )
 
-func parseSegmentTime(s string) (int, error) {
-	mills := strings.Split(s, ".")
-	ms, err := strconv.Atoi(mills[1])
-	if err != nil {
-		return 0, err
-	}
-	rest := strings.Split(mills[0], ":")
-	hr, err := strconv.Atoi(rest[0])
-	if err != nil {
-		return 0, err
-	}
-	min, err := strconv.Atoi(rest[1])
-	if err != nil {
-		return 0, err
-	}
-	sec, err := strconv.Atoi(rest[2])
-	if err != nil {
-		return 0, err
-	}
-
-	return ms + (1000 * sec) + (min * 60 * 1000) + (hr * 60 * 60 * 1000), nil
-}
-
 type Segment struct {
-	Start int
-	End   int
-	Text  string
+	StartMS int
+	EndMS   int
+	Text    string
 }
 
 func ParseSegments(fileContent string) ([]Segment, error) {
@@ -62,8 +39,8 @@ func ParseSegments(fileContent string) ([]Segment, error) {
 			}
 
 			segments = append(segments, Segment{
-				Start: maybeStart,
-				End:   maybeEnd,
+				StartMS: maybeStart,
+				EndMS:   maybeEnd,
 			})
 			continue
 		}
@@ -76,4 +53,27 @@ func ParseSegments(fileContent string) ([]Segment, error) {
 	}
 
 	return segments, nil
+}
+
+func parseSegmentTime(s string) (int, error) {
+	mills := strings.Split(s, ".")
+	ms, err := strconv.Atoi(mills[1])
+	if err != nil {
+		return 0, err
+	}
+	rest := strings.Split(mills[0], ":")
+	hr, err := strconv.Atoi(rest[0])
+	if err != nil {
+		return 0, err
+	}
+	min, err := strconv.Atoi(rest[1])
+	if err != nil {
+		return 0, err
+	}
+	sec, err := strconv.Atoi(rest[2])
+	if err != nil {
+		return 0, err
+	}
+
+	return ms + (1000 * sec) + (min * 60 * 1000) + (hr * 60 * 60 * 1000), nil
 }

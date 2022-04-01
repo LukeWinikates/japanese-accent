@@ -8,8 +8,8 @@ import {SegmentEditor} from "./SegmentEditor";
 type DraftSegmentDialogProps = { videoId: string, onClose: () => void };
 
 type DraftSegment = {
-  start: number,
-  end: number,
+  startMS: number,
+  endMS: number,
   text: string,
   videoUuid: string,
 }
@@ -27,20 +27,20 @@ const useStyles = makeStyles(theme => (
 const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
   const [segment, setSegment] = useState<DraftSegment>({
     videoUuid: videoId,
-    start:0,
-    end:1000,
+    startMS: 0,
+    endMS: 1000,
     text: "",
   })
   const classes = useStyles();
   const {post} = useFetch('/api/videos/' + videoId + "/segments/");
   const {logError} = useServerInteractionHistory();
 
-  function save(){
+  function save() {
     post({
       text: segment.text,
       videoUuid: videoId,
-      start: segment.start,
-      end: segment.end,
+      start: segment.startMS,
+      end: segment.endMS,
     }).then(onClose).catch(logError);
   }
 

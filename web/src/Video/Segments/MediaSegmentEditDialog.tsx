@@ -64,8 +64,8 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     let cloned = {
       text: segment.text,
       videoUuid: videoId,
-      start: segment.start,
-      end: segment.end,
+      start: segment.startMS,
+      end: segment.endMS,
     };
     createSegmentPOST(cloned).then(response => {
       onAdd(response)

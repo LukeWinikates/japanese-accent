@@ -10,8 +10,8 @@ type Highlights struct {
 }
 
 type VideoSegment struct {
-	Start          int                `json:"start"`
-	End            int                `json:"end"`
+	StartMS        int                `json:"startMS"`
+	EndMS          int                `json:"endMS"`
 	Text           string             `json:"text"`
 	UUID           string             `json:"uuid"`
 	VideoUUID      string             `json:"videoUuid"`
@@ -23,22 +23,6 @@ type VideoSegment struct {
 type VideoSegmentPitch struct {
 	Pattern string `json:"pattern"`
 	Morae   string `json:"morae"`
-}
-
-type VideoSegmentCreate struct {
-	Start   int    `json:"start"`
-	End     int    `json:"end"`
-	Text    string `json:"text"`
-	VideoID string `json:"videoUuid"`
-}
-
-type VideoCreate struct {
-	YoutubeID string `json:"youtubeId"`
-	Title     string `json:"title"`
-}
-type VideoEdit struct {
-	Title string `json:"title"`
-	Text  string `json:"text"`
 }
 
 type VideoSummary struct {
@@ -67,17 +51,6 @@ type Video struct {
 	Status         string         `json:"status"`
 }
 
-type VttSegment struct {
-	Start int    `json:"start"`
-	End   int    `json:"end"`
-	Text  string `json:"text"`
-}
-
-type VttTimeline struct {
-	Segments    []VttSegment `json:"segments"`
-	DurationSec int          `json:"durationSec"`
-}
-
 type Word struct {
 	Text       string      `json:"word"`
 	Furigana   string      `json:"furigana"`
@@ -101,27 +74,6 @@ type Playlist struct {
 	Segments []VideoSegment `json:"segments"`
 }
 
-type SegmentEditRequest struct {
-	Start int    `json:"start"`
-	End   int    `json:"end"`
-	Text  string `json:"text"`
-	UUID  string `json:"uuid"`
-}
-
-type SegmentCreateRequest = VideoSegmentCreate
-
-type BoostCreateRequest struct {
-	SegmentID string `json:"segmentId"`
-}
-type PlaylistCreateRequest struct {
-	Count int `json:"count"`
-}
-
-type ActivityCreateRequest struct {
-	SegmentID    string `json:"segmentId"`
-	ActivityType string `json:"activityType"`
-}
-
 type WordList struct {
 	ID    uint   `json:"id"`
 	Name  string `json:"name"`
@@ -135,10 +87,6 @@ type AudioLink struct {
 	ForvoPronunciationID string `json:"ForvoPronunciationId"`
 }
 
-type WordAnalysisRequest struct {
-	Text string `json:"text"`
-}
-
 type WordAnalysis struct {
 	Text     string      `json:"text"`
 	Pattern  string      `json:"pattern"`
@@ -147,23 +95,9 @@ type WordAnalysis struct {
 	Furigana string      `json:"furigana"`
 }
 
-type VideoWordLinkCreateRequest struct {
-	Word    string `json:"word"`
-	VideoID string `json:"videoId"`
-}
-
 type ApplicationSettings struct {
 	ForvoAPIKey     *string `json:"forvoApiKey"`
 	AudioExportPath *string `json:"audioExportPath"`
-}
-
-type ApplicationSettingsChangeRequest struct {
-	ForvoAPIKey     *string `json:"forvoApiKey"`
-	AudioExportPath *string `json:"audioExportPath"`
-}
-
-type ExportCreateRequest struct {
-	VideoUUID string `json:"videoUuid"`
 }
 
 type ExportCreateResponse struct {
@@ -174,4 +108,30 @@ type ExportGetResponse struct {
 	ID       string `json:"id"`
 	Progress string `json:"progress"`
 	Done     bool   `json:"done"`
+}
+
+type Timing struct {
+	TimeMS int      `json:"timeMS"`
+	Labels []string `json:"labels"`
+}
+
+type TimedText struct {
+	Content string `json:"content"`
+	TimeMS  int    `json:"timeMS"`
+}
+
+type DraftSegment struct {
+	StartMS int    `json:"startMS"`
+	EndMS   int    `json:"endMS"`
+	Text    string `json:"text"`
+	UUID    string `json:"uuid"`
+}
+
+type VideoAdviceResponse struct {
+	Timings           []Timing       `json:"timings"`
+	SuggestedSegments []DraftSegment `json:"suggestedSegments"`
+}
+
+type VideoDraftResponse struct {
+	DraftSegments []DraftSegment `json:"draftSegments"`
 }
