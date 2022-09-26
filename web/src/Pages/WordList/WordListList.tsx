@@ -1,8 +1,8 @@
 import {WordList} from "../../App/api";
-import {List} from "@material-ui/core";
-import ListItem from "@material-ui/core/ListItem";
+import {List} from "@mui/material";
+import ListItem from "@mui/material/ListItem";
 import {Link} from "react-router-dom";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 
 export function WordListList({wordLists}:{wordLists: WordList[]}) {

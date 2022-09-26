@@ -1,5 +1,5 @@
 import {duration, Export, Segment} from "../App/api";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
   Box,
   Button,
@@ -16,13 +16,13 @@ import {
   ListItem,
   ListItemSecondaryAction,
   Typography
-} from "@material-ui/core";
-import ListItemText from "@material-ui/core/ListItemText";
-import EditIcon from "@material-ui/core/SvgIcon";
+} from "@mui/material";
+import ListItemText from "@mui/material/ListItemText";
+import EditIcon from "@mui/material/SvgIcon";
 import {Dictaphone} from "./Dictaphone";
 import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
 import useFetch, {CachePolicies} from "use-http";
-import DeleteIcon from '@material-ui/icons/Delete';
+import DeleteIcon from '@mui/icons-material/Delete';
 import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
@@ -54,9 +54,9 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     setCurrentSegmentIndex(0);
   }, [parentId]);
 
-  const listRef = useRef<HTMLElement>();
+  const listRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     listRef.current?.querySelectorAll(`li`)[currentSegmentIndex]?.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
@@ -142,7 +142,11 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
             Edit
           </Button>
-          <IconButton edge="end" aria-label="delete" onClick={() => promptToDelete(segment, index)}>
+          <IconButton
+            edge="end"
+            aria-label="delete"
+            onClick={() => promptToDelete(segment, index)}
+            size="large">
             <DeleteIcon/>
           </IconButton>
         </ListItemSecondaryAction>

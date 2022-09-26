@@ -1,9 +1,9 @@
 import {DraftSegment, Segment, Video, VideoAdvice, VideoDraft} from "../../App/api";
 import React, {useEffect, useState} from "react";
-import {Box, Breadcrumbs, Button, Container, Grid, Typography} from "@material-ui/core";
-import YouTubeIcon from '@material-ui/icons/YouTube';
-import LaunchIcon from '@material-ui/icons/Launch';
-import DoneIcon from '@material-ui/icons/Done';
+import {Box, Breadcrumbs, Button, Container, Grid, Typography} from "@mui/material";
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import LaunchIcon from '@mui/icons-material/Launch';
+import DoneIcon from '@mui/icons-material/Done';
 import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {AutoSavingTextField} from "./AutoSavingTextField";

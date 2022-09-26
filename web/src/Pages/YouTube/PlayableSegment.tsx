@@ -1,5 +1,6 @@
 import {duration, Segment} from "../../App/api";
-import {IconButton, makeStyles} from "@material-ui/core";
+import {IconButton} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React from "react";
 import {msToHumanReadable} from "../../App/time";
 import {WithIndex} from "../../App/WithIndex";
@@ -31,7 +32,7 @@ export function PlayableSegment({segmentWithIndex, onSegmentSelected}: Props) {
          className={classes.segmentContainer}
          title={`${segment.text} : ${msToHumanReadable(duration(segment))}`}
     >
-      <IconButton onClick={() => onSegmentSelected(segmentWithIndex)}>
+      <IconButton onClick={() => onSegmentSelected(segmentWithIndex)} size="large">
       </IconButton>
     </div>
   );

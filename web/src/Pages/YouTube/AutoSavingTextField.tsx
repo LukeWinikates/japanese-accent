@@ -1,7 +1,7 @@
 import React, {ChangeEvent, useEffect, useState} from "react";
-import {CircularProgress, TextField} from "@material-ui/core";
-import ErrorIcon from "@material-ui/icons/Error";
-import CheckIcon from "@material-ui/icons/Check";
+import {CircularProgress, TextField} from "@mui/material";
+import ErrorIcon from "@mui/icons-material/Error";
+import CheckIcon from "@mui/icons-material/Check";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 
 const Indicator = ({status}: { status: IndicatorStatus }) => {

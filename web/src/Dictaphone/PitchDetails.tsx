@@ -1,6 +1,6 @@
 import {Pitch, Segment} from "../App/api";
 import React, {useState} from "react";
-import {Button, Grid} from "@material-ui/core";
+import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
 import useFetch from "use-http";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";

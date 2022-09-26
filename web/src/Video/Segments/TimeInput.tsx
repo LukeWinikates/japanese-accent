@@ -1,5 +1,5 @@
-import {Button, FormControl, Input, InputLabel} from "@material-ui/core";
-import InputAdornment from "@material-ui/core/InputAdornment";
+import {Button, FormControl, Input, InputLabel} from "@mui/material";
+import InputAdornment from "@mui/material/InputAdornment";
 import React from "react";
 import {msToHumanReadable} from "../../App/time";
 

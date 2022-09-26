@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Button, TextField} from "@material-ui/core";
+import {Button, TextField} from "@mui/material";
 
 import {Player} from "../../Dictaphone/Player";
 import {TimeInput} from "./TimeInput";

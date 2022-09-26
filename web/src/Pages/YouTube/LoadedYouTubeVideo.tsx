@@ -1,13 +1,13 @@
 import {Segment, Video} from "../../App/api";
 import React, {useState} from "react";
-import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@material-ui/core";
-import YouTubeIcon from '@material-ui/icons/YouTube';
-import LaunchIcon from '@material-ui/icons/Launch';
+import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@mui/material";
+import YouTubeIcon from '@mui/icons-material/YouTube';
+import LaunchIcon from '@mui/icons-material/Launch';
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
-import DoneIcon from '@material-ui/icons/Done';
+import DoneIcon from '@mui/icons-material/Done';
 import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import AddIcon from "@material-ui/icons/Add";
+import AddIcon from "@mui/icons-material/Add";
 import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
 import AddWordDialog from "../WordList/AddWordDialog";
 import {WordListPlayer} from "../../Dictaphone/WordListPlayer";

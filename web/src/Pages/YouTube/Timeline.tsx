@@ -5,12 +5,12 @@ import {Loadable} from "../../App/loadable";
 import useFetch from "use-http";
 import {Player} from "../../Dictaphone/Player";
 import audioURL from "../../App/audioURL";
-import {Checkbox, Grid, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction} from "@material-ui/core";
-import ListItemText from "@material-ui/core/ListItemText";
+import {Checkbox, Grid, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction} from "@mui/material";
+import ListItemText from "@mui/material/ListItemText";
 import {rangeToHumanReadable} from "../../App/time";
-import DeleteIcon from "@material-ui/icons/Delete";
-import NotesIcon from "@material-ui/icons/Notes";
-import CopyIcon from "@material-ui/icons/FileCopy";
+import DeleteIcon from "@mui/icons-material/Delete";
+import NotesIcon from "@mui/icons-material/Notes";
+import CopyIcon from "@mui/icons-material/FileCopy";
 import {Pager} from "../../Dictaphone/Pager";
 
 type TimelineProps = {
@@ -120,13 +120,13 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
                     >
                     </ListItemText>
                     <ListItemSecondaryAction>
-                      <IconButton edge="end" aria-label="delete">
+                      <IconButton edge="end" aria-label="delete" size="large">
                         <DeleteIcon/>
                       </IconButton>
-                      <IconButton edge="end" aria-label="edit">
+                      <IconButton edge="end" aria-label="edit" size="large">
                         <NotesIcon/>
                       </IconButton>
-                      <IconButton edge="end" aria-label="copy">
+                      <IconButton edge="end" aria-label="copy" size="large">
                         <CopyIcon/>
                       </IconButton>
                     </ListItemSecondaryAction>
@@ -137,6 +137,7 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
           </List>
         </Grid>
       </Grid>
-    </div>);
+    </div>
+  );
 
 }

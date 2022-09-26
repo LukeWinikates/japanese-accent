@@ -12,12 +12,12 @@ import {
   Input,
   InputAdornment,
   Link,
-  makeStyles,
-  Typography
-} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
-import Visibility from '@material-ui/icons/Visibility';
-import VisibilityOff from '@material-ui/icons/VisibilityOff';
+  Typography,
+} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Loadable} from "../App/loadable";
 import {useFetch} from "use-http";
 import {AppSettings} from "../App/api"
@@ -107,7 +107,11 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
     >
       <DialogTitle id="simple-dialog-title">
         Application Settings
-        <IconButton aria-label="close" onClick={onClose} className={classes.closeButton}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          className={classes.closeButton}
+          size="large">
           <CloseIcon/>
         </IconButton>
       </DialogTitle>
@@ -140,7 +144,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
                           aria-label="toggle password visibility"
                           onClick={() => setShowApiKey(!showApiKey)}
                           onMouseDown={() => setShowApiKey(!showApiKey)}
-                        >
+                          size="large">
                           {showApiKey ? <Visibility/> : <VisibilityOff/>}
                         </IconButton>
                       </InputAdornment>

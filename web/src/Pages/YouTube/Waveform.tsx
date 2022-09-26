@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from "react";
-import {makeStyles, useTheme} from "@material-ui/core";
+import {useTheme} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {DraftSegment, Timing} from "../../App/api";
 import {Segment} from "./Segment";
 import {SegmentSelector} from "./SegmentSelector";

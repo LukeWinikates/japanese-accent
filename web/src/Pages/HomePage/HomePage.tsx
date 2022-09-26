@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from "react";
-import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
+import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@mui/material";
+import Grid from "@mui/material/Grid";
 import {Highlights, Playlist} from "../../App/api";
 import useFetch from "use-http";
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@mui/icons-material/Add';
 import {Link, useHistory} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";

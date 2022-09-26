@@ -1,7 +1,7 @@
 import {Word} from "../App/api";
 import React, {useEffect, useRef, useState} from "react";
-import {Box, Card, CardContent, LinearProgress, List, ListItem, Typography} from "@material-ui/core";
-import ListItemText from "@material-ui/core/ListItemText";
+import {Box, Card, CardContent, LinearProgress, List, ListItem, Typography} from "@mui/material";
+import ListItemText from "@mui/material/ListItemText";
 import {WithIndex} from "../App/WithIndex";
 import {PagingDictaphone} from "./PagingDictaphone";
 import {ItemsLoader} from "./ItemsLoader";
@@ -15,7 +15,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
     document.querySelectorAll("audio").forEach(a => a.pause());
   }
 
-  const listRef = useRef<HTMLElement>();
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     listRef.current?.querySelectorAll(`li`)[currentWord.index]?.scrollIntoView({

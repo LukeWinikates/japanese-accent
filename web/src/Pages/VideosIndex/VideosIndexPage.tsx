@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from "react";
-import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@material-ui/core";
-import Grid from "@material-ui/core/Grid";
+import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
+import Grid from "@mui/material/Grid";
 import {VideoSummary} from "../../App/api";
 import useFetch from "use-http";
 import {Loadable} from "../../App/loadable";

@@ -1,8 +1,9 @@
-import {Grid, IconButton, LinearProgress, makeStyles} from "@material-ui/core";
+import {Grid, IconButton, LinearProgress} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import React, {useEffect, useRef, useState} from "react";
-import PlayArrowIcon from '@material-ui/icons/PlayArrow';
-import PauseIcon from '@material-ui/icons/Pause';
-import ReplayIcon from '@material-ui/icons/Replay';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
+import PauseIcon from '@mui/icons-material/Pause';
+import ReplayIcon from '@mui/icons-material/Replay';
 import {secondsToHumanReadable} from "../App/time";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 
@@ -170,13 +171,13 @@ export const Player = ({
   };
 
   return (
-    <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
+    <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <audio ref={audioRef} src={src} autoPlay={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
       <Grid item xs={3}>
-        <IconButton onClick={() => rewindStart()}>
+        <IconButton onClick={() => rewindStart()} size="large">
           <ReplayIcon/>
         </IconButton>
-        <IconButton onClick={toggle} color="primary">
+        <IconButton onClick={toggle} color="primary" size="large">
           <PlayPauseIcon fontSize="large"/>
         </IconButton>
       </Grid>
@@ -195,12 +196,12 @@ export const DummyPlayer = () => {
   const classes = useStyles();
 
   return (
-    <Grid container item xs={12} justify="center" alignItems="center" className={classes.playerControls}>
+    <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <Grid item xs={3}>
-        <IconButton disabled>
+        <IconButton disabled size="large">
           <ReplayIcon/>
         </IconButton>
-        <IconButton disabled color="primary">
+        <IconButton disabled color="primary" size="large">
           <PlayArrowIcon fontSize="large"/>
         </IconButton>
       </Grid>

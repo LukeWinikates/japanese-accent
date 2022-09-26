@@ -1,6 +1,6 @@
-import CreateIcon from '@material-ui/icons/Create';
-import HeadsetMicIcon from '@material-ui/icons/HeadsetMic';
-import CloudUploadIcon from '@material-ui/icons/CloudUpload';
+import CreateIcon from '@mui/icons-material/Create';
+import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
+import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import React from 'react';
 
 import {VideoStatus} from '../App/api';

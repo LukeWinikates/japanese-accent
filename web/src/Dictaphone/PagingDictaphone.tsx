@@ -1,7 +1,7 @@
 import {Audio} from "../App/api";
 import React, {useEffect, useState} from "react";
 import {WithIndex} from "../App/WithIndex";
-import {Typography} from "@material-ui/core";
+import {Typography} from "@mui/material";
 import {Dictaphone} from "./Dictaphone";
 import {Pager} from "./Pager";
 

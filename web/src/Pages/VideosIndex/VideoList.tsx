@@ -1,9 +1,9 @@
 import {VideoSummary} from "../../App/api";
-import {List, ListItemIcon} from "@material-ui/core";
-import ListItem from "@material-ui/core/ListItem";
+import {List, ListItemIcon} from "@mui/material";
+import ListItem from "@mui/material/ListItem";
 import {StatusIcon} from "../../Video/StatusIcon";
 import {Link} from "react-router-dom";
-import ListItemText from "@material-ui/core/ListItemText";
+import ListItemText from "@mui/material/ListItemText";
 import React from "react";
 
 

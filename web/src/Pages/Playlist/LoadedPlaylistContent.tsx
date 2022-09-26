@@ -1,4 +1,4 @@
-import {Box, Breadcrumbs, Container, Typography} from "@material-ui/core";
+import {Box, Breadcrumbs, Container, Typography} from "@mui/material";
 import React from "react";
 import {Playlist, Segment} from "../../App/api";
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";

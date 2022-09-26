@@ -1,5 +1,5 @@
 import React, {ForwardedRef, useState} from "react";
-import {makeStyles} from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import {DraftSegment,} from "../../App/api";
 import {Resizable, ResizeCallbackData, ResizeHandle} from 'react-resizable';
 

@@ -1,7 +1,9 @@
 import {Video} from "../../App/api";
 import React, {useEffect, useState} from "react";
-import FileCopyIcon from '@material-ui/icons/FileCopy';
-import {Container, IconButton, makeStyles, Paper, Typography} from "@material-ui/core";
+import FileCopyIcon from '@mui/icons-material/FileCopy';
+import {Container, IconButton, Paper, Typography} from "@mui/material";
+
+import makeStyles from '@mui/styles/makeStyles';
 
 const useStyles = makeStyles(theme => (
   {
@@ -49,7 +51,11 @@ const CopyableText = ({text}: { text: string }) => {
         {
           feedback && <Typography variant="body2" component="span">copied!</Typography>
         }
-        <IconButton color="default" aria-label="copy to clipboard" onClick={copy}>
+        <IconButton
+          color="default"
+          aria-label="copy to clipboard"
+          onClick={copy}
+          size="large">
           <FileCopyIcon/>
         </IconButton>
       </div>

@@ -1,9 +1,10 @@
 import React, {useEffect} from 'react';
 
 import {useReactMediaRecorder} from "react-media-recorder";
-import {Button, CircularProgress, makeStyles} from "@material-ui/core";
-import RadioButtonCheckedIcon from '@material-ui/icons/RadioButtonChecked';
-import StopIcon from '@material-ui/icons/Stop';
+import {Button, CircularProgress} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
+import StopIcon from '@mui/icons-material/Stop';
 
 const useStyles = makeStyles(() => ({
   iconButtonWrapper: {

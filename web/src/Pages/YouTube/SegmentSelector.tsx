@@ -1,5 +1,5 @@
 import React from "react";
-import {makeStyles} from "@material-ui/core";
+import makeStyles from '@mui/styles/makeStyles';
 import {DraftSegment,} from "../../App/api";
 
 const useStyles = makeStyles((theme) => ({

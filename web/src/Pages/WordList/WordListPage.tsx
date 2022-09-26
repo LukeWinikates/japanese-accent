@@ -10,10 +10,10 @@ import {
   ListItemSecondaryAction,
   ListItemText,
   Typography,
-} from "@material-ui/core";
+} from "@mui/material";
 import {useRouteMatch} from "react-router";
 import useFetch from "use-http";
-import LinkIcon from '@material-ui/icons/Link';
+import LinkIcon from '@mui/icons-material/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";

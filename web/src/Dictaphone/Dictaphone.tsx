@@ -1,10 +1,11 @@
-import {Button, Grid, makeStyles, Typography} from "@material-ui/core";
+import {Button, Grid, Typography} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useEffect, useState} from "react";
 import {Activity, Audio, Segment} from "../App/api";
-import RecordVoiceOverIcon from '@material-ui/icons/RecordVoiceOver';
-import AddIcon from '@material-ui/icons/Add';
+import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
+import AddIcon from '@mui/icons-material/Add';
 import useFetch, {CachePolicies} from "use-http";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import audioURL from "../App/audioURL";
@@ -156,7 +157,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   return (
     <Grid container item spacing={1}>
-      <Grid container item xs={6} justify="center" alignItems="center" className={classes.playerControls}>
+      <Grid container item xs={6} justifyContent="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
             Native:
@@ -171,7 +172,7 @@ export function Dictaphone({item}: DictaphoneProps) {
           />
         </Grid>
       </Grid>
-      <Grid container item xs={6} justify="center" alignItems="center" className={classes.playerControls}>
+      <Grid container item xs={6} justifyContent="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
             Practice:
@@ -190,7 +191,7 @@ export function Dictaphone({item}: DictaphoneProps) {
         </Grid>
       </Grid>
 
-      <Grid container item xs={12} justify="flex-end">
+      <Grid container item xs={12} justifyContent="flex-end">
         <Grid container item xs={2}>
           <Button onClick={boostCurrentSegment}
                   startIcon={<AddIcon/>}>

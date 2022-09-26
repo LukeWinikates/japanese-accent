@@ -1,5 +1,5 @@
 import {Word} from "../App/api";
-import {useTheme} from "@material-ui/core";
+import {useTheme} from "@mui/material";
 import React from "react";
 
 function moraAccentHigh(word: Word, index: number) {

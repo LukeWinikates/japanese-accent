@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {Highlights} from "../App/api";
-import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@material-ui/core";
-import HouseIcon from '@material-ui/icons/House';
-import YoutubeIcon from '@material-ui/icons/YouTube';
-import NotesIcon from '@material-ui/icons/Notes';
+import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
+import HouseIcon from '@mui/icons-material/House';
+import YoutubeIcon from '@mui/icons-material/YouTube';
+import NotesIcon from '@mui/icons-material/Notes';
 import {Link} from "react-router-dom";
 import useFetch from "use-http";
 import {StatusIcon} from "../Video/StatusIcon";

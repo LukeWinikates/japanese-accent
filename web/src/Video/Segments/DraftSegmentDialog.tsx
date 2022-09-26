@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
-import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, makeStyles} from "@material-ui/core";
-import CloseIcon from "@material-ui/icons/Close";
+import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from "@mui/icons-material/Close";
 import useFetch from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
@@ -53,7 +54,11 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
     >
       <DialogTitle id="simple-dialog-title">
         Edit Audio Clip
-        <IconButton aria-label="close" onClick={onClose} className={classes.closeButton}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          className={classes.closeButton}
+          size="large">
           <CloseIcon/>
         </IconButton>
       </DialogTitle>

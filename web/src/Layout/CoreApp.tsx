@@ -1,6 +1,7 @@
-import {makeStyles, unstable_createMuiStrictModeTheme as createMuiTheme} from "@material-ui/core/styles";
+import {adaptV4Theme, unstable_createMuiStrictModeTheme as createMuiTheme} from "@mui/material/styles";
+import makeStyles from '@mui/styles/makeStyles';
 import React, {useState} from "react";
-import {Container} from "@material-ui/core";
+import {Container} from "@mui/material";
 import {AppBar} from "./AppBar";
 import {AppDrawer} from "./AppDrawer";
 import {Routes} from "./Routes";
@@ -11,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     padding: theme.spacing(3),
   },
 }));
-export const theme = createMuiTheme({
+export const theme = createMuiTheme(adaptV4Theme({
   palette: {
     primary: {
       main: "#006c4f"
@@ -20,7 +21,7 @@ export const theme = createMuiTheme({
       main: "#b35937"
     }
   }
-});
+}));
 
 export function CoreApp() {
   const classes = useStyles();

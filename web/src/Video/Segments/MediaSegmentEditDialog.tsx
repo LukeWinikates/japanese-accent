@@ -1,14 +1,15 @@
 import React from 'react';
-import DialogTitle from '@material-ui/core/DialogTitle';
-import Dialog from '@material-ui/core/Dialog';
+import DialogTitle from '@mui/material/DialogTitle';
+import Dialog from '@mui/material/Dialog';
 import {Segment} from "../../App/api";
-import {Button, DialogContent, IconButton, makeStyles} from "@material-ui/core";
-import CloseIcon from '@material-ui/icons/Close';
-import TrashIcon from '@material-ui/icons/Delete';
-import CopyIcon from '@material-ui/icons/FileCopy';
+import {Button, DialogContent, IconButton} from "@mui/material";
+import makeStyles from '@mui/styles/makeStyles';
+import CloseIcon from '@mui/icons-material/Close';
+import TrashIcon from '@mui/icons-material/Delete';
+import CopyIcon from '@mui/icons-material/FileCopy';
 
 import useFetch from "use-http";
-import DialogActions from "@material-ui/core/DialogActions";
+import DialogActions from "@mui/material/DialogActions";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
 
@@ -81,7 +82,11 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
             fullWidth={true}>
       <DialogTitle id="simple-dialog-title">
         Edit Audio Clip
-        <IconButton aria-label="close" onClick={onClose} className={classes.closeButton}>
+        <IconButton
+          aria-label="close"
+          onClick={onClose}
+          className={classes.closeButton}
+          size="large">
           <CloseIcon/>
         </IconButton>
       </DialogTitle>
@@ -94,10 +99,10 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
         />
       </DialogContent>
       <DialogActions>
-        <IconButton onClick={del}>
+        <IconButton onClick={del} size="large">
           <TrashIcon/>
         </IconButton>
-        <IconButton onClick={clone}>
+        <IconButton onClick={clone} size="large">
           <CopyIcon/>
         </IconButton>
         <Button onClick={save}>

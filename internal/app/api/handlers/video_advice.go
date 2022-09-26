@@ -10,8 +10,8 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"io/ioutil"
 	"log"
+	"os"
 )
 
 // TODO:
@@ -69,7 +69,7 @@ func loadVTTasAdvice(mediaDirectory string, youtubeID string) ([]types.Timing, [
 	if !vttFile.IsFound {
 		return nil, nil, nil, nil
 	}
-	file, err := ioutil.ReadFile(vttFile.Path)
+	file, err := os.ReadFile(vttFile.Path)
 	if err != nil {
 		return nil, nil, nil, err
 	}
