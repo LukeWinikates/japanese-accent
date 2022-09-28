@@ -13,7 +13,7 @@ import {useServerInteractionHistory} from "../../Layout/useServerInteractionHist
 
 export default function HomePage() {
   const {logError} = useServerInteractionHistory();
-  const {get, response} = useFetch<Highlights>(
+  const {get} = useFetch<Highlights>(
     "/api/highlights");
 
   const autoPlaylist = useFetch<Playlist>("/api/playlists");
@@ -25,19 +25,9 @@ export default function HomePage() {
     setDialogOpen(false);
   }
 
-
   useEffect(() => {
-    async function initialize() {
-      const highlightsResponse = await get('');
-      if (response.ok) {
-        setHighlights({data: highlightsResponse});
-      } else {
-        logError("unable to load homepage data")
-      }
-    }
-
-    initialize().catch(logError);
-  }, [highlights]);
+    get().then(h => setHighlights({data: h})).catch(() => logError("unable to load homepage"))
+  }, [get, logError]);
 
   async function createQuick20AndNavigate() {
     await autoPlaylist.post({

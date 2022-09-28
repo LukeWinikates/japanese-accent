@@ -10,21 +10,13 @@ import {useServerInteractionHistory} from "../../Layout/useServerInteractionHist
 export default function WordListsIndexPage() {
   const {logError} = useServerInteractionHistory();
 
-  const {get, response} = useFetch<WordList[]>(
+  const {get} = useFetch<WordList[]>(
     "/api/wordlists");
   const [wordLists, setWordLists] = useState<Loadable<WordList[]>>("loading");
-  useEffect(() => {
-    async function initialize() {
-      const wordLists = await get('');
-      if (response.ok) {
-        setWordLists({data: wordLists});
-      } else {
-        logError("could not load wordlists")
-      }
-    }
 
-    initialize();
-  }, []);
+  useEffect(() => {
+    get().then(words => setWordLists({data: words})).catch(() => logError("unable to load wordlists"))
+  }, [get, logError]);
 
   return (
     <>

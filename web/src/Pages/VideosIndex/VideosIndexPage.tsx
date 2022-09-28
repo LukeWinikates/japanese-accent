@@ -9,21 +9,13 @@ import {useServerInteractionHistory} from "../../Layout/useServerInteractionHist
 
 export default function VideosIndexPage() {
   const {logError} = useServerInteractionHistory();
-  const {get, response} = useFetch<VideoSummary[]>(
+  const {get} = useFetch<VideoSummary[]>(
     "/api/videos");
   const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
-  useEffect(() => {
-    async function initialize() {
-      const videosResponse = await get('');
-      if (response.ok) {
-        setVideos({data: videosResponse});
-      } else {
-        logError("could not load videos")
-      }
-    }
 
-    initialize();
-  }, []);
+  useEffect(() => {
+    get().then(v => setVideos({data: v})).catch(() => logError("unable to load videos"))
+  }, [get, logError]);
 
   return (
     <>
