@@ -5,7 +5,7 @@ import {Loadable} from "../../App/loadable";
 import useFetch from "use-http";
 import {Player} from "../../Dictaphone/Player";
 import audioURL from "../../App/audioURL";
-import {Checkbox, Grid, IconButton, List, ListItem, ListItemIcon, ListItemSecondaryAction} from "@mui/material";
+import {Checkbox, Grid, IconButton, List, ListItemButton, ListItemIcon, ListItemSecondaryAction} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import {rangeToHumanReadable} from "../../App/time";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -37,20 +37,11 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
 
   useEffect(() => {
     waveforms.get().then((e: ApiWaveform) => setSamplesData({data: e}))
-    // var wavesurfer = WaveSurfer.create({
-    //   container: '#waveform',
-    //   backend: 'MediaElement',
-    //   splitChannels: true,
-    //   mediaControls: true,
-    // });
-    // wavesurfer.load(`/media/audio/${videoUuid}`)
   }, [])
 
   useEffect(() => {
     setPlaybackPositionMSMS(selectedSegment?.startMS || 0)
   }, [selectedSegment])
-
-  // const [playing, setPlaying] = useState(false);
 
   function selectedSegmentByIndex(index: number) {
     setSelectedSegment(advice.suggestedSegments[index]);
@@ -78,14 +69,15 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
         startSec = {(selectedSegment?.startMS || 0) / 1000} ,
         endSec = {(selectedSegment?.endMS || 0) / 1000} ,
         playbackPosition = {(playbackPositionMS || 0) / 1000} ,
-        <Player src={selectedSegment && audioURL({
-          videoUuid, startMS: selectedSegment.startMS,
+        <Player src={!!selectedSegment ? audioURL({
+          videoUuid,
+          startMS: selectedSegment.startMS,
           endMS: selectedSegment.endMS
-        }) || `/media/audio/${videoUuid}`}
-                duration={selectedSegment && {
+        }) : `/media/audio/${videoUuid}`}
+                duration={!!selectedSegment ? {
                   startSec: selectedSegment.startMS / 1000,
                   endSec: selectedSegment.endMS / 1000
-                } || "auto"}
+                } : "auto"}
                 playing={isPlaying}
                 onPlayerStateChanged={setIsPlaying}
                 onPositionChange={setPlaybackPositionMSMS}
@@ -103,7 +95,7 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
                 const labelId = `checkbox-list-label-${i}`;
 
                 return (
-                  <ListItem key={s.uuid} selected={s.uuid === selectedSegment?.uuid}
+                  <ListItemButton key={s.uuid} selected={s.uuid === selectedSegment?.uuid}
                             onClick={() => setSelectedSegment(s)}>
                     <ListItemIcon>
                       <Checkbox
@@ -130,7 +122,7 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
                         <CopyIcon/>
                       </IconButton>
                     </ListItemSecondaryAction>
-                  </ListItem>
+                  </ListItemButton>
                 );
               })
             }

@@ -8,7 +8,6 @@ import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {AutoSavingTextField} from "./AutoSavingTextField";
 import {DragDropComposableText} from "./DragDropComposableText";
-import {WithIndex} from "../../App/WithIndex";
 import {Timeline} from "./Timeline";
 import {Loadable} from "../../App/loadable";
 
@@ -18,8 +17,6 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const adviceFetch = useFetch<VideoAdvice>('/api/videos/' + video.videoId + '/advice');
   const draftFetch = useFetch<VideoDraft>('/api/videos/' + video.videoId + '/draft');
   const {put} = useFetch('/api/videos/' + video.videoId);
-  const [currentSegment, setCurrentSegment] = useState<WithIndex<Segment>>({value: video.segments[0], index: 0});
-  const {value: segment, index: currentSegmentIndex} = currentSegment;
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
   const [draft, setDraft] = useState<Loadable<VideoDraft>>("loading");
   const {post} = useFetch('/api/videos/' + video.videoId + "/segments/");
@@ -39,20 +36,6 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
       return;
     }
     logError(publish.error?.message);
-  }
-
-  const modifyCurrentSegment = (segment: Segment) => {
-    const editedSegment = segment;
-    let newSegments = [...video.segments];
-    newSegments.splice(currentSegmentIndex, 1, editedSegment);
-    onVideoChange({
-      ...video,
-      segments: newSegments
-    });
-    setCurrentSegment({
-      ...currentSegment,
-      value: editedSegment
-    })
   }
 
   const setVideoText = (text: string) => {
@@ -108,7 +91,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
           </Button>
         </Box>
         {
-          advice != "loading" && draft != "loading" ?
+          advice !== "loading" && draft !== "loading" ?
             <Timeline videoUuid={video.videoId}
                       advice={advice.data}
                       draft={draft.data}
