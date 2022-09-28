@@ -20,6 +20,7 @@ jobs:
         uses: mskelton/setup-yarn@v1
         with:
           node-version: 16.17.1
+        run: yarn build
 
       - name: Build Go
         run: go build -v ./...
