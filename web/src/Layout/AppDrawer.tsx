@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {Highlights} from "../App/api";
-import {Divider, Drawer, List, ListItem, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
+import {Divider, Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 import HouseIcon from '@mui/icons-material/House';
 import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
-import {Link} from "react-router-dom";
+import {Link as RouterLink} from "react-router-dom";
 import useFetch from "use-http";
 import {StatusIcon} from "../Video/StatusIcon";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
@@ -46,45 +46,45 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
       onClick={handleClose}
       onClose={handleClose}>
       <List>
-        <ListItem button>
+        <ListItemButton>
           <ListItemIcon>
             <HouseIcon/>
           </ListItemIcon>
-          <Link to={`/`}>
+          <Link component={RouterLink} to="/">
             <ListItemText primary="Home"/>
           </Link>
-        </ListItem>
+        </ListItemButton>
       </List>
       <Divider/>
       <List>
         <ListSubheader disableSticky={true}>
-          Videos <Link to="/videos">(see all)</Link>
+          Videos <RouterLink to="/videos">(see all)</RouterLink>
         </ListSubheader>
         {categories.videos.map((video, index) => (
           <React.Fragment key={index}>
-            <ListItem button>
+            <ListItemButton>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
               <ListItemIcon><StatusIcon status={video.videoStatus} /></ListItemIcon>
-              <Link to={`/media/${video.videoId}`}>
+              <Link component={RouterLink} to={`/media/${video.videoId}`}>
                 <ListItemText primary={video.title}/>
               </Link>
-            </ListItem>
+            </ListItemButton>
           </React.Fragment>
         ))}
       </List>
       <Divider/>
       <List>
         <ListSubheader disableSticky={true}>
-          Word Lists <Link to="/wordlists">(see all)</Link>
+          Word Lists <RouterLink to="/wordlists">(see all)</RouterLink>
         </ListSubheader>
         {categories.wordLists.map((wordList, index) => (
           <React.Fragment key={index}>
-            <ListItem button>
+            <ListItemButton>
               <ListItemIcon><NotesIcon/></ListItemIcon>
-              <Link to={`/wordlists/${wordList.id}`}>
+              <Link component={RouterLink} to={`/wordlists/${wordList.id}`}>
                 <ListItemText primary={wordList.name}/>
               </Link>
-            </ListItem>
+            </ListItemButton>
           </React.Fragment>
         ))}
       </List>
