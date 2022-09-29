@@ -29,17 +29,14 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
 
   const publish = useFetch('/api/videos/' + video.videoId + '/publish');
 
-  async function markComplete() {
-    await publish.post()
-    if (publish.response.ok) {
+  const markComplete = () => {
+    return publish.post().then(r => {
       onVideoChange({
         ...video,
         videoStatus: "Complete"
       })
-      return;
-    }
-    logError(publish.error?.message);
-  }
+    }).catch((e) => logError(`unable to publish video (${e})`))
+  };
 
   function openAddWordDialog() {
     setIsAddWordDialogOpen(true)

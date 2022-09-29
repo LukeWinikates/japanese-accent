@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
-import {Video, VideoSummary} from "../../App/api";
+import {Video} from "../../App/api";
 import {useRouteMatch} from "react-router";
 import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
@@ -14,7 +14,7 @@ export const YoutubeVideoPage = () => {
   const match = useRouteMatch<{ id: string }>();
   const videoId = match.params.id;
   const [video, setVideo] = useState<Loadable<Video>>("loading");
-  const {get,} = useFetch<VideoSummary>(
+  const {get,} = useFetch<Video>(
     '/api/videos/' + videoId);
 
   const setVideoData = (video: Video) => {

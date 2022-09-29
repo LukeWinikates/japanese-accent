@@ -25,7 +25,7 @@ const MILLISECONDS = 1000;
 
 export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: TimelineProps) {
   const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
-  const {get} = useFetch<ApiWaveform[]>('/api/videos/' + videoUuid + '/waveform');
+  const {get} = useFetch<ApiWaveform>('/api/videos/' + videoUuid + '/waveform');
   const [scrubberWindowRange, setScrubberWindowRange] = useState<{ startMS: number, endMS: number }>(
     {startMS: 0, endMS: 30 * MILLISECONDS}
   );

@@ -26,17 +26,14 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
     draftGET().then(draftResponse => setDraft({data: draftResponse}))
   }, [video.videoId, adviceGET, draftGET, setAdvice, setDraft])
 
-  async function markComplete() {
-    await publish.post()
-    if (publish.response.ok) {
+  const markComplete = () => {
+    publish.post().then(() => {
       onVideoChange({
         ...video,
         videoStatus: "Complete"
       })
-      return;
-    }
-    logError(publish.error?.message);
-  }
+    }).catch(() => logError("unable to publish video"))
+  };
 
   const setVideoText = (text: string) => {
     onVideoChange({
