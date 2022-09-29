@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useState} from 'react';
 import {
   Button,
   Card,
@@ -130,6 +130,14 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const {logError} = useServerInteractionHistory();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();
+  const previewWord = useCallback( () => {
+    if (!word) {
+      return;
+    }
+    analysis.post({
+      text: word.text
+    }).then(result => setPreview(result));
+  }, [analysis, word, setPreview]);
 
   useEffect(() => {
     if (!analysisDebounce) {
@@ -139,16 +147,7 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
       previewWord();
     }, 2000);
     return () => clearTimeout(timer);
-  }, [analysisDebounce])
-
-  function previewWord() {
-    if (!word) {
-      return;
-    }
-    analysis.post({
-      text: word.text
-    }).then(result => setPreview(result));
-  }
+  }, [analysisDebounce, previewWord])
 
   function save() {
     if (word === null) {

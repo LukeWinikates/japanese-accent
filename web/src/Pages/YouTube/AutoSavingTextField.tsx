@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {CircularProgress, TextField} from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckIcon from "@mui/icons-material/Check";
@@ -24,6 +24,12 @@ export function AutoSavingTextField<T>({setText, value, save}: AutoSavingTextFie
   const [networkActivity, setNetworkActivity] = useState<IndicatorStatus>("idle");
   const [lastTextEditTime, setLastTextEditTime] = useState<Date | undefined>();
   const {logError} = useServerInteractionHistory();
+  const saveText = useCallback(() => {
+    save().then(() => setNetworkActivity("success")).catch(e => {
+      logError(e);
+      setNetworkActivity("error")
+    });
+  }, [save, logError, setNetworkActivity]);
 
   useEffect(() => {
     if (!lastTextEditTime) {
@@ -33,14 +39,7 @@ export function AutoSavingTextField<T>({setText, value, save}: AutoSavingTextFie
       saveText();
     }, 2000);
     return () => clearTimeout(timer);
-  }, [lastTextEditTime])
-
-  const saveText = () => {
-    save().then(() => setNetworkActivity("success")).catch(e => {
-      logError(e);
-      setNetworkActivity("error")
-    });
-  }
+  }, [lastTextEditTime, saveText])
 
   const changeHandler = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setNetworkActivity("busy")

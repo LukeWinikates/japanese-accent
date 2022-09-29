@@ -39,17 +39,6 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
   const [apiKey, setApiKeyData] = useState<Loadable<string>>("loading");
   const [audioExportPath, setAudioExportPathData] = useState<Loadable<string>>("loading");
   const [showApiKey, setShowApiKey] = useState(false);
-  const setApiKey = (key: string) => {
-    setApiKeyData({
-      data: key
-    })
-  }
-  const setAudioExportPath = (audioExportPath: string) => {
-    setAudioExportPathData({
-      data: audioExportPath
-    })
-  }
-
   const {logError} = useServerInteractionHistory();
 
   const settingsApi = useFetch("api/application-settings")
@@ -57,14 +46,14 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
 
   useEffect(() => {
     settingsApi.get().then((settings: AppSettings) => {
-      setApiKey(
-        settings.forvoApiKey
-      )
-      setAudioExportPath(
-        settings.audioExportPath
-      )
+      setApiKeyData({
+        data: settings.forvoApiKey
+      })
+      setAudioExportPathData({
+        data: settings.audioExportPath
+      })
     });
-  }, [])
+  }, [settingsApi, setApiKeyData, setAudioExportPathData])
 
   const refreshMetrics = () => {
     refreshMetricsApi.post().catch(logError);
@@ -89,11 +78,15 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
   }
 
   let handleApiKeyChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setApiKey(e.target.value)
+    setApiKeyData({
+      data: e.target.value
+    })
   };
 
   let handleAudioExportPathChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setAudioExportPath(e.target.value)
+    setAudioExportPathData({
+      data: e.target.value
+    })
   };
 
   return (

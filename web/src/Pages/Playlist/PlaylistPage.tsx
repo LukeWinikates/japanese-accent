@@ -23,7 +23,7 @@ export const PlaylistPage = () => {
 
   useEffect(() => {
     get('').then(v => setPlaylist({data: v})).catch(() => logError("could not load playlist"));
-  }, [playlistId, setPlaylist, logError]);
+  }, [playlistId, setPlaylist, logError, get]);
 
   return (
     <>

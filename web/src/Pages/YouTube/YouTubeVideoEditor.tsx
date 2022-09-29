@@ -24,7 +24,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   useEffect(() => {
     adviceFetch.get().then(adviceResponse => setAdvice({data: adviceResponse}))
     draftFetch.get().then(draftResponse => setDraft({data: draftResponse}))
-  }, [video.videoId])
+  }, [video.videoId, adviceFetch, draftFetch, setAdvice, setDraft])
 
   async function markComplete() {
     await publish.post()
@@ -66,7 +66,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   }
 
   function setSegments(newSegments: DraftSegment[]) {
-    throw "not implemented"
+    console.log("not implemented", newSegments);
   }
 
   return (

@@ -48,8 +48,6 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
     }
   });
 
-  console.log("recorder status: ", status);
-
   useEffect(() => {
     if (recording && (status === 'stopped' || status === 'idle')) {
       beforeRecord();
@@ -58,7 +56,7 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
     if (!recording && status === 'recording') {
       stopRecording();
     }
-  }, [recording])
+  }, [recording, beforeRecord, startRecording, status, stopRecording])
 
   const toggle = () => {
     onRecordingChange(!recording);

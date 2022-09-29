@@ -55,7 +55,7 @@ export const Player = ({
     } else {
       audioRef.current?.pause();
     }
-  }, [playing, src])
+  }, [playing, src, onPlayerStateChanged, logError])
 
   useEffect(() => {
     if (preferredStartTime && audioRef.current) {
