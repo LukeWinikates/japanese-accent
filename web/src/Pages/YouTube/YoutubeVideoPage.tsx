@@ -13,10 +13,8 @@ export const YoutubeVideoPage = () => {
   const {logError} = useServerInteractionHistory();
   const match = useRouteMatch<{ id: string }>();
   const videoId = match.params.id;
-
   const [video, setVideo] = useState<Loadable<Video>>("loading");
-
-  const {get, response} = useFetch<VideoSummary>(
+  const {get,} = useFetch<VideoSummary>(
     '/api/videos/' + videoId);
 
   const setVideoData = (video: Video) => {
@@ -25,19 +23,9 @@ export const YoutubeVideoPage = () => {
     })
   };
 
-  async function initialize() {
-    const videoResponse = await get('');
-    if (response.ok) {
-      setVideoData(videoResponse);
-      return videoResponse
-    } else {
-      logError("could not load video")
-    }
-  }
-
   useEffect(() => {
-    initialize();
-  }, [videoId]);
+    get('').then(vr => setVideo({data: vr})).catch(() => logError("could not load video"))
+  }, [videoId, get, setVideo, logError]);
 
   if (video === "loading") {
     return (<>loading...</>);

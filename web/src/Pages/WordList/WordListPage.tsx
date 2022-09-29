@@ -25,23 +25,11 @@ function CategoryPage() {
   const {logError} = useServerInteractionHistory();
   const match = useRouteMatch<{ id: string }>();
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
-
-  const {get, response} = useFetch<WordList>('/api/wordlists/' + match.params.id);
-
-  async function initialize() {
-    const wordList = await get('');
-    if (response.ok) {
-      setWordListData({
-        data: wordList
-      });
-    } else {
-      logError("could not load wordlist")
-    }
-  }
+  const {get} = useFetch<WordList>('/api/wordlists/' + match.params.id);
 
   useEffect(() => {
-    initialize()
-  }, [match.params.id]);
+    get('').then(wordList => setWordListData({data: wordList})).catch(() => logError("could not load wordlist"));
+  }, [match.params.id, get, setWordListData, logError]);
 
   if (wordListData === "loading") {
     return <></>

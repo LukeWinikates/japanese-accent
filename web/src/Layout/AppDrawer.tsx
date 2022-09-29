@@ -6,6 +6,7 @@ import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
 import useFetch from "use-http";
+import {Loadable} from "../App/loadable";
 import {StatusIcon} from "../Video/StatusIcon";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
@@ -21,23 +22,20 @@ export function DummyDrawer() {
 }
 
 export function AppDrawer({open, handleClose}: AppDrawerProps) {
-  const [categories, setCategories] = useState<Highlights | null>(null);
+  const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const {logError} = useServerInteractionHistory();
 
-  const {get, response} = useFetch('/api/highlights');
-
-  async function initialize() {
-    const initialCategories = await get('');
-    if (response.ok) setCategories(initialCategories);
-  }
+  const {get} = useFetch('/api/highlights');
 
   useEffect(() => {
-    initialize().catch(logError)
-  }, []);
+    get('').then(cats => setHighlights({data:cats})).catch(logError)
+  }, [get, setHighlights, logError]);
 
-  if (categories === null) {
+  if (highlights === "loading") {
     return (<DummyDrawer/>);
   }
+
+  const categories = highlights.data;
 
   return (
     <Drawer

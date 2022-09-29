@@ -17,7 +17,7 @@ export function PagingDictaphone({items}: { items: Audio[] }) {
       value: items[0],
       index: 0
     })
-  }, items)
+  }, [items])
 
   if (currentItem === null) {
     return <>No items</>;

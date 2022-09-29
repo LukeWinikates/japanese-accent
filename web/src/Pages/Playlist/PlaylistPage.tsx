@@ -13,7 +13,7 @@ export const PlaylistPage = () => {
   const [playlist, setPlaylist] = useState<Loadable<Playlist>>("loading");
 
   let playlistId = match.params.id;
-  const {get, response, error} = useFetch('/api/playlists/' + playlistId);
+  const {get} = useFetch('/api/playlists/' + playlistId);
 
   const setData = (playlist: Playlist) => {
     setPlaylist({
@@ -21,19 +21,9 @@ export const PlaylistPage = () => {
     })
   };
 
-  async function initialize() {
-    const videoResponse = await get('');
-    if (response.ok) {
-      setData(videoResponse);
-      return videoResponse
-    } else {
-      logError("could not load playlist: " + error);
-    }
-  }
-
   useEffect(() => {
-    initialize();
-  }, [playlistId]);
+    get('').then(v => setPlaylist({data: v})).catch(() => logError("could not load playlist"));
+  }, [playlistId, setPlaylist, logError]);
 
   return (
     <>

@@ -52,7 +52,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   useEffect(() => {
     setCurrentSegment(segments[0])
     setCurrentSegmentIndex(0);
-  }, [parentId]);
+  }, [parentId, segments]);
 
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -193,7 +193,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
                  maxIndex={segments.length - 1}
                  setByIndex={setSegmentByIndex}/>
           <Button onClick={startExport} disabled={watchingExport}>
-            {watchingExport ? (exportProgress?.progress || "Starting export")  : "Export"}
+            {watchingExport ? (exportProgress?.progress || "Starting export") : "Export"}
           </Button>
         </CardContent>
       </Card>
