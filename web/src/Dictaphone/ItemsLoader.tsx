@@ -14,7 +14,7 @@ export const ItemsLoader = ({word, children}: { word: string, children: (items: 
       console.log(analysis);
       setItem({data: analysis});
     }).catch(logError);
-  }, [word])
+  }, [word, getAudio, logError])
 
   if (item === "loading") {
     return <>Loading...</>
