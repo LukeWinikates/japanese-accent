@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import {DraftSegment, Timing} from "../../App/api";
@@ -150,6 +150,22 @@ export function Waveform({
   const styles = useStyles();
   const numWaveformChunks = Math.ceil(totalMS / 30_000);
 
+  const clamp = useCallback((range: Range) => {
+    if (range.startMS < 0) {
+      return {
+        startMS: 0,
+        endMS: STEP_INCREMENT_MS
+      }
+    }
+    if (range.endMS > totalMS) {
+      return {
+        startMS: totalMS - STEP_INCREMENT_MS,
+        endMS: totalMS
+      }
+    }
+    return range;
+  }, [totalMS]);
+
   useEffect(() => {
     setCanvasWidth(canvas1Ref.current?.parentElement?.clientWidth || 1200)
   }, [])
@@ -166,12 +182,13 @@ export function Waveform({
     setSegments(newSegments)
   }
 
-  function drawBackground(context: CanvasRenderingContext2D, width: number) {
+  const drawBackground = useCallback((context: CanvasRenderingContext2D, width: number) => {
     context.fillStyle = theme.palette.primary.main
     context.fillRect(0, 0, width, WAVEFORM_HEIGHT)
-  }
+  }, [theme]);
 
-  function drawWaveForm(context: CanvasRenderingContext2D, samples: number[], waveformHeight: number, sampleWidth: number) {
+
+  const drawWaveForm = useCallback((context: CanvasRenderingContext2D, samples: number[], waveformHeight: number, sampleWidth: number) => {
     context.fillStyle = theme.palette.background.default
 
     const maxDomain = samples.map(Math.abs).reduce((v, curr) => {
@@ -183,7 +200,7 @@ export function Waveform({
       const y = (waveformHeight / 2) - (rectHeight / 2);
       context.fillRect(i * sampleWidth, y, 1, rectHeight)
     })
-  }
+  }, [theme]);
 
   useEffect(() => {
     const canvas = canvas1Ref.current
@@ -195,7 +212,7 @@ export function Waveform({
     const sampleWidth = width / samples.length
     drawBackground(context, width);
     drawWaveForm(context, samples, WAVEFORM_HEIGHT, sampleWidth);
-  }, [canvasWidth])
+  }, [canvasWidth, drawBackground, drawWaveForm, samples])
 
   useEffect(() => {
     const container = zoomedContainerRef.current
@@ -218,7 +235,7 @@ export function Waveform({
       drawWaveForm(context, zoomed, WAVEFORM_HEIGHT, sampleWidth);
     })
 
-  }, [canvasWidth])
+  }, [canvasWidth, clamp, drawBackground, drawWaveForm, sampleRate, samples])
 
   function msToZoomedPixels(targetMS: number) {
     const containerWidthPixels = numWaveformChunks * canvasWidth;
@@ -261,21 +278,7 @@ export function Waveform({
     setOffset(e.clientX - dragFacts.x)
   }
 
-  const clamp = (range: Range) => {
-    if (range.startMS < 0) {
-      return {
-        startMS: 0,
-        endMS: STEP_INCREMENT_MS
-      }
-    }
-    if (range.endMS > totalMS) {
-      return {
-        startMS: totalMS - STEP_INCREMENT_MS,
-        endMS: totalMS
-      }
-    }
-    return range;
-  }
+
 
   function chunks(): number[] {
     let c = [];

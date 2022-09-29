@@ -13,7 +13,7 @@ import {
   IconButton,
   LinearProgress,
   List,
-  ListItem,
+  ListItemButton,
   ListItemSecondaryAction,
   Typography
 } from "@mui/material";
@@ -123,7 +123,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
 
   let renderRow = (segment: Segment, index: number) => {
     return (
-      <ListItem key={index}
+      <ListItemButton key={index}
                 selected={currentSegmentIndex === index}
                 alignItems="flex-start"
                 onClick={() => {
@@ -150,7 +150,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
             <DeleteIcon/>
           </IconButton>
         </ListItemSecondaryAction>
-      </ListItem>
+      </ListItemButton>
     );
   };
 

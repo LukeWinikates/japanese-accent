@@ -14,17 +14,17 @@ import {Loadable} from "../../App/loadable";
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
   const publish = useFetch('/api/videos/' + video.videoId + '/publish');
-  const adviceFetch = useFetch<VideoAdvice>('/api/videos/' + video.videoId + '/advice');
-  const draftFetch = useFetch<VideoDraft>('/api/videos/' + video.videoId + '/draft');
+  const {get: adviceGET} = useFetch<VideoAdvice>('/api/videos/' + video.videoId + '/advice');
+  const {get: draftGET} = useFetch<VideoDraft>('/api/videos/' + video.videoId + '/draft');
   const {put} = useFetch('/api/videos/' + video.videoId);
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
   const [draft, setDraft] = useState<Loadable<VideoDraft>>("loading");
   const {post} = useFetch('/api/videos/' + video.videoId + "/segments/");
 
   useEffect(() => {
-    adviceFetch.get().then(adviceResponse => setAdvice({data: adviceResponse}))
-    draftFetch.get().then(draftResponse => setDraft({data: draftResponse}))
-  }, [video.videoId, adviceFetch, draftFetch, setAdvice, setDraft])
+    adviceGET().then(adviceResponse => setAdvice({data: adviceResponse}))
+    draftGET().then(draftResponse => setDraft({data: draftResponse}))
+  }, [video.videoId, adviceGET, draftGET, setAdvice, setDraft])
 
   async function markComplete() {
     await publish.post()
