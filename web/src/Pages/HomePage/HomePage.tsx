@@ -4,7 +4,7 @@ import Grid from "@mui/material/Grid";
 import {Highlights, Playlist} from "../../App/api";
 import useFetch from "use-http";
 import AddIcon from '@mui/icons-material/Add';
-import {Link, useHistory} from "react-router-dom";
+import {Link, useNavigate} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
@@ -19,7 +19,7 @@ export default function HomePage() {
   const autoPlaylist = useFetch<Playlist>("/api/playlists");
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
-  const history = useHistory();
+  const navigate = useNavigate();
 
   function closeDialog() {
     setDialogOpen(false);
@@ -36,7 +36,7 @@ export default function HomePage() {
 
     if (autoPlaylist.response.ok) {
       if (autoPlaylist.response.data === undefined) return
-      history.push('/playlists/' + autoPlaylist.response.data.id)
+      navigate('/playlists/' + autoPlaylist.response.data.id)
     } else {
       logError("unable to create playlist");
     }

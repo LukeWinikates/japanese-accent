@@ -11,7 +11,6 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import {useRouteMatch} from "react-router";
 import useFetch from "use-http";
 import LinkIcon from '@mui/icons-material/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
@@ -19,17 +18,18 @@ import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";
 import {WordList} from "../../App/api";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useParams} from "react-router-dom";
 
 
 function CategoryPage() {
   const {logError} = useServerInteractionHistory();
-  const match = useRouteMatch<{ id: string }>();
+  const {id} = useParams();
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
-  const {get} = useFetch<WordList>('/api/wordlists/' + match.params.id);
+  const {get} = useFetch<WordList>('/api/wordlists/' + id);
 
   useEffect(() => {
     get('').then(wordList => setWordListData({data: wordList})).catch(() => logError("could not load wordlist"));
-  }, [match.params.id, get, setWordListData, logError]);
+  }, [id, get, setWordListData, logError]);
 
   if (wordListData === "loading") {
     return <></>

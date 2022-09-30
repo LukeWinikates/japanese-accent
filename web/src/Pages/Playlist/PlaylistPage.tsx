@@ -1,18 +1,18 @@
 import React, {useEffect, useState} from 'react';
-import {useRouteMatch} from "react-router";
 import {Loadable} from "../../App/loadable";
 import {Playlist} from "../../App/api";
 import useFetch from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
+import {useParams} from "react-router-dom";
 
 export const PlaylistPage = () => {
-  const match = useRouteMatch<{ id: string }>();
+  const {id} = useParams();
   const {logError} = useServerInteractionHistory();
   const [playlist, setPlaylist] = useState<Loadable<Playlist>>("loading");
 
-  let playlistId = match.params.id;
+  let playlistId = id;
   const {get} = useFetch('/api/playlists/' + playlistId);
 
   const setData = (playlist: Playlist) => {

@@ -2,12 +2,12 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogT
 import React, {useState} from "react";
 import useFetch from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import {useHistory} from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
   const {logError} = useServerInteractionHistory();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   function createNewVideo() {
     if (videoUserInput === null || videoTitle === null) {
@@ -17,7 +17,7 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
       youtubeId: idFrom(videoUserInput),
       title: videoTitle,
     }).then(() => {
-      history.push('/media/' + idFrom(videoUserInput))
+      navigate('/media/' + idFrom(videoUserInput))
     }).catch(logError);
   }
 

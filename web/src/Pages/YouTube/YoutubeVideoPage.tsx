@@ -2,17 +2,17 @@ import React, {useEffect, useState} from 'react';
 import useFetch from "use-http";
 
 import {Video} from "../../App/api";
-import {useRouteMatch} from "react-router";
 import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {YouTubeVideoEditor} from "./YouTubeVideoEditor";
+import {useParams} from "react-router-dom";
 
 export const YoutubeVideoPage = () => {
   const {logError} = useServerInteractionHistory();
-  const match = useRouteMatch<{ id: string }>();
-  const videoId = match.params.id;
+  const {id} = useParams();
+  const videoId = id;
   const [video, setVideo] = useState<Loadable<Video>>("loading");
   const {get,} = useFetch<Video>(
     '/api/videos/' + videoId);
