@@ -1,9 +1,9 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 import React, {useState} from "react";
-import useFetch from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
+import axios from "axios";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
   const {logError} = useServerInteractionHistory();
@@ -13,7 +13,7 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
     if (videoUserInput === null || videoTitle === null) {
       return
     }
-    post({
+    axios.post("api/videos",{
       youtubeId: idFrom(videoUserInput),
       title: videoTitle,
     }).then(() => {
@@ -21,8 +21,6 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
     }).catch(logError);
   }
 
-  const {post} = useFetch(
-    "/api/videos/");
   const [videoUserInput, setVideoUserInput] = useState<string | null>(null);
   const [videoTitle, setVideoTitle] = useState<string | null>(null);
 

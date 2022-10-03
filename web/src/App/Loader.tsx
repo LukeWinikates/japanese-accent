@@ -1,17 +1,16 @@
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import React, {useEffect, useState} from "react";
 import {Loadable} from "./loadable";
-import {useFetch} from "use-http";
+import axios from "axios";
 
 export function Loader<T> ({apiEndpoint, children}: { apiEndpoint: string, children: (items: T) => any }) {
   const {logError} = useServerInteractionHistory();
 
   const [item, setItem] = useState<Loadable<T>>("loading");
-  const {get} = useFetch(apiEndpoint);
   useEffect(() => {
-    get().then(analysis => {
-      console.log(analysis);
-      setItem({data: analysis});
+    axios.get<T>(apiEndpoint).then(r => {
+      console.log(r.data);
+      setItem({data: r.data});
     }).catch(logError);
   }, [apiEndpoint])
 

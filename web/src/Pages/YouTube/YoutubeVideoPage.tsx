@@ -1,6 +1,4 @@
 import React, {useEffect, useState} from 'react';
-import useFetch from "use-http";
-
 import {Video} from "../../App/api";
 import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
@@ -8,14 +6,13 @@ import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {YouTubeVideoEditor} from "./YouTubeVideoEditor";
 import {useParams} from "react-router-dom";
+import axios from "axios";
 
 export const YoutubeVideoPage = () => {
   const {logError} = useServerInteractionHistory();
   const {id} = useParams();
   const videoId = id;
   const [video, setVideo] = useState<Loadable<Video>>("loading");
-  const {get,} = useFetch<Video>(
-    '/api/videos/' + videoId);
 
   const setVideoData = (video: Video) => {
     setVideo({
@@ -24,8 +21,10 @@ export const YoutubeVideoPage = () => {
   };
 
   useEffect(() => {
-    get('').then(vr => setVideo({data: vr})).catch(() => logError("could not load video"))
-  }, [videoId, get, setVideo, logError]);
+    axios.get<Video>('/api/videos/' + videoId)
+      .then(r => setVideo({data: r.data}))
+      .catch(() => logError("could not load video"))
+  }, [videoId,  setVideo, logError]);
 
   if (video === "loading") {
     return (<>loading...</>);

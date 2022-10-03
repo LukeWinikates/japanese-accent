@@ -17,13 +17,13 @@ import {
 } from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from "@mui/icons-material/Close";
-import useFetch from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {RawMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Player} from "../../Dictaphone/Player";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Audio, WordAnalysis} from "../../App/api";
+import axios from "axios";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
@@ -125,8 +125,6 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const [word, setWord] = useState<{ text: string } | null>(null);
   const [preview, setPreview] = useState<WordAnalysis | null>(null);
   const classes = useStyles();
-  const analysis = useFetch('/api/word-analysis/');
-  const {post} = useFetch('/api/video-word-links');
   const {logError} = useServerInteractionHistory();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();
@@ -134,10 +132,10 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
     if (!word) {
       return;
     }
-    analysis.post({
+    axios.post('/api/word-analysis/',{
       text: word.text
-    }).then(result => setPreview(result));
-  }, [analysis, word, setPreview]);
+    }).then(r => setPreview(r.data));
+  }, [word, setPreview]);
 
   useEffect(() => {
     if (!analysisDebounce) {
@@ -153,7 +151,7 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
     if (word === null) {
       return
     }
-    post({
+    axios.post('/api/video-word-links',{
       word: word.text,
       videoId
     }).then(onClose).catch(logError);

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {DraftSegment, VideoAdvice, VideoDraft, Waveform as ApiWaveform} from "../../App/api";
 import {Waveform} from "./Waveform";
 import {Loadable} from "../../App/loadable";
-import useFetch from "use-http";
 import {Player} from "../../Dictaphone/Player";
 import audioURL from "../../App/audioURL";
 import {Checkbox, Grid, IconButton, List, ListItemButton, ListItemIcon, ListItemSecondaryAction} from "@mui/material";
@@ -12,6 +11,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import NotesIcon from "@mui/icons-material/Notes";
 import CopyIcon from "@mui/icons-material/FileCopy";
 import {Pager} from "../../Dictaphone/Pager";
+import axios from "axios";
 
 type TimelineProps = {
   advice: VideoAdvice,
@@ -25,7 +25,6 @@ const MILLISECONDS = 1000;
 
 export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: TimelineProps) {
   const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
-  const {get} = useFetch<ApiWaveform>('/api/videos/' + videoUuid + '/waveform');
   const [scrubberWindowRange, setScrubberWindowRange] = useState<{ startMS: number, endMS: number }>(
     {startMS: 0, endMS: 30 * MILLISECONDS}
   );
@@ -36,8 +35,9 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
   const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
 
   useEffect(() => {
-    get().then((e: ApiWaveform) => setSamplesData({data: e}))
-  }, [get, setSamplesData])
+    axios.get<ApiWaveform>('/api/videos/' + videoUuid + '/waveform')
+      .then(r => setSamplesData({data: r.data}))
+  }, [videoUuid, setSamplesData])
 
   useEffect(() => {
     setPlaybackPositionMSMS(selectedSegment?.startMS || 0)
@@ -96,7 +96,7 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
 
                 return (
                   <ListItemButton key={s.uuid} selected={s.uuid === selectedSegment?.uuid}
-                            onClick={() => setSelectedSegment(s)}>
+                                  onClick={() => setSelectedSegment(s)}>
                     <ListItemIcon>
                       <Checkbox
                         edge="start"

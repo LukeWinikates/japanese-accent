@@ -2,20 +2,19 @@ import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {VideoSummary} from "../../App/api";
-import useFetch from "use-http";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import axios from "axios";
 
 export default function VideosIndexPage() {
   const {logError} = useServerInteractionHistory();
-  const {get} = useFetch<VideoSummary[]>(
-    "/api/videos");
   const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
 
   useEffect(() => {
-    get().then(v => setVideos({data: v})).catch(() => logError("unable to load videos"))
-  }, [get, logError]);
+    axios.get<VideoSummary[]>(
+      "/api/videos").then(r => setVideos({data: r.data})).catch(() => logError("unable to load videos"))
+  }, [logError]);
 
   return (
     <>

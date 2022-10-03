@@ -5,10 +5,10 @@ import HouseIcon from '@mui/icons-material/House';
 import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
-import useFetch from "use-http";
 import {Loadable} from "../App/loadable";
 import {StatusIcon} from "../Video/StatusIcon";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
+import axios from "axios";
 
 type AppDrawerProps = {
   open: boolean,
@@ -25,11 +25,9 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const {logError} = useServerInteractionHistory();
 
-  const {get} = useFetch('/api/highlights');
-
   useEffect(() => {
-    get('').then(cats => setHighlights({data:cats})).catch(logError)
-  }, [get, setHighlights, logError]);
+    axios.get('/api/highlights').then(r => setHighlights({data: r.data})).catch(logError)
+  }, [setHighlights, logError]);
 
   if (highlights === "loading") {
     return (<DummyDrawer/>);
@@ -62,7 +60,7 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
           <React.Fragment key={index}>
             <ListItemButton>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
-              <ListItemIcon><StatusIcon status={video.videoStatus} /></ListItemIcon>
+              <ListItemIcon><StatusIcon status={video.videoStatus}/></ListItemIcon>
               <Link component={RouterLink} to={`/media/${video.videoId}`}>
                 <ListItemText primary={video.title}/>
               </Link>

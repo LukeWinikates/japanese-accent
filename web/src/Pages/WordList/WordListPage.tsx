@@ -11,7 +11,7 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import useFetch from "use-http";
+import axios from "axios";
 import LinkIcon from '@mui/icons-material/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
@@ -25,11 +25,12 @@ function CategoryPage() {
   const {logError} = useServerInteractionHistory();
   const {id} = useParams();
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
-  const {get} = useFetch<WordList>('/api/wordlists/' + id);
 
   useEffect(() => {
-    get('').then(wordList => setWordListData({data: wordList})).catch(() => logError("could not load wordlist"));
-  }, [id, get, setWordListData, logError]);
+    axios.get<WordList>('/api/wordlists/' + id)
+      .then(r => setWordListData({data: r.data}))
+      .catch(() => logError("could not load wordlist"));
+  }, [id, setWordListData, logError]);
 
   if (wordListData === "loading") {
     return <></>

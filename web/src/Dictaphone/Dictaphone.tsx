@@ -3,12 +3,12 @@ import makeStyles from '@mui/styles/makeStyles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useEffect, useState} from "react";
-import {Activity, Audio, Segment} from "../App/api";
+import {Audio, Segment} from "../App/api";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
-import useFetch, {CachePolicies} from "use-http";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import audioURL from "../App/audioURL";
+import axios from "axios";
 
 const useStyles = makeStyles(() => ({
   playerControls: {
@@ -16,13 +16,13 @@ const useStyles = makeStyles(() => ({
   },
 }));
 
-type DictaphoneSupported = Segment  | Audio
+type DictaphoneSupported = Segment | Audio
 
 type DictaphoneParams = {
   boostPostBody: any,
   activityPostBody: any,
   src: string,
-  duration: {startSec: number, endSec: number} | "auto",
+  duration: { startSec: number, endSec: number } | "auto",
 }
 
 const makeParamsForSegment = (segment: Segment): DictaphoneParams => {
@@ -75,12 +75,6 @@ export function Dictaphone({item}: DictaphoneProps) {
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
   const [actionQueue, setActionQueue] = useState<Action[]>([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
-  const {post} = useFetch(
-    '/api/boosts', {cachePolicy:CachePolicies.NO_CACHE});
-
-  const {post: recordActivity} = useFetch<Activity>(
-    '/api/activity', {cachePolicy:CachePolicies.NO_CACHE});
-
   const {logError} = useServerInteractionHistory();
 
   function saveRecording(recording: AudioRecording) {
@@ -100,7 +94,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   function practice() {
     pauseAll();
-    recordActivity({
+    axios.post("/api/activity", {
       ...activityPostBody,
       activityType: "PracticeStart"
     }).catch(e => logError(e, "warning"));
@@ -149,7 +143,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   const classes = useStyles();
 
   function boostCurrentSegment() {
-    post({
+    axios.post("/api/boosts", {
         ...boostPostBody
       }
     ).catch(e => logError(e, "warning"))

@@ -4,30 +4,27 @@ import {Box, Breadcrumbs, Button, Container, Grid, Typography} from "@mui/materi
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import LaunchIcon from '@mui/icons-material/Launch';
 import DoneIcon from '@mui/icons-material/Done';
-import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {AutoSavingTextField} from "./AutoSavingTextField";
 import {DragDropComposableText} from "./DragDropComposableText";
 import {Timeline} from "./Timeline";
 import {Loadable} from "../../App/loadable";
+import axios from "axios";
 
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
-  const publish = useFetch('/api/videos/' + video.videoId + '/publish');
-  const {get: adviceGET} = useFetch<VideoAdvice>('/api/videos/' + video.videoId + '/advice');
-  const {get: draftGET} = useFetch<VideoDraft>('/api/videos/' + video.videoId + '/draft');
-  const {put} = useFetch('/api/videos/' + video.videoId);
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
   const [draft, setDraft] = useState<Loadable<VideoDraft>>("loading");
-  const {post} = useFetch('/api/videos/' + video.videoId + "/segments/");
 
   useEffect(() => {
-    adviceGET().then(adviceResponse => setAdvice({data: adviceResponse}))
-    draftGET().then(draftResponse => setDraft({data: draftResponse}))
-  }, [video.videoId, adviceGET, draftGET, setAdvice, setDraft])
+    axios.get<VideoAdvice>('/api/videos/' + video.videoId + '/advice')
+      .then(r => setAdvice({data: r.data}));
+    axios.get<VideoDraft>('/api/videos/' + video.videoId + '/draft')
+      .then(r => setDraft({data: r.data}));
+  }, [video.videoId, setAdvice, setDraft])
 
   const markComplete = () => {
-    publish.post().then(() => {
+    axios.post('/api/videos/' + video.videoId + '/publish').then(() => {
       onVideoChange({
         ...video,
         videoStatus: "Complete"
@@ -43,18 +40,19 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   }
 
   const saveVideo = () => {
-    return put({
+    return axios.put('/api/videos/' + video.videoId, {
       ...video,
     });
   };
 
   function addSegment(range: { startMS: number, endMS: number }) {
-    post({
+    axios.post<Segment>('/api/videos/' + video.videoId + "/segments/", {
       text: "",
       videoUuid: video.videoId,
       start: range.startMS,
       end: range.endMS,
-    }).then((s: Segment) => {
+    }).then(r => {
+      const s = r.data;
       onVideoChange({
         ...video,
         segments: [...video.segments, s]

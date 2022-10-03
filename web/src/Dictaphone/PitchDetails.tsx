@@ -2,18 +2,17 @@ import {Pitch, Segment} from "../App/api";
 import React, {useState} from "react";
 import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
-import useFetch from "use-http";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import AddWordDialog from "../Pages/WordList/AddWordDialog";
+import axios from "axios";
 
 
 export const PitchDetails = ({
                                segment,
                                updateSegment
                              }: { segment: Segment | null, updateSegment: (segment: Segment) => void }) => {
-  const {post: fetchOJAD} = useFetch<Pitch>(
-    '/api/segments');
+
 
   const {logError} = useServerInteractionHistory();
   const [isAddingWord, setIsAddingWord] = useState(false);
@@ -22,12 +21,11 @@ export const PitchDetails = ({
     if (!segment) {
       return null;
     }
-    fetchOJAD(`${segment.uuid}/pitches`).then((p: Pitch) => {
-      updateSegment({
+    axios.post<Pitch>(`/api/segments${segment.uuid}/pitches`)
+      .then(({data: p}) => updateSegment({
         ...segment,
         pitch: p
-      })
-    }).catch(logError)
+      })).catch(logError)
   }
 
 
@@ -47,7 +45,7 @@ export const PitchDetails = ({
           <Button onClick={fetchOJADPronunciation}>
             Fetch pronunciation
           </Button>
-          <Button onClick={()=> setIsAddingWord(true)}>
+          <Button onClick={() => setIsAddingWord(true)}>
             Add Word
           </Button>
         </Grid>
@@ -55,7 +53,7 @@ export const PitchDetails = ({
           <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
         </Grid>
       </Grid>
-      { isAddingWord && <AddWordDialog onClose={()=> setIsAddingWord(false)} videoId={segment.videoUuid}/>}
+      {isAddingWord && <AddWordDialog onClose={() => setIsAddingWord(false)} videoId={segment.videoUuid}/>}
     </Grid>
   );
 }

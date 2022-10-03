@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from "@mui/icons-material/Close";
-import useFetch from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
+import axios from "axios";
 
 type DraftSegmentDialogProps = { videoId: string, onClose: () => void };
 
@@ -33,11 +33,10 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
     text: "",
   })
   const classes = useStyles();
-  const {post} = useFetch('/api/videos/' + videoId + "/segments/");
   const {logError} = useServerInteractionHistory();
 
   function save() {
-    post({
+    axios.post('/api/videos/' + videoId + "/segments/", {
       text: segment.text,
       videoUuid: videoId,
       start: segment.startMS,

@@ -2,7 +2,6 @@ import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {Highlights, Playlist} from "../../App/api";
-import useFetch from "use-http";
 import AddIcon from '@mui/icons-material/Add';
 import {Link, useNavigate} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
@@ -10,13 +9,10 @@ import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import axios from "axios";
 
 export default function HomePage() {
   const {logError} = useServerInteractionHistory();
-  const {get} = useFetch<Highlights>(
-    "/api/highlights");
-
-  const autoPlaylist = useFetch<Playlist>("/api/playlists");
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -26,20 +22,15 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    get().then(h => setHighlights({data: h})).catch(() => logError("unable to load homepage"))
-  }, [get, logError]);
+    axios.get<Highlights>("/api/highlights").then(h => setHighlights({data: h.data})).catch(() => logError("unable to load homepage"))
+  }, [logError]);
 
-  async function createQuick20AndNavigate() {
-    await autoPlaylist.post({
+  function createQuick20AndNavigate() {
+    axios.post<Playlist>("/api/playlists", {
       count: 20
-    });
-
-    if (autoPlaylist.response.ok) {
-      if (autoPlaylist.response.data === undefined) return
-      navigate('/playlists/' + autoPlaylist.response.data.id)
-    } else {
-      logError("unable to create playlist");
-    }
+    }).then(e => {
+      navigate('/playlists/' + e.data.id)
+    }).catch(() => logError("unable to create playlist"));
   }
 
   return (

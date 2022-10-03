@@ -5,12 +5,12 @@ import YouTubeIcon from '@mui/icons-material/YouTube';
 import LaunchIcon from '@mui/icons-material/Launch';
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 import DoneIcon from '@mui/icons-material/Done';
-import {useFetch} from "use-http";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import AddIcon from "@mui/icons-material/Add";
 import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
 import AddWordDialog from "../WordList/AddWordDialog";
 import {WordListPlayer} from "../../Dictaphone/WordListPlayer";
+import axios from "axios";
 
 type TabTypes = "segments" | "words" | "notes";
 
@@ -27,10 +27,8 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
     });
   }
 
-  const publish = useFetch('/api/videos/' + video.videoId + '/publish');
-
   const markComplete = () => {
-    return publish.post().then(r => {
+    return axios.post(('/api/videos/' + video.videoId + '/publish')).then(() => {
       onVideoChange({
         ...video,
         videoStatus: "Complete"

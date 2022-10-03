@@ -7,11 +7,10 @@ import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import TrashIcon from '@mui/icons-material/Delete';
 import CopyIcon from '@mui/icons-material/FileCopy';
-
-import useFetch from "use-http";
 import DialogActions from "@mui/material/DialogActions";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
+import axios from "axios";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -48,17 +47,16 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     previousSegmentEnd,
     nextSegmentStart
   } = props;
-  const {put, delete: destroy} = useFetch('/api/videos/' + videoId + "/segments/" + segment.uuid);
   const {logError} = useServerInteractionHistory();
-  const {post: createSegmentPOST} = useFetch<Segment>('/api/videos/' + videoId + "/segments");
   const classes = useStyles();
 
   const save = () => {
-    put(segment).then(onClose);
+    axios.put('/api/videos/' + videoId + "/segments/" + segment.uuid, segment)
+      .then(onClose);
   };
 
   const del = () => {
-    destroy().then(onDestroy);
+    axios.delete('/api/videos/' + videoId + "/segments/" + segment.uuid).then(onDestroy);
   };
 
   const clone = () => {
@@ -68,9 +66,10 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       start: segment.startMS,
       end: segment.endMS,
     };
-    createSegmentPOST(cloned).then(response => {
-      onAdd(response)
-    }).catch(logError);
+    axios.post<Segment>('/api/videos/' + videoId + "/segments", cloned)
+      .then(response => {
+        onAdd(response.data)
+      }).catch(logError);
   };
 
   return (

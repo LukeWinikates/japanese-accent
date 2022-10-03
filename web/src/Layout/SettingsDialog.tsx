@@ -19,9 +19,9 @@ import CloseIcon from "@mui/icons-material/Close";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Loadable} from "../App/loadable";
-import {useFetch} from "use-http";
 import {AppSettings} from "../App/api"
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
+import axios from "axios";
 
 const useStyles = makeStyles(theme => (
   {
@@ -41,29 +41,27 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
   const [showApiKey, setShowApiKey] = useState(false);
   const {logError} = useServerInteractionHistory();
 
-  const settingsApi = useFetch("api/application-settings")
-  const refreshMetricsApi = useFetch("api/debug/refresh-metrics")
-
   useEffect(() => {
-    settingsApi.get().then((settings: AppSettings) => {
-      setApiKeyData({
-        data: settings.forvoApiKey
-      })
-      setAudioExportPathData({
-        data: settings.audioExportPath
-      })
-    });
-  }, [settingsApi, setApiKeyData, setAudioExportPathData])
+    axios.get<AppSettings>("api/application-settings")
+      .then(({data: settings}) => {
+        setApiKeyData({
+          data: settings.forvoApiKey
+        })
+        setAudioExportPathData({
+          data: settings.audioExportPath
+        })
+      });
+  }, [setApiKeyData, setAudioExportPathData])
 
   const refreshMetrics = () => {
-    refreshMetricsApi.post().catch(logError);
+    axios.post("api/debug/refresh-metrics").catch(logError);
   }
 
   const saveForvoApiKey = () => {
     if (apiKey === "loading") {
       return;
     }
-    settingsApi.put({
+    axios.put("api/application-settings", {
       forvoApiKey: apiKey.data
     }).catch(logError)
   }
@@ -72,7 +70,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
     if (audioExportPath === "loading") {
       return;
     }
-    settingsApi.put({
+    axios.put("api/application-settings", {
       audioExportPath: audioExportPath.data
     }).catch(logError)
   }

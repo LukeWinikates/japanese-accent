@@ -2,21 +2,21 @@ import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {WordList} from "../../App/api";
-import useFetch from "use-http";
 import {Loadable} from "../../App/loadable";
 import {WordListList} from "./WordListList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import axios from "axios";
 
 export default function WordListsIndexPage() {
   const {logError} = useServerInteractionHistory();
 
-  const {get} = useFetch<WordList[]>(
-    "/api/wordlists");
   const [wordLists, setWordLists] = useState<Loadable<WordList[]>>("loading");
 
   useEffect(() => {
-    get().then(words => setWordLists({data: words})).catch(() => logError("unable to load wordlists"))
-  }, [get, logError]);
+    axios.get<WordList[]>("/api/wordlists")
+      .then(r => setWordLists({data: r.data}))
+      .catch(() => logError("unable to load wordlists"))
+  }, [logError]);
 
   return (
     <>

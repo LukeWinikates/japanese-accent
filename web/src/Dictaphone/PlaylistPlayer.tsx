@@ -21,7 +21,7 @@ import ListItemText from "@mui/material/ListItemText";
 import EditIcon from "@mui/material/SvgIcon";
 import {Dictaphone} from "./Dictaphone";
 import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
-import useFetch, {CachePolicies} from "use-http";
+import axios from "axios";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
@@ -38,12 +38,6 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   const [watchingExport, setWatchingExport] = useState(false);
   const [exportProgress, setExportProgress] = useState<Export | null>(null);
   let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
-
-  const {delete: destroy} = useFetch<Segment>(
-    '/api/videos/');
-
-  const exportsAPI = useFetch(
-    '/api/exports', {cachePolicy: CachePolicies.NO_CACHE});
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -64,10 +58,11 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }, [currentSegmentIndex])
 
   useInterval(() => {
-    exportsAPI.get(parentId).then((e: Export) => {
-      setExportProgress(e);
-      e.done && setWatchingExport(false)
-    });
+    axios.get<Export>("/api/exports/" + parentId)
+      .then((r) => {
+        setExportProgress(r.data);
+        r.data.done && setWatchingExport(false)
+      });
   }, watchingExport ? 200 : null);
 
   async function handleModalClose() {
@@ -124,13 +119,13 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   let renderRow = (segment: Segment, index: number) => {
     return (
       <ListItemButton key={index}
-                selected={currentSegmentIndex === index}
-                alignItems="flex-start"
-                onClick={() => {
-                  pauseAll();
-                  setCurrentSegment(segment);
-                  setCurrentSegmentIndex(index);
-                }}
+                      selected={currentSegmentIndex === index}
+                      alignItems="flex-start"
+                      onClick={() => {
+                        pauseAll();
+                        setCurrentSegment(segment);
+                        setCurrentSegmentIndex(index);
+                      }}
       >
         <ListItemText
           primaryTypographyProps={{noWrap: true, variant: "body2"}}
@@ -155,7 +150,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   };
 
   function destroySegment(segment: Segment, index: number) {
-    destroy(segment.videoUuid + "/segments/" + segment.uuid)
+    axios.delete('/api/videos/' + segment.videoUuid + "/segments/" + segment.uuid)
       .then(() => removeSegmentByIndex(index))
       .then(() => setPromptingSegmentDelete(null));
   }
@@ -170,7 +165,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }
 
   function startExport() {
-    return exportsAPI.post({
+    return axios.post<Export>("/api/exports/", {
       videoUuid: parentId
     }).then(() => setWatchingExport(true));
   }
