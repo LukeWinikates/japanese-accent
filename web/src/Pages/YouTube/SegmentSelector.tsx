@@ -1,8 +1,8 @@
 import React from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import {DraftSegment,} from "../../App/api";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   segmentSelector: {
     position: "absolute",
     display: "inline-flex",
@@ -28,11 +28,11 @@ export function SegmentSelector({
                                   onSelected,
                                   msToPixels
                                 }: Props) {
-  const styles = useStyles();
+  const {classes} = useStyles();
   const left = msToPixels(segment.startMS)
   const width = msToPixels(segment.endMS - segment.startMS)
   return (
-    <div className={styles.segmentSelector}
+    <div className={classes.segmentSelector}
          style={{left, width}}
          onClick={onSelected}
     />

@@ -3,7 +3,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {Segment} from "../../App/api";
 import {Button, DialogContent, IconButton} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
 import TrashIcon from '@mui/icons-material/Delete';
 import CopyIcon from '@mui/icons-material/FileCopy';
@@ -24,7 +24,7 @@ export interface MediaSegmentsEditDialogProps {
   nextSegmentStart: number;
 }
 
-const useStyles = makeStyles(theme => (
+const useStyles = makeStyles()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -48,7 +48,7 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     nextSegmentStart
   } = props;
   const {logError} = useServerInteractionHistory();
-  const classes = useStyles();
+  const {classes} = useStyles();
 
   const save = () => {
     axios.put('/api/videos/' + videoId + "/segments/" + segment.uuid, segment)

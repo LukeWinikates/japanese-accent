@@ -1,22 +1,31 @@
 import React, {useEffect} from 'react';
 
+import {styled} from '@mui/material/styles';
+
 import {useReactMediaRecorder} from "react-media-recorder";
 import {Button, CircularProgress} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
 import RadioButtonCheckedIcon from '@mui/icons-material/RadioButtonChecked';
 import StopIcon from '@mui/icons-material/Stop';
 
-const useStyles = makeStyles(() => ({
-  iconButtonWrapper: {
+const PREFIX = 'Recorder';
+
+const classes = {
+  iconButtonWrapper: `${PREFIX}-iconButtonWrapper`,
+  iconButtonProgress: `${PREFIX}-iconButtonProgress`
+};
+
+const Root = styled('div')(() => ({
+  [`&.${classes.iconButtonWrapper}`]: {
     position: 'relative',
   },
-  iconButtonProgress: {
+
+  [`& .${classes.iconButtonProgress}`]: {
     position: 'absolute',
     left: "calc(50% - 44px)",
     color: "white",
     zIndex: 200,
     top: "7px",
-  },
+  }
 }));
 
 
@@ -34,7 +43,7 @@ export declare type RecorderProps = {
 };
 
 export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingChange}: RecorderProps) => {
-  const classes = useStyles();
+
   const {
     status,
     startRecording,
@@ -64,7 +73,7 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
 
   const RecordStopButton = status === 'recording' ? StopIcon : RadioButtonCheckedIcon;
   return (
-    <div className={classes.iconButtonWrapper}>
+    <Root className={classes.iconButtonWrapper}>
       {status === 'recording' &&
       <CircularProgress size={22} color="secondary" className={classes.iconButtonProgress}/>}
       <Button variant="contained"
@@ -73,6 +82,6 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
               startIcon={<RecordStopButton/>}>
         Record
       </Button>
-    </div>
+    </Root>
   );
 };

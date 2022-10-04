@@ -1,13 +1,13 @@
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import {DraftSegment, Timing} from "../../App/api";
 import {Segment} from "./Segment";
 import {SegmentSelector} from "./SegmentSelector";
 
 type Range = { startMS: number, endMS: number };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   playHeadTop: {
     position: "absolute",
     top: 0,
@@ -147,7 +147,7 @@ export function Waveform({
   const totalMS = (samples.length / sampleRate) * 1000
   const theme = useTheme();
 
-  const styles = useStyles();
+  const {classes} = useStyles();
   const numWaveformChunks = Math.ceil(totalMS / 30_000);
 
   const clamp = useCallback((range: Range) => {
@@ -279,7 +279,6 @@ export function Waveform({
   }
 
 
-
   function chunks(): number[] {
     let c = [];
     for (let i = 0; i < numWaveformChunks; i++) {
@@ -300,24 +299,24 @@ export function Waveform({
         endMS: scrubberWindowRange.endMS + STEP_INCREMENT_MS,
       }))}>right
       </button>
-      <div className={styles.waveFormContainer} onMouseUp={stopDragging}>
+      <div className={classes.waveFormContainer} onMouseUp={stopDragging}>
         <canvas ref={canvas1Ref} height={WAVEFORM_HEIGHT} width={canvasWidth}/>
-        <div className={styles.timingContainer}>
+        <div className={classes.timingContainer}>
           {timings.map(t => {
             return (
-              <div key={t.timeMS} className={styles.timing} style={{left: `${t.timeMS * 100 / totalMS}%`}}/>
+              <div key={t.timeMS} className={classes.timing} style={{left: `${t.timeMS * 100 / totalMS}%`}}/>
             );
           })}
         </div>
-        <div className={styles.playHeadTop} style={{left: `${(playerPositionMS / totalMS) * 100}%`}}/>
-        <div className={styles.scrubber} ref={scrubberRef} style={{
+        <div className={classes.playHeadTop} style={{left: `${(playerPositionMS / totalMS) * 100}%`}}/>
+        <div className={classes.scrubber} ref={scrubberRef} style={{
           left: `calc(${(scrubberWindowRange.startMS / totalMS) * 100}% + ${offset}px)`,
           width: `${((scrubberWindowRange.endMS - scrubberWindowRange.startMS) / totalMS) * 100}%`
         }}>
-          <div className={styles.scrubberHandle} onMouseDown={startDragging} onMouseMove={trackDragging}>...</div>
+          <div className={classes.scrubberHandle} onMouseDown={startDragging} onMouseMove={trackDragging}>...</div>
         </div>
 
-        <div ref={zoomedContainerRef} className={styles.zoomedContainer} style={{
+        <div ref={zoomedContainerRef} className={classes.zoomedContainer} style={{
           marginLeft: zoomOffset(), width: numWaveformChunks * canvasWidth
         }}>
           {
@@ -327,7 +326,7 @@ export function Waveform({
           }
           {timings.map(t => {
             return (
-              <div key={t.timeMS} className={styles.zoomedTiming} style={{left: msToZoomedPixels(t.timeMS)}}/>
+              <div key={t.timeMS} className={classes.zoomedTiming} style={{left: msToZoomedPixels(t.timeMS)}}/>
             );
           })}
           {candidateSegments.map((s, i) => {
@@ -351,7 +350,7 @@ export function Waveform({
             );
           })}
 
-          <div className={styles.playHeadBottom} style={{
+          <div className={classes.playHeadBottom} style={{
             left: msToZoomedPixels(playerPositionMS)
           }
           }/>

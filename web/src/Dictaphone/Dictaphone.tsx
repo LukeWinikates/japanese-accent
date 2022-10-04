@@ -1,5 +1,5 @@
 import {Button, Grid, Typography} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {styled} from '@mui/material/styles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useEffect, useState} from "react";
@@ -10,10 +10,16 @@ import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory
 import audioURL from "../App/audioURL";
 import axios from "axios";
 
-const useStyles = makeStyles(() => ({
-  playerControls: {
+const PREFIX = 'Dictaphone';
+
+const classes = {
+  playerControls: `${PREFIX}-playerControls`
+};
+
+const StyledGrid = styled(Grid)(() => ({
+  [`& .${classes.playerControls}`]: {
     textAlign: 'center',
-  },
+  }
 }));
 
 type DictaphoneSupported = Segment | Audio
@@ -140,7 +146,7 @@ export function Dictaphone({item}: DictaphoneProps) {
     }
   }
 
-  const classes = useStyles();
+
 
   function boostCurrentSegment() {
     axios.post("/api/boosts", {
@@ -150,7 +156,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   }
 
   return (
-    <Grid container item spacing={1}>
+    <StyledGrid container item spacing={1}>
       <Grid container item xs={6} justifyContent="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
@@ -205,6 +211,6 @@ export function Dictaphone({item}: DictaphoneProps) {
             Practice
           </Button>
         </Grid> </Grid>
-    </Grid>
+    </StyledGrid>
   );
 }

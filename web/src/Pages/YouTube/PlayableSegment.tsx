@@ -1,13 +1,13 @@
 import {duration, Segment} from "../../App/api";
 import {IconButton} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import React from "react";
 import {msToHumanReadable} from "../../App/time";
 import {WithIndex} from "../../App/WithIndex";
 
 type Props = { segmentWithIndex: WithIndex<Segment>, onSegmentSelected: (segment: WithIndex<Segment>) => void };
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   segmentContainer: {
     backgroundColor: theme.palette.primary.dark,
     margin: 2,
@@ -17,7 +17,7 @@ const useStyles = makeStyles((theme) => ({
 
 export function PlayableSegment({segmentWithIndex, onSegmentSelected}: Props) {
   const {value: segment} = segmentWithIndex;
-  const classes = useStyles();
+  const {classes} = useStyles();
 
   function computedWidth() {
     return Math.min(

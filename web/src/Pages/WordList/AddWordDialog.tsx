@@ -15,7 +15,7 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {RawMoraSVG} from "../../VocabularyPractice/MoraSVG";
@@ -27,7 +27,7 @@ import axios from "axios";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
-const useStyles = makeStyles(theme => (
+const useStyles = makeStyles()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -124,7 +124,7 @@ function SkeletonPreview() {
 const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const [word, setWord] = useState<{ text: string } | null>(null);
   const [preview, setPreview] = useState<WordAnalysis | null>(null);
-  const classes = useStyles();
+  const {classes} = useStyles();
   const {logError} = useServerInteractionHistory();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();

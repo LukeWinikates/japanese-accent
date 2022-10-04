@@ -3,9 +3,9 @@ import React, {useEffect, useState} from "react";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {Container, IconButton, Paper, Typography} from "@mui/material";
 
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 
-const useStyles = makeStyles(theme => (
+const useStyles = makeStyles()((theme) => (
   {
     buttonContainer: {
       textAlign: "right"
@@ -21,7 +21,7 @@ const useStyles = makeStyles(theme => (
 
 const CopyableText = ({text}: { text: string }) => {
 
-  const classes = useStyles();
+  const {classes} = useStyles();
   const [feedback, setFeedback] = useState(false);
   const showCopiedFeedback = () => {
     setFeedback(true)

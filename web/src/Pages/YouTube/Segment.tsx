@@ -1,9 +1,9 @@
 import React, {ForwardedRef, useState} from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import {DraftSegment,} from "../../App/api";
 import {Resizable, ResizeCallbackData, ResizeHandle} from 'react-resizable';
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   span: {
     position: "absolute",
     display: "inline-flex",
@@ -37,7 +37,7 @@ export function Segment({
                           updateSegment,
                           msToPixels,
                         }: Props) {
-  const styles = useStyles();
+  const {classes} = useStyles();
   const [width, setWidth] = useState(msToPixels(segment.endMS - segment.startMS));
   const [left, setLeft] = useState(msToPixels(segment.startMS));
 
@@ -58,7 +58,7 @@ export function Segment({
 
   function handle(axis: ResizeHandle, ref: ForwardedRef<any>) {
     return (
-      <div ref={ref} className={`${styles.segmentResizer} ${axis === "w" ? styles.resizerWest : styles.resizerEast}`}/>
+      <div ref={ref} className={`${classes.segmentResizer} ${axis === "w" ? classes.resizerWest : classes.resizerEast}`}/>
     );
   }
 
@@ -73,7 +73,7 @@ export function Segment({
       resizeHandles={["w", "e"]}
       handle={handle}
     >
-      <div className={`${styles.span}`}
+      <div className={`${classes.span}`}
            style={{width, left}}>
       </div>
     </Resizable>

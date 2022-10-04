@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
@@ -15,7 +15,7 @@ type DraftSegment = {
   videoUuid: string,
 }
 
-const useStyles = makeStyles(theme => (
+const useStyles = makeStyles()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -32,7 +32,7 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
     endMS: 1000,
     text: "",
   })
-  const classes = useStyles();
+  const {classes} = useStyles();
   const {logError} = useServerInteractionHistory();
 
   function save() {

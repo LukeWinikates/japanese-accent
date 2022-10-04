@@ -2,13 +2,14 @@ import {AppBar as MuiAppBar, Badge, CircularProgress, IconButton, Toolbar, Typog
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from '@mui/icons-material/Settings';
 import React, {useState} from "react";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 import {Link} from "react-router-dom";
 import SettingsDialog from "./SettingsDialog"
+import {CSSObject} from "tss-react";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -22,11 +23,11 @@ const useStyles = makeStyles((theme) => ({
     color: 'inherit',
     textDecoration: 'none',
   },
-  offset: theme.mixins.toolbar,
+  offset: theme.mixins.toolbar as CSSObject,
 }));
 
 export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
-  const classes = useStyles();
+  const {classes} = useStyles();
   const {events, pendingHttpRequests} = useServerInteractionHistory();
   const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;

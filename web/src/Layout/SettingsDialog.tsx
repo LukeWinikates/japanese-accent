@@ -14,7 +14,7 @@ import {
   Link,
   Typography,
 } from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
@@ -23,7 +23,7 @@ import {AppSettings} from "../App/api"
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 import axios from "axios";
 
-const useStyles = makeStyles(theme => (
+const useStyles = makeStyles()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -35,7 +35,7 @@ const useStyles = makeStyles(theme => (
 ));
 
 export default function SettingsDialog({onClose}: { onClose: () => void }) {
-  const classes = useStyles();
+  const {classes} = useStyles();
   const [apiKey, setApiKeyData] = useState<Loadable<string>>("loading");
   const [audioExportPath, setAudioExportPathData] = useState<Loadable<string>>("loading");
   const [showApiKey, setShowApiKey] = useState(false);

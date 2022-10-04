@@ -1,18 +1,19 @@
-import {adaptV4Theme, unstable_createMuiStrictModeTheme as createMuiTheme} from "@mui/material/styles";
-import makeStyles from '@mui/styles/makeStyles';
+import {createTheme} from "@mui/material/styles";
+import {makeStyles} from 'tss-react/mui';
 import React, {useState} from "react";
 import {Container} from "@mui/material";
 import {AppBar} from "./AppBar";
 import {AppDrawer} from "./AppDrawer";
 import {Routes} from "./Routes";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles()((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
   },
 }));
-export const theme = createMuiTheme(adaptV4Theme({
+
+export const theme = createTheme({
   palette: {
     primary: {
       main: "#006c4f"
@@ -21,10 +22,10 @@ export const theme = createMuiTheme(adaptV4Theme({
       main: "#b35937"
     }
   }
-}));
+});
 
 export function CoreApp() {
-  const classes = useStyles();
+  const {classes} = useStyles();
   const [open, setOpen] = useState(false);
 
   const handleDrawerOpen = () => {

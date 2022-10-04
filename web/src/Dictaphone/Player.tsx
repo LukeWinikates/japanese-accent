@@ -1,5 +1,5 @@
 import {Grid, IconButton, LinearProgress} from "@mui/material";
-import makeStyles from '@mui/styles/makeStyles';
+import {styled} from '@mui/material/styles';
 import React, {useEffect, useRef, useState} from "react";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -7,11 +7,23 @@ import ReplayIcon from '@mui/icons-material/Replay';
 import {secondsToHumanReadable} from "../App/time";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 
-const useStyles = makeStyles((theme) => ({
-  playerControls: {
+const PREFIX = 'Player';
+
+const classes = {
+  playerControls: `${PREFIX}-playerControls`,
+  dummyProgress: `${PREFIX}-dummyProgress`
+};
+
+const StyledGrid = styled(Grid)((
+  {
+    theme
+  }
+) => ({
+  [`&.${classes.playerControls}`]: {
     textAlign: 'center',
   },
-  dummyProgress: {
+
+  [`& .${classes.dummyProgress}`]: {
     backgroundColor: theme.palette.action.disabled,
   }
 }));
@@ -38,7 +50,7 @@ export const Player = ({
                          preferredStartTime,
                          onPositionChange
                        }: PlayerProps) => {
-  const classes = useStyles();
+
 
   const audioRef = useRef<HTMLAudioElement>(null);
   const playerProgressRef = useRef<HTMLDivElement>(null);
@@ -171,7 +183,7 @@ export const Player = ({
   };
 
   return (
-    <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
+    <StyledGrid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <audio ref={audioRef} src={src} autoPlay={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
       <Grid item xs={3}>
         <IconButton onClick={() => rewindStart()} size="large">
@@ -188,12 +200,12 @@ export const Player = ({
         <LinearProgress ref={playerProgressRef} onClick={handleProgressClick} variant="determinate"
                         value={progress}/>
       </Grid>
-    </Grid>
+    </StyledGrid>
   );
 };
 
 export const DummyPlayer = () => {
-  const classes = useStyles();
+
 
   return (
     <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
