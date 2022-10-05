@@ -4,14 +4,12 @@ import {Waveform} from "./Waveform";
 import {Loadable} from "../../App/loadable";
 import {Player} from "../../Dictaphone/Player";
 import audioURL from "../../App/audioURL";
-import {Checkbox, Grid, IconButton, List, ListItemButton, ListItemIcon, ListItemSecondaryAction} from "@mui/material";
-import ListItemText from "@mui/material/ListItemText";
-import {rangeToHumanReadable} from "../../App/time";
-import DeleteIcon from "@mui/icons-material/Delete";
-import NotesIcon from "@mui/icons-material/Notes";
-import CopyIcon from "@mui/icons-material/FileCopy";
+import {Grid, List} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import axios from "axios";
+import {merged} from "./SuggestionMerger";
+import {SuggestedListItem} from "./SuggestedListItem";
+import {DraftListItem} from "./DraftListItem";
 
 type TimelineProps = {
   advice: VideoAdvice,
@@ -34,6 +32,11 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
 
   const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
 
+  const segmentsForTimeline = merged({
+    suggestedSegments: advice.suggestedSegments,
+    draftSegments: draft.draftSegments,
+  });
+
   useEffect(() => {
     axios.get<ApiWaveform>('/api/videos/' + videoUuid + '/waveform')
       .then(r => setSamplesData({data: r.data}))
@@ -45,6 +48,13 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
 
   function selectedSegmentByIndex(index: number) {
     setSelectedSegment(advice.suggestedSegments[index]);
+  }
+
+  function elementForLabel(label: 'suggested' | 'draft') {
+    if (label === 'suggested') {
+      return SuggestedListItem;
+    }
+    return DraftListItem;
   }
 
   return (
@@ -91,38 +101,14 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
             setByIndex={selectedSegmentByIndex}/>
           <List>
             {
-              advice.suggestedSegments.map((s, i) => {
-                const labelId = `checkbox-list-label-${i}`;
+              segmentsForTimeline.map((s, i) => {
+                const Element = elementForLabel(s.label)
 
                 return (
-                  <ListItemButton key={s.uuid} selected={s.uuid === selectedSegment?.uuid}
-                                  onClick={() => setSelectedSegment(s)}>
-                    <ListItemIcon>
-                      <Checkbox
-                        edge="start"
-                        checked={false}
-                        tabIndex={-1}
-                        disableRipple
-                        inputProps={{'aria-labelledby': labelId}}
-                      />
-                    </ListItemIcon>
-                    <ListItemText
-                      primary={`${i + 1}: ${rangeToHumanReadable(s.startMS, s.endMS)}`}
-                      secondary={s.text}
-                    >
-                    </ListItemText>
-                    <ListItemSecondaryAction>
-                      <IconButton edge="end" aria-label="delete" size="large">
-                        <DeleteIcon/>
-                      </IconButton>
-                      <IconButton edge="end" aria-label="edit" size="large">
-                        <NotesIcon/>
-                      </IconButton>
-                      <IconButton edge="end" aria-label="copy" size="large">
-                        <CopyIcon/>
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </ListItemButton>
+                  <Element segment={s.value}
+                           index={i}
+                           setSelectedSegment={setSelectedSegment}
+                           selected={selectedSegment?.uuid === s.value.uuid}/>
                 );
               })
             }
