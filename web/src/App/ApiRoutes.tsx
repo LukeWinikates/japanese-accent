@@ -106,12 +106,12 @@ export function wordListGET(id: string | undefined) {
   return axios.get<WordList>('/api/wordlists/' + id);
 }
 
-export function videoAdviceGET(video: Video) {
-  return axios.get<VideoAdvice>('/api/videos/' + video.videoId + '/advice');
+export function videoAdviceGET(videoId: string) {
+  return axios.get<VideoAdvice>('/api/videos/' + videoId + '/advice');
 }
 
-export function videoDraftGET(video: Video) {
-  return axios.get<VideoDraft>('/api/videos/' + video.videoId + '/draft');
+export function videoDraftGET(videoId: string) {
+  return axios.get<VideoDraft>('/api/videos/' + videoId + '/draft');
 }
 
 export function videoPublishPOST(video: Video) {

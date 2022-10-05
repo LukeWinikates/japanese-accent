@@ -17,9 +17,9 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const [draft, setDraft] = useState<Loadable<VideoDraft>>("loading");
 
   useEffect(() => {
-    videoAdviceGET(video)
+    videoAdviceGET(video.videoId)
       .then(r => setAdvice({data: r.data}));
-    videoDraftGET(video)
+    videoDraftGET(video.videoId)
       .then(r => setDraft({data: r.data}));
   }, [video.videoId, setAdvice, setDraft])
 
