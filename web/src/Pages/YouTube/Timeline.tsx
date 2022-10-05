@@ -10,6 +10,7 @@ import {merged} from "./SuggestionMerger";
 import {SuggestedListItem} from "./SuggestedListItem";
 import {DraftListItem} from "./DraftListItem";
 import {waveformGET} from "../../App/ApiRoutes";
+import {FixedSizeList} from 'react-window';
 
 type TimelineProps = {
   advice: VideoAdvice,
@@ -100,18 +101,26 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
             maxIndex={advice.suggestedSegments.length - 1}
             setByIndex={selectedSegmentByIndex}/>
           <List>
-            {
-              segmentsForTimeline.map((s, i) => {
-                const Element = elementForLabel(s.label)
-
-                return (
-                  <Element segment={s.value}
-                           index={i}
-                           setSelectedSegment={setSelectedSegment}
-                           selected={selectedSegment?.uuid === s.value.uuid}/>
-                );
-              })
-            }
+            <FixedSizeList
+              height={800}
+              itemCount={segmentsForTimeline.length}
+              itemSize={52}
+              width={"100%"}
+            >
+              {
+                ({index, style}) => {
+                  let s = segmentsForTimeline[index];
+                  const Element = elementForLabel(s.label);
+                  return (
+                    <Element segment={s.value}
+                             style={style}
+                             index={index}
+                             setSelectedSegment={setSelectedSegment}
+                             selected={selectedSegment?.uuid === s.value.uuid}/>
+                  );
+                }
+              }
+            </FixedSizeList>
           </List>
         </Grid>
       </Grid>

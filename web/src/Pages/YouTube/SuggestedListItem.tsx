@@ -3,15 +3,15 @@ import {Checkbox, IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAct
 import ListItemText from "@mui/material/ListItemText";
 import {rangeToHumanReadable} from "../../App/time";
 import AddIcon from "@mui/icons-material/Add";
-import React from "react";
+import React, {CSSProperties} from "react";
 
-type Params = { segment: DraftSegment, setSelectedSegment: (s: DraftSegment) => void, selected: boolean, index: number };
+type Params = { segment: DraftSegment, setSelectedSegment: (s: DraftSegment) => void, selected: boolean, index: number, style: CSSProperties };
 
-export function SuggestedListItem({segment, setSelectedSegment, selected, index}: Params) {
+export function SuggestedListItem({segment, setSelectedSegment, selected, index, style}: Params) {
   const labelId = `checkbox-list-label-${index}`;
 
   return (
-    <ListItemButton key={segment.uuid} selected={selected}
+    <ListItemButton style={style} key={segment.uuid} selected={selected}
                     onClick={() => setSelectedSegment(segment)}>
       <ListItemIcon>
         <Checkbox

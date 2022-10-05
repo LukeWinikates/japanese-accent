@@ -5,15 +5,15 @@ import {rangeToHumanReadable} from "../../App/time";
 import DeleteIcon from "@mui/icons-material/Delete";
 import NotesIcon from "@mui/icons-material/Notes";
 import CopyIcon from "@mui/icons-material/FileCopy";
-import React from "react";
+import React, {CSSProperties} from "react";
 
-type Params = { segment: DraftSegment, setSelectedSegment: (s: DraftSegment) => void, selected: boolean, index: number };
+type Params = { segment: DraftSegment, setSelectedSegment: (s: DraftSegment) => void, selected: boolean, index: number, style: CSSProperties};
 
-export function DraftListItem({segment, setSelectedSegment, selected, index}: Params) {
+export function DraftListItem({segment, setSelectedSegment, selected, index, style}: Params) {
   const labelId = `checkbox-list-label-${index}`;
 
   return (
-    <ListItemButton key={segment.uuid} selected={selected}
+    <ListItemButton style={style} key={segment.uuid} selected={selected}
                     onClick={() => setSelectedSegment(segment)}>
       <ListItemIcon>
         <Checkbox
