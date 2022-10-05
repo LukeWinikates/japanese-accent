@@ -6,7 +6,7 @@ import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {YouTubeVideoEditor} from "./YouTubeVideoEditor";
 import {useParams} from "react-router-dom";
-import axios from "axios";
+import {videoGET} from "../../App/ApiRoutes";
 
 export const YoutubeVideoPage = () => {
   const {logError} = useServerInteractionHistory();
@@ -21,7 +21,8 @@ export const YoutubeVideoPage = () => {
   };
 
   useEffect(() => {
-    axios.get<Video>('/api/videos/' + videoId)
+    videoGET(videoId)
+
       .then(r => setVideo({data: r.data}))
       .catch(() => logError("could not load video"))
   }, [videoId,  setVideo, logError]);

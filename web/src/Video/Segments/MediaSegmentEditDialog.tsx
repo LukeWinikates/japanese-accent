@@ -10,7 +10,7 @@ import CopyIcon from '@mui/icons-material/FileCopy';
 import DialogActions from "@mui/material/DialogActions";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
-import axios from "axios";
+import {videoSegmentDELETE, videoSegmentPOST, videoSegmentPUT} from "../../App/ApiRoutes";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -51,25 +51,23 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
   const {classes} = useStyles();
 
   const save = () => {
-    axios.put('/api/videos/' + videoId + "/segments/" + segment.uuid, segment)
+    videoSegmentPUT(videoId, segment)
       .then(onClose);
   };
 
   const del = () => {
-    axios.delete('/api/videos/' + videoId + "/segments/" + segment.uuid).then(onDestroy);
+    videoSegmentDELETE(videoId, segment).then(onDestroy);
   };
 
   const clone = () => {
-    let cloned = {
+    videoSegmentPOST(videoId, {
       text: segment.text,
       videoUuid: videoId,
       start: segment.startMS,
       end: segment.endMS,
-    };
-    axios.post<Segment>('/api/videos/' + videoId + "/segments", cloned)
-      .then(response => {
-        onAdd(response.data)
-      }).catch(logError);
+    })
+      .then(response => onAdd(response.data))
+      .catch(logError);
   };
 
   return (

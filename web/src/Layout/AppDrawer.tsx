@@ -8,7 +8,7 @@ import {Link as RouterLink} from "react-router-dom";
 import {Loadable} from "../App/loadable";
 import {StatusIcon} from "../Video/StatusIcon";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
-import axios from "axios";
+import {highlightsGET} from "../App/ApiRoutes";
 
 type AppDrawerProps = {
   open: boolean,
@@ -26,7 +26,7 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
   const {logError} = useServerInteractionHistory();
 
   useEffect(() => {
-    axios.get('/api/highlights').then(r => setHighlights({data: r.data})).catch(logError)
+    highlightsGET().then(r => setHighlights({data: r.data})).catch(logError)
   }, [setHighlights, logError]);
 
   if (highlights === "loading") {

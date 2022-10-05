@@ -3,12 +3,12 @@ import {styled} from '@mui/material/styles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useEffect, useState} from "react";
-import {Audio, Segment} from "../App/api";
+import {ActivityPostBody, Audio, BoostPostBody, Segment} from "../App/api";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import audioURL from "../App/audioURL";
-import axios from "axios";
+import {activityPOST, boostPOST} from "../App/ApiRoutes";
 
 const PREFIX = 'Dictaphone';
 
@@ -25,8 +25,8 @@ const StyledGrid = styled(Grid)(() => ({
 type DictaphoneSupported = Segment | Audio
 
 type DictaphoneParams = {
-  boostPostBody: any,
-  activityPostBody: any,
+  boostPostBody?: BoostPostBody,
+  activityPostBody?: ActivityPostBody,
   src: string,
   duration: { startSec: number, endSec: number } | "auto",
 }
@@ -46,12 +46,6 @@ const makeParamsForSegment = (segment: Segment): DictaphoneParams => {
 
 const makeParamsForAudio = (audio: Audio): DictaphoneParams => {
   return {
-    boostPostBody: {
-      // wordId: analysis.wordId
-    },
-    activityPostBody: {
-      // wordId: analysis.wordId
-    },
     src: audio?.url || "",
     duration: "auto",
   }
@@ -100,10 +94,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   function practice() {
     pauseAll();
-    axios.post("/api/activity", {
-      ...activityPostBody,
-      activityType: "PracticeStart"
-    }).catch(e => logError(e, "warning"));
+    activityPostBody && activityPOST(activityPostBody).catch(e => logError(e, "warning"));
     setActionQueue(["PlaySegment", "Record", "PlaySegment"])
     setSegmentIsPlaying(true);
   }
@@ -146,13 +137,8 @@ export function Dictaphone({item}: DictaphoneProps) {
     }
   }
 
-
-
   function boostCurrentSegment() {
-    axios.post("/api/boosts", {
-        ...boostPostBody
-      }
-    ).catch(e => logError(e, "warning"))
+    boostPostBody && boostPOST(boostPostBody).catch(e => logError(e, "warning"))
   }
 
   return (

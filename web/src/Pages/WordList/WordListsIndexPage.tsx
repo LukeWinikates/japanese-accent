@@ -5,7 +5,7 @@ import {WordList} from "../../App/api";
 import {Loadable} from "../../App/loadable";
 import {WordListList} from "./WordListList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import axios from "axios";
+import {wordListsGET} from "../../App/ApiRoutes";
 
 export default function WordListsIndexPage() {
   const {logError} = useServerInteractionHistory();
@@ -13,7 +13,7 @@ export default function WordListsIndexPage() {
   const [wordLists, setWordLists] = useState<Loadable<WordList[]>>("loading");
 
   useEffect(() => {
-    axios.get<WordList[]>("/api/wordlists")
+    wordListsGET()
       .then(r => setWordLists({data: r.data}))
       .catch(() => logError("unable to load wordlists"))
   }, [logError]);

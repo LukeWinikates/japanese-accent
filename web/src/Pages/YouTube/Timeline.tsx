@@ -6,10 +6,10 @@ import {Player} from "../../Dictaphone/Player";
 import audioURL from "../../App/audioURL";
 import {Grid, List} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
-import axios from "axios";
 import {merged} from "./SuggestionMerger";
 import {SuggestedListItem} from "./SuggestedListItem";
 import {DraftListItem} from "./DraftListItem";
+import {waveformGET} from "../../App/ApiRoutes";
 
 type TimelineProps = {
   advice: VideoAdvice,
@@ -38,7 +38,7 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
   });
 
   useEffect(() => {
-    axios.get<ApiWaveform>('/api/videos/' + videoUuid + '/waveform')
+    waveformGET(videoUuid)
       .then(r => setSamplesData({data: r.data}))
   }, [videoUuid, setSamplesData])
 

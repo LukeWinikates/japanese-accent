@@ -23,7 +23,7 @@ import {Player} from "../../Dictaphone/Player";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Audio, WordAnalysis} from "../../App/api";
-import axios from "axios";
+import {videoWordLinkPOST, wordAnalysisPOST} from "../../App/ApiRoutes";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
@@ -128,13 +128,11 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const {logError} = useServerInteractionHistory();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();
-  const previewWord = useCallback( () => {
+  const previewWord = useCallback(() => {
     if (!word) {
       return;
     }
-    axios.post('/api/word-analysis/',{
-      text: word.text
-    }).then(r => setPreview(r.data));
+    wordAnalysisPOST(word).then(r => setPreview(r.data));
   }, [word, setPreview]);
 
   useEffect(() => {
@@ -151,7 +149,7 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
     if (word === null) {
       return
     }
-    axios.post('/api/video-word-links',{
+    videoWordLinkPOST({
       word: word.text,
       videoId
     }).then(onClose).catch(logError);

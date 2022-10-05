@@ -11,7 +11,6 @@ import {
   ListItemText,
   Typography,
 } from "@mui/material";
-import axios from "axios";
 import LinkIcon from '@mui/icons-material/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
@@ -19,6 +18,7 @@ import {Loadable} from "../../App/loadable";
 import {WordList} from "../../App/api";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {useParams} from "react-router-dom";
+import {wordListGET} from "../../App/ApiRoutes";
 
 
 function CategoryPage() {
@@ -27,7 +27,7 @@ function CategoryPage() {
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
 
   useEffect(() => {
-    axios.get<WordList>('/api/wordlists/' + id)
+    wordListGET(id)
       .then(r => setWordListData({data: r.data}))
       .catch(() => logError("could not load wordlist"));
   }, [id, setWordListData, logError]);

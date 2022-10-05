@@ -3,7 +3,7 @@ import React, {useState} from "react";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
-import axios from "axios";
+import {videoPOST} from "../../App/ApiRoutes";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
   const {logError} = useServerInteractionHistory();
@@ -11,13 +11,17 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
 
   function createNewVideo() {
     if (videoUserInput === null || videoTitle === null) {
+      return;
+    }
+    let youtubeId = idFrom(videoUserInput);
+    if (youtubeId == null) {
       return
     }
-    axios.post("api/videos",{
-      youtubeId: idFrom(videoUserInput),
+    videoPOST({
+      youtubeId: youtubeId,
       title: videoTitle,
     }).then(() => {
-      navigate('/media/' + idFrom(videoUserInput))
+      navigate('/media/' + youtubeId)
     }).catch(logError);
   }
 

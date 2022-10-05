@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {Highlights, Playlist} from "../../App/api";
+import {Highlights} from "../../App/api";
 import AddIcon from '@mui/icons-material/Add';
 import {Link, useNavigate} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
@@ -9,7 +9,7 @@ import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import axios from "axios";
+import {highlightsGET, playlistPOST} from "../../App/ApiRoutes";
 
 export default function HomePage() {
   const {logError} = useServerInteractionHistory();
@@ -22,13 +22,11 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    axios.get<Highlights>("/api/highlights").then(h => setHighlights({data: h.data})).catch(() => logError("unable to load homepage"))
+    highlightsGET().then(h => setHighlights({data: h.data})).catch(() => logError("unable to load homepage"))
   }, [logError]);
 
   function createQuick20AndNavigate() {
-    axios.post<Playlist>("/api/playlists", {
-      count: 20
-    }).then(e => {
+    playlistPOST().then(e => {
       navigate('/playlists/' + e.data.id)
     }).catch(() => logError("unable to create playlist"));
   }

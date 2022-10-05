@@ -10,7 +10,7 @@ import AddIcon from "@mui/icons-material/Add";
 import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
 import AddWordDialog from "../WordList/AddWordDialog";
 import {WordListPlayer} from "../../Dictaphone/WordListPlayer";
-import axios from "axios";
+import {videoPublishPOST} from "../../App/ApiRoutes";
 
 type TabTypes = "segments" | "words" | "notes";
 
@@ -28,7 +28,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
   }
 
   const markComplete = () => {
-    return axios.post(('/api/videos/' + video.videoId + '/publish')).then(() => {
+    return videoPublishPOST(video).then(() => {
       onVideoChange({
         ...video,
         videoStatus: "Complete"

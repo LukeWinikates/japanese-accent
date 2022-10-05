@@ -1,11 +1,11 @@
-import {Pitch, Segment} from "../App/api";
+import {Segment} from "../App/api";
 import React, {useState} from "react";
 import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
 import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import AddWordDialog from "../Pages/WordList/AddWordDialog";
-import axios from "axios";
+import {pitchPOST} from "../App/ApiRoutes";
 
 
 export const PitchDetails = ({
@@ -21,7 +21,7 @@ export const PitchDetails = ({
     if (!segment) {
       return null;
     }
-    axios.post<Pitch>(`/api/segments${segment.uuid}/pitches`)
+    pitchPOST(segment)
       .then(({data: p}) => updateSegment({
         ...segment,
         pitch: p

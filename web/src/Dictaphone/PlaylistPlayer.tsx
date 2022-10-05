@@ -21,12 +21,12 @@ import ListItemText from "@mui/material/ListItemText";
 import EditIcon from "@mui/material/SvgIcon";
 import {Dictaphone} from "./Dictaphone";
 import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
-import axios from "axios";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
 import {useInterval} from "../App/useInterval";
+import {exportGET, exportsPOST, segmentDELETE} from "../App/ApiRoutes";
 
 type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
 
@@ -58,7 +58,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }, [currentSegmentIndex])
 
   useInterval(() => {
-    axios.get<Export>("/api/exports/" + parentId)
+    exportGET(parentId)
       .then((r) => {
         setExportProgress(r.data);
         r.data.done && setWatchingExport(false)
@@ -150,7 +150,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   };
 
   function destroySegment(segment: Segment, index: number) {
-    axios.delete('/api/videos/' + segment.videoUuid + "/segments/" + segment.uuid)
+    segmentDELETE(segment)
       .then(() => removeSegmentByIndex(index))
       .then(() => setPromptingSegmentDelete(null));
   }
@@ -165,9 +165,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }
 
   function startExport() {
-    return axios.post<Export>("/api/exports/", {
-      videoUuid: parentId
-    }).then(() => setWatchingExport(true));
+    return exportsPOST(parentId).then(() => setWatchingExport(true));
   }
 
   return (

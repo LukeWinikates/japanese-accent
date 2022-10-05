@@ -19,9 +19,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Loadable} from "../App/loadable";
-import {AppSettings} from "../App/api"
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
-import axios from "axios";
+import {applicationSettingsGET, applicationSettingsPUT, debugRefreshMetricsPOST} from "../App/ApiRoutes";
 
 const useStyles = makeStyles()(theme => (
   {
@@ -42,7 +41,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
   const {logError} = useServerInteractionHistory();
 
   useEffect(() => {
-    axios.get<AppSettings>("api/application-settings")
+    applicationSettingsGET()
       .then(({data: settings}) => {
         setApiKeyData({
           data: settings.forvoApiKey
@@ -54,14 +53,14 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
   }, [setApiKeyData, setAudioExportPathData])
 
   const refreshMetrics = () => {
-    axios.post("api/debug/refresh-metrics").catch(logError);
+    debugRefreshMetricsPOST().catch(logError);
   }
 
   const saveForvoApiKey = () => {
     if (apiKey === "loading") {
       return;
     }
-    axios.put("api/application-settings", {
+    applicationSettingsPUT({
       forvoApiKey: apiKey.data
     }).catch(logError)
   }
@@ -70,7 +69,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
     if (audioExportPath === "loading") {
       return;
     }
-    axios.put("api/application-settings", {
+    applicationSettingsPUT({
       audioExportPath: audioExportPath.data
     }).catch(logError)
   }

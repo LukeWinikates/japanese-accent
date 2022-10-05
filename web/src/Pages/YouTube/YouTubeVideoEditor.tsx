@@ -1,4 +1,4 @@
-import {DraftSegment, Segment, Video, VideoAdvice, VideoDraft} from "../../App/api";
+import {DraftSegment, Video, VideoAdvice, VideoDraft} from "../../App/api";
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Button, Container, Grid, Typography} from "@mui/material";
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -9,7 +9,7 @@ import {AutoSavingTextField} from "./AutoSavingTextField";
 import {DragDropComposableText} from "./DragDropComposableText";
 import {Timeline} from "./Timeline";
 import {Loadable} from "../../App/loadable";
-import axios from "axios";
+import {videoAdviceGET, videoDraftGET, videoPublishPOST, videoPUT, videoSegmentPOST} from "../../App/ApiRoutes";
 
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
@@ -17,14 +17,14 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const [draft, setDraft] = useState<Loadable<VideoDraft>>("loading");
 
   useEffect(() => {
-    axios.get<VideoAdvice>('/api/videos/' + video.videoId + '/advice')
+    videoAdviceGET(video)
       .then(r => setAdvice({data: r.data}));
-    axios.get<VideoDraft>('/api/videos/' + video.videoId + '/draft')
+    videoDraftGET(video)
       .then(r => setDraft({data: r.data}));
   }, [video.videoId, setAdvice, setDraft])
 
   const markComplete = () => {
-    axios.post('/api/videos/' + video.videoId + '/publish').then(() => {
+    videoPublishPOST(video).then(() => {
       onVideoChange({
         ...video,
         videoStatus: "Complete"
@@ -40,18 +40,17 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   }
 
   const saveVideo = () => {
-    return axios.put('/api/videos/' + video.videoId, {
-      ...video,
-    });
+    return videoPUT(video);
   };
 
   function addSegment(range: { startMS: number, endMS: number }) {
-    axios.post<Segment>('/api/videos/' + video.videoId + "/segments/", {
+    let data = {
       text: "",
       videoUuid: video.videoId,
       start: range.startMS,
       end: range.endMS,
-    }).then(r => {
+    };
+    videoSegmentPOST(video.videoId, data).then(r => {
       const s = r.data;
       onVideoChange({
         ...video,

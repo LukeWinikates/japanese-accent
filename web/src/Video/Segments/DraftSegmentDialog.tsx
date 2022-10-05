@@ -4,7 +4,7 @@ import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
-import axios from "axios";
+import {videoSegmentPOST} from "../../App/ApiRoutes";
 
 type DraftSegmentDialogProps = { videoId: string, onClose: () => void };
 
@@ -36,7 +36,7 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
   const {logError} = useServerInteractionHistory();
 
   function save() {
-    axios.post('/api/videos/' + videoId + "/segments/", {
+    videoSegmentPOST(videoId, {
       text: segment.text,
       videoUuid: videoId,
       start: segment.startMS,

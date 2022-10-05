@@ -133,3 +133,12 @@ export type VideoAdvice = {
 export type VideoDraft = {
   draftSegments: DraftSegment[]
 }
+
+export type BoostPostBody = {
+  segmentId: string
+}
+
+export type ActivityPostBody = {
+  segmentId: string
+}
+

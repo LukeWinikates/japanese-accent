@@ -5,7 +5,7 @@ import {useServerInteractionHistory} from "../../Layout/useServerInteractionHist
 import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 import {useParams} from "react-router-dom";
-import axios from "axios";
+import {playlistGET} from "../../App/ApiRoutes";
 
 export const PlaylistPage = () => {
   const {id} = useParams();
@@ -20,7 +20,7 @@ export const PlaylistPage = () => {
   };
 
   useEffect(() => {
-    axios.get<Playlist>('/api/playlists/' + playlistId)
+    playlistGET(playlistId)
       .then(r => setPlaylist({data: r.data}))
       .catch(() => logError("could not load playlist"));
   }, [playlistId, setPlaylist, logError]);

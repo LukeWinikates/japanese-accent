@@ -5,15 +5,14 @@ import {VideoSummary} from "../../App/api";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import axios from "axios";
+import {videoSummariesGET} from "../../App/ApiRoutes";
 
 export default function VideosIndexPage() {
   const {logError} = useServerInteractionHistory();
   const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
 
   useEffect(() => {
-    axios.get<VideoSummary[]>(
-      "/api/videos").then(r => setVideos({data: r.data})).catch(() => logError("unable to load videos"))
+    videoSummariesGET().then(r => setVideos({data: r.data})).catch(() => logError("unable to load videos"))
   }, [logError]);
 
   return (
