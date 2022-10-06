@@ -11,7 +11,16 @@ createRoot(document.getElementById('root')!)
     </React.StrictMode>
   );
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
-reportWebVitals();
+// see: https://create-react-app.dev/docs/measuring-performance/#sending-results-to-analytics
+function sendToAnalytics(metric: any) {
+  const body = JSON.stringify(metric);
+  const url = '/analytics';
+
+  if (navigator.sendBeacon) {
+    navigator.sendBeacon(url, body);
+  } else {
+    fetch(url, {body, method: 'POST', keepalive: true});
+  }
+}
+
+reportWebVitals(sendToAnalytics);

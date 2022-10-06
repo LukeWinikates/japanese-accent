@@ -2,12 +2,15 @@ package main
 
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/api"
+	"github.com/LukeWinikates/japanese-accent/internal/app/api/metrics"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/adrg/xdg"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 	"log"
+	"net/http"
 )
 
 type config struct {
@@ -23,7 +26,15 @@ func main() {
 	r := gin.Default()
 
 	api.Configure(r, config.MediaDirPath, *db)
+	r.POST("/analytics", metrics.HandleWebVital)
+	r.GET("/metrics", wrap(promhttp.Handler()))
 	log.Fatalln(r.Run("localhost:8080").Error())
+}
+
+func wrap(handler http.Handler) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		handler.ServeHTTP(context.Writer, context.Request)
+	}
 }
 
 func prepareDatabase(databaseFile string) *gorm.DB {
