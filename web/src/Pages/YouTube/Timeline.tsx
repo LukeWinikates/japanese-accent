@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from "react";
-import {DraftSegment, VideoAdvice, VideoDraft, Waveform as ApiWaveform} from "../../App/api";
+import {DraftLabel, DraftSegment, VideoAdvice, VideoDraft, Waveform as ApiWaveform} from "../../App/api";
 import {Waveform} from "./Waveform";
 import {Loadable} from "../../App/loadable";
 import {Player} from "../../Dictaphone/Player";
@@ -10,19 +10,20 @@ import {merged} from "./SuggestionMerger";
 import {SuggestedListItem} from "./SuggestedListItem";
 import {DraftListItem} from "./DraftListItem";
 import {waveformGET} from "../../App/ApiRoutes";
-import {FixedSizeList} from 'react-window';
+import {VariableSizeList} from 'react-window';
+import {MutedListItem} from "./MutedListItem";
 
 type TimelineProps = {
   advice: VideoAdvice,
   draft: VideoDraft,
   videoUuid: string,
-  addSegment: (range: { startMS: number, endMS: number }) => void,
-  setSegments: (segments: DraftSegment[]) => void,
+  addDraft: (segments: DraftSegment) => void,
+  muteSuggestion: (segments: DraftSegment) => void,
 }
 
 const MILLISECONDS = 1000;
 
-export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: TimelineProps) {
+export function Timeline({advice, videoUuid, draft, addDraft, muteSuggestion}: TimelineProps) {
   const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
   const [scrubberWindowRange, setScrubberWindowRange] = useState<{ startMS: number, endMS: number }>(
     {startMS: 0, endMS: 30 * MILLISECONDS}
@@ -51,11 +52,20 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
     setSelectedSegment(advice.suggestedSegments[index]);
   }
 
-  function elementForLabel(label: 'suggested' | 'draft') {
-    if (label === 'suggested') {
-      return SuggestedListItem;
+  function elementForLabel(label: DraftLabel[]) {
+    if (label[0] === 'MUTED') {
+      return MutedListItem;
     }
-    return DraftListItem;
+
+    if (label[0] === 'DRAFT') {
+      return DraftListItem;
+    }
+    return SuggestedListItem;
+  }
+
+  const sizeFor = (index: number) => {
+    const d = segmentsForTimeline[index];
+    return d?.labels?.some(l => l === "MUTED") ? 4 : 52
   }
 
   return (
@@ -68,13 +78,13 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
                       sampleRate={samplesData.data.sampleRate}
                       scrubberWindowRange={scrubberWindowRange}
                       setScrubberWindowRange={setScrubberWindowRange}
-                      setSegments={setSegments}
+              // setSegments={setSegments}
                       playerPositionMS={playbackPositionMS}
                       timings={advice.timings}
                       candidateSegments={advice.suggestedSegments}
                       setSelectedSegment={setSelectedSegment}
                       selectedSegment={selectedSegment}
-                      addSegment={addSegment}
+              // addSegment={addSegment}
             />}
         </div>
         startSec = {(selectedSegment?.startMS || 0) / 1000} ,
@@ -101,26 +111,30 @@ export function Timeline({advice, videoUuid, addSegment, setSegments, draft}: Ti
             maxIndex={advice.suggestedSegments.length - 1}
             setByIndex={selectedSegmentByIndex}/>
           <List>
-            <FixedSizeList
+            <VariableSizeList
               height={800}
+              estimatedItemSize={52}
               itemCount={segmentsForTimeline.length}
-              itemSize={52}
+              itemSize={sizeFor}
               width={"100%"}
             >
               {
                 ({index, style}) => {
                   let s = segmentsForTimeline[index];
-                  const Element = elementForLabel(s.label);
+                  const Element = elementForLabel(s.labels);
                   return (
-                    <Element segment={s.value}
+                    <Element segment={s}
                              style={style}
+                             onAddDraft={addDraft}
+                             onMute={muteSuggestion}
+                             videoId={videoUuid}
                              index={index}
                              setSelectedSegment={setSelectedSegment}
-                             selected={selectedSegment?.uuid === s.value.uuid}/>
+                             selected={selectedSegment?.uuid === s.uuid}/>
                   );
                 }
               }
-            </FixedSizeList>
+            </VariableSizeList>
           </List>
         </Grid>
       </Grid>

@@ -96,6 +96,8 @@ type WordList struct {
 	Words []Word `gorm:"many2many:wordlist_words"`
 }
 
+type Labels []string
+
 type DraftSegment struct {
 	gorm.Model
 	VideoDraftID uint
@@ -103,6 +105,17 @@ type DraftSegment struct {
 	EndMS        uint
 	Text         string
 	UUID         string
+	ParentUUID   *string
+	Labels       Labels `gorm:"serializer:json"`
+}
+
+func (ds DraftSegment) HasLabel(label string) bool {
+	for _, s := range ds.Labels {
+		if label == s {
+			return true
+		}
+	}
+	return false
 }
 
 type VideoDraft struct {

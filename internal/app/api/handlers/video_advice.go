@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
+	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"github.com/gin-gonic/gin"
@@ -34,24 +35,41 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			log.Printf(err.Error())
 			return
 		}
+		mutings, err := queries.GetAdviceMutings(db, youtubeID)
+		if err != nil {
+			context.Status(500)
+			log.Printf(err.Error())
+			return
+		}
 
 		advice := types.VideoAdviceResponse{
+			// TODO: are 'timings' still needed?
 			Timings:           vttTimings,
-			SuggestedSegments: suggestedSegments(vttSegments),
+			SuggestedSegments: suggestedSegments(vttSegments, mutings),
 		}
 
 		context.JSON(200, advice)
 	}
 }
 
-func suggestedSegments(segments []vtt.Segment) []types.DraftSegment {
+func suggestedSegments(segments []vtt.Segment, mutings []string) []types.DraftSegment {
+	muteMap := make(map[string]bool)
+	for _, s := range mutings {
+		muteMap[s] = true
+	}
 	segs := make([]types.DraftSegment, 0)
 	for _, t := range segments {
+		labels := make([]string, 0)
+		segmentUUID := sha(t)
+		if muteMap[segmentUUID] {
+			labels = append(labels, "MUTED")
+		}
 		segs = append(segs, types.DraftSegment{
 			StartMS: int(t.StartMS),
 			EndMS:   int(t.EndMS),
 			Text:    t.Text,
-			UUID:    sha(t),
+			UUID:    segmentUUID,
+			Labels:  labels,
 		})
 	}
 	return segs

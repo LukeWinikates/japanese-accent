@@ -2,7 +2,7 @@ import axios from "axios";
 import {
   ActivityPostBody,
   AppSettings,
-  BoostPostBody,
+  BoostPostBody, DraftSegment,
   Export,
   Highlights,
   Pitch,
@@ -142,4 +142,11 @@ export function videoSegmentPUT(videoId: string, segment: Segment) {
 
 export function videoSegmentDELETE(videoId: string, segment: Segment) {
   return axios.delete('/api/videos/' + videoId + "/segments/" + segment.uuid);
+}
+
+export function draftSegmentsPOST(videoId: string, data: DraftSegment) {
+  return axios.post<Segment>('/api/videos/' + videoId + "/draft/segments/", data)
+}
+export function suggestedSegmentsDELETE(videoId: string, segmentId: string) {
+  return axios.delete<Segment>('/api/videos/' + videoId + "/advice/segments/" + segmentId)
 }

@@ -56,11 +56,15 @@ export declare type Segment = {
   pitch: Pitch
 };
 
+export type DraftLabel = "DRAFT" | "ADVICE" | "MUTED"
+
 export declare type DraftSegment = {
   startMS: number,
   endMS: number,
   text: string,
-  uuid: string
+  uuid: string,
+  labels: DraftLabel[],
+  parent: string
 };
 
 export declare type Highlights = {

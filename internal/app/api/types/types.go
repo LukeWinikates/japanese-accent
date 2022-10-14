@@ -121,10 +121,12 @@ type TimedText struct {
 }
 
 type DraftSegment struct {
-	StartMS int    `json:"startMS"`
-	EndMS   int    `json:"endMS"`
-	Text    string `json:"text"`
-	UUID    string `json:"uuid"`
+	StartMS    int      `json:"startMS"`
+	EndMS      int      `json:"endMS"`
+	Text       string   `json:"text"`
+	UUID       string   `json:"uuid"`
+	ParentUUID *string  `json:"parent"`
+	Labels     []string `json:"labels"`
 }
 
 type VideoAdviceResponse struct {
@@ -134,4 +136,11 @@ type VideoAdviceResponse struct {
 
 type VideoDraftResponse struct {
 	DraftSegments []DraftSegment `json:"draftSegments"`
+}
+
+type DraftSegmentCreateRequest struct {
+	StartMS    int     `json:"startMS"`
+	EndMS      int     `json:"endMS"`
+	Text       string  `json:"text"`
+	ParentUUID *string `json:"parent"`
 }

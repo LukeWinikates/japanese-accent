@@ -9,7 +9,7 @@ import {AutoSavingTextField} from "./AutoSavingTextField";
 import {DragDropComposableText} from "./DragDropComposableText";
 import {Timeline} from "./Timeline";
 import {Loadable} from "../../App/loadable";
-import {videoAdviceGET, videoDraftGET, videoPublishPOST, videoPUT, videoSegmentPOST} from "../../App/ApiRoutes";
+import {videoAdviceGET, videoDraftGET, videoPublishPOST, videoPUT} from "../../App/ApiRoutes";
 
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
@@ -17,6 +17,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const [draft, setDraft] = useState<Loadable<VideoDraft>>("loading");
 
   useEffect(() => {
+    // Promise.all()
     videoAdviceGET(video.videoId)
       .then(r => setAdvice({data: r.data}));
     videoDraftGET(video.videoId)
@@ -43,25 +44,40 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
     return videoPUT(video);
   };
 
-  function addSegment(range: { startMS: number, endMS: number }) {
-    let data = {
-      text: "",
-      videoUuid: video.videoId,
-      start: range.startMS,
-      end: range.endMS,
-    };
-    videoSegmentPOST(video.videoId, data).then(r => {
-      const s = r.data;
-      onVideoChange({
-        ...video,
-        segments: [...video.segments, s]
-      });
-    }).catch(logError);
-  }
+  let addDraft = (newDraft: DraftSegment) => {
+    if (draft === "loading" || advice === "loading") {
+      return
+    }
+    setDraft({
+      data: {
+        ...draft.data,
+        draftSegments: [...draft.data.draftSegments, newDraft]
+      }
+    })
+    let suggestedSegments = [...advice.data.suggestedSegments];
+    suggestedSegments.splice(suggestedSegments.findIndex(s => s.uuid === newDraft.parent), 1)
+    setAdvice({
+      data: {
+        ...advice.data,
+      suggestedSegments:  suggestedSegments
+      }
+    })
+  };
 
-  function setSegments(newSegments: DraftSegment[]) {
-    console.log("not implemented", newSegments);
-  }
+  let muteSuggestion = (s: DraftSegment) => {
+    if (advice === "loading") {
+      return
+    }
+    let newSuggestions = [...advice.data.suggestedSegments];
+
+    newSuggestions.splice(newSuggestions.indexOf(s), 1)
+    setAdvice({
+      data: {
+        ...advice.data,
+        suggestedSegments: newSuggestions
+      }
+    })
+  };
 
   return (
     <Box m={2}>
@@ -89,8 +105,8 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
             <Timeline videoUuid={video.videoId}
                       advice={advice.data}
                       draft={draft.data}
-                      addSegment={addSegment}
-                      setSegments={setSegments}
+                      addDraft={addDraft}
+                      muteSuggestion={muteSuggestion}
             /> :
             <></>
         }

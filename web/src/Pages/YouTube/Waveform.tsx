@@ -107,10 +107,10 @@ type WaveformProps = {
   setScrubberWindowRange: (range: ScrubberWindowRange) => void,
   playerPositionMS: number,
   timings: Timing[],
-  addSegment: (range: Range) => void,
+  // addSegment: (range: Range) => void,
   candidateSegments: DraftSegment[]
   setSelectedSegment: (cs: DraftSegment) => void,
-  setSegments: (segs: DraftSegment[]) => void,
+  // setSegments: (segs: DraftSegment[]) => void,
   selectedSegment: DraftSegment | null,
 }
 
@@ -135,7 +135,7 @@ export function Waveform({
                            candidateSegments,
                            timings,
                            selectedSegment,
-                           setSegments,
+                           // setSegments,
                            setSelectedSegment
                          }: WaveformProps) {
   const canvas1Ref = useRef<HTMLCanvasElement>(null)
@@ -177,9 +177,9 @@ export function Waveform({
     // the candidate can be immutable, but the actual segment merely links back to it for reference
     // so how would we model that in the in-memory data model? Tick the universe version forward by one?
     // update the parent's in-memory representation (update the array after successful PUT?)
-    let newSegments = [...candidateSegments];
-    newSegments.splice(i, 1, s)
-    setSegments(newSegments)
+    // let newSegments = [...candidateSegments];
+    // newSegments.splice(i, 1, s)
+    // setSegments(newSegments)
   }
 
   const drawBackground = useCallback((context: CanvasRenderingContext2D, width: number) => {
@@ -324,11 +324,6 @@ export function Waveform({
               return <canvas key={k} height={WAVEFORM_HEIGHT} width={canvasWidth}/>
             })
           }
-          {timings.map(t => {
-            return (
-              <div key={t.timeMS} className={classes.zoomedTiming} style={{left: msToZoomedPixels(t.timeMS)}}/>
-            );
-          })}
           {candidateSegments.map((s, i) => {
             if (selectedSegment && selectedSegment.uuid === s.uuid) {
               return <Segment

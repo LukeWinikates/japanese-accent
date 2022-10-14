@@ -14,8 +14,8 @@ require (
 	github.com/u2takey/ffmpeg-go v0.4.1
 	github.com/u2takey/go-utils v0.3.1
 	golang.org/x/net v0.0.0-20220225172249-27dd8689420f
-	gorm.io/driver/sqlite v1.2.6
-	gorm.io/gorm v1.22.4
+	gorm.io/driver/sqlite v1.4.3
+	gorm.io/gorm v1.24.1
 )
 
 require (
@@ -34,13 +34,13 @@ require (
 	github.com/go-redis/redis/v8 v8.9.0 // indirect
 	github.com/golang/protobuf v1.5.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
-	github.com/jinzhu/now v1.1.4 // indirect
+	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/leodido/go-urn v1.2.0 // indirect
 	github.com/mattn/go-isatty v0.0.12 // indirect
-	github.com/mattn/go-sqlite3 v1.14.9 // indirect
+	github.com/mattn/go-sqlite3 v1.14.15 // indirect
 	github.com/matttproud/golang_protobuf_extensions v1.0.1 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect

@@ -43,10 +43,12 @@ func draftSegments(segments []database.DraftSegment) []types.DraftSegment {
 	segs := make([]types.DraftSegment, 0)
 	for _, t := range segments {
 		segs = append(segs, types.DraftSegment{
-			StartMS: int(t.StartMS),
-			EndMS:   int(t.EndMS),
-			Text:    t.Text,
-			UUID:    t.UUID,
+			StartMS:    int(t.StartMS),
+			EndMS:      int(t.EndMS),
+			Text:       t.Text,
+			UUID:       t.UUID,
+			ParentUUID: t.ParentUUID,
+			Labels:     t.Labels,
 		})
 	}
 	return segs
