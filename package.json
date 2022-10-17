@@ -41,7 +41,7 @@
     "camelcase": "^7.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.5.1",
-    "css-minimizer-webpack-plugin": "^4.2.1",
+    "css-minimizer-webpack-plugin": "^4.2.2",
     "dotenv": "^16.0.3",
     "dotenv-expand": "^9.0.0",
     "eslint": "^8.25.0",
