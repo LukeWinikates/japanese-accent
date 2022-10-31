@@ -16,7 +16,7 @@
     "@mui/lab": "^5.0.0-alpha.103",
     "@mui/material": "^5.10.8",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
-    "@svgr/webpack": "^6.4.0",
+    "@svgr/webpack": "^6.5.1",
     "@testing-library/dom": "^8.18.1",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.4.0",
