@@ -13,7 +13,7 @@
     "@emotion/styled": "^11.10.4",
     "@fontsource/roboto": "^4.5.8",
     "@mui/icons-material": "^5.10.9",
-    "@mui/lab": "^5.0.0-alpha.103",
+    "@mui/lab": "^5.0.0-alpha.108",
     "@mui/material": "^5.10.8",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.3",
     "@svgr/webpack": "^6.5.1",
