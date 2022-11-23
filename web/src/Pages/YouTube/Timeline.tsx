@@ -13,6 +13,14 @@ import {waveformGET} from "../../App/ApiRoutes";
 import {VariableSizeList} from 'react-window';
 import {MutedListItem} from "./MutedListItem";
 
+const ARE_MUTED = (l : DraftLabel) : boolean => {
+  return l === "MUTED";
+}
+
+const ARE_DRAFT = (l : DraftLabel) : boolean => {
+  return l === "DRAFT";
+}
+
 type TimelineProps = {
   advice: VideoAdvice,
   draft: VideoDraft,
@@ -52,12 +60,16 @@ export function Timeline({advice, videoUuid, draft, addDraft, muteSuggestion}: T
     setSelectedSegment(advice.suggestedSegments[index]);
   }
 
-  function elementForLabel(label: DraftLabel[]) {
-    if (label[0] === 'MUTED') {
+  function elementForLabels(labels: DraftLabel[]) {
+    if (!labels) {
+      return SuggestedListItem
+    }
+
+    if (labels.some(ARE_MUTED)) {
       return MutedListItem;
     }
 
-    if (label[0] === 'DRAFT') {
+    if (labels.some(ARE_DRAFT)) {
       return DraftListItem;
     }
     return SuggestedListItem;
@@ -78,13 +90,11 @@ export function Timeline({advice, videoUuid, draft, addDraft, muteSuggestion}: T
                       sampleRate={samplesData.data.sampleRate}
                       scrubberWindowRange={scrubberWindowRange}
                       setScrubberWindowRange={setScrubberWindowRange}
-              // setSegments={setSegments}
                       playerPositionMS={playbackPositionMS}
                       timings={advice.timings}
                       candidateSegments={advice.suggestedSegments}
                       setSelectedSegment={setSelectedSegment}
                       selectedSegment={selectedSegment}
-              // addSegment={addSegment}
             />}
         </div>
         startSec = {(selectedSegment?.startMS || 0) / 1000} ,
@@ -121,7 +131,7 @@ export function Timeline({advice, videoUuid, draft, addDraft, muteSuggestion}: T
               {
                 ({index, style}) => {
                   let s = segmentsForTimeline[index];
-                  const Element = elementForLabel(s.labels);
+                  const Element = elementForLabels(s.labels);
                   return (
                     <Element segment={s}
                              style={style}

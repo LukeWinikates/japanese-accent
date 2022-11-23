@@ -1,6 +1,7 @@
 import React from "react";
 import {makeStyles} from 'tss-react/mui';
 import {DraftLabel, DraftSegment,} from "../../App/api";
+import {SuggestedListItem} from "./SuggestedListItem";
 
 const useStyles = makeStyles()((theme) => ({
   segmentSelector: {
@@ -46,6 +47,9 @@ export function SegmentSelector({
   const width = msToPixels(segment.endMS - segment.startMS)
 
   function colorForLabels(labels: DraftLabel[]) {
+    if (!labels) {
+      return classes.advice;
+    }
     if (labels.some(l => l === "DRAFT")) {
       return classes.draft
     }
