@@ -1,0 +1,15 @@
+on:
+  schedule:
+    - cron: '0 1 * * *'
+
+jobs:
+  test_schedule:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Yarn
+        uses: mskelton/setup-yarn@v1
+        with:
+          node-version: 16.17.1
+
+      - name: Build Yarn
+        run: yarn outdated
