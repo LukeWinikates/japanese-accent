@@ -1,7 +1,6 @@
 import React from "react";
 import {makeStyles} from 'tss-react/mui';
 import {DraftLabel, DraftSegment,} from "../../App/api";
-import {SuggestedListItem} from "./SuggestedListItem";
 
 const useStyles = makeStyles()((theme) => ({
   segmentSelector: {
