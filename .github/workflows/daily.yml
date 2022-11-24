@@ -1,9 +1,10 @@
+name: daily
 on:
   schedule:
     - cron: '0 1 * * *'
 
 jobs:
-  test_schedule:
+  check_outdated_yarn_deps:
     runs-on: ubuntu-latest
     steps:
       - name: Set up Yarn
@@ -11,5 +12,5 @@ jobs:
         with:
           node-version: 16.17.1
 
-      - name: Build Yarn
+      - name: Yarn Outdated
         run: yarn outdated
