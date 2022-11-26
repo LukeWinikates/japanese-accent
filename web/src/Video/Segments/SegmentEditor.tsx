@@ -3,8 +3,10 @@ import {Button, TextField} from "@mui/material";
 
 import {Player} from "../../Dictaphone/Player";
 import {TimeInput} from "./TimeInput";
-import {msToHumanReadable} from "../../App/time";
+import {msToHumanReadable, Range} from "../../App/time";
 import audioURL from "../../App/audioURL";
+import {ResizingWaveform} from "../../Waveform/ResizingWaveform";
+import {waveformGET} from "../../App/ApiRoutes";
 
 interface Segmentish {
   startMS: number;
@@ -20,11 +22,16 @@ export interface SegmentEditorProps<T extends Segmentish> {
   nextSegmentStart: number | null;
 }
 
-
-export function SegmentEditor<T extends Segmentish>({segment, setSegment, previousSegmentEnd, nextSegmentStart}: SegmentEditorProps<T>) {
+export function SegmentEditor<T extends Segmentish>({
+                                                      segment,
+                                                      setSegment,
+                                                      previousSegmentEnd,
+                                                      nextSegmentStart
+                                                    }: SegmentEditorProps<T>) {
   const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
   const [preferredStartTime, setPreferredStartTime] = useState<number | undefined>(undefined);
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
+  const [playerPositionMS, setPlayerPositionMS] = useState(0);
 
   useEffect(() => {
     setSegmentIsPlaying(false);
@@ -63,14 +70,32 @@ export function SegmentEditor<T extends Segmentish>({segment, setSegment, previo
     setPlayerStartDebounce(new Date())
   };
 
+  const setRange = (r: Range) => {
+    setSegment({
+      ...segment,
+      startMS: r.startMS,
+      endMS: r.endMS
+    })
+  }
+
   return (
     <>
+      <ResizingWaveform
+        onLoadWaveform={() => waveformGET(segment.videoUuid).then(r => r.data)}
+        range={{startMS: segment.startMS, endMS: segment.endMS}}
+        playerPositionMS={playerPositionMS}
+        onStartResizing={() => setSegmentIsPlaying(false)}
+        setRange={setRange}
+      />
+
       <Player src={audioURL(segment)}
               duration={{startSec: segment.startMS, endSec: segment.endMS}}
               playing={segmentIsPlaying}
               onPlayerStateChanged={setSegmentIsPlaying}
               preferredStartTime={preferredStartTime}
+              onPositionChange={setPlayerPositionMS}
       />
+
 
       <TimeInput label="Start" onChange={handleStartChange} value={segment.startMS}/>
       {
@@ -81,9 +106,9 @@ export function SegmentEditor<T extends Segmentish>({segment, setSegment, previo
       }
       <TimeInput label="End" onChange={handleEndChange} value={segment.endMS}/>
       {nextSegmentStart &&
-      <Button onClick={() => handleEndChange(nextSegmentStart)}>
-        Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}
-      </Button>
+        <Button onClick={() => handleEndChange(nextSegmentStart)}>
+          Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}
+        </Button>
       }
 
       <TextField margin="normal"

@@ -26,9 +26,9 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		segment.Start = segmentEditRequest.StartMS
+		segment.StartMS = segmentEditRequest.StartMS
 		segment.Text = segmentEditRequest.Text
-		segment.End = segmentEditRequest.EndMS
+		segment.EndMS = segmentEditRequest.EndMS
 
 		if err := db.Save(segment).Error; err != nil {
 			log.Println(err.Error())
@@ -52,10 +52,10 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 		log.Print(createRequest)
 
 		var segment = database.VideoSegment{
-			UUID:  uuid.NewString(),
-			Start: createRequest.StartMS,
-			Text:  createRequest.Text,
-			End:   createRequest.EndMS,
+			UUID:    uuid.NewString(),
+			StartMS: createRequest.StartMS,
+			Text:    createRequest.Text,
+			EndMS:   createRequest.EndMS,
 		}
 
 		if err := db.Model(&video).Association("Segments").Append(&segment); err != nil {
@@ -66,8 +66,8 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 
 		context.JSON(201, types.VideoSegment{
 			UUID:      segment.UUID,
-			StartMS:   segment.Start,
-			EndMS:     segment.End,
+			StartMS:   segment.StartMS,
+			EndMS:     segment.EndMS,
 			Text:      segment.Text,
 			VideoUUID: video.YoutubeID,
 		})

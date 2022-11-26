@@ -3,9 +3,9 @@ package handlers
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
-	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
+	"github.com/LukeWinikates/japanese-accent/internal/app/media"
+	"github.com/LukeWinikates/japanese-accent/internal/app/slices"
 	"github.com/gin-gonic/gin"
-	"github.com/google/uuid"
 	"gorm.io/gorm"
 	"log"
 	"net/http"
@@ -21,20 +21,26 @@ func MakeVideoAdviceSegmentDELETE(mediaDirectory string, db gorm.DB) gin.Handler
 		youtubeID := context.Param("videoUuid")
 		segmentSha := context.Param("segmentSha")
 		if err := db.Where("youtube_id = ?", youtubeID).
-			Preload("Draft.DraftSegments").First(&video).Error; err != nil {
+			Preload("AdviceMutings").First(&video).Error; err != nil {
 			context.Status(http.StatusInternalServerError)
 			log.Printf("Error: %s\n", err.Error())
 			return
 		}
 
-		_, _, vttSegments, err := loadVTTasAdvice(mediaDirectory, youtubeID)
+		if slices.Any(video.AdviceMutings, func(m database.AdviceMuting) bool {
+			return m.AdviceSha == segmentSha
+		}) {
+			context.Status(http.StatusNoContent)
+			return
+
+		}
+
+		vttSegments, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
 
 		found := false
-		var segment vtt.Segment
 		for _, seg := range vttSegments {
 			if segmentSha == sha(seg) {
 				found = true
-				segment = seg
 				break
 			}
 		}
@@ -49,7 +55,7 @@ func MakeVideoAdviceSegmentDELETE(mediaDirectory string, db gorm.DB) gin.Handler
 			log.Printf(err.Error())
 			return
 		}
-		_, err = queries.CreateDraftSegment(db, video, mutedSegment(segment, segmentSha))
+		err = queries.MuteAdvice(db, video, segmentSha)
 		log.Printf("%v\n", err)
 		if err != nil {
 			context.Status(http.StatusInternalServerError)
@@ -58,16 +64,5 @@ func MakeVideoAdviceSegmentDELETE(mediaDirectory string, db gorm.DB) gin.Handler
 		}
 
 		context.Status(http.StatusNoContent)
-	}
-}
-
-func mutedSegment(segment vtt.Segment, shaSum string) *database.DraftSegment {
-	return &database.DraftSegment{
-		StartMS:    uint(segment.StartMS),
-		EndMS:      uint(segment.EndMS),
-		Text:       "(muted)",
-		UUID:       uuid.NewString(),
-		ParentUUID: &shaSum,
-		Labels:     []string{"MUTED"},
 	}
 }

@@ -1,6 +1,6 @@
 import React from "react";
 import {makeStyles} from 'tss-react/mui';
-import {DraftLabel, DraftSegment,} from "../../App/api";
+import {DraftLabel, Segment,} from "../../App/api";
 
 const useStyles = makeStyles()((theme) => ({
   segmentSelector: {
@@ -9,7 +9,7 @@ const useStyles = makeStyles()((theme) => ({
     borderLeft: 1,
     borderRight: 1,
     borderColor: theme.palette.grey.A700,
-    height: 100,
+    height: "100%",
     cursor: "pointer",
     opacity: 0.5,
 
@@ -30,7 +30,7 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 type Props = {
-  segment: DraftSegment,
+  segment: Segment,
   onSelected: () => void
   selected: boolean,
   msToPixels: (px: number) => number,

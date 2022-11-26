@@ -23,7 +23,6 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 			YoutubeID:      videoCreateRequest.YoutubeID,
 			Title:          videoCreateRequest.Title,
 			Segments:       nil,
-			VideoStatus:    database.Pending,
 			LastActivityAt: time.Now(),
 		}
 
@@ -60,35 +59,6 @@ func MakeVideoPUT(db gorm.DB) gin.HandlerFunc {
 			context.Status(500)
 			return
 		}
-	}
-}
-
-func MakeVideoPublishPOST(mediaDirPath string, db gorm.DB) gin.HandlerFunc {
-	return func(context *gin.Context) {
-		var video *database.Video
-		youtubeID := context.Param("videoUuid")
-		if err := db.Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
-			context.Status(404)
-			log.Printf("Error: %s\n", err.Error())
-			return
-		}
-
-		if video.VideoStatus != database.Imported {
-			log.Printf("Error: Can't Publish this video because it's in the wrong status (%s)\n", video.VideoStatus)
-			context.Status(500)
-		}
-
-		video.VideoStatus = database.Complete
-
-		if err := db.Save(&video).Error; err != nil {
-			context.Status(500)
-			log.Printf("Error: %s\n", err.Error())
-			return
-		}
-
-		apiVideo := makeApiVideo(video, media.FindFiles(mediaDirPath, youtubeID))
-
-		context.JSON(200, apiVideo)
 	}
 }
 
@@ -140,8 +110,8 @@ func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Vide
 		}
 
 		apiSegs = append(apiSegs, types.VideoSegment{
-			StartMS:        segment.Start,
-			EndMS:          segment.End,
+			StartMS:        segment.StartMS,
+			EndMS:          segment.EndMS,
 			Text:           segment.Text,
 			UUID:           segment.UUID,
 			VideoUUID:      video.YoutubeID,
@@ -154,7 +124,6 @@ func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Vide
 		Title:          video.Title,
 		URL:            youtube.URL(video.YoutubeID),
 		VideoID:        video.YoutubeID,
-		VideoStatus:    video.VideoStatus,
 		Segments:       apiSegs,
 		LastActivityAt: video.LastActivityAt,
 		Text:           video.Text,

@@ -54,8 +54,8 @@ func segmentsFromVideo(video *database.Video) []export.RecipeSegment {
 	for _, segment := range video.Segments {
 		segments = append(segments, export.RecipeSegment{
 			Name:  segment.Text,
-			Start: segment.Start,
-			End:   segment.End,
+			Start: segment.StartMS,
+			End:   segment.EndMS,
 		})
 	}
 	return segments

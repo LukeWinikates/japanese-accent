@@ -18,11 +18,9 @@ export declare type VideoSummary = {
   title: string,
   url: string,
   videoId: string,
-  videoStatus: VideoStatus
   lastActivityAt: string
 }
 
-export type VideoStatus = "Pending" | "Imported" | "Complete";
 
 export declare type Video = {
   title: string,
@@ -30,7 +28,6 @@ export declare type Video = {
   videoId: string,
   segments: Segment[],
   words: Word[],
-  videoStatus: VideoStatus
   lastActivityAt: string
   text: string,
   files: Files
@@ -54,18 +51,21 @@ export declare type Segment = {
   videoUuid: string,
   lastActivityAt: Date
   pitch: Pitch
+  labels: DraftLabel[],
+  parent: string | null
 };
 
-export type DraftLabel = "DRAFT" | "ADVICE" | "MUTED"
-
-export declare type DraftSegment = {
+export declare type SuggestedSegment = {
   startMS: number,
   endMS: number,
   text: string,
   uuid: string,
+  videoUuid: string,
   labels: DraftLabel[],
-  parent: string
 };
+
+export type DraftLabel = "DRAFT" | "ADVICE" | "MUTED"
+
 
 export declare type Highlights = {
   videos: VideoSummary[],
@@ -130,12 +130,8 @@ export type Timing = {
 }
 
 export type VideoAdvice = {
-  suggestedSegments: DraftSegment[],
-  timings: Timing[]
-}
-
-export type VideoDraft = {
-  draftSegments: DraftSegment[]
+  suggestedSegments: SuggestedSegment[],
+  timings: Timing[],
 }
 
 export type BoostPostBody = {
@@ -146,3 +142,11 @@ export type ActivityPostBody = {
   segmentId: string
 }
 
+export type SegmentCreateBody = {
+  videoUuid: string;
+  startMS: number;
+  endMS: number;
+  text: string
+  parent: string | null,
+  labels: string[]
+};

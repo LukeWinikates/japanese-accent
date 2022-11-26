@@ -10,7 +10,6 @@ export function WordListList({wordLists}:{wordLists: WordList[]}) {
     {wordLists.map(wordList => {
       return (
         <ListItem key={wordList.id}>
-          {/*<ListItemIcon>{<StatusIcon status={video.videoStatus}/>}</ListItemIcon>*/}
           <Link to={`/wordlists/${wordList.id}`}>
             <ListItemText primary={wordList.name} />
           </Link>

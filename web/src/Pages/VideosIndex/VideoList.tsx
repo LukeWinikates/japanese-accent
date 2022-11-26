@@ -1,7 +1,6 @@
 import {VideoSummary} from "../../App/api";
-import {List, ListItemIcon} from "@mui/material";
+import {List, ListItemSecondaryAction} from "@mui/material";
 import ListItem from "@mui/material/ListItem";
-import {StatusIcon} from "../../Video/StatusIcon";
 import {Link} from "react-router-dom";
 import ListItemText from "@mui/material/ListItemText";
 import React from "react";
@@ -15,15 +14,17 @@ function formatDate(video: VideoSummary) {
   return "no practice activity"
 }
 
-export function VideoList({videos}:{videos: VideoSummary[]}) {
+export function VideoList({videos}: { videos: VideoSummary[] }) {
   return <List>
     {videos.map(video => {
       return (
         <ListItem key={video.videoId}>
-          <ListItemIcon>{<StatusIcon status={video.videoStatus}/>}</ListItemIcon>
           <Link to={`/media/${video.videoId}`}>
             <ListItemText primary={video.title} secondary={formatDate(video)}/>
           </Link>
+          <ListItemSecondaryAction>
+            <Link to={`/media/${video.videoId}/edit`}>Edit</Link>
+          </ListItemSecondaryAction>
         </ListItem>
       );
     })}

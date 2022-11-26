@@ -70,8 +70,8 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 				maybePitch = &pitch
 			}
 			apiSegments[i] = types.VideoSegment{
-				StartMS:   segment.Start,
-				EndMS:     segment.End,
+				StartMS:   segment.StartMS,
+				EndMS:     segment.EndMS,
 				Text:      segment.Text,
 				UUID:      segment.UUID,
 				VideoUUID: segment.Video.YoutubeID,

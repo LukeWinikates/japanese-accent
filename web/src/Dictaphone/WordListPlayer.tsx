@@ -9,6 +9,7 @@ import {ItemsLoader} from "./ItemsLoader";
 type AudioLinkPlayerProps = { words: Word[] };
 
 export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
+
   const [currentWord, setCurrentWord] = useState<WithIndex<Word>>({value: words[0], index: 0});
 
   function pauseAll() {

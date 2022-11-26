@@ -18,33 +18,25 @@ type Video struct {
 	YoutubeID      string
 	Title          string
 	Segments       []VideoSegment
-	VideoStatus    VideoStatus
 	Text           string
 	LastActivityAt time.Time
-	Words          []Word      `gorm:"many2many:video_words"`
-	Draft          *VideoDraft `gorm:"foreignKey:VideoID"`
+	Words          []Word `gorm:"many2many:video_words"`
+	AdviceMutings  []AdviceMuting
 }
-
-type VideoStatus = string
-
-const (
-	Pending  = "Pending"
-	Imported = "Imported"
-	Complete = "Complete"
-)
 
 type VideoSegment struct {
 	gorm.Model
-
 	VideoID        uint
-	Start          int
-	End            int
+	StartMS        int
+	EndMS          int
 	Text           string
 	UUID           string
 	Video          Video
 	LastActivityAt time.Time
 	SegmentPitch   *SegmentPitch `gorm:"foreignKey:SegmentID"`
 	Priority       int
+	ParentUUID     *string
+	Labels         Labels `gorm:"serializer:json"`
 }
 
 type SegmentBoost struct {
@@ -96,40 +88,17 @@ type WordList struct {
 	Words []Word `gorm:"many2many:wordlist_words"`
 }
 
-type Labels []string
-
-type DraftSegment struct {
+type AdviceMuting struct {
 	gorm.Model
-	VideoDraftID uint
-	StartMS      uint
-	EndMS        uint
-	Text         string
-	UUID         string
-	ParentUUID   *string
-	Labels       Labels `gorm:"serializer:json"`
-}
-
-func (ds DraftSegment) HasLabel(label string) bool {
-	for _, s := range ds.Labels {
-		if label == s {
-			return true
-		}
-	}
-	return false
-}
-
-type VideoDraft struct {
-	gorm.Model
-	VideoID       uint
-	DraftSegments []DraftSegment
+	VideoID   uint
+	AdviceSha string
 }
 
 func InitializeDatabase(db gorm.DB) error {
 	return db.AutoMigrate(
 		Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{},
-		Playlist{}, Word{}, WordList{}, SegmentPitch{}, DraftSegment{}, VideoDraft{},
-
-		Settings{},
+		Playlist{}, Word{}, WordList{}, SegmentPitch{},
+		Settings{}, AdviceMuting{},
 	)
 }
 

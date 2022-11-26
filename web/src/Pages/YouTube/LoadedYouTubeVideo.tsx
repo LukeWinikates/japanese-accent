@@ -4,20 +4,14 @@ import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@mui/m
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import LaunchIcon from '@mui/icons-material/Launch';
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
-import DoneIcon from '@mui/icons-material/Done';
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import AddIcon from "@mui/icons-material/Add";
-import DraftSegmentDialog from "../../Video/Segments/DraftSegmentDialog";
-import AddWordDialog from "../WordList/AddWordDialog";
 import {WordListPlayer} from "../../Dictaphone/WordListPlayer";
-import {videoPublishPOST} from "../../App/ApiRoutes";
+import {Link} from "react-router-dom";
+import VideoIcon from '@mui/icons-material/Theaters';
+import EditIcon from '@mui/icons-material/Edit';
 
 type TabTypes = "segments" | "words" | "notes";
 
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
-  const {logError} = useServerInteractionHistory();
-  const [isDraftDialogOpen, setIsDraftDialogOpen] = useState(false);
-  const [isAddWordDialogOpen, setIsAddWordDialogOpen] = useState(false);
   const [activeTab, setActiveTab] = useState<TabTypes>("segments");
 
   function setVideoSegments(newSegments: Segment[]) {
@@ -26,23 +20,6 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
       segments: newSegments
     });
   }
-
-  const markComplete = () => {
-    return videoPublishPOST(video).then(() => {
-      onVideoChange({
-        ...video,
-        videoStatus: "Complete"
-      })
-    }).catch((e) => logError(`unable to publish video (${e})`))
-  };
-
-  function openAddWordDialog() {
-    setIsAddWordDialogOpen(true)
-  }
-
-  const onClose = () => {
-    setIsAddWordDialogOpen(false);
-  };
 
   return (
     <Box m={2}>
@@ -53,32 +30,23 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
             {video.title}
-            {video.videoStatus === "Imported" &&
-            <Button startIcon={<DoneIcon/>} onClick={markComplete}>
-              Mark Video as Complete
-            </Button>
-            }
           </Typography>
+          <Typography variant="h4">
+            Practice Mode
+          </Typography>
+          <Link to={"./edit"} relative="path">
+            <Button startIcon={<VideoIcon/>}
+                    endIcon={<EditIcon/>}
+            >
+              Switch to Clip Editor
+            </Button>
+          </Link>
           <Button href={video.url} color="secondary" target="_blank"
                   startIcon={<YouTubeIcon/>} variant="text"
                   endIcon={<LaunchIcon fontSize="small"/>}>
             Open in YouTube
           </Button>
         </Box>
-
-        <Button onClick={() => setIsDraftDialogOpen(true)}>
-          Add Segment <AddIcon/>
-        </Button>
-
-        <Button onClick={openAddWordDialog}>
-          Add Word <AddIcon/>
-        </Button>
-        {
-          isDraftDialogOpen && <DraftSegmentDialog videoId={video.videoId} onClose={() => setIsDraftDialogOpen(false)}/>
-        }
-        {
-          isAddWordDialogOpen && <AddWordDialog videoId={video.videoId} onClose={onClose}/>
-        }
         <Tabs
           value={activeTab}
           onChange={(_, value) => setActiveTab(value)}
@@ -88,7 +56,6 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         >
           <Tab label="Video Segments" value="segments"/>
           <Tab label="Vocabulary" value="words"/>
-          <Tab label="Notes" value="notes"/>
         </Tabs>
         <Box marginY={2}>
           {
@@ -98,12 +65,6 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
           {
             activeTab === "words" &&
             <WordListPlayer words={video.words}/>
-          }
-          {
-            activeTab === "notes" &&
-            <strong>
-              notes will go here
-            </strong>
           }
         </Box>
       </Container>

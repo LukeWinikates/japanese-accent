@@ -2,15 +2,15 @@ import axios from "axios";
 import {
   ActivityPostBody,
   AppSettings,
-  BoostPostBody, DraftSegment,
+  BoostPostBody,
   Export,
   Highlights,
   Pitch,
   Playlist,
   Segment,
+  SegmentCreateBody,
   Video,
   VideoAdvice,
-  VideoDraft,
   VideoSummary,
   Waveform as ApiWaveform,
   WordAnalysis,
@@ -110,21 +110,7 @@ export function videoAdviceGET(videoId: string) {
   return axios.get<VideoAdvice>('/api/videos/' + videoId + '/advice');
 }
 
-export function videoDraftGET(videoId: string) {
-  return axios.get<VideoDraft>('/api/videos/' + videoId + '/draft');
-}
-
-export function videoPublishPOST(video: Video) {
-  return axios.post('/api/videos/' + video.videoId + '/publish');
-}
-
-export function videoPUT(video: Video) {
-  return axios.put('/api/videos/' + video.videoId, {
-    ...video,
-  });
-}
-
-export function videoSegmentPOST(videoId: string, data: { videoUuid: string; start: number; end: number; text: string }) {
+export function videoSegmentPOST(videoId: string, data: SegmentCreateBody) {
   return axios.post<Segment>('/api/videos/' + videoId + "/segments/", data);
 }
 
@@ -144,9 +130,6 @@ export function videoSegmentDELETE(videoId: string, segment: Segment) {
   return axios.delete('/api/videos/' + videoId + "/segments/" + segment.uuid);
 }
 
-export function draftSegmentsPOST(videoId: string, data: DraftSegment) {
-  return axios.post<Segment>('/api/videos/' + videoId + "/draft/segments/", data)
-}
 export function suggestedSegmentsDELETE(videoId: string, segmentId: string) {
-  return axios.delete<Segment>('/api/videos/' + videoId + "/advice/segments/" + segmentId)
+  return axios.delete('/api/videos/' + videoId + "/advice/segments/" + segmentId)
 }

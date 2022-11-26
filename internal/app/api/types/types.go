@@ -18,6 +18,8 @@ type VideoSegment struct {
 	LastActivityAt time.Time          `json:"lastActivityAt"`
 	Pitch          *VideoSegmentPitch `json:"pitch"`
 	Priority       int                `json:"priority"`
+	Labels         []string           `json:"labels"`
+	ParentUUID     *string            `json:"parent"`
 }
 
 type VideoSegmentPitch struct {
@@ -29,7 +31,6 @@ type VideoSummary struct {
 	Title          string    `json:"title"`
 	URL            string    `json:"url"`
 	VideoID        string    `json:"videoId"`
-	VideoStatus    string    `json:"videoStatus"`
 	LastActivityAt time.Time `json:"lastActivityAt"`
 }
 
@@ -42,7 +43,6 @@ type Video struct {
 	Title          string         `json:"title"`
 	URL            string         `json:"url"`
 	VideoID        string         `json:"videoId"`
-	VideoStatus    string         `json:"videoStatus"`
 	Files          Files          `json:"files"`
 	Segments       []VideoSegment `json:"segments"`
 	LastActivityAt time.Time      `json:"lastActivityAt"`
@@ -120,27 +120,17 @@ type TimedText struct {
 	TimeMS  int    `json:"timeMS"`
 }
 
-type DraftSegment struct {
-	StartMS    int      `json:"startMS"`
-	EndMS      int      `json:"endMS"`
-	Text       string   `json:"text"`
-	UUID       string   `json:"uuid"`
-	ParentUUID *string  `json:"parent"`
-	Labels     []string `json:"labels"`
-}
-
 type VideoAdviceResponse struct {
-	Timings           []Timing       `json:"timings"`
-	SuggestedSegments []DraftSegment `json:"suggestedSegments"`
+	Timings           []Timing           `json:"timings"`
+	SuggestedSegments []SuggestedSegment `json:"suggestedSegments"`
+	//DurationMS        int            `json:"durationMS"`
 }
 
-type VideoDraftResponse struct {
-	DraftSegments []DraftSegment `json:"draftSegments"`
-}
-
-type DraftSegmentCreateRequest struct {
-	StartMS    int     `json:"startMS"`
-	EndMS      int     `json:"endMS"`
-	Text       string  `json:"text"`
-	ParentUUID *string `json:"parent"`
+type SuggestedSegment struct {
+	StartMS   int      `json:"startMS"`
+	EndMS     int      `json:"endMS"`
+	Text      string   `json:"text"`
+	UUID      string   `json:"uuid"`
+	Labels    []string `json:"labels"`
+	VideoUUID string   `json:"videoUuid"`
 }

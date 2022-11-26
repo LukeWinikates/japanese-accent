@@ -1,13 +1,12 @@
 import React, {useEffect, useState} from 'react';
 import {Video} from "../../App/api";
 import {Loadable} from "../../App/loadable";
-import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
-import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {YouTubeVideoEditor} from "./YouTubeVideoEditor";
 import {useParams} from "react-router-dom";
 import {videoGET} from "../../App/ApiRoutes";
 
-export const YoutubeVideoPage = () => {
+export const VideoClipsEditPage = () => {
   const {logError} = useServerInteractionHistory();
   const {id} = useParams();
   const videoId = id;
@@ -24,19 +23,16 @@ export const YoutubeVideoPage = () => {
 
       .then(r => setVideo({data: r.data}))
       .catch(() => logError("could not load video"))
-  }, [videoId,  setVideo, logError]);
+  }, [videoId, setVideo, logError]);
 
   if (video === "loading") {
     return (<>loading...</>);
   }
 
   if (!video.data.files.hasMediaFile) {
-    return (
-      <PendingYouTubeVideo video={video.data}/>
-    );
+    throw new Error("invalid condition")
   }
 
-  return (
-    <LoadedYouTubeVideo video={video.data} onVideoChange={setVideoData}/>
-  );
+  return (<YouTubeVideoEditor video={video.data} onVideoChange={setVideoData}/>);
+
 };

@@ -1,23 +1,31 @@
-import {DraftSegment} from "../../App/api";
+import {Segment, SuggestedSegment} from "../../App/api";
 import React, {CSSProperties} from "react";
-import {makeStyles} from "tss-react/mui";
+import {ListItemButton, Tooltip} from "@mui/material";
+import {makeStyles} from 'tss-react/mui';
 
-type Params = { segment: DraftSegment, setSelectedSegment: (s: DraftSegment) => void, selected: boolean, index: number, style: CSSProperties };
-
+type Params = {
+  segment: Segment | SuggestedSegment,
+  setSelectedSegment: (s: Segment | SuggestedSegment) => void,
+  selected: boolean,
+  index: number,
+  style: CSSProperties
+};
 const useStyles = makeStyles()((theme) => ({
-  underline: {
-    backgroundColor: theme.palette.grey.A700,
+  foo: {
+    backgroundColor: theme.palette.grey.A200,
   }
 }));
 
 export function MutedListItem({segment, setSelectedSegment, selected, index, style}: Params) {
+
   const {classes} = useStyles();
 
   return (
-    <div style={style} key={segment.uuid}
-                    className={classes.underline}
-    >
-
-    </div>
-  )
+    <Tooltip style={style} title="Muted Segment">
+      <ListItemButton key={segment.uuid} className={classes.foo} divider={true} dense selected={selected}
+                      onClick={() => setSelectedSegment(segment)}
+      >
+      </ListItemButton>
+    </Tooltip>
+  );
 }

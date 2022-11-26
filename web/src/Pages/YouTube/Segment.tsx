@@ -1,14 +1,14 @@
 import React, {ForwardedRef, useState} from "react";
 import {makeStyles} from 'tss-react/mui';
-import {DraftSegment,} from "../../App/api";
 import {Resizable, ResizeCallbackData, ResizeHandle} from 'react-resizable';
 
 const useStyles = makeStyles()((theme) => ({
   span: {
     position: "absolute",
     display: "inline-flex",
-    // top: 0,
-    height: 100,
+    height: "100%",
+    backgroundColor: theme.palette.primary.light,
+    opacity: .4,
   },
   segmentResizer: {
     display: "inline-block",
@@ -27,46 +27,54 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 type Props = {
-  segment: DraftSegment,
-  updateSegment: (s: DraftSegment) => void,
-  msToPixels: (px: number) => number,
+  segment: { startMS: number, endMS: number },
+  updateSegment: (s: {startMS: number, endMS: number }) => void,
+  msToPixels: (ms: number) => number,
+  pixelsToMS: (px: number) => number,
 };
 
 export function Segment({
                           segment,
                           updateSegment,
                           msToPixels,
+                          pixelsToMS,
                         }: Props) {
   const {classes} = useStyles();
-  const [width, setWidth] = useState(msToPixels(segment.endMS - segment.startMS));
-  const [left, setLeft] = useState(msToPixels(segment.startMS));
+  let startPx = msToPixels(segment.startMS);
+  let endPX = msToPixels(segment.endMS);
+  const [width, setWidth] = useState(endPX  - startPx);
+  const [left, setLeft] = useState(startPx);
 
   const onResize = (event: any, {size, handle}: ResizeCallbackData) => {
-    setWidth(size.width);
-    if (handle === "w") {
-      setLeft(left - (size.width - width))
-    }
+    // setWidth(size.width);
+    // if (handle === "w") {
+    //   setLeft(left - (size.width - width))
+    // }
   };
+
+  // console.log("width, ", width)
+  // console.log("segment, ", segment)
+  // console.log("left, ", left)
 
   const commitChange = () => {
     updateSegment({
       ...segment,
-      startMS: msToPixels(left),
-      endMS: msToPixels(left + width),
+      startMS: pixelsToMS(left),
+      endMS: pixelsToMS(left + width),
     })
   }
 
   function handle(axis: ResizeHandle, ref: ForwardedRef<any>) {
     return (
-      <div ref={ref} className={`${classes.segmentResizer} ${axis === "w" ? classes.resizerWest : classes.resizerEast}`}/>
+      <div ref={ref}
+           className={`${classes.segmentResizer} ${axis === "w" ? classes.resizerWest : classes.resizerEast}`}/>
     );
   }
 
   return (
     <Resizable
-      key={segment.startMS}
       width={width}
-      height={100}
+      height={50}
       onResize={onResize}
       onResizeStop={commitChange}
       axis="x"

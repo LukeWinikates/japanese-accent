@@ -6,7 +6,6 @@ import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
 import {Loadable} from "../App/loadable";
-import {StatusIcon} from "../Video/StatusIcon";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 import {highlightsGET} from "../App/ApiRoutes";
 
@@ -60,7 +59,6 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
           <React.Fragment key={index}>
             <ListItemButton>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
-              <ListItemIcon><StatusIcon status={video.videoStatus}/></ListItemIcon>
               <Link component={RouterLink} to={`/media/${video.videoId}`}>
                 <ListItemText primary={video.title}/>
               </Link>

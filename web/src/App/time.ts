@@ -17,3 +17,4 @@ export function msToHumanReadable(ms: number) {
 export function rangeToHumanReadable(startMS: number, endMS: number)  {
   return `${msToHumanReadable(startMS)}-${msToHumanReadable(endMS)} (${msToHumanReadable(endMS-startMS)})`
 }
+export type Range = { startMS: number, endMS: number };

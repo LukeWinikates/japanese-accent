@@ -63,8 +63,10 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     videoSegmentPOST(videoId, {
       text: segment.text,
       videoUuid: videoId,
-      start: segment.startMS,
-      end: segment.endMS,
+      startMS: segment.startMS,
+      endMS: segment.endMS,
+      parent: null,
+      labels: [],
     })
       .then(response => onAdd(response.data))
       .catch(logError);

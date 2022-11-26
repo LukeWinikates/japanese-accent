@@ -17,7 +17,6 @@ func MakeApiVideoSummaries(videos []database.Video) []types.VideoSummary {
 			Title:          video.Title,
 			URL:            youtube.URL(video.YoutubeID),
 			VideoID:        video.YoutubeID,
-			VideoStatus:    video.VideoStatus,
 			LastActivityAt: video.LastActivityAt,
 		})
 	}

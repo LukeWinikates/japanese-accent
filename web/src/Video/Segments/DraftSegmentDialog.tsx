@@ -39,8 +39,10 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
     videoSegmentPOST(videoId, {
       text: segment.text,
       videoUuid: videoId,
-      start: segment.startMS,
-      end: segment.endMS,
+      startMS: segment.startMS,
+      endMS: segment.endMS,
+      labels: [],
+      parent: null,
     }).then(onClose).catch(logError);
   }
 

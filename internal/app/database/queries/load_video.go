@@ -9,7 +9,7 @@ func LoadVideo(db gorm.DB, youtubeID string) (*database.Video, error) {
 	var video *database.Video
 
 	if err := db.Preload("Segments", func(db *gorm.DB) *gorm.DB {
-		return db.Order("video_segments.start ASC")
+		return db.Order("video_segments.start_ms ASC")
 	}).Preload("Segments.SegmentPitch").
 		Preload("Words").Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
 

@@ -1,4 +1,4 @@
-import {DraftSegment} from "../../App/api";
+import {Segment, SuggestedSegment} from "../../App/api";
 import {Checkbox, IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAction} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import {rangeToHumanReadable} from "../../App/time";
@@ -6,26 +6,17 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import NotesIcon from "@mui/icons-material/Notes";
 import CopyIcon from "@mui/icons-material/FileCopy";
 import React, {CSSProperties} from "react";
-import {makeStyles} from "tss-react/mui";
 
-type Params = { segment: DraftSegment, setSelectedSegment: (s: DraftSegment) => void, selected: boolean, index: number, style: CSSProperties };
+type Params = { segment: Segment | SuggestedSegment, setSelectedSegment: (s: Segment | SuggestedSegment) => void, selected: boolean, index: number, style: CSSProperties };
 
-const useStyles = makeStyles()((theme) => ({
-  underline: {
-    borderBottom: 1,
-    borderBottomStyle: "solid",
-    borderBottomColor: theme.palette.primary.light,
-  }
-}));
 
 export function DraftListItem({segment, setSelectedSegment, selected, index, style}: Params) {
   const labelId = `checkbox-list-label-${index}`;
-  const {classes} = useStyles();
 
   return (
     <ListItemButton style={style} key={segment.uuid} selected={selected}
                     onClick={() => setSelectedSegment(segment)}
-                    className={classes.underline}
+                    divider={true}
     >
       <ListItemIcon>
         <Checkbox
