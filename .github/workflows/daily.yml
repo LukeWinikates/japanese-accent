@@ -1,7 +1,7 @@
 name: daily
 on:
   schedule:
-    - cron: '0 1 * * *'
+    - cron: '0 22 * * 1,3,5'
 
 jobs:
   check_outdated_yarn_deps:
