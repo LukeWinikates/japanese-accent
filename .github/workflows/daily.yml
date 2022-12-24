@@ -14,7 +14,9 @@ jobs:
 
       - name: Yarn Outdated
         run: yarn outdated
-
+  check_outdated_go_modules:
+    runs-on: ubuntu-latest
+    steps:
       - name: Set up Go
         uses: actions/setup-go@v2
         with:
