@@ -14,3 +14,11 @@ jobs:
 
       - name: Yarn Outdated
         run: yarn outdated
+
+      - name: Set up Go
+        uses: actions/setup-go@v2
+        with:
+          go-version: 1.19
+
+      - name: Yarn Outdated
+        run: ./script/go-check-updates.sh
