@@ -14,8 +14,8 @@ require (
 	github.com/u2takey/ffmpeg-go v0.4.1
 	github.com/u2takey/go-utils v0.3.1
 	golang.org/x/net v0.4.0
-	gorm.io/driver/sqlite v1.4.3
-	gorm.io/gorm v1.24.2
+	gorm.io/driver/sqlite v1.4.4
+	gorm.io/gorm v1.24.3
 )
 
 require (
