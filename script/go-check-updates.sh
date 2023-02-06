@@ -8,4 +8,4 @@ go get github.com/u2takey/ffmpeg-go@latest
 go get github.com/stretchr/testify@latest
 go mod tidy
 
-git diff --exit-code
+git diff --exit-code go.mod go.sum
