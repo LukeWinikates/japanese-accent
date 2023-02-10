@@ -1,7 +1,8 @@
-.PHONY: test watch integration-test
+.PHONY: test watch integration-test server
 
-.PHONY: server
-server:
+server: bin/server
+
+bin/server:
 	go build -o bin/server cmd/server/cmd.go
 
 integration-test:
