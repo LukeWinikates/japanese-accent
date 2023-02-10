@@ -52,6 +52,7 @@
     "jest-environment-jsdom": "^29.4.1",
     "jest-resolve": "^29.2.1",
     "jest-watch-typeahead": "^2.2.0",
+    "jsdom-worker": "^0.3.0",
     "mini-css-extract-plugin": "^2.4.5",
     "postcss": "^8.4.21",
     "postcss-flexbugs-fixes": "^5.0.2",
@@ -118,7 +119,9 @@
       "!web/src/**/*.d.ts"
     ],
     "setupFiles": [
-      "react-app-polyfill/jsdom"
+      "react-app-polyfill/jsdom",
+      "jsdom-worker",
+      "<rootDir>/config/jest/urlPolyfill"
     ],
     "setupFilesAfterEnv": [],
     "testMatch": [
@@ -139,6 +142,7 @@
     "modulePaths": [],
     "moduleNameMapper": {
       "^react-native$": "react-native-web",
+      "node-fetch": "<rootDir>/config/jest/fetch",
       "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [
