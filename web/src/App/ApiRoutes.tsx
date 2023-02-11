@@ -9,6 +9,7 @@ import {
   Playlist,
   Segment,
   SegmentCreateBody,
+  SegmentPutBody,
   Video,
   VideoAdvice,
   VideoSummary,
@@ -122,7 +123,7 @@ export function videoGET(videoId: string | undefined) {
   return axios.get<Video>('/api/videos/' + videoId);
 }
 
-export function videoSegmentPUT(videoId: string, segment: Segment) {
+export function videoSegmentPUT(videoId: string, segment: SegmentPutBody) {
   return axios.put('/api/videos/' + videoId + "/segments/" + segment.uuid, segment);
 }
 

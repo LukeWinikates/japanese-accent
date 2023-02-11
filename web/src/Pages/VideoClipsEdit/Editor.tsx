@@ -19,13 +19,12 @@ export const Editor = ({segment, setSegment, videoId, parentUuid, onDelete}: Pro
   const {logError} = useServerInteractionHistory();
 
   const saveClip = useCallback(() => {
-    throw new Error("implement me!")
     const apiCall = segment.uuid ? videoSegmentPOST : videoSegmentPUT;
-    // apiCall(videoId, {
-    //   ...segment,
-    //   parent: parentUuid
-    // }).catch(logError);
-  }, [segment, videoId]);
+    apiCall(videoId, {
+      ...segment,
+      parent: parentUuid
+    }).catch(logError);
+  }, [segment, videoId, logError]);
 
   const hideSuggestedClip = useCallback(() => {
     suggestedSegmentsDELETE(videoId, segment.uuid).then(() => onDelete(segment)).catch(logError);

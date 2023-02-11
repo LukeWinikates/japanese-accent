@@ -150,3 +150,12 @@ export type SegmentCreateBody = {
   parent: string | null,
   labels: string[]
 };
+export type SegmentPutBody = {
+  uuid: string;
+  videoUuid: string;
+  startMS: number;
+  endMS: number;
+  text: string
+  parent: string | null,
+  labels: string[]
+};
