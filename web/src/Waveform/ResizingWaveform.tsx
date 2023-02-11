@@ -1,10 +1,11 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import {Waveform} from "../App/api";
 import {Range} from '../App/time'
 import {Loadable} from "../App/loadable";
 import {Segment} from "../Pages/YouTube/Segment";
+import {DrawBackground, DrawWaveform} from "./canvas";
 
 const TOP_HEIGHT = 50;
 const SCRUBBER_HEIGHT = 5;
@@ -76,29 +77,6 @@ export function ResizingWaveform({
     })
   }, [onLoadWaveform])
 
-  const drawBackground = useCallback((context: CanvasRenderingContext2D, width: number, height: number) => {
-    context.fillStyle = theme.palette.grey.A200
-    context.fillRect(0, 0, width, height)
-  }, [theme]);
-
-
-  // TODO: address this duplication
-  const drawWaveForm = useCallback((context: CanvasRenderingContext2D, samples: number[], waveformHeight: number, sampleWidth: number) => {
-    if (samples.length === 0) {
-      return
-    }
-    context.fillStyle = theme.palette.background.default
-
-    const maxDomain = samples.map(Math.abs).reduce((v, curr) => {
-      return curr > v ? curr : v;
-    })
-
-    samples.forEach((s, i) => {
-      const rectHeight = (s / maxDomain) * (waveformHeight)
-      const y = (waveformHeight / 2) - (rectHeight / 2);
-      context.fillRect(i * sampleWidth, y, 1, rectHeight)
-    })
-  }, [theme]);
 
   useEffect(() => {
     if (waveform === "loading") {
@@ -112,9 +90,9 @@ export function ResizingWaveform({
     const {width} = context.canvas;
     let samples = inRange(waveform.data);
     const sampleWidth = width / samples.length
-    drawBackground(context, width, TOP_HEIGHT);
-    drawWaveForm(context, samples, TOP_HEIGHT, sampleWidth);
-  }, [canvasWidth, drawBackground, drawWaveForm, waveform, range])
+    DrawBackground(context, width, TOP_HEIGHT, theme.palette.grey.A200);
+    DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, theme.palette.background.default);
+  }, [canvasWidth, DrawBackground, DrawWaveform, waveform, range])
 
 
   function inRange(waveform: Waveform): number[] {
@@ -123,7 +101,7 @@ export function ResizingWaveform({
     return waveform.samples.slice(firstIndex, lastIndex)
   }
 
-  const  msToPctOfRange = (ms: number) => {
+  const msToPctOfRange = (ms: number) => {
     // console.log("ms", ms);
     const rangeLength = windowRange.endMS - windowRange.startMS;
     if (rangeLength === 0) {

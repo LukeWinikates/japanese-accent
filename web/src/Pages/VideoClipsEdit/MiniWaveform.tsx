@@ -1,6 +1,7 @@
-import React, {useCallback, useEffect, useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
+import {DrawBackground, DrawWaveform} from '../../Waveform/canvas';
 
 const TOP_HEIGHT = 50;
 const CONTAINER_HEIGHT = TOP_HEIGHT;
@@ -48,25 +49,6 @@ export function MiniWaveform({
     setCanvasWidth(canvas1Ref.current?.parentElement?.clientWidth || initWidth)
   }, [])
 
-  const drawBackground = useCallback((context: CanvasRenderingContext2D, width: number, height: number) => {
-    context.fillStyle = theme.palette.primary.main
-    context.fillRect(0, 0, width, height)
-  }, [theme]);
-
-
-  const drawWaveForm = useCallback((context: CanvasRenderingContext2D, samples: number[], waveformHeight: number, sampleWidth: number) => {
-    context.fillStyle = theme.palette.background.default
-
-    const maxDomain = samples.map(Math.abs).reduce((v, curr) => {
-      return curr > v ? curr : v;
-    })
-
-    samples.forEach((s, i) => {
-      const rectHeight = (s / maxDomain) * (waveformHeight)
-      const y = (waveformHeight / 2) - (rectHeight / 2);
-      context.fillRect(i * sampleWidth, y, 1, rectHeight)
-    })
-  }, [theme]);
 
   useEffect(() => {
     const canvas = canvas1Ref.current
@@ -76,9 +58,9 @@ export function MiniWaveform({
     }
     const {width} = context.canvas;
     const sampleWidth = width / samples.length
-    drawBackground(context, width, TOP_HEIGHT);
-    drawWaveForm(context, samples, TOP_HEIGHT, sampleWidth);
-  }, [canvasWidth, drawBackground, drawWaveForm, samples])
+    DrawBackground(context, width, TOP_HEIGHT, theme.palette.primary.main);
+    DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, theme.palette.background.default);
+  }, [canvasWidth, DrawBackground, DrawWaveform, samples])
 
 
   return (
