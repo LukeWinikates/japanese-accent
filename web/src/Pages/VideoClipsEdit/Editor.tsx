@@ -24,11 +24,11 @@ export const Editor = ({segment, setSegment, videoId, parentUuid, onDelete}: Pro
       ...segment,
       parent: parentUuid
     }).catch(logError);
-  }, [segment, videoId, logError]);
+  }, [segment, videoId, logError, parentUuid]);
 
   const hideSuggestedClip = useCallback(() => {
     suggestedSegmentsDELETE(videoId, segment.uuid).then(() => onDelete(segment)).catch(logError);
-  }, [segment, videoId, onDelete]);
+  }, [segment, videoId, logError, onDelete]);
 
   return (
     <>
