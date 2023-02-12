@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useState} from "react";
 import {DraftLabel, Segment, SuggestedSegment, Video, VideoAdvice} from "../../App/api";
 import {Card, CardContent, List,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
@@ -21,18 +21,10 @@ type TimelineProps = {
   advice: VideoAdvice,
   video: Video,
   videoUuid: string,
-  addSegment: (segments: Segment) => void,
   muteSuggestion: (segment: SuggestedSegment) => void,
 }
 
-const MILLISECONDS = 1000;
-
-export function Timeline({advice, videoUuid, video, addSegment, muteSuggestion}: TimelineProps) {
-  const [scrubberWindowRange, setScrubberWindowRange] = useState<{ startMS: number, endMS: number }>(
-    {startMS: 0, endMS: 30 * MILLISECONDS}
-  );
-  const [playbackPositionMS, setPlaybackPositionMSMS] = useState(0);
-  const [isPlaying, setIsPlaying] = useState(false);
+export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelineProps) {
   const [selectedSegment, setSelectedSegment] = useState<Segment | SuggestedSegment | null>(null);//advice.suggestedSegments[0]);
 
   const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
@@ -42,12 +34,8 @@ export function Timeline({advice, videoUuid, video, addSegment, muteSuggestion}:
     segments: video.segments,
   });
 
-  useEffect(() => {
-    setPlaybackPositionMSMS(selectedSegment?.startMS || 0)
-  }, [selectedSegment])
-
   function selectedSegmentByIndex(index: number) {
-    // setSelectedSegment(advice.suggestedSegments[index]);
+    setSelectedSegment(advice.suggestedSegments[index]);
   }
 
   function elementForLabels(labels: DraftLabel[]) {
@@ -86,7 +74,6 @@ export function Timeline({advice, videoUuid, video, addSegment, muteSuggestion}:
                 maxIndex={advice.suggestedSegments.length - 1}
                 betweenElement={<div>{titleFor(selectedSegment)}</div>}
                 setByIndex={selectedSegmentByIndex}/>
-
               <Editor
                 segment={selectedSegment}
                 setSegment={setSelectedSegment}

@@ -1,4 +1,4 @@
-import {Segment, SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../App/api";
+import {SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../App/api";
 import React, {useEffect, useState} from "react";
 import {
   Box,
@@ -48,30 +48,8 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const draftsDuration = video.segments.map(seg => seg.endMS - seg.startMS).reduce((len, memo) => memo + len, 0);
   const totalMS = advice.data.suggestedSegments[advice.data.suggestedSegments.length - 1].endMS;
 
-
-  let addSegment = (newDraft: Segment) => {
-    // setDraft({
-    //   data: {
-    //     ...draft.data,
-    //     draftSegments: [...draft.data.draftSegments, newDraft]
-    //   }
-    // })
-    let suggestedSegments = [...advice.data.suggestedSegments];
-    suggestedSegments.splice(suggestedSegments.findIndex(s => s.uuid === newDraft.parent), 1)
-    setAdvice({
-      data: {
-        ...advice.data,
-        suggestedSegments: suggestedSegments
-      }
-    })
-  };
-
   let muteSuggestion = (segmentToMute: SuggestedSegment) => {
-    console.log("got here")
     let newSuggestions = [...advice.data.suggestedSegments];
-    console.log("newSuggestions", newSuggestions)
-    console.log("segmentToMute", segmentToMute)
-    console.log("index", newSuggestions.findIndex(testSegment => testSegment.uuid === segmentToMute.uuid))
 
     newSuggestions.splice(newSuggestions.findIndex(testSegment => testSegment.uuid === segmentToMute.uuid), 1, {
       ...segmentToMute,
@@ -112,7 +90,8 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
           <Card>
             <CardContent>
               <Typography variant={"h5"}>
-                Create clips from this video to help you study. Switch to practice mode to listen to a clip, imitate what you hear, and compare your speaking to the native recording.
+                Create clips from this video to help you study. Switch to practice mode to listen to a clip, imitate
+                what you hear, and compare your speaking to the native recording.
               </Typography>
 
               <Grid container>
@@ -184,7 +163,6 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
           <Timeline videoUuid={video.videoId}
                     advice={advice.data}
                     video={video}
-                    addSegment={addSegment}
                     muteSuggestion={muteSuggestion}
           />
         }
