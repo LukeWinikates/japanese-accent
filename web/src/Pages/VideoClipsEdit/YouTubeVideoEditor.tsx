@@ -34,12 +34,12 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
     videoAdviceGET(video.videoId)
       .then(r => setAdvice({data: r.data})).catch(logError);
 
-  }, [video.videoId, setAdvice])
+  }, [video.videoId, setAdvice, logError])
 
   useEffect(() => {
     waveformGET(video.videoId)
       .then(r => setSamplesData({data: r.data})).catch(logError)
-  }, [video.videoId, setSamplesData])
+  }, [video.videoId, setSamplesData, logError])
 
   if (advice === "loading" || samplesData === "loading") {
     return (<>loading...</>);
