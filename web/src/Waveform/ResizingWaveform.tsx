@@ -78,7 +78,16 @@ export function ResizingWaveform({
   }, [onLoadWaveform])
 
 
+  const backgroundColor = theme.palette.grey.A200;
+  const waveformColor = theme.palette.background.default;
+
   useEffect(() => {
+    function inRange(waveform: Waveform): number[] {
+      const firstIndex = Math.round((windowRange.startMS / 1000) * waveform.sampleRate);
+      const lastIndex = Math.round((windowRange.endMS / 1000) * waveform.sampleRate);
+      return waveform.samples.slice(firstIndex, lastIndex)
+    }
+
     if (waveform === "loading") {
       return;
     }
@@ -90,19 +99,11 @@ export function ResizingWaveform({
     const {width} = context.canvas;
     let samples = inRange(waveform.data);
     const sampleWidth = width / samples.length
-    DrawBackground(context, width, TOP_HEIGHT, theme.palette.grey.A200);
-    DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, theme.palette.background.default);
-  }, [canvasWidth, DrawBackground, DrawWaveform, waveform, range])
-
-
-  function inRange(waveform: Waveform): number[] {
-    const firstIndex = Math.round((windowRange.startMS / 1000) * waveform.sampleRate);
-    const lastIndex = Math.round((windowRange.endMS / 1000) * waveform.sampleRate);
-    return waveform.samples.slice(firstIndex, lastIndex)
-  }
+    DrawBackground(context, width, TOP_HEIGHT, backgroundColor);
+    DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, waveformColor);
+  }, [canvasWidth, waveform, range, backgroundColor, waveformColor, windowRange.startMS, windowRange.endMS])
 
   const msToPctOfRange = (ms: number) => {
-    // console.log("ms", ms);
     const rangeLength = windowRange.endMS - windowRange.startMS;
     if (rangeLength === 0) {
       return 0

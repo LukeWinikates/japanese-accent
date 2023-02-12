@@ -22,7 +22,6 @@ const useStyles = makeStyles()((theme) => ({
   },
 }));
 
-
 type WaveformProps = {
   samples: number[],
   sampleRate: number,
@@ -44,10 +43,12 @@ export function MiniWaveform({
 
   const {classes} = useStyles();
 
+  const backgroundColor = theme.palette.primary.main;
+  const waveformColor = theme.palette.background.default;
 
   useEffect(() => {
     setCanvasWidth(canvas1Ref.current?.parentElement?.clientWidth || initWidth)
-  }, [])
+  }, [initWidth])
 
 
   useEffect(() => {
@@ -58,9 +59,9 @@ export function MiniWaveform({
     }
     const {width} = context.canvas;
     const sampleWidth = width / samples.length
-    DrawBackground(context, width, TOP_HEIGHT, theme.palette.primary.main);
-    DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, theme.palette.background.default);
-  }, [canvasWidth, DrawBackground, DrawWaveform, samples])
+    DrawBackground(context, width, TOP_HEIGHT, backgroundColor);
+    DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, waveformColor);
+  }, [canvasWidth, samples, backgroundColor, waveformColor])
 
 
   return (
