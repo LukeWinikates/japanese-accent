@@ -46,15 +46,11 @@ export function Segment({
   const [left, setLeft] = useState(startPx);
 
   const onResize = (event: any, {size, handle}: ResizeCallbackData) => {
-    // setWidth(size.width);
-    // if (handle === "w") {
-    //   setLeft(left - (size.width - width))
-    // }
+    setWidth(size.width);
+    if (handle === "w") {
+      setLeft(left - (size.width - width))
+    }
   };
-
-  // console.log("width, ", width)
-  // console.log("segment, ", segment)
-  // console.log("left, ", left)
 
   const commitChange = () => {
     updateSegment({
