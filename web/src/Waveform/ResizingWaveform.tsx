@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useMemo, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import {Waveform} from "../App/api";
@@ -6,6 +6,7 @@ import {Range} from '../App/time'
 import {Loadable} from "../App/loadable";
 import {Segment} from "../Pages/YouTube/Segment";
 import {DrawBackground, DrawWaveform} from "./canvas";
+import {msToPctOfRange} from "./position";
 
 const TOP_HEIGHT = 50;
 const SCRUBBER_HEIGHT = 5;
@@ -44,14 +45,14 @@ type Props = {
   playerPositionMS: number,
 }
 
+// TODO: detecting the canvas width is not working; we need a different pattern here
 export function ResizingWaveform({
                                    onLoadWaveform,
                                    range,
                                    playerPositionMS,
-                                   setRange
                                  }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [canvasWidth, setCanvasWidth] = useState(1200)
+  const [canvasWidth] = useState(1200)
   const theme = useTheme();
   const [waveform, setWaveform] = useState<Loadable<Waveform>>("loading")
   const [totalMS, setTotalMS] = useState<number>(0)
@@ -70,7 +71,6 @@ export function ResizingWaveform({
   }
 
   useEffect(() => {
-    setCanvasWidth(canvasRef.current?.parentElement?.clientWidth || 1200)
     onLoadWaveform().then(w => {
       setWaveform({data: w});
       setTotalMS(w.samples.length / w.sampleRate * 1000);
@@ -103,25 +103,20 @@ export function ResizingWaveform({
     DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, waveformColor);
   }, [canvasWidth, waveform, range, backgroundColor, waveformColor, windowRange.startMS, windowRange.endMS])
 
-  const msToPctOfRange = (ms: number) => {
-    const rangeLength = windowRange.endMS - windowRange.startMS;
-    if (rangeLength === 0) {
-      return 0
+  const msToPx = useMemo(() => {
+    return (ms: number): number => {
+      const wr = {
+        startMS: windowRange.startMS,
+        endMS: windowRange.endMS
+      }
+      let x = (msToPctOfRange(wr, ms) / 100) * canvasWidth;
+      return Math.round(x);
     }
-    const relativeToStart = ms - windowRange.startMS;
+  }, [canvasWidth, windowRange.startMS, windowRange.endMS]);
 
-    return (relativeToStart / rangeLength) * 100;
-  }
-
-  const msToPx = (ms: number): number => {
-    // console.log("canvasWidth", canvasWidth)
-    let x = msToPctOfRange(ms) * canvasWidth / 100;
-    // console.log("msToPX", x);
-    // console.log("rounded", Math.round(x));
-    return Math.round(x);
-  };
-
-  const pixelsToMS = (px: number): number => canvasWidth / (windowRange.endMS - windowRange.startMS) * px;
+  const pxToMS = useMemo(() => {
+    return (px: number): number => canvasWidth / (windowRange.endMS - windowRange.startMS) * px
+  }, [canvasWidth, windowRange.startMS, windowRange.endMS]);
 
   if (waveform === "loading") {
     return <div>loading...</div>;
@@ -136,7 +131,7 @@ export function ResizingWaveform({
         segment={range}
         updateSegment={() => {
         }}
-        pixelsToMS={pixelsToMS}
+        pixelsToMS={pxToMS}
         msToPixels={msToPx}/>
     </div>
   );
