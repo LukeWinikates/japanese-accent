@@ -13,3 +13,9 @@ test:
 
 watch:
 	~/go/bin/air
+
+setup:
+    brew bundle
+    install yarn
+    install the node version
+    get the go version?
