@@ -1,4 +1,4 @@
-.PHONY: test watch integration-test server bin/server
+.PHONY: test watch integration-test server bin/server setup
 
 server: bin/server
 
@@ -16,5 +16,5 @@ watch:
 	~/go/bin/air
 
 setup:
-	npm install -g yarn
+	yarn 2&>1 > /dev/null || npm install -g yarn
 	yarn install
