@@ -1,4 +1,4 @@
-import React, {ForwardedRef, useState} from "react";
+import React, {ForwardedRef, useEffect, useState} from "react";
 import {makeStyles} from 'tss-react/mui';
 import {Resizable, ResizeCallbackData, ResizeHandle} from 'react-resizable';
 
@@ -28,7 +28,7 @@ const useStyles = makeStyles()((theme) => ({
 
 type Props = {
   segment: { startMS: number, endMS: number },
-  updateSegment: (s: {startMS: number, endMS: number }) => void,
+  updateSegment: (s: { startMS: number, endMS: number }) => void,
   msToPixels: (ms: number) => number,
   pixelsToMS: (px: number) => number,
 };
@@ -42,23 +42,39 @@ export function Segment({
   const {classes} = useStyles();
   let startPx = msToPixels(segment.startMS);
   let endPX = msToPixels(segment.endMS);
-  const [width, setWidth] = useState(endPX  - startPx);
-  const [left, setLeft] = useState(startPx);
+  let width = endPX - startPx;
+
+  const [localState, setLocalState] = useState({left: 0, width: 0})
+
+  useEffect(() => {
+    setLocalState({
+      left: startPx,
+      width: width
+    })
+  }, [segment, startPx, width])
 
   const onResize = (event: any, {size, handle}: ResizeCallbackData) => {
-    setWidth(size.width);
     if (handle === "w") {
-      setLeft(left - (size.width - width))
+      setLocalState({
+        width: size.width,
+        left: endPX - size.width,
+      })
+    } else {
+      setLocalState({
+        ...localState,
+        width: size.width,
+      })
     }
   };
 
   const commitChange = () => {
     updateSegment({
-      ...segment,
-      startMS: pixelsToMS(left),
-      endMS: pixelsToMS(left + width),
-    })
-  }
+        ...segment,
+        startMS: pixelsToMS(localState.left),
+        endMS: pixelsToMS(localState.left + localState.width),
+      }
+    )
+  };
 
   function handle(axis: ResizeHandle, ref: ForwardedRef<any>) {
     return (
@@ -69,7 +85,7 @@ export function Segment({
 
   return (
     <Resizable
-      width={width}
+      width={localState.width}
       height={50}
       onResize={onResize}
       onResizeStop={commitChange}
@@ -78,7 +94,7 @@ export function Segment({
       handle={handle}
     >
       <div className={`${classes.span}`}
-           style={{width, left}}>
+           style={{width: localState.width, left: localState.left}}>
       </div>
     </Resizable>
   );

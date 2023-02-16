@@ -45,14 +45,14 @@ type Props = {
   playerPositionMS: number,
 }
 
-// TODO: detecting the canvas width is not working; we need a different pattern here
 export function ResizingWaveform({
                                    onLoadWaveform,
                                    range,
                                    playerPositionMS,
+                                    setRange
                                  }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
-  const [canvasWidth] = useState(1200)
+  const [canvasWidth, setCanvasWidth] = useState<number | null>(null)
   const theme = useTheme();
   const [waveform, setWaveform] = useState<Loadable<Waveform>>("loading")
   const [totalMS, setTotalMS] = useState<number>(0)
@@ -71,6 +71,7 @@ export function ResizingWaveform({
   }
 
   useEffect(() => {
+    setCanvasWidth(canvasRef.current?.parentElement?.clientWidth || null)
     onLoadWaveform().then(w => {
       setWaveform({data: w});
       setTotalMS(w.samples.length / w.sampleRate * 1000);
@@ -88,7 +89,7 @@ export function ResizingWaveform({
       return waveform.samples.slice(firstIndex, lastIndex)
     }
 
-    if (waveform === "loading") {
+    if (waveform === "loading" || !canvasWidth) {
       return;
     }
     const canvas = canvasRef.current
@@ -105,6 +106,9 @@ export function ResizingWaveform({
 
   const msToPx = useMemo(() => {
     return (ms: number): number => {
+      if (!canvasWidth) {
+        return 0
+      }
       const wr = {
         startMS: windowRange.startMS,
         endMS: windowRange.endMS
@@ -115,22 +119,23 @@ export function ResizingWaveform({
   }, [canvasWidth, windowRange.startMS, windowRange.endMS]);
 
   const pxToMS = useMemo(() => {
-    return (px: number): number => canvasWidth / (windowRange.endMS - windowRange.startMS) * px
-  }, [canvasWidth, windowRange.startMS, windowRange.endMS]);
+    return (px: number): number => {
+      if (!canvasWidth) {
+        return 0
+      }
 
-  if (waveform === "loading") {
-    return <div>loading...</div>;
-  }
+      return ((px / canvasWidth) * (windowRange.endMS - windowRange.startMS)) + windowRange.startMS;
+    }
+  }, [canvasWidth, windowRange.startMS, windowRange.endMS]);
 
   return (
     <div className={classes.waveFormContainer}>
-      <canvas ref={canvasRef} height={TOP_HEIGHT} width={canvasWidth}/>
+      <canvas ref={canvasRef} height={TOP_HEIGHT} width={canvasWidth || 0}/>
       <div className={classes.playHeadTop} style={{left: msToPx(playerPositionMS)}}/>
 
       <Segment
         segment={range}
-        updateSegment={() => {
-        }}
+        updateSegment={setRange}
         pixelsToMS={pxToMS}
         msToPixels={msToPx}/>
     </div>

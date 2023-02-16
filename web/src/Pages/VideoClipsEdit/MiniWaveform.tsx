@@ -29,7 +29,7 @@ type WaveformProps = {
   initWidth: number,
 }
 
-
+// TODO: might need to rework the canvas width setting here
 export function MiniWaveform({
                                samples,
                                sampleRate,
