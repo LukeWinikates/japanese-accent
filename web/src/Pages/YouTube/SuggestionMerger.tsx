@@ -3,10 +3,10 @@ import {Segment, SuggestedSegment} from "../../App/api";
 type MergerParams = { segments: Segment[], suggestedSegments: SuggestedSegment[] };
 
 export function merged({suggestedSegments, segments}: MergerParams): ((Segment|SuggestedSegment)[]) {
-  // const {suggestedSegments, segments} = segments;
-  let drafts = segments.filter((v: Segment) => v.labels && v.labels[0] === "MUTED");
+  let toHide = segments.map(s => s.parent);
+  let filteredSuggestedSegments = suggestedSegments.filter(s => !toHide.some(th => th === s.uuid));
 
-  return [...suggestedSegments, ...drafts].sort((a, b) => {
+  return [...segments, ...filteredSuggestedSegments].sort((a, b) => {
     return Math.round(a.startMS - b.startMS);
   });
 }

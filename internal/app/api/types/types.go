@@ -121,9 +121,7 @@ type TimedText struct {
 }
 
 type VideoAdviceResponse struct {
-	Timings           []Timing           `json:"timings"`
 	SuggestedSegments []SuggestedSegment `json:"suggestedSegments"`
-	//DurationMS        int            `json:"durationMS"`
 }
 
 type SuggestedSegment struct {

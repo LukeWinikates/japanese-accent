@@ -6,6 +6,7 @@ import {Segment, SuggestedSegment} from "../../App/api";
 import {suggestedSegmentsDELETE, videoSegmentPOST, videoSegmentPUT} from "../../App/ApiRoutes";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import DoneIcon from '@mui/icons-material/Done';
+import {ARE_ADVICE} from "./segment";
 
 type Props = {
   videoId: string,
@@ -15,17 +16,19 @@ type Props = {
   onDelete: (s: SuggestedSegment) => void
 };
 
+
 export const Editor = ({segment, setSegment, videoId, parentUuid, onDelete}: Props) => {
   const {logError} = useServerInteractionHistory();
 
   const saveClip = useCallback(() => {
-    const apiCall = segment.uuid ? videoSegmentPOST : videoSegmentPUT;
+    const apiCall = segment.labels.some(ARE_ADVICE) ? videoSegmentPOST : videoSegmentPUT;
     apiCall(videoId, {
       ...segment,
-      parent: parentUuid
+      parent: segment.labels.some(ARE_ADVICE) ? segment.uuid : parentUuid
     }).catch(logError);
   }, [segment, videoId, logError, parentUuid]);
 
+  // TODO: this can delete real clips
   const hideSuggestedClip = useCallback(() => {
     suggestedSegmentsDELETE(videoId, segment.uuid).then(() => onDelete(segment)).catch(logError);
   }, [segment, videoId, logError, onDelete]);

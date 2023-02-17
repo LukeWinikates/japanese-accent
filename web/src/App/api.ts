@@ -1,8 +1,3 @@
-export declare type Category = {
-  name: string,
-  categories: Category[],
-}
-
 export declare type Word = {
   id: string,
   word: string,
@@ -51,7 +46,7 @@ export declare type Segment = {
   videoUuid: string,
   lastActivityAt: Date
   pitch: Pitch
-  labels: DraftLabel[],
+  labels: SegmentLabel[],
   parent: string | null
 };
 
@@ -61,10 +56,10 @@ export declare type SuggestedSegment = {
   text: string,
   uuid: string,
   videoUuid: string,
-  labels: DraftLabel[],
+  labels: SegmentLabel[],
 };
 
-export type DraftLabel = "DRAFT" | "ADVICE" | "MUTED"
+export type SegmentLabel = "SEGMENT" | "ADVICE" | "MUTED"
 
 
 export declare type Highlights = {
@@ -124,14 +119,8 @@ export type Waveform = {
   sampleRate: number
 }
 
-export type Timing = {
-  timeMS: number,
-  labels: string[],
-}
-
 export type VideoAdvice = {
   suggestedSegments: SuggestedSegment[],
-  timings: Timing[],
 }
 
 export type BoostPostBody = {

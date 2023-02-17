@@ -45,7 +45,7 @@ export function wordAnalysisGET(word: string) {
 }
 
 export function pitchPOST(segment: Segment) {
-  return axios.post<Pitch>(`/api/segments${segment.uuid}/pitches`);
+  return axios.post<Pitch>(`/api/segments/${segment.uuid}/pitches`);
 }
 
 export function segmentDELETE(segment: Segment) {

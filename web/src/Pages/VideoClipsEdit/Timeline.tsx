@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {DraftLabel, Segment, SuggestedSegment, Video, VideoAdvice} from "../../App/api";
+import {Segment, SegmentLabel, SuggestedSegment, Video, VideoAdvice} from "../../App/api";
 import {Card, CardContent, List,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
@@ -8,14 +8,7 @@ import {DraftListItem} from "../YouTube/DraftListItem";
 import {VariableSizeList} from 'react-window';
 import {MutedListItem} from "../YouTube/MutedListItem";
 import {Editor} from "./Editor";
-
-const ARE_MUTED = (l: DraftLabel): boolean => {
-  return l === "MUTED";
-}
-
-const ARE_DRAFT = (l: DraftLabel): boolean => {
-  return l === "DRAFT";
-}
+import {ARE_ADVICE, ARE_MUTED} from "./segment";
 
 type TimelineProps = {
   advice: VideoAdvice,
@@ -38,7 +31,7 @@ export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelinePro
     setSelectedSegment(advice.suggestedSegments[index]);
   }
 
-  function elementForLabels(labels: DraftLabel[]) {
+  function elementForLabels(labels: SegmentLabel[]) {
     if (!labels) {
       return SuggestedListItem
     }
@@ -47,7 +40,7 @@ export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelinePro
       return MutedListItem;
     }
 
-    if (labels.some(ARE_DRAFT)) {
+    if (labels.some(ARE_ADVICE)) {
       return DraftListItem;
     }
     return SuggestedListItem;
@@ -59,7 +52,19 @@ export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelinePro
   }
 
   function titleFor(selectedSegment: Segment | SuggestedSegment): string {
-    return selectedSegment.labels?.some(l => l === "MUTED") ? "Muted Segment" : "Draft Segment"
+    const {labels} = selectedSegment;
+    if (!labels) {
+      return "???"
+    }
+
+    if (labels.some(ARE_MUTED)) {
+      return "Muted Segment";
+    }
+
+    if (labels.some(ARE_ADVICE)) {
+      return "Suggested Clip";
+    }
+    return "Saved Clip";
   }
 
   return (

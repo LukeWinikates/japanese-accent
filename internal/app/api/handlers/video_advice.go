@@ -57,6 +57,8 @@ func suggestedSegments(segments []vtt.Segment, videoUUID string, mutings []strin
 		segmentUUID := sha(t)
 		if muteMap[segmentUUID] {
 			labels = append(labels, "MUTED")
+		} else {
+			labels = append(labels, "ADVICE")
 		}
 		segs = append(segs, types.SuggestedSegment{
 			StartMS:   t.StartMS,
