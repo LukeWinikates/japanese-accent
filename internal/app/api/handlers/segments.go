@@ -9,12 +9,13 @@ import (
 	"log"
 )
 
-func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
+func MakeAudioSegmentsPUT(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		segmentID := context.Param("id")
 		var segmentEditRequest types.SegmentEditRequest
 		if err := context.BindJSON(&segmentEditRequest); err != nil {
 			context.Status(500)
+			return
 		}
 
 		log.Print(segmentEditRequest)
@@ -36,11 +37,13 @@ func MakeAudioSegmentsPOST(db gorm.DB) gin.HandlerFunc {
 		}
 	}
 }
+
 func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var createRequest types.SegmentCreateRequest
 		if err := context.BindJSON(&createRequest); err != nil {
 			context.Status(500)
+			return
 		}
 		var video *database.Video
 
@@ -49,7 +52,6 @@ func MakeAudioSegmentsCREATE(db gorm.DB) gin.HandlerFunc {
 			log.Println(err.Error())
 			return
 		}
-		log.Print(createRequest)
 
 		var segment = database.VideoSegment{
 			UUID:    uuid.NewString(),

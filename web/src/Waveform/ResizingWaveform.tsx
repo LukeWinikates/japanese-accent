@@ -124,7 +124,7 @@ export function ResizingWaveform({
         return 0
       }
 
-      return ((px / canvasWidth) * (windowRange.endMS - windowRange.startMS)) + windowRange.startMS;
+      return Math.round(((px / canvasWidth) * (windowRange.endMS - windowRange.startMS)) + windowRange.startMS);
     }
   }, [canvasWidth, windowRange.startMS, windowRange.endMS]);
 

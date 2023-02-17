@@ -68,7 +68,7 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 
 			videos.GET(":videoUuid/waveform", handlers.MakeWaveformGET(mediaDirPath, db))
 			videos.POST(":videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
-			videos.PUT(":videoUuid/segments/:id", handlers.MakeAudioSegmentsPOST(db))
+			videos.PUT(":videoUuid/segments/:id", handlers.MakeAudioSegmentsPUT(db))
 			videos.DELETE(":videoUuid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
 		}
 

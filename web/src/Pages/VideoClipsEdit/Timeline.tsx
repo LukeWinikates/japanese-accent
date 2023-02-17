@@ -77,7 +77,7 @@ export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelinePro
               <Editor
                 segment={selectedSegment}
                 setSegment={setSelectedSegment}
-                parentUuid={null}
+                parentUuid={selectedSegment.uuid}
                 videoId={videoUuid}
                 onDelete={muteSuggestion}
               />
