@@ -1,4 +1,4 @@
 [build]
-cmd = "make server"
+cmd = "make bin/server"
 bin = "bin/server"
 exclude_dir = ["web", "data","node_modules"]

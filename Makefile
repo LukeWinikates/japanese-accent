@@ -1,4 +1,4 @@
-.PHONY: test watch integration-test server
+.PHONY: test watch integration-test server bin/server
 
 server: bin/server
 
