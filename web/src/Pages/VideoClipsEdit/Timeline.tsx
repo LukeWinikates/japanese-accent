@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {Segment, SegmentLabel, SuggestedSegment, Video, VideoAdvice} from "../../App/api";
+import {Segment, SuggestedSegment, Video, VideoAdvice} from "../../App/api";
 import {Card, CardContent, List,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
