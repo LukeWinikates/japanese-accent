@@ -10,7 +10,7 @@ import {
   Typography
 } from "@mui/material";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import {Timeline} from "./Timeline";
+import {VideoClipList} from "./VideoClipList";
 import {Loadable} from "../../App/loadable";
 import {videoAdviceGET, waveformGET} from "../../App/ApiRoutes";
 import {Link} from "react-router-dom";
@@ -97,10 +97,10 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
         </Box>
 
         {
-          <Timeline videoUuid={video.videoId}
-                    advice={advice.data}
-                    video={video}
-                    muteSuggestion={muteSuggestion}
+          <VideoClipList videoUuid={video.videoId}
+                         advice={advice.data}
+                         video={video}
+                         muteSuggestion={muteSuggestion}
           />
         }
 

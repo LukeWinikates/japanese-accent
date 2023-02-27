@@ -8,14 +8,14 @@ import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import {elementForLabels, sizeForSegment} from "./ListItems";
 
-type TimelineProps = {
+type Props = {
   advice: VideoAdvice,
   video: Video,
   videoUuid: string,
   muteSuggestion: (segment: SuggestedSegment) => void,
 }
 
-export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelineProps) {
+export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props) {
   const [selectedSegment, setSelectedSegment] = useState<Segment | SuggestedSegment | null>(null);//advice.suggestedSegments[0]);
 
   const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
