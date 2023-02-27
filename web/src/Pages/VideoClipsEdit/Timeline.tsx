@@ -3,12 +3,10 @@ import {Segment, SegmentLabel, SuggestedSegment, Video, VideoAdvice} from "../..
 import {Card, CardContent, List,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
-import {SuggestedListItem} from "../YouTube/SuggestedListItem";
-import {DraftListItem} from "../YouTube/DraftListItem";
 import {VariableSizeList} from 'react-window';
-import {MutedListItem} from "../YouTube/MutedListItem";
 import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
+import {elementForLabels, sizeForSegment} from "./ListItems";
 
 type TimelineProps = {
   advice: VideoAdvice,
@@ -31,24 +29,13 @@ export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelinePro
     setSelectedSegment(advice.suggestedSegments[index]);
   }
 
-  function elementForLabels(labels: SegmentLabel[]) {
-    if (!labels) {
-      return SuggestedListItem
-    }
-
-    if (labels.some(ARE_MUTED)) {
-      return MutedListItem;
-    }
-
-    if (labels.some(ARE_ADVICE)) {
-      return DraftListItem;
-    }
-    return SuggestedListItem;
+  const deleteSegment = (segment: Segment | SuggestedSegment) => {
+    console.log("not implemented!");
   }
 
   const sizeFor = (index: number) => {
     const d = segmentsForTimeline[index];
-    return d?.labels?.some(l => l === "MUTED") ? 12 : 52
+    return sizeForSegment(d);
   }
 
   function titleFor(selectedSegment: Segment | SuggestedSegment): string {
@@ -107,6 +94,7 @@ export function Timeline({advice, videoUuid, video, muteSuggestion}: TimelinePro
                          style={style}
                          index={index}
                          setSelectedSegment={setSelectedSegment}
+                         onDelete={deleteSegment}
                          selected={selectedSegment?.uuid === s.uuid}/>
               );
             }
