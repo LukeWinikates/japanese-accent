@@ -20,7 +20,7 @@ jobs:
       - name: Set up Yarn
         uses: mskelton/setup-yarn@v1
         with:
-          node-version: 18.14.0
+          node-version: 18.14.2
 
       - name: Yarn Test
 

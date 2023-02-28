@@ -13,3 +13,7 @@ test:
 
 watch:
 	~/go/bin/air
+
+setup:
+	npm install -g yarn
+	yarn install
