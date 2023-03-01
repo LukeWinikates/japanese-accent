@@ -27,4 +27,4 @@ jobs:
 
 
       - name: Check Outdated Go Modules
-        run: ./script/go-check-updates.sh
+        run: ./script/dependencies/go-check-updates.sh
