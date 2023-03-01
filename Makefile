@@ -12,6 +12,7 @@ test:
 	go test -v ./... -short
 
 watch:
+	rm bin/server
 	~/go/bin/air
 
 setup:
