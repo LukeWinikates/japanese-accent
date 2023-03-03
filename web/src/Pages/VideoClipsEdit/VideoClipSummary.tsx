@@ -2,15 +2,14 @@ import {Box, Grid, LinearProgress, Stack, Typography} from "@mui/material";
 import {msToHumanReadable} from "../../App/time";
 import {MiniWaveform} from "./MiniWaveform";
 import React from "react";
-import {Video, VideoAdvice, Waveform} from "../../App/api";
+import {Video, VideoAdvice} from "../../App/api";
 
 declare type Props = {
   video: Video,
-  waveform: Waveform,
   advice: VideoAdvice
 }
 
-export const VideoClipSummary = ({video, advice, waveform}: Props) => {
+export const VideoClipSummary = ({video, advice}: Props) => {
   const draftsDuration = video.segments.map(seg => seg.endMS - seg.startMS).reduce((len, memo) => memo + len, 0);
   const totalMS = advice.suggestedSegments[advice.suggestedSegments.length - 1].endMS;
 
@@ -72,7 +71,7 @@ export const VideoClipSummary = ({video, advice, waveform}: Props) => {
 
       </Grid>
       <Grid item container xs={8}>
-        <MiniWaveform samples={waveform.samples} sampleRate={waveform.sampleRate}
+        <MiniWaveform url={`/api/videos/${video.videoId}/waveform_binary`}
                       playerPositionMS={0} initWidth={740}/>
       </Grid>
     </Grid>

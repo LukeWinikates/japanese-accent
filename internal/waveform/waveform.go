@@ -20,6 +20,15 @@ func Waveform(source string, sampleRate int) ([]int16, error) {
 
 	return readBytes(targetPath)
 }
+func WaveformTempFile(source string, sampleRate int) (string, error) {
+	tmp, err := os.MkdirTemp("", "")
+	if err != nil {
+		return "", fmt.Errorf("could not create a temp directory: %s", err.Error())
+	}
+	targetPath := tmp + "/data.bin"
+
+	return targetPath, waveform(source, targetPath, sampleRate)
+}
 
 func readBytes(path string) ([]int16, error) {
 	f, err := os.Open(path)

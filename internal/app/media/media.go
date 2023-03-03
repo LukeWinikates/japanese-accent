@@ -74,8 +74,15 @@ func FindWaveformFile(mediaDirectory string, videoId string) FindFileResult {
 	return findFileByName(waveformFilePath(mediaDirectory, videoId))
 }
 
+func FindWaveformBinaryFile(mediaDirectory string, videoId string, rate int) FindFileResult {
+	return findFileByName(waveformBinaryFilePath(mediaDirectory, videoId, rate))
+}
+
 func waveformFilePath(mediaDirectory string, videoId string) string {
 	return mediaDirectory + "/" + videoId + "-waveform.json"
+}
+func waveformBinaryFilePath(mediaDirectory string, videoId string, rate int) string {
+	return fmt.Sprintf("%s/%s-waveform-%d.bin", mediaDirectory, videoId, rate)
 }
 
 func WriteWaveformFile(mediaDirectory string, videoId string, data []int16, sampleRate int) error {
@@ -89,4 +96,19 @@ func WriteWaveformFile(mediaDirectory string, videoId string, data []int16, samp
 		"samples":    data,
 		"sampleRate": sampleRate,
 	})
+}
+func WriteWaveformBinaryFile(mediaDirectory string, videoId string, tmpFilePath string, rate int) error {
+	path := waveformBinaryFilePath(mediaDirectory, videoId, rate)
+	open, err := os.Create(path)
+	defer func() { _ = open.Close() }()
+	if err != nil {
+		return err
+	}
+	b, err := os.ReadFile(tmpFilePath)
+	if err != nil {
+		return err
+	}
+
+	return os.WriteFile(path, b, os.ModePerm)
+
 }

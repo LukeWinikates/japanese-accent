@@ -23,7 +23,6 @@ import {VideoClipSummary} from "./VideoClipSummary";
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
-  const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
 
   useEffect(() => {
     videoAdviceGET(video.videoId)
@@ -31,12 +30,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
 
   }, [video.videoId, setAdvice, logError])
 
-  useEffect(() => {
-    waveformGET(video.videoId)
-      .then(r => setSamplesData({data: r.data})).catch(logError)
-  }, [video.videoId, setSamplesData, logError])
-
-  if (advice === "loading" || samplesData === "loading") {
+  if (advice === "loading") {
     return (<>loading...</>);
   }
 
@@ -89,7 +83,6 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
               <VideoClipSummary
                 video={video}
                 advice={advice.data}
-                waveform={samplesData.data}
               />
 
             </CardContent>
