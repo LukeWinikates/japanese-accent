@@ -1,14 +1,6 @@
 import {SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../App/api";
 import React, {useEffect, useState} from "react";
-import {
-  Box,
-  Breadcrumbs,
-  Button,
-  Card,
-  CardContent,
-  Container,
-  Typography
-} from "@mui/material";
+import {Box, Breadcrumbs, Button, Card, CardContent, Container, Typography} from "@mui/material";
 import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
 import {VideoClipList} from "./VideoClipList";
 import {Loadable} from "../../App/loadable";
@@ -32,7 +24,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   }, [video.videoId, setAdvice, logError])
 
   useEffect(() => {
-    waveformGET(video.videoId)
+    waveformGET(video.videoId, 800)
       .then(r => setSamplesData({data: r.data})).catch(logError)
   }, [video.videoId, setSamplesData, logError])
 

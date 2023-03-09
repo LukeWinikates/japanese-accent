@@ -18,8 +18,8 @@ import {
   WordList
 } from "./api";
 
-export function waveformGET(videoUuid: string) {
-  return axios.get<ApiWaveform>('/api/videos/' + videoUuid + '/waveform');
+export function waveformGET(videoUuid: string, sampleRate: number = 800) {
+  return axios.get<ApiWaveform>('/api/videos/' + videoUuid + '/waveform', {params: {sample_rate: sampleRate}});
 }
 
 export function exportGET(parentId: string) {

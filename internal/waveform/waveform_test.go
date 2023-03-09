@@ -25,6 +25,7 @@ func TestWaveform(t *testing.T) {
 
 func TestDownsample(t *testing.T) {
 	assert.Equal(t, []int16{4, 10}, simpleDownsample([]int16{2, 6, 8, 12}, 2, 1))
+	assert.Equal(t, []int16{2, 6, 8, 12}, simpleDownsample([]int16{2, 6, 8, 12}, 2, 2))
 	assert.Equal(t, []int16{4, 10, 5}, simpleDownsample([]int16{2, 6, 8, 12, 5}, 2, 1))
 	assert.Equal(t, []int16{6}, simpleDownsample([]int16{2, 6, 8, 12, 5, 2, 6, 8, 12, 5}, 8000, 800))
 }
