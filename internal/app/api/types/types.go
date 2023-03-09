@@ -132,3 +132,7 @@ type SuggestedSegment struct {
 	Labels    []string `json:"labels"`
 	VideoUUID string   `json:"videoUuid"`
 }
+
+type ErrorResponse struct {
+	Message string `json:"message"`
+}

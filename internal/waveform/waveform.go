@@ -4,21 +4,27 @@ import (
 	"encoding/binary"
 	"fmt"
 	"github.com/u2takey/ffmpeg-go"
+	"log"
+	"math"
 	"os"
+	"path"
 )
 
 func Waveform(source string, sampleRate int) ([]int16, error) {
-	tmp, err := os.MkdirTemp("", "")
+	targetPath := path.Join(path.Dir(source), fmt.Sprintf("%s-waveform-8000.bin", path.Base(source)))
+	_, err := os.Stat(targetPath)
 	if err != nil {
-		return nil, fmt.Errorf("could not create a temp directory: %s", err.Error())
-	}
-	targetPath := tmp + "/data.bin"
-
-	if err = waveform(source, targetPath, sampleRate); err != nil {
-		return nil, err
+		if err = waveform(source, targetPath, 8000); err != nil {
+			return nil, fmt.Errorf("could not create waveform: %s", err.Error())
+		}
 	}
 
-	return readBytes(targetPath)
+	bytes, err := readBytes(targetPath)
+	if err != nil {
+		return nil, fmt.Errorf("could not read from temp file: %s", err.Error())
+	}
+
+	return simpleDownsample(bytes, 8000, sampleRate), nil
 }
 
 func readBytes(path string) ([]int16, error) {
@@ -38,6 +44,31 @@ func readBytes(path string) ([]int16, error) {
 	return data, err
 }
 
+func abs(v int16) int16 {
+	if v < 0 {
+		return -v
+	}
+	return v
+}
+
+func simpleDownsample(samples []int16, sourceSampleRate, targetSampleRate int) []int16 {
+	blockSize := sourceSampleRate / targetSampleRate
+	newSize := int64(math.Ceil(float64(len(samples)) / float64(blockSize)))
+	downsampled := make([]int16, newSize)
+	rollingSum := int16(0)
+	for i := 0; i < len(samples); i++ {
+		rollingSum += abs(samples[i])
+		if (i+1)%blockSize == 0 {
+			downsampled[i/blockSize] = rollingSum / int16(blockSize)
+			rollingSum = 0
+		}
+	}
+	if len(samples)%blockSize != 0 {
+		downsampled[newSize-1] = rollingSum / int16(len(samples)%blockSize)
+	}
+	return downsampled
+}
+
 func waveform(source string, targetPath string, sampleRate int) error {
 	return ffmpeg_go.Input(source, ffmpeg_go.KwArgs{}).
 		Output(targetPath, ffmpeg_go.KwArgs{
@@ -47,6 +78,6 @@ func waveform(source string, targetPath string, sampleRate int) error {
 			"c:a":      "pcm_s16le",
 			"f":        "data",
 		}).
-		//ErrorToStdOut().
+		WithErrorOutput(log.Default().Writer()).
 		Run()
 }
