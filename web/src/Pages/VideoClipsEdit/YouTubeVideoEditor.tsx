@@ -17,6 +17,8 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
   const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
 
+  console.log("re-render", video)
+
   useEffect(() => {
     videoAdviceGET(video.videoId)
       .then(r => setAdvice({data: r.data})).catch(logError);
