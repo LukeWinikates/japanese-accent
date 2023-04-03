@@ -40,7 +40,7 @@
     "camelcase": "^7.0.0",
     "case-sensitive-paths-webpack-plugin": "^2.4.0",
     "css-loader": "^6.7.2",
-    "css-minimizer-webpack-plugin": "^4.2.2",
+    "css-minimizer-webpack-plugin": "^5.0.0",
     "eslint": "^8.36.0",
     "eslint-config-react-app": "^7.0.1",
     "eslint-webpack-plugin": "4.0.0",
