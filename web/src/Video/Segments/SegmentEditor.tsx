@@ -89,11 +89,15 @@ export function SegmentEditor<T extends Segmentish>({
       />
 
       <Player src={audioURL(segment)}
-              duration={{startSec: segment.startMS, endSec: segment.endMS}}
+              duration={{
+                startSec: segment.startMS / 1000,
+                endSec: segment.endMS / 1000
+              }}
               playing={segmentIsPlaying}
               onPlayerStateChanged={setSegmentIsPlaying}
               preferredStartTime={preferredStartTime}
               onPositionChange={setPlayerPositionMS}
+              onPlaybackEnded={() => setSegmentIsPlaying(false)}
       />
 
 

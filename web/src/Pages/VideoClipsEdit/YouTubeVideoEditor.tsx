@@ -26,7 +26,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   }, [video.videoId, setAdvice, logError])
 
   useEffect(() => {
-    waveformGET(video.videoId, 800)
+    waveformGET(video.videoId, 80)
       .then(r => setSamplesData({data: r.data})).catch(logError)
   }, [video.videoId, setSamplesData, logError])
 
