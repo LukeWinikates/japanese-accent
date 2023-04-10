@@ -68,7 +68,7 @@
     "react-refresh": "^0.14.0",
     "react-resizable": "^3.0.4",
     "react-router-dom": "^6.8.0",
-    "react-virtualized-auto-sizer": "^1.0.7",
+    "react-virtualized-auto-sizer": "^1.0.12",
     "react-window": "^1.8.8",
     "resolve": "^1.20.0",
     "resolve-url-loader": "^5.0.0",
