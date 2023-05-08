@@ -2,16 +2,16 @@ import {Segment, SegmentLabel, SuggestedSegment} from "../../App/api";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import React, {CSSProperties} from "react";
 import {IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAction, Tooltip} from "@mui/material";
+import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {makeStyles} from 'tss-react/mui';
-import CheckBoxOutlineBlankIcon from "@mui/icons-material/CheckBoxOutlineBlank";
 import ListItemText from "@mui/material/ListItemText";
 import {rangeToHumanReadable} from "../../App/time";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CheckBoxIcon from "@mui/icons-material/CheckBox";
+import AudioFileIcon from '@mui/icons-material/AudioFile';
 
 export function elementForLabels(labels: SegmentLabel[]) {
   if (!labels) {
-    return SuggestedListItem
+    return DraftListItem
   }
 
   if (labels.some(ARE_MUTED)) {
@@ -19,9 +19,9 @@ export function elementForLabels(labels: SegmentLabel[]) {
   }
 
   if (labels.some(ARE_ADVICE)) {
-    return DraftListItem;
+    return SuggestedListItem;
   }
-  return SuggestedListItem;
+  return DraftListItem;
 }
 
 export const sizeForSegment = (segment: Segment | SuggestedSegment) => {
@@ -40,9 +40,15 @@ type Params = {
 
 const useStyles = makeStyles()((theme) => ({
   muted: {
-    backgroundColor: theme.palette.grey.A200,
+    backgroundColor: theme.palette.grey.A400,
     overflow: "hidden",
     height: 10,
+  },
+  draft: {
+    backgroundColor: theme.palette.success.light,
+  },
+  suggestion: {
+    backgroundColor: theme.palette.info.light,
   }
 }));
 
@@ -62,12 +68,14 @@ export function MutedListItem({segment, setSelectedSegment, selected, index, sty
 
 
 export function SuggestedListItem({segment, setSelectedSegment, selected, onDelete, style}: Params) {
+  const {classes} = useStyles();
+
   return (
-    <ListItemButton divider={true} style={style} key={segment.uuid} selected={selected}
+    <ListItemButton divider={true} style={style} key={segment.uuid} selected={selected} className={classes.suggestion}
                     onClick={() => setSelectedSegment(segment)}
     >
       <ListItemIcon>
-        <CheckBoxOutlineBlankIcon/>
+        <LightbulbIcon/>
       </ListItemIcon>
       <ListItemText
         primary={`${rangeToHumanReadable(segment.startMS, segment.endMS)}`}
@@ -82,13 +90,16 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
 
 
 export function DraftListItem({segment, setSelectedSegment, selected, index, style}: Params) {
+  const {classes} = useStyles();
+
   return (
     <ListItemButton style={style} key={segment.uuid} selected={selected}
+                    className={classes.draft}
                     onClick={() => setSelectedSegment(segment)}
                     divider={true}
     >
       <ListItemIcon>
-        <CheckBoxIcon/>
+        <AudioFileIcon/>
       </ListItemIcon>
       <ListItemText
         primary={`${index + 1}: ${rangeToHumanReadable(segment.startMS, segment.endMS)}`}
