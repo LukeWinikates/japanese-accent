@@ -7,6 +7,7 @@ import {VariableSizeList} from 'react-window';
 import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import {elementForLabels, sizeForSegment} from "./ListItems";
+import {suggestedSegmentsDELETE} from "../../App/ApiRoutes";
 
 type Props = {
   advice: VideoAdvice,
@@ -30,7 +31,11 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props)
   }
 
   const deleteSegment = (segment: Segment | SuggestedSegment) => {
-    console.log("not implemented!");
+      if (segment.labels.some(ARE_ADVICE)) {
+        return suggestedSegmentsDELETE(video.videoId, segment.uuid).then(() => muteSuggestion(segment));
+      }
+      console.log("no delete implementation for true segments yet")
+      // return videoSegmentDELETE(video.videoId, segment as Segment)
   }
 
   const sizeFor = (index: number) => {
@@ -94,7 +99,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props)
                          style={style}
                          index={index}
                          setSelectedSegment={setSelectedSegment}
-                         onDelete={deleteSegment}
+                         onDelete={  deleteSegment}
                          selected={selectedSegment?.uuid === s.uuid}/>
               );
             }

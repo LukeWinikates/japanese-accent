@@ -82,7 +82,7 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
         secondary={segment.text}>
       </ListItemText>
       <IconButton edge="end" aria-label="delete" size="large">
-        <DeleteIcon/>
+        <DeleteIcon　onClick={() => onDelete(segment)}/>
       </IconButton>
     </ListItemButton>
   )
