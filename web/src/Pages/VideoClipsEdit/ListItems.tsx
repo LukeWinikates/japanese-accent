@@ -24,8 +24,11 @@ export function elementForLabels(labels: SegmentLabel[]) {
   return DraftListItem;
 }
 
-export const sizeForSegment = (segment: Segment | SuggestedSegment) => {
-  return segment?.labels?.some(l => l === "MUTED") ? 12 : 52
+export const sizeForSegment = (segment: Segment | SuggestedSegment, showMuted: boolean) => {
+  const mutedSize = showMuted ? 12 : 0;
+  return segment?.labels?.some(l => l === "MUTED") ?
+    mutedSize :
+    52
 }
 
 
@@ -35,6 +38,7 @@ type Params = {
   selected: boolean,
   index: number,
   style: CSSProperties,
+  showMuted: boolean,
   onDelete: (s: Segment | SuggestedSegment) => void,
 };
 
@@ -44,6 +48,9 @@ const useStyles = makeStyles()((theme) => ({
     overflow: "hidden",
     height: 10,
   },
+  zeroHeight: {
+    height: 0,
+  },
   draft: {
     backgroundColor: theme.palette.success.light,
   },
@@ -52,13 +59,15 @@ const useStyles = makeStyles()((theme) => ({
   }
 }));
 
-export function MutedListItem({segment, setSelectedSegment, selected, index, style}: Params) {
+export function MutedListItem({segment, setSelectedSegment, selected, index, style, showMuted}: Params) {
 
   const {classes} = useStyles();
 
+  const classNames = [classes.muted, showMuted ? null : classes.zeroHeight].join(" ")
+
   return (
     <Tooltip style={style} title="Muted Segment">
-      <ListItemButton key={segment.uuid} className={classes.muted} divider={true} dense selected={selected}
+      <ListItemButton key={segment.uuid} className={classNames} divider={false} dense selected={selected}
                       onClick={() => setSelectedSegment(segment)}
       >
       </ListItemButton>
