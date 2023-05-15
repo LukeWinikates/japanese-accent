@@ -24,17 +24,20 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props)
     listRef.current?.resetAfterIndex(0);
   }, [showMuted]);
   const listRef = useRef<VariableSizeList | null>(null);
-  const sizeFor = useCallback((index: number) => {
-    const d = segmentsForTimeline[index];
-    return sizeForSegment(d, showMuted);
-  }, [showMuted]);
-  const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
-
 
   const segmentsForTimeline = merged({
     suggestedSegments: advice.suggestedSegments,
     segments: video.segments,
   });
+
+  const sizeFor = useCallback((index: number) => {
+    const d = segmentsForTimeline[index];
+    return sizeForSegment(d, showMuted);
+  }, [showMuted, segmentsForTimeline]);
+
+  const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
+
+
 
   function selectedSegmentByIndex(index: number) {
     setSelectedSegment(advice.suggestedSegments[index]);
