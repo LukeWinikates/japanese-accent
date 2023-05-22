@@ -94,7 +94,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   function practice() {
     pauseAll();
-    activityPostBody && activityPOST(activityPostBody).catch(e => logError(e, "warning"));
+    activityPostBody && activityPOST(activityPostBody).catch(logError);
     setActionQueue(["PlaySegment", "Record", "PlaySegment"])
     setSegmentIsPlaying(true);
   }
@@ -138,7 +138,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   }
 
   function boostCurrentSegment() {
-    boostPostBody && boostPOST(boostPostBody).catch(e => logError(e, "warning"))
+    boostPostBody && boostPOST(boostPostBody).catch(logError)
   }
 
   return (

@@ -28,11 +28,13 @@ const useStyles = makeStyles()((theme) => ({
 
 export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
   const {classes} = useStyles();
-  const {events, pendingHttpRequests} = useServerInteractionHistory();
+  const {events, pendingHttpRequests} = useServerInteractionHistory().state;
   const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [isHistorySnackBarOpen, setHistorySnackbarOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;
 
   const openSettingsDialog = () => setSettingsDialogOpen(true)
+  const openHistorySnackbar = () => setHistorySnackbarOpen(true)
 
   return <>
     <MuiAppBar position="fixed">
@@ -55,6 +57,7 @@ export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
         <IconButton
           edge="start"
           className={classes.menuButton}
+          onClick={openHistorySnackbar}
           color="inherit"
           aria-label="menu"
           size="large">

@@ -1,8 +1,9 @@
-const longFormMatcher = /\?v=([a-zA-Z0-9]{11})/;
-const shortFormMatcher = /https:\/\/youtu.be\/([a-zA-Z0-9]{11})/;
+const idMatcher = /^[a-zA-Z0-9_-]{11}$/;
+const longFormMatcher = /\?v=([a-zA-Z0-9_-]{11})/;
+const shortFormMatcher = /https:\/\/youtu.be\/([a-zA-Z0-9_-]{11})/;
 
 export function idFrom(videoUserInput: string) {
-  if (videoUserInput.length === 11 && videoUserInput.match(/^[a-zA-Z0-9]{11}$/)) {
+  if (videoUserInput.length === 11 && videoUserInput.match(idMatcher)) {
     return videoUserInput;
   }
 
