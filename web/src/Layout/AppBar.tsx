@@ -26,15 +26,18 @@ const useStyles = makeStyles()((theme) => ({
   offset: theme.mixins.toolbar as CSSObject,
 }));
 
-export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
+type AppBarProps = {
+  onLeftDrawerOpen: () => void
+  onRightDrawerOpen: () => void
+};
+
+export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
   const {classes} = useStyles();
   const {events, pendingHttpRequests} = useServerInteractionHistory().state;
   const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
-  const [isHistorySnackBarOpen, setHistorySnackbarOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;
 
   const openSettingsDialog = () => setSettingsDialogOpen(true)
-  const openHistorySnackbar = () => setHistorySnackbarOpen(true)
 
   return <>
     <MuiAppBar position="fixed">
@@ -44,7 +47,7 @@ export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
           className={classes.menuButton}
           color="inherit"
           aria-label="menu"
-          onClick={handleDrawerOpen}
+          onClick={onLeftDrawerOpen}
           size="large">
           <MenuIcon/>
         </IconButton>
@@ -57,7 +60,7 @@ export function AppBar({handleDrawerOpen}: { handleDrawerOpen: () => void }) {
         <IconButton
           edge="start"
           className={classes.menuButton}
-          onClick={openHistorySnackbar}
+          onClick={onRightDrawerOpen}
           color="inherit"
           aria-label="menu"
           size="large">

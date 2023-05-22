@@ -1,10 +1,12 @@
 import {createTheme} from "@mui/material/styles";
 import {makeStyles} from 'tss-react/mui';
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Container} from "@mui/material";
 import {AppBar} from "./AppBar";
 import {AppDrawer} from "./AppDrawer";
 import {Routes} from "./Routes";
+import {HistoryDrawer} from "./HistoryDrawer";
+import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
 const useStyles = makeStyles()((theme) => ({
   content: {
@@ -26,22 +28,43 @@ export const theme = createTheme({
 
 export function CoreApp() {
   const {classes} = useStyles();
-  const [open, setOpen] = useState(false);
+  const [isNavigationDrawerOpen, setNavigationDrawerOpen] = useState(false);
+  const [isHistoryDrawerOpen, setHistoryDrawerOpen] = useState(false);
+  const {events} = useServerInteractionHistory().state;
 
-  const handleDrawerOpen = () => {
-    setOpen(true);
-  };
+  const onNavigationDrawerOpen = useCallback(() => {
+    setNavigationDrawerOpen(true);
+  }, [setNavigationDrawerOpen]);
 
-  const handleDrawerClose = () => {
-    setOpen(false);
-  };
+  const onNavigationDrawerClose = useCallback(() => {
+    setNavigationDrawerOpen(false);
+  }, [setNavigationDrawerOpen]);
+
+  const onHistoryDrawerOpen = useCallback(() => {
+    setHistoryDrawerOpen(true);
+  }, [setHistoryDrawerOpen]);
+
+  const onHistoryDrawerClose = useCallback(() => {
+    setHistoryDrawerOpen(false);
+  }, [setHistoryDrawerOpen]);
 
   return (
     <Container maxWidth={false} disableGutters={true}>
-      <AppBar handleDrawerOpen={handleDrawerOpen}/>
+      <AppBar
+        onLeftDrawerOpen={onNavigationDrawerOpen}
+        onRightDrawerOpen={onHistoryDrawerOpen}
+      />
       <main className={classes.content}>
-        <AppDrawer open={open} handleClose={handleDrawerClose}/>
+        <AppDrawer
+          open={isNavigationDrawerOpen}
+          onClose={onNavigationDrawerClose}
+        />
         <Routes/>
+        <HistoryDrawer
+          open={isHistoryDrawerOpen}
+          onClose={onHistoryDrawerClose}
+          history={events}
+        />
       </main>
     </Container>
   );

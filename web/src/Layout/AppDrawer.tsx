@@ -11,7 +11,7 @@ import {highlightsGET} from "../App/ApiRoutes";
 
 type AppDrawerProps = {
   open: boolean,
-  handleClose: () => void,
+  onClose: () => void,
 }
 
 export function DummyDrawer() {
@@ -20,7 +20,7 @@ export function DummyDrawer() {
   );
 }
 
-export function AppDrawer({open, handleClose}: AppDrawerProps) {
+export function AppDrawer({open, onClose}: AppDrawerProps) {
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const {logError} = useServerInteractionHistory();
 
@@ -38,8 +38,8 @@ export function AppDrawer({open, handleClose}: AppDrawerProps) {
     <Drawer
       anchor="left"
       open={open}
-      onClick={handleClose}
-      onClose={handleClose}>
+      onClick={onClose}
+      onClose={onClose}>
       <List>
         <ListItemButton>
           <ListItemIcon>

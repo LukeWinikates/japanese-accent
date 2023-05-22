@@ -10,10 +10,17 @@ let initial: ServerInteractionHistory = {
   pendingHttpRequests: 0,
 };
 
-type HistoryContext = { state: ServerInteractionHistory, logError: (e: string) => any };
-const ServerInteractionHistoryContext = createContext<HistoryContext>(
-  {
-    state: initial, logError: (e) => {}
+type HistoryContext = {
+  state: ServerInteractionHistory,
+  logError: (e: string) => any
+};
+
+let noOp = () => {
+};
+
+const ServerInteractionHistoryContext = createContext<HistoryContext>({
+    state: initial,
+    logError: noOp
   }
 );
 

@@ -16,7 +16,6 @@ export declare type VideoSummary = {
   lastActivityAt: string
 }
 
-
 export declare type Video = {
   title: string,
   url: string,
@@ -61,15 +60,9 @@ export declare type SuggestedSegment = {
 
 export type SegmentLabel = "SEGMENT" | "ADVICE" | "MUTED"
 
-
 export declare type Highlights = {
   videos: VideoSummary[],
   wordLists: WordList[]
-}
-
-export declare type Activity = {
-  segmentId: string,
-  activityType: "PracticeStart"
 }
 
 export declare type Playlist = {
