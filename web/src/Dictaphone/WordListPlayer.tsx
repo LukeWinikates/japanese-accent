@@ -1,4 +1,4 @@
-import {Word} from "../App/api";
+import {Word} from "../api/types";
 import React, {useEffect, useRef, useState} from "react";
 import {Box, Card, CardContent, LinearProgress, List, ListItem, Typography} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";

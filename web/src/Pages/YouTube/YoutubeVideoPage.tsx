@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
-import {Video} from "../../App/api";
+import {Video} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {useParams} from "react-router-dom";
-import {videoGET} from "../../App/ApiRoutes";
+import {videoGET} from "../../api/ApiRoutes";
 
 export const YoutubeVideoPage = () => {
   const {logError} = useServerInteractionHistory();

@@ -1,16 +1,17 @@
-import {SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../App/api";
+import {SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../api/types";
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Button, Card, CardContent, Container, Typography} from "@mui/material";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {VideoClipList} from "./VideoClipList";
 import {Loadable} from "../../App/loadable";
-import {videoAdviceGET, waveformGET} from "../../App/ApiRoutes";
+import {videoAdviceGET} from "../../api/ApiRoutes";
 import {Link} from "react-router-dom";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import LaunchIcon from "@mui/icons-material/Launch";
 import Mic from "@mui/icons-material/Mic";
 import ListenIcon from '@mui/icons-material/Hearing';
 import {VideoClipSummary} from "./VideoClipSummary";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const {logError} = useServerInteractionHistory();
@@ -19,6 +20,8 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
 
   console.log("re-render", video)
 
+  const api = useBackendAPI();
+
   useEffect(() => {
     videoAdviceGET(video.videoId)
       .then(r => setAdvice({data: r.data})).catch(logError);
@@ -26,7 +29,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   }, [video.videoId, setAdvice, logError])
 
   useEffect(() => {
-    waveformGET(video.videoId, 80)
+    api.waveform.GET(video.videoId, 80)
       .then(r => setSamplesData({data: r.data})).catch(logError)
   }, [video.videoId, setSamplesData, logError])
 

@@ -1,9 +1,9 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 import React, {useState} from "react";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
-import {videoPOST} from "../../App/ApiRoutes";
+import {videoPOST} from "../../api/ApiRoutes";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
   const {logError} = useServerInteractionHistory();

@@ -2,7 +2,7 @@ import {Box, Grid, LinearProgress, Stack, Typography} from "@mui/material";
 import {msToHumanReadable} from "../../App/time";
 import {MiniWaveform} from "./MiniWaveform";
 import React from "react";
-import {Video, VideoAdvice, Waveform} from "../../App/api";
+import {Video, VideoAdvice, Waveform} from "../../api/types";
 
 declare type Props = {
   video: Video,

@@ -1,4 +1,4 @@
-import {VideoSummary} from "../../App/api";
+import {VideoSummary} from "../../api/types";
 import {List, ListItemSecondaryAction} from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import {Link} from "react-router-dom";

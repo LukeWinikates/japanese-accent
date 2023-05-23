@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {WordList} from "../../App/api";
+import {WordList} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {WordListList} from "./WordListList";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import {wordListsGET} from "../../App/ApiRoutes";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
+import {wordListsGET} from "../../api/ApiRoutes";
 
 export default function WordListsIndexPage() {
   const {logError} = useServerInteractionHistory();

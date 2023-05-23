@@ -1,4 +1,4 @@
-import {Segment, SuggestedSegment} from "../../App/api";
+import {Segment, SuggestedSegment} from "../../api/types";
 
 type MergerParams = { segments: Segment[], suggestedSegments: SuggestedSegment[] };
 

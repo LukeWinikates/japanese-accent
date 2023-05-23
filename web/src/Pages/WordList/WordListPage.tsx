@@ -15,10 +15,10 @@ import LinkIcon from '@mui/icons-material/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";
-import {WordList} from "../../App/api";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {WordList} from "../../api/types";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {useParams} from "react-router-dom";
-import {wordListGET} from "../../App/ApiRoutes";
+import {wordListGET} from "../../api/ApiRoutes";
 
 
 function CategoryPage() {

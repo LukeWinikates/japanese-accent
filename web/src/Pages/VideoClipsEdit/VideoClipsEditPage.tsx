@@ -1,10 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {Video} from "../../App/api";
+import {Video} from "../../api/types";
 import {Loadable} from "../../App/loadable";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {YouTubeVideoEditor} from "./YouTubeVideoEditor";
 import {useParams} from "react-router-dom";
-import {videoGET} from "../../App/ApiRoutes";
+import {videoGET} from "../../api/ApiRoutes";
 
 export const VideoClipsEditPage = () => {
   const {logError} = useServerInteractionHistory();
@@ -20,7 +20,6 @@ export const VideoClipsEditPage = () => {
 
   useEffect(() => {
     videoGET(videoId)
-
       .then(r => setVideo({data: r.data}))
       .catch(() => logError("could not load video"))
   }, [videoId, setVideo, logError]);

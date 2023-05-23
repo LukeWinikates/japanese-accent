@@ -3,12 +3,12 @@ import {styled} from '@mui/material/styles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useEffect, useState} from "react";
-import {ActivityPostBody, Audio, BoostPostBody, Segment} from "../App/api";
+import {ActivityPostBody, Audio, BoostPostBody, Segment} from "../api/types";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
-import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 import audioURL from "../App/audioURL";
-import {activityPOST, boostPOST} from "../App/ApiRoutes";
+import {activityPOST, boostPOST} from "../api/ApiRoutes";
 
 const PREFIX = 'Dictaphone';
 

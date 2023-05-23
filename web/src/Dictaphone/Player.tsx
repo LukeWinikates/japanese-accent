@@ -5,7 +5,7 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import ReplayIcon from '@mui/icons-material/Replay';
 import {secondsToHumanReadable} from "../App/time";
-import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 
 const PREFIX = 'Player';
 

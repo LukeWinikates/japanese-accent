@@ -1,7 +1,7 @@
 import React, {useEffect, useMemo, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
-import {Waveform} from "../App/api";
+import {Waveform} from "../api/types";
 import {Range} from '../App/time'
 import {Loadable} from "../App/loadable";
 import {Segment} from "../Pages/YouTube/Segment";

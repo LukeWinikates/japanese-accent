@@ -1,16 +1,16 @@
 import React from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import {Segment} from "../../App/api";
+import {Segment} from "../../api/types";
 import {Button, DialogContent, IconButton} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
 import TrashIcon from '@mui/icons-material/Delete';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import DialogActions from "@mui/material/DialogActions";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
-import {videoSegmentDELETE, videoSegmentPOST, videoSegmentPUT} from "../../App/ApiRoutes";
+import {videoSegmentDELETE, videoSegmentPOST, videoSegmentPUT} from "../../api/ApiRoutes";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;

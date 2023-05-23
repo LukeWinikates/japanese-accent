@@ -1,4 +1,4 @@
-import {Audio} from "../App/api";
+import {Audio} from "../api/types";
 import React, {useEffect, useState} from "react";
 import {WithIndex} from "../App/WithIndex";
 import {Typography} from "@mui/material";

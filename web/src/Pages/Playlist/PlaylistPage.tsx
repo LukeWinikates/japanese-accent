@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from 'react';
 import {Loadable} from "../../App/loadable";
-import {Playlist} from "../../App/api";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {Playlist} from "../../api/types";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 import {useParams} from "react-router-dom";
-import {playlistGET} from "../../App/ApiRoutes";
+import {playlistGET} from "../../api/ApiRoutes";
 
 export const PlaylistPage = () => {
   const {id} = useParams();

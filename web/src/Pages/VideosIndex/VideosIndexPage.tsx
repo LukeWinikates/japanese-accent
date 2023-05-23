@@ -1,11 +1,11 @@
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {VideoSummary} from "../../App/api";
+import {VideoSummary} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import {videoSummariesGET} from "../../App/ApiRoutes";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
+import {videoSummariesGET} from "../../api/ApiRoutes";
 
 export default function VideosIndexPage() {
   const {logError} = useServerInteractionHistory();

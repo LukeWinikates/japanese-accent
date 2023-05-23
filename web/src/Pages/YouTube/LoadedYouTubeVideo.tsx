@@ -1,4 +1,4 @@
-import {Segment, Video} from "../../App/api";
+import {Segment, Video} from "../../api/types";
 import React, {useState} from "react";
 import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@mui/material";
 import YouTubeIcon from '@mui/icons-material/YouTube';

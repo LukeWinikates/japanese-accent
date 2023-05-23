@@ -1,13 +1,13 @@
 import React, {useEffect, useState} from 'react';
-import {Highlights} from "../App/api";
+import {Highlights} from "../api/types";
 import {Divider, Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
 import HouseIcon from '@mui/icons-material/House';
 import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
 import {Loadable} from "../App/loadable";
-import {useServerInteractionHistory} from "./useServerInteractionHistory";
-import {highlightsGET} from "../App/ApiRoutes";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
+import {highlightsGET} from "../api/ApiRoutes";
 
 type AppDrawerProps = {
   open: boolean,

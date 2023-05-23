@@ -2,9 +2,9 @@ import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
-import {videoSegmentPOST} from "../../App/ApiRoutes";
+import {videoSegmentPOST} from "../../api/ApiRoutes";
 
 type DraftSegmentDialogProps = { videoId: string, onClose: () => void };
 

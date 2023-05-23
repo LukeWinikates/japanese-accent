@@ -17,13 +17,13 @@ import {
 } from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {RawMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Player} from "../../Dictaphone/Player";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
-import {Audio, WordAnalysis} from "../../App/api";
-import {videoWordLinkPOST, wordAnalysisPOST} from "../../App/ApiRoutes";
+import {Audio, WordAnalysis} from "../../api/types";
+import {videoWordLinkPOST, wordAnalysisPOST} from "../../api/ApiRoutes";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 

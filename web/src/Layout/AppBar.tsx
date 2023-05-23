@@ -4,7 +4,7 @@ import SettingsIcon from '@mui/icons-material/Settings';
 import React, {useState} from "react";
 import {makeStyles} from 'tss-react/mui';
 import NotificationsIcon from '@mui/icons-material/Notifications';
-import {useServerInteractionHistory} from "./useServerInteractionHistory";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 import {Link} from "react-router-dom";
 import SettingsDialog from "./SettingsDialog"
 import {CSSObject} from "tss-react";
@@ -64,7 +64,9 @@ export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
           color="inherit"
           aria-label="menu"
           size="large">
-          <Badge badgeContent={events.length} color="secondary">
+          <Badge
+            badgeContent={events.length}
+            color="secondary">
             <NotificationsIcon/>
           </Badge>
         </IconButton>

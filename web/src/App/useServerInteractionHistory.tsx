@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useReducer} from 'react';
+import React, {createContext, useContext, useCallback, useReducer} from 'react';
 
 export interface HistoryEvent {
   text: string,
@@ -12,7 +12,9 @@ let initial: ServerInteractionHistory = {
 
 type HistoryContext = {
   state: ServerInteractionHistory,
-  logError: (e: string) => any
+  logError: (e: string) => any,
+  incrementPendingRequestCount: () => void,
+  decrementPendingRequestCount: () => void
 };
 
 let noOp = () => {
@@ -20,7 +22,9 @@ let noOp = () => {
 
 const ServerInteractionHistoryContext = createContext<HistoryContext>({
     state: initial,
-    logError: noOp
+    logError: noOp,
+    incrementPendingRequestCount: noOp,
+    decrementPendingRequestCount: noOp,
   }
 );
 
@@ -73,14 +77,26 @@ function reducer(state: ServerInteractionHistory, action: ServerInteraction): Se
 export const EventHistoryProvider = ({children}: any) => {
   let [state, dispatch] = useReducer(reducer, initial);
 
-  const logError = (e: string) => {
+  const logError = useCallback((e: string) => {
     dispatch({
       level: "error",
       message: e
     })
-  }
+  }, [dispatch]);
+
+  const incrementPendingRequestCount = useCallback(() => {
+    dispatch("increment")
+  }, [dispatch]);
+
+  const decrementPendingRequestCount = useCallback(() => {
+    dispatch("decrement")
+  }, [dispatch]);
+
+
+  let value = {state, logError, incrementPendingRequestCount, decrementPendingRequestCount};
   return (
-    <ServerInteractionHistoryContext.Provider value={{state, logError}}>
+    <ServerInteractionHistoryContext.Provider
+      value={value}>
       {children}
     </ServerInteractionHistoryContext.Provider>
   )

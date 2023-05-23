@@ -13,14 +13,9 @@ import {
   Video,
   VideoAdvice,
   VideoSummary,
-  Waveform as ApiWaveform,
   WordAnalysis,
   WordList
-} from "./api";
-
-export function waveformGET(videoUuid: string, sampleRate: number = 800) {
-  return axios.get<ApiWaveform>('/api/videos/' + videoUuid + '/waveform', {params: {sample_rate: sampleRate}});
-}
+} from "./types";
 
 export function exportGET(parentId: string) {
   return axios.get<Export>("/api/exports/" + parentId);

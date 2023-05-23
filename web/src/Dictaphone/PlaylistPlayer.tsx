@@ -1,4 +1,4 @@
-import {duration, Export, Segment} from "../App/api";
+import {duration, Export, Segment} from "../api/types";
 import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
   Box,
@@ -26,7 +26,7 @@ import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
 import {useInterval} from "../App/useInterval";
-import {exportGET, exportsPOST, segmentDELETE} from "../App/ApiRoutes";
+import {exportGET, exportsPOST, segmentDELETE} from "../api/ApiRoutes";
 
 type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
 

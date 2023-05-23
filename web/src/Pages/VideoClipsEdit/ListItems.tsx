@@ -1,4 +1,4 @@
-import {Segment, SegmentLabel, SuggestedSegment} from "../../App/api";
+import {Segment, SegmentLabel, SuggestedSegment} from "../../api/types";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import React, {CSSProperties} from "react";
 import {IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAction, Tooltip} from "@mui/material";

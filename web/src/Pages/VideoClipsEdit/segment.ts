@@ -1,4 +1,4 @@
-import {SegmentLabel} from "../../App/api";
+import {SegmentLabel} from "../../api/types";
 
 export const ARE_MUTED = (l: SegmentLabel): boolean => {
   return l === "MUTED";

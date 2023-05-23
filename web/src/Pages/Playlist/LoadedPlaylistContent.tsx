@@ -1,6 +1,6 @@
 import {Box, Breadcrumbs, Container, Typography} from "@mui/material";
 import React from "react";
-import {Playlist, Segment} from "../../App/api";
+import {Playlist, Segment} from "../../api/types";
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 
 export const LoadedPlaylistContent = ({

@@ -1,8 +1,8 @@
-import {WordAnalysis} from "../App/api";
-import {useServerInteractionHistory} from "../Layout/useServerInteractionHistory";
+import {WordAnalysis} from "../api/types";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 import React, {useEffect, useState} from "react";
 import {Loadable} from "../App/loadable";
-import {wordAnalysisGET} from "../App/ApiRoutes";
+import {wordAnalysisGET} from "../api/ApiRoutes";
 
 export const ItemsLoader = ({word, children}: { word: string, children: (items: WordAnalysis) => any }) => {
   const {logError} = useServerInteractionHistory();

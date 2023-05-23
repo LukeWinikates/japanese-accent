@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState} from "react";
-import {Segment, SuggestedSegment, Video, VideoAdvice} from "../../App/api";
+import {Segment, SuggestedSegment, Video, VideoAdvice} from "../../api/types";
 import {Card, CardContent, FormControlLabel, List, Switch, Typography,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
@@ -7,7 +7,7 @@ import {VariableSizeList} from 'react-window';
 import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import {elementForLabels, sizeForSegment} from "./ListItems";
-import {suggestedSegmentsDELETE} from "../../App/ApiRoutes";
+import {suggestedSegmentsDELETE} from "../../api/ApiRoutes";
 
 type Props = {
   advice: VideoAdvice,

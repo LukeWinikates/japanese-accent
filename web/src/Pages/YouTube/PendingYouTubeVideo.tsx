@@ -1,4 +1,4 @@
-import {Video} from "../../App/api";
+import {Video} from "../../api/types";
 import React, {useEffect, useState} from "react";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {Container, IconButton, Paper, Typography} from "@mui/material";

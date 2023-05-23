@@ -2,9 +2,9 @@ import {SegmentEditor} from "../../Video/Segments/SegmentEditor";
 import {Button, Stack} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useCallback} from "react";
-import {Segment, SuggestedSegment} from "../../App/api";
-import {suggestedSegmentsDELETE, videoSegmentPOST, videoSegmentPUT} from "../../App/ApiRoutes";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {Segment, SuggestedSegment} from "../../api/types";
+import {suggestedSegmentsDELETE, videoSegmentPOST, videoSegmentPUT} from "../../api/ApiRoutes";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import DoneIcon from '@mui/icons-material/Done';
 import {ARE_ADVICE} from "./segment";
 

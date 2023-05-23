@@ -4,21 +4,22 @@ import './App.css';
 import {StyledEngineProvider, ThemeProvider} from '@mui/material/styles';
 import {BrowserRouter as Router} from "react-router-dom";
 import {CoreApp, theme} from "./Layout/CoreApp";
-import {EventHistoryProvider, useServerInteractionHistory} from "./Layout/useServerInteractionHistory";
+import {EventHistoryProvider} from "./App/useServerInteractionHistory";
+import {BackendAPIProvider} from "./App/useBackendAPI";
 
 
 function App() {
-  useServerInteractionHistory();
-
   return (
     <EventHistoryProvider>
-      <Router>
-        <StyledEngineProvider injectFirst>
-          <ThemeProvider theme={theme}>
-            <CoreApp/>
-          </ThemeProvider>
-        </StyledEngineProvider>
-      </Router>
+      <BackendAPIProvider>
+        <Router>
+          <StyledEngineProvider injectFirst>
+            <ThemeProvider theme={theme}>
+              <CoreApp/>
+            </ThemeProvider>
+          </StyledEngineProvider>
+        </Router>
+      </BackendAPIProvider>
     </EventHistoryProvider>
   );
 }

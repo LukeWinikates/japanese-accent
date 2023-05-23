@@ -1,4 +1,4 @@
-import {duration, Segment} from "../../App/api";
+import {duration, Segment} from "../../api/types";
 import {IconButton} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import React from "react";

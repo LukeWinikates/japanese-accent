@@ -2,7 +2,7 @@ import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {CircularProgress, TextField} from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckIcon from "@mui/icons-material/Check";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 
 const Indicator = ({status}: { status: IndicatorStatus }) => {
   switch (status) {

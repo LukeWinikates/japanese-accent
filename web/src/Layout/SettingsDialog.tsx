@@ -19,8 +19,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Loadable} from "../App/loadable";
-import {useServerInteractionHistory} from "./useServerInteractionHistory";
-import {applicationSettingsGET, applicationSettingsPUT, debugRefreshMetricsPOST} from "../App/ApiRoutes";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
+import {applicationSettingsGET, applicationSettingsPUT, debugRefreshMetricsPOST} from "../api/ApiRoutes";
 
 const useStyles = makeStyles()(theme => (
   {

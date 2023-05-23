@@ -1,4 +1,4 @@
-import {Word} from "../App/api";
+import {Word} from "../api/types";
 import {useTheme} from "@mui/material";
 import React from "react";
 

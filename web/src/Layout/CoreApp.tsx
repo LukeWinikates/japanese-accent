@@ -6,7 +6,7 @@ import {AppBar} from "./AppBar";
 import {AppDrawer} from "./AppDrawer";
 import {Routes} from "./Routes";
 import {HistoryDrawer} from "./HistoryDrawer";
-import {useServerInteractionHistory} from "./useServerInteractionHistory";
+import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 
 const useStyles = makeStyles()((theme) => ({
   content: {

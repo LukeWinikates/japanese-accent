@@ -1,6 +1,6 @@
 import {Button, Grid, Typography} from "@mui/material";
 import React from "react";
-import {Segment} from "../App/api";
+import {Segment} from "../api/types";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 

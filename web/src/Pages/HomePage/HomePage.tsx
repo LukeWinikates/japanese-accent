@@ -1,15 +1,15 @@
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
-import {Highlights} from "../../App/api";
+import {Highlights} from "../../api/types";
 import AddIcon from '@mui/icons-material/Add';
 import {Link, useNavigate} from "react-router-dom";
 import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
-import {useServerInteractionHistory} from "../../Layout/useServerInteractionHistory";
-import {highlightsGET, playlistPOST} from "../../App/ApiRoutes";
+import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
+import {highlightsGET, playlistPOST} from "../../api/ApiRoutes";
 
 export default function HomePage() {
   const {logError} = useServerInteractionHistory();

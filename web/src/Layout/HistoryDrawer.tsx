@@ -4,7 +4,7 @@ import {
   List,
   ListItem, Typography, Box
 } from "@mui/material";
-import {HistoryEvent} from "./useServerInteractionHistory";
+import {HistoryEvent} from "../App/useServerInteractionHistory";
 
 type HistoryDrawerProps = {
   open: boolean,

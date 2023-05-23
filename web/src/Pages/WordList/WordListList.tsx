@@ -1,4 +1,4 @@
-import {WordList} from "../../App/api";
+import {WordList} from "../../api/types";
 import {List} from "@mui/material";
 import ListItem from "@mui/material/ListItem";
 import {Link} from "react-router-dom";
