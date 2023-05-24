@@ -55,7 +55,7 @@ export const Player = ({
   const audioRef = useRef<HTMLAudioElement>(null);
   const playerProgressRef = useRef<HTMLDivElement>(null);
   const [progress, setProgress] = useState(0);
-  const {logError} = useServerInteractionHistory();
+  const [, {logError}] = useServerInteractionHistory();
 
   useEffect(() => {
     if (playing) {

@@ -4,19 +4,15 @@ import Grid from "@mui/material/Grid";
 import {WordList} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {WordListList} from "./WordListList";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {wordListsGET} from "../../api/ApiRoutes";
 
 export default function WordListsIndexPage() {
-  const {logError} = useServerInteractionHistory();
-
   const [wordLists, setWordLists] = useState<Loadable<WordList[]>>("loading");
 
   useEffect(() => {
     wordListsGET()
       .then(r => setWordLists({data: r.data}))
-      .catch(() => logError("unable to load wordlists"))
-  }, [logError]);
+  }, []);
 
   return (
     <>

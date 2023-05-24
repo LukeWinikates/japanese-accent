@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useCallback, useReducer} from 'react';
+import React, {createContext, useContext, useMemo, useReducer} from 'react';
 
 export interface HistoryEvent {
   text: string,
@@ -10,28 +10,30 @@ let initial: ServerInteractionHistory = {
   pendingHttpRequests: 0,
 };
 
-type HistoryContext = {
-  state: ServerInteractionHistory,
-  logError: (e: string) => any,
-  incrementPendingRequestCount: () => void,
-  decrementPendingRequestCount: () => void
-};
+type HistoryContext = [
+  ServerInteractionHistory,
+  {
+    logError: (e: string) => any,
+    incrementPendingRequestCount: () => void,
+    decrementPendingRequestCount: () => void
+  }];
 
 let noOp = () => {
 };
 
-const ServerInteractionHistoryContext = createContext<HistoryContext>({
-    state: initial,
+const ServerInteractionHistoryContext = createContext<HistoryContext>([
+  initial,
+  {
     logError: noOp,
     incrementPendingRequestCount: noOp,
     decrementPendingRequestCount: noOp,
-  }
+  }]
 );
 
 export function useServerInteractionHistory() {
   const context = useContext(ServerInteractionHistoryContext);
   if (!context) {
-    throw new Error(`useStatus must be used within a StatusProvider`)
+    throw new Error(`useServerInteractionHistory must be used within an EventHistoryProvider`)
   }
 
   return context
@@ -77,26 +79,32 @@ function reducer(state: ServerInteractionHistory, action: ServerInteraction): Se
 export const EventHistoryProvider = ({children}: any) => {
   let [state, dispatch] = useReducer(reducer, initial);
 
-  const logError = useCallback((e: string) => {
-    dispatch({
-      level: "error",
-      message: e
-    })
-  }, [dispatch]);
+  let callbacks = useMemo(() => {
+    const logError = (e: string) => {
+      dispatch({
+        level: "error",
+        message: e
+      })
+    };
 
-  const incrementPendingRequestCount = useCallback(() => {
-    dispatch("increment")
-  }, [dispatch]);
+    const incrementPendingRequestCount = () => {
+      dispatch("increment")
+    };
 
-  const decrementPendingRequestCount = useCallback(() => {
-    dispatch("decrement")
-  }, [dispatch]);
+    const decrementPendingRequestCount = () => {
+        dispatch("decrement")
+      }
+    ;
+    return {
+      logError,
+      incrementPendingRequestCount,
+      decrementPendingRequestCount
+    }
+  }, [dispatch])
 
-
-  let value = {state, logError, incrementPendingRequestCount, decrementPendingRequestCount};
   return (
     <ServerInteractionHistoryContext.Provider
-      value={value}>
+      value={[state, callbacks]}>
       {children}
     </ServerInteractionHistoryContext.Provider>
   )

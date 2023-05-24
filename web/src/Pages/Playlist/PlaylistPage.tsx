@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Loadable} from "../../App/loadable";
 import {Playlist} from "../../api/types";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 import {useParams} from "react-router-dom";
@@ -9,7 +8,6 @@ import {playlistGET} from "../../api/ApiRoutes";
 
 export const PlaylistPage = () => {
   const {id} = useParams();
-  const {logError} = useServerInteractionHistory();
   const [playlist, setPlaylist] = useState<Loadable<Playlist>>("loading");
   let playlistId = id;
 
@@ -21,9 +19,8 @@ export const PlaylistPage = () => {
 
   useEffect(() => {
     playlistGET(playlistId)
-      .then(r => setPlaylist({data: r.data}))
-      .catch(() => logError("could not load playlist"));
-  }, [playlistId, setPlaylist, logError]);
+      .then(r => setPlaylist({data: r.data}));
+  }, [playlistId, setPlaylist]);
 
   return (
     <>

@@ -1,12 +1,10 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
 import React, {useState} from "react";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
 import {videoPOST} from "../../api/ApiRoutes";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
-  const {logError} = useServerInteractionHistory();
   const navigate = useNavigate();
 
   function createNewVideo() {
@@ -22,7 +20,7 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
       title: videoTitle,
     }).then(() => {
       navigate('/media/' + youtubeId)
-    }).catch(logError);
+    });
   }
 
   const [videoUserInput, setVideoUserInput] = useState<string | null>(null);

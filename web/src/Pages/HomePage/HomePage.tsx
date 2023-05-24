@@ -8,11 +8,9 @@ import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {highlightsGET, playlistPOST} from "../../api/ApiRoutes";
 
 export default function HomePage() {
-  const {logError} = useServerInteractionHistory();
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -22,13 +20,13 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    highlightsGET().then(h => setHighlights({data: h.data})).catch(() => logError("unable to load homepage"))
-  }, [logError]);
+    highlightsGET().then(h => setHighlights({data: h.data}));
+  }, []);
 
   function createQuick20AndNavigate() {
     playlistPOST().then(e => {
       navigate('/playlists/' + e.data.id)
-    }).catch(() => logError("unable to create playlist"));
+    });
   }
 
   return (

@@ -2,7 +2,6 @@ import React, {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {CircularProgress, TextField} from "@mui/material";
 import ErrorIcon from "@mui/icons-material/Error";
 import CheckIcon from "@mui/icons-material/Check";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 
 const Indicator = ({status}: { status: IndicatorStatus }) => {
   switch (status) {
@@ -23,13 +22,11 @@ type AutoSavingTextFieldProps<T> = { setText: (newValue: string) => void, value:
 export function AutoSavingTextField<T>({setText, value, save}: AutoSavingTextFieldProps<T>) {
   const [networkActivity, setNetworkActivity] = useState<IndicatorStatus>("idle");
   const [lastTextEditTime, setLastTextEditTime] = useState<Date | undefined>();
-  const {logError} = useServerInteractionHistory();
   const saveText = useCallback(() => {
     save().then(() => setNetworkActivity("success")).catch(e => {
-      logError(e);
       setNetworkActivity("error")
     });
-  }, [save, logError, setNetworkActivity]);
+  }, [save, setNetworkActivity]);
 
   useEffect(() => {
     if (!lastTextEditTime) {

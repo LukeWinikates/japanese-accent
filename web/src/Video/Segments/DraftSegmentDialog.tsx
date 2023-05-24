@@ -2,7 +2,6 @@ import React, {useState} from 'react';
 import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
 import {videoSegmentPOST} from "../../api/ApiRoutes";
 
@@ -33,7 +32,6 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
     text: "",
   })
   const {classes} = useStyles();
-  const {logError} = useServerInteractionHistory();
 
   function save() {
     videoSegmentPOST(videoId, {
@@ -43,7 +41,7 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
       endMS: segment.endMS,
       labels: [],
       parent: null,
-    }).then(onClose).catch(logError);
+    }).then(onClose);
   }
 
   return (

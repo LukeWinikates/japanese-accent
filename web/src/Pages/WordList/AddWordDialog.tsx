@@ -17,7 +17,6 @@ import {
 } from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {RawMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Player} from "../../Dictaphone/Player";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
@@ -125,7 +124,6 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const [word, setWord] = useState<{ text: string } | null>(null);
   const [preview, setPreview] = useState<WordAnalysis | null>(null);
   const {classes} = useStyles();
-  const {logError} = useServerInteractionHistory();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();
   const previewWord = useCallback(() => {
@@ -152,7 +150,7 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
     videoWordLinkPOST({
       word: word.text,
       videoId
-    }).then(onClose).catch(logError);
+    }).then(onClose);
   }
 
   function handleWordChanged(e: any) {

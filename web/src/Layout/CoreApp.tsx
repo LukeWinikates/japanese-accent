@@ -30,7 +30,7 @@ export function CoreApp() {
   const {classes} = useStyles();
   const [isNavigationDrawerOpen, setNavigationDrawerOpen] = useState(false);
   const [isHistoryDrawerOpen, setHistoryDrawerOpen] = useState(false);
-  const {events} = useServerInteractionHistory().state;
+  const [{events}] = useServerInteractionHistory();
 
   const onNavigationDrawerOpen = useCallback(() => {
     setNavigationDrawerOpen(true);

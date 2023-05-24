@@ -2,7 +2,6 @@ import {Segment} from "../api/types";
 import React, {useState} from "react";
 import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
-import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import AddWordDialog from "../Pages/WordList/AddWordDialog";
 import {pitchPOST} from "../api/ApiRoutes";
@@ -13,8 +12,6 @@ export const PitchDetails = ({
                                updateSegment
                              }: { segment: Segment | null, updateSegment: (segment: Segment) => void }) => {
 
-
-  const {logError} = useServerInteractionHistory();
   const [isAddingWord, setIsAddingWord] = useState(false);
 
   function fetchOJADPronunciation() {
@@ -25,7 +22,7 @@ export const PitchDetails = ({
       .then(({data: p}) => updateSegment({
         ...segment,
         pitch: p
-      })).catch(logError)
+      }))
   }
 
 

@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, {createContext, useCallback, useContext} from "react";
+import React, {createContext, useMemo, useContext} from "react";
 import {ApiClient, NewApiClient} from "../api/client";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
@@ -18,9 +18,9 @@ export function useBackendAPI() {
 
 
 export const BackendAPIProvider = ({children}: any) => {
-  const {logError, incrementPendingRequestCount, decrementPendingRequestCount} = useServerInteractionHistory();
-
-  const value = useCallback(() => {
+  const [, callbacks] = useServerInteractionHistory();
+  const value = useMemo(() => {
+    const {incrementPendingRequestCount, decrementPendingRequestCount, logError} = callbacks;
     const axiosInstance = axios.create({})
     axiosInstance.interceptors.request.use((config) => {
       incrementPendingRequestCount();
@@ -38,7 +38,7 @@ export const BackendAPIProvider = ({children}: any) => {
     let value = NewApiClient(axiosInstance);
     console.log("new api client created")
     return value
-  }, [logError, incrementPendingRequestCount, decrementPendingRequestCount])();
+  }, [callbacks]);
 
 
   return (

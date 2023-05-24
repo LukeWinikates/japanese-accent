@@ -8,7 +8,6 @@ import CloseIcon from '@mui/icons-material/Close';
 import TrashIcon from '@mui/icons-material/Delete';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import DialogActions from "@mui/material/DialogActions";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {SegmentEditor} from "./SegmentEditor";
 import {videoSegmentDELETE, videoSegmentPOST, videoSegmentPUT} from "../../api/ApiRoutes";
 
@@ -47,7 +46,6 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     previousSegmentEnd,
     nextSegmentStart
   } = props;
-  const {logError} = useServerInteractionHistory();
   const {classes} = useStyles();
 
   const save = () => {
@@ -69,7 +67,6 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       labels: [],
     })
       .then(response => onAdd(response.data))
-      .catch(logError);
   };
 
   return (

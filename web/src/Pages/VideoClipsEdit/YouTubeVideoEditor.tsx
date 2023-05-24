@@ -1,7 +1,6 @@
 import {SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../api/types";
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Button, Card, CardContent, Container, Typography} from "@mui/material";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {VideoClipList} from "./VideoClipList";
 import {Loadable} from "../../App/loadable";
 import {videoAdviceGET} from "../../api/ApiRoutes";
@@ -14,7 +13,6 @@ import {VideoClipSummary} from "./VideoClipSummary";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
 export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
-  const {logError} = useServerInteractionHistory();
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
   const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
 
@@ -24,14 +22,14 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
 
   useEffect(() => {
     videoAdviceGET(video.videoId)
-      .then(r => setAdvice({data: r.data})).catch(logError);
+      .then(r => setAdvice({data: r.data}));
 
-  }, [video.videoId, setAdvice, logError])
+  }, [video.videoId, setAdvice])
 
   useEffect(() => {
     api.waveform.GET(video.videoId, 80)
-      .then(r => setSamplesData({data: r.data})).catch(logError)
-  }, [video.videoId, setSamplesData, logError])
+      .then(r => setSamplesData({data: r.data}))
+  }, [video.videoId, setSamplesData, api.waveform])
 
   if (advice === "loading" || samplesData === "loading") {
     return (<>loading...</>);

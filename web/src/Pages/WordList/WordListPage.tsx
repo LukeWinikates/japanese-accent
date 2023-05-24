@@ -16,21 +16,18 @@ import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";
 import {WordList} from "../../api/types";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {useParams} from "react-router-dom";
 import {wordListGET} from "../../api/ApiRoutes";
 
 
 function CategoryPage() {
-  const {logError} = useServerInteractionHistory();
   const {id} = useParams();
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
 
   useEffect(() => {
     wordListGET(id)
-      .then(r => setWordListData({data: r.data}))
-      .catch(() => logError("could not load wordlist"));
-  }, [id, setWordListData, logError]);
+      .then(r => setWordListData({data: r.data}));
+  }, [id, setWordListData]);
 
   if (wordListData === "loading") {
     return <></>

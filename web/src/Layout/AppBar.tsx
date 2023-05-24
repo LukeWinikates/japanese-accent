@@ -33,7 +33,7 @@ type AppBarProps = {
 
 export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
   const {classes} = useStyles();
-  const {events, pendingHttpRequests} = useServerInteractionHistory().state;
+  const [{events, pendingHttpRequests}] = useServerInteractionHistory();
   const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;
 

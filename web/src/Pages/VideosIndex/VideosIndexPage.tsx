@@ -4,16 +4,14 @@ import Grid from "@mui/material/Grid";
 import {VideoSummary} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {videoSummariesGET} from "../../api/ApiRoutes";
 
 export default function VideosIndexPage() {
-  const {logError} = useServerInteractionHistory();
   const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
 
   useEffect(() => {
-    videoSummariesGET().then(r => setVideos({data: r.data})).catch(() => logError("unable to load videos"))
-  }, [logError]);
+    videoSummariesGET().then(r => setVideos({data: r.data}))
+  }, []);
 
   return (
     <>

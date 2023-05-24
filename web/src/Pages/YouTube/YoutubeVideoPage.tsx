@@ -3,12 +3,10 @@ import {Video} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
-import {useServerInteractionHistory} from "../../App/useServerInteractionHistory";
 import {useParams} from "react-router-dom";
 import {videoGET} from "../../api/ApiRoutes";
 
 export const YoutubeVideoPage = () => {
-  const {logError} = useServerInteractionHistory();
   const {id} = useParams();
   const videoId = id;
   const [video, setVideo] = useState<Loadable<Video>>("loading");
@@ -21,10 +19,8 @@ export const YoutubeVideoPage = () => {
 
   useEffect(() => {
     videoGET(videoId)
-
       .then(r => setVideo({data: r.data}))
-      .catch(() => logError("could not load video"))
-  }, [videoId,  setVideo, logError]);
+  }, [videoId, setVideo,]);
 
   if (video === "loading") {
     return (<>loading...</>);
