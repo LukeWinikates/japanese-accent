@@ -19,7 +19,8 @@ import CloseIcon from "@mui/icons-material/Close";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import {Loadable} from "../App/loadable";
-import {applicationSettingsGET, applicationSettingsPUT, debugRefreshMetricsPOST} from "../api/ApiRoutes";
+import {debugRefreshMetricsPOST} from "../api/ApiRoutes";
+import {useBackendAPI} from "../App/useBackendAPI";
 
 const useStyles = makeStyles()(theme => (
   {
@@ -34,12 +35,14 @@ const useStyles = makeStyles()(theme => (
 
 export default function SettingsDialog({onClose}: { onClose: () => void }) {
   const {classes} = useStyles();
+  const api = useBackendAPI();
+
   const [apiKey, setApiKeyData] = useState<Loadable<string>>("loading");
   const [audioExportPath, setAudioExportPathData] = useState<Loadable<string>>("loading");
   const [showApiKey, setShowApiKey] = useState(false);
 
   useEffect(() => {
-    applicationSettingsGET()
+    api.settings.GET()
       .then(({data: settings}) => {
         setApiKeyData({
           data: settings.forvoApiKey
@@ -48,7 +51,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
           data: settings.audioExportPath
         })
       });
-  }, [setApiKeyData, setAudioExportPathData])
+  }, [setApiKeyData, setAudioExportPathData, api.settings])
 
   const refreshMetrics = () => {
     return debugRefreshMetricsPOST();
@@ -58,7 +61,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
     if (apiKey === "loading") {
       return;
     }
-    applicationSettingsPUT({
+    return api.settings.PUT({
       forvoApiKey: apiKey.data
     })
   }
@@ -67,7 +70,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
     if (audioExportPath === "loading") {
       return;
     }
-    applicationSettingsPUT({
+    return api.settings.PUT({
       audioExportPath: audioExportPath.data
     })
   }

@@ -141,3 +141,7 @@ export type SegmentPutBody = {
   parent: string | null,
   labels: string[]
 };
+
+export type AppSettingsPUTBody = {
+  forvoApiKey: string
+} | { audioExportPath: string };

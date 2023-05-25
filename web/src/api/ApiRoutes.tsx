@@ -1,7 +1,6 @@
 import axios from "axios";
 import {
   ActivityPostBody,
-  AppSettings,
   BoostPostBody,
   Export,
   Highlights,
@@ -51,16 +50,6 @@ export function exportsPOST(parentId: string) {
   return axios.post<Export>("/api/exports/", {
     videoUuid: parentId
   });
-}
-
-export function applicationSettingsGET() {
-  return axios.get<AppSettings>("api/application-settings");
-}
-
-export function applicationSettingsPUT(data: {
-  forvoApiKey: string
-} | { audioExportPath: string }) {
-  return axios.put("api/application-settings", data);
 }
 
 export function debugRefreshMetricsPOST() {
