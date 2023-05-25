@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, {createContext, useMemo, useContext} from "react";
+import React, {createContext, useContext, useMemo} from "react";
 import {ApiClient, NewApiClient} from "../api/client";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
@@ -10,7 +10,7 @@ const BackendAPIContext = createContext<ApiClient>(null);
 export function useBackendAPI() {
   const context = useContext(BackendAPIContext);
   if (!context) {
-    throw new Error(`useBackendAPI must be used within a StatusProvider`)
+    throw new Error(`useBackendAPI must be used within a BackendAPIProvider`)
   }
 
   return context
@@ -35,9 +35,7 @@ export const BackendAPIProvider = ({children}: any) => {
       return Promise.reject(error)
     })
 
-    let value = NewApiClient(axiosInstance);
-    console.log("new api client created")
-    return value
+    return NewApiClient(axiosInstance)
   }, [callbacks]);
 
 
