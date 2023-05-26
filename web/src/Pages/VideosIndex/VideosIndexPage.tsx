@@ -4,14 +4,15 @@ import Grid from "@mui/material/Grid";
 import {VideoSummary} from "../../api/types";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
-import {videoSummariesGET} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export default function VideosIndexPage() {
   const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
+  const api = useBackendAPI();
 
   useEffect(() => {
-    videoSummariesGET().then(r => setVideos({data: r.data}))
-  }, []);
+    api.videos.GET().then(r => setVideos({data: r.data}))
+  }, [api.videos]);
 
   return (
     <>

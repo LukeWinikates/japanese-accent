@@ -1,5 +1,5 @@
 import {AxiosInstance, AxiosResponse} from "axios";
-import {AppSettings, AppSettingsPUTBody, Export, Highlights, Waveform} from "./types";
+import {AppSettings, AppSettingsPUTBody, Export, Highlights, VideoSummary, Waveform} from "./types";
 
 interface WaveformClient {
   GET: (videoUuid: string, sampleRate: number) =>
@@ -20,11 +20,16 @@ interface ExportsClient {
   POST: (videoUUID: string) => Promise<AxiosResponse<Export, any>>
 }
 
+interface VideosClient {
+  GET: () => Promise<AxiosResponse<VideoSummary[], any>>
+}
+
 export interface ApiClient {
   waveform: WaveformClient
   settings: SettingsClient
   highlights: HighlightsClient
   exports: ExportsClient
+  videos: VideosClient
 }
 
 export function NewApiClient(axios: AxiosInstance): ApiClient {
@@ -33,7 +38,7 @@ export function NewApiClient(axios: AxiosInstance): ApiClient {
     settings: settingsClient(axios),
     highlights: highlightsClient(axios),
     exports: exportsClient(axios),
-    // video: videoClient(axios),
+    videos: videosClient(axios),
   };
 }
 
@@ -75,6 +80,14 @@ function exportsClient(axios: AxiosInstance): ExportsClient {
       return axios.post<Export>("/api/exports/", {
         videoUuid: parentId
       });
+    }
+  }
+}
+
+function videosClient(axios: AxiosInstance): VideosClient {
+  return {
+    GET: () => {
+      return axios.get<VideoSummary[]>("/api/videos");
     }
   }
 }

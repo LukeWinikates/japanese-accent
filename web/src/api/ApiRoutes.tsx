@@ -9,7 +9,6 @@ import {
   SegmentPutBody,
   Video,
   VideoAdvice,
-  VideoSummary,
   WordAnalysis,
   WordList
 } from "./types";
@@ -56,11 +55,6 @@ export function videoPOST(data: { youtubeId: string, title: string }) {
 
 export function playlistGET(playlistId: string | undefined) {
   return axios.get<Playlist>('/api/playlists/' + playlistId);
-}
-
-export function videoSummariesGET() {
-  return axios.get<VideoSummary[]>(
-    "/api/videos");
 }
 
 export function wordAnalysisPOST(data: { text: string }) {
