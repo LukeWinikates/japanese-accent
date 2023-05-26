@@ -9,7 +9,6 @@ import {
   SegmentPutBody,
   VideoAdvice,
   WordAnalysis,
-  WordList
 } from "./types";
 
 export function activityPOST(activityPostBody: ActivityPostBody) {
@@ -60,20 +59,12 @@ export function videoWordLinkPOST(data: { videoId: string; word: string }) {
   return axios.post('/api/video-word-links', data);
 }
 
-export function wordListGET(id: string | undefined) {
-  return axios.get<WordList>('/api/wordlists/' + id);
-}
-
 export function videoAdviceGET(videoId: string) {
   return axios.get<VideoAdvice>('/api/videos/' + videoId + '/advice');
 }
 
 export function videoSegmentPOST(videoId: string, data: SegmentCreateBody) {
   return axios.post<Segment>('/api/videos/' + videoId + "/segments/", data);
-}
-
-export function wordListsGET() {
-  return axios.get<WordList[]>("/api/wordlists");
 }
 
 export function videoSegmentPUT(videoId: string, segment: SegmentPutBody) {

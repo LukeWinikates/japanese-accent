@@ -17,17 +17,18 @@ import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {Loadable} from "../../App/loadable";
 import {WordList} from "../../api/types";
 import {useParams} from "react-router-dom";
-import {wordListGET} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 
 function CategoryPage() {
   const {id} = useParams();
   const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
+  const api = useBackendAPI();
 
   useEffect(() => {
-    wordListGET(id)
+    id && api.wordLists.GET(id)
       .then(r => setWordListData({data: r.data}));
-  }, [id, setWordListData]);
+  }, [id, setWordListData, api.wordLists]);
 
   if (wordListData === "loading") {
     return <></>

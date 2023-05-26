@@ -7,7 +7,8 @@ import {
   Video,
   VideoPostBody,
   VideoSummary,
-  Waveform
+  Waveform,
+  WordList
 } from "./types";
 
 interface WaveformClient {
@@ -36,6 +37,12 @@ interface VideosClient {
   GET: (videoId: string) => Promise<AxiosResponse<Video, any>>
   POST: (body: VideoPostBody) => Promise<AxiosResponse<Video, any>>
 }
+interface WordListsClient {
+  index: {
+    GET: () => Promise<AxiosResponse<WordList[], any>>
+  }
+  GET: (videoId: string) => Promise<AxiosResponse<WordList, any>>
+}
 
 export interface ApiClient {
   waveform: WaveformClient
@@ -43,6 +50,7 @@ export interface ApiClient {
   highlights: HighlightsClient
   exports: ExportsClient
   videos: VideosClient
+  wordLists: WordListsClient
 }
 
 export function NewApiClient(axios: AxiosInstance): ApiClient {
@@ -52,6 +60,7 @@ export function NewApiClient(axios: AxiosInstance): ApiClient {
     highlights: highlightsClient(axios),
     exports: exportsClient(axios),
     videos: videosClient(axios),
+    wordLists: wordListsClient(axios),
   };
 }
 
@@ -109,6 +118,19 @@ function videosClient(axios: AxiosInstance): VideosClient {
     },
     POST: (body) => {
       return axios.post("api/videos", body);
+    }
+  }
+}
+
+function wordListsClient(axios: AxiosInstance): WordListsClient {
+  return {
+    index: {
+      GET: () => {
+        return axios.get<WordList[]>("/api/wordlists");
+      }
+    },
+    GET: (id: string) => {
+      return axios.get<WordList>('/api/wordlists/' + id);
     }
   }
 }
