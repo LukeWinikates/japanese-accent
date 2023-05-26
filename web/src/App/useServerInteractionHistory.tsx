@@ -5,7 +5,7 @@ export interface HistoryEvent {
   severity: "info" | "debug" | "warning" | "error";
 }
 
-let initial: ServerInteractionHistory = {
+export const initial: ServerInteractionHistory = {
   events: [],
   pendingHttpRequests: 0,
 };
@@ -21,14 +21,16 @@ type HistoryContext = [
 let noOp = () => {
 };
 
-const ServerInteractionHistoryContext = createContext<HistoryContext>([
+export const defaultValue: HistoryContext = [
   initial,
   {
     logError: noOp,
     incrementPendingRequestCount: noOp,
     decrementPendingRequestCount: noOp,
-  }]
-);
+  }];
+
+export const ServerInteractionHistoryContext = createContext<HistoryContext>(defaultValue);
+
 
 export function useServerInteractionHistory() {
   const context = useContext(ServerInteractionHistoryContext);

@@ -6,7 +6,7 @@ import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
 import {Loadable} from "../App/loadable";
-import {highlightsGET} from "../api/ApiRoutes";
+import {useBackendAPI} from "../App/useBackendAPI";
 
 type AppDrawerProps = {
   open: boolean,
@@ -21,10 +21,11 @@ export function DummyDrawer() {
 
 export function AppDrawer({open, onClose}: AppDrawerProps) {
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
+  const api = useBackendAPI();
 
   useEffect(() => {
-    highlightsGET().then(r => setHighlights({data: r.data}))
-  }, [setHighlights]);
+    api.highlights.GET().then(r => setHighlights({data: r.data}))
+  }, [setHighlights, api.highlights]);
 
   if (highlights === "loading") {
     return (<DummyDrawer/>);

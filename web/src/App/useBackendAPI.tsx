@@ -5,7 +5,7 @@ import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
 
 // @ts-ignore
-const BackendAPIContext = createContext<ApiClient>(null);
+export const BackendAPIContext = createContext<ApiClient>(null);
 
 export function useBackendAPI() {
   const context = useContext(BackendAPIContext);
@@ -15,7 +15,6 @@ export function useBackendAPI() {
 
   return context
 }
-
 
 export const BackendAPIProvider = ({children}: any) => {
   const [, callbacks] = useServerInteractionHistory();

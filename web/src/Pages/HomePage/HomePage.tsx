@@ -8,9 +8,11 @@ import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
-import {highlightsGET, playlistPOST} from "../../api/ApiRoutes";
+import {playlistPOST} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export default function HomePage() {
+  const api = useBackendAPI();
   const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
@@ -20,8 +22,8 @@ export default function HomePage() {
   }
 
   useEffect(() => {
-    highlightsGET().then(h => setHighlights({data: h.data}));
-  }, []);
+    api.highlights.GET().then(h => setHighlights({data: h.data}));
+  }, [api.highlights]);
 
   function createQuick20AndNavigate() {
     playlistPOST().then(e => {

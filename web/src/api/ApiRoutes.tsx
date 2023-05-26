@@ -3,7 +3,6 @@ import {
   ActivityPostBody,
   BoostPostBody,
   Export,
-  Highlights,
   Pitch,
   Playlist,
   Segment,
@@ -60,10 +59,6 @@ export function playlistPOST() {
   return axios.post<Playlist>("/api/playlists", {
     count: 20
   });
-}
-
-export function highlightsGET() {
-  return axios.get<Highlights>("/api/highlights");
 }
 
 export function videoPOST(data: { youtubeId: string, title: string }) {
