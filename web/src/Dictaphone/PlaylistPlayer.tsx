@@ -26,7 +26,8 @@ import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
 import {useInterval} from "../App/useInterval";
-import {exportGET, exportsPOST, segmentDELETE} from "../api/ApiRoutes";
+import {segmentDELETE} from "../api/ApiRoutes";
+import {useBackendAPI} from "../App/useBackendAPI";
 
 type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
 
@@ -38,6 +39,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   const [watchingExport, setWatchingExport] = useState(false);
   const [exportProgress, setExportProgress] = useState<Export | null>(null);
   let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
+  const api = useBackendAPI();
 
   function pauseAll() {
     document.querySelectorAll("audio").forEach(a => a.pause());
@@ -58,7 +60,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }, [currentSegmentIndex])
 
   useInterval(() => {
-    exportGET(parentId)
+    api.exports.GET(parentId)
       .then((r) => {
         setExportProgress(r.data);
         r.data.done && setWatchingExport(false)
@@ -165,7 +167,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }
 
   function startExport() {
-    return exportsPOST(parentId).then(() => setWatchingExport(true));
+    return api.exports.POST(parentId).then(() => setWatchingExport(true));
   }
 
   return (

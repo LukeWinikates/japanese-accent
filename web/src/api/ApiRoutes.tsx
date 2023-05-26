@@ -2,7 +2,6 @@ import axios from "axios";
 import {
   ActivityPostBody,
   BoostPostBody,
-  Export,
   Pitch,
   Playlist,
   Segment,
@@ -14,10 +13,6 @@ import {
   WordAnalysis,
   WordList
 } from "./types";
-
-export function exportGET(parentId: string) {
-  return axios.get<Export>("/api/exports/" + parentId);
-}
 
 export function activityPOST(activityPostBody: ActivityPostBody) {
   return axios.post("/api/activity", {
@@ -43,12 +38,6 @@ export function pitchPOST(segment: Segment) {
 
 export function segmentDELETE(segment: Segment) {
   return axios.delete('/api/videos/' + segment.videoUuid + "/segments/" + segment.uuid);
-}
-
-export function exportsPOST(parentId: string) {
-  return axios.post<Export>("/api/exports/", {
-    videoUuid: parentId
-  });
 }
 
 export function debugRefreshMetricsPOST() {

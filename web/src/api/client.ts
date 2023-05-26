@@ -1,5 +1,5 @@
 import {AxiosInstance, AxiosResponse} from "axios";
-import {AppSettings, AppSettingsPUTBody, Highlights, Waveform} from "./types";
+import {AppSettings, AppSettingsPUTBody, Export, Highlights, Waveform} from "./types";
 
 interface WaveformClient {
   GET: (videoUuid: string, sampleRate: number) =>
@@ -15,18 +15,24 @@ interface SettingsClient {
   PUT: (data: AppSettingsPUTBody) => Promise<AxiosResponse<AppSettings, any>>
 }
 
+interface ExportsClient {
+  GET: (parentId: string) => Promise<AxiosResponse<Export, any>>
+  POST: (videoUUID: string) => Promise<AxiosResponse<Export, any>>
+}
+
 export interface ApiClient {
   waveform: WaveformClient
   settings: SettingsClient
   highlights: HighlightsClient
+  exports: ExportsClient
 }
 
 export function NewApiClient(axios: AxiosInstance): ApiClient {
   return {
     waveform: waveformClient(axios),
     settings: settingsClient(axios),
-    highlights: highlightsClient(axios)
-    // export: exportClient(axios),
+    highlights: highlightsClient(axios),
+    exports: exportsClient(axios),
     // video: videoClient(axios),
   };
 }
@@ -51,10 +57,24 @@ function waveformClient(axios: AxiosInstance): WaveformClient {
     },
   }
 }
+
 function highlightsClient(axios: AxiosInstance): HighlightsClient {
   return {
     GET: () => {
       return axios.get<Highlights>("/api/highlights");
+    }
+  }
+}
+
+function exportsClient(axios: AxiosInstance): ExportsClient {
+  return {
+    GET: (parentId: string) => {
+      return axios.get<Export>("/api/exports/" + parentId);
+    },
+    POST: (parentId: string) => {
+      return axios.post<Export>("/api/exports/", {
+        videoUuid: parentId
+      });
     }
   }
 }
