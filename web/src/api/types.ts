@@ -145,3 +145,8 @@ export type SegmentPutBody = {
 export type AppSettingsPUTBody = {
   forvoApiKey: string
 } | { audioExportPath: string };
+
+export type VideoPostBody = {
+  youtubeId: string,
+  title: string
+};

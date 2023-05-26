@@ -7,7 +7,6 @@ import {
   Segment,
   SegmentCreateBody,
   SegmentPutBody,
-  Video,
   VideoAdvice,
   WordAnalysis,
   WordList
@@ -49,10 +48,6 @@ export function playlistPOST() {
   });
 }
 
-export function videoPOST(data: { youtubeId: string, title: string }) {
-  return axios.post("api/videos", data);
-}
-
 export function playlistGET(playlistId: string | undefined) {
   return axios.get<Playlist>('/api/playlists/' + playlistId);
 }
@@ -79,10 +74,6 @@ export function videoSegmentPOST(videoId: string, data: SegmentCreateBody) {
 
 export function wordListsGET() {
   return axios.get<WordList[]>("/api/wordlists");
-}
-
-export function videoGET(videoId: string | undefined) {
-  return axios.get<Video>('/api/videos/' + videoId);
 }
 
 export function videoSegmentPUT(videoId: string, segment: SegmentPutBody) {

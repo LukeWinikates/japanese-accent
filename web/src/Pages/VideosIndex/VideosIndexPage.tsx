@@ -11,8 +11,8 @@ export default function VideosIndexPage() {
   const api = useBackendAPI();
 
   useEffect(() => {
-    api.videos.GET().then(r => setVideos({data: r.data}))
-  }, [api.videos]);
+    api.videos.index.GET().then(r => setVideos({data: r.data}))
+  }, [api.videos.index]);
 
   return (
     <>

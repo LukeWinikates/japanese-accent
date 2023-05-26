@@ -2,10 +2,11 @@ import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogT
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
-import {videoPOST} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
   const navigate = useNavigate();
+  const api = useBackendAPI();
 
   function createNewVideo() {
     if (videoUserInput === null || videoTitle === null) {
@@ -15,7 +16,7 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
     if (youtubeId == null) {
       return
     }
-    videoPOST({
+    api.videos.POST({
       youtubeId: youtubeId,
       title: videoTitle,
     }).then(() => {

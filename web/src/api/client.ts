@@ -1,5 +1,14 @@
 import {AxiosInstance, AxiosResponse} from "axios";
-import {AppSettings, AppSettingsPUTBody, Export, Highlights, VideoSummary, Waveform} from "./types";
+import {
+  AppSettings,
+  AppSettingsPUTBody,
+  Export,
+  Highlights,
+  Video,
+  VideoPostBody,
+  VideoSummary,
+  Waveform
+} from "./types";
 
 interface WaveformClient {
   GET: (videoUuid: string, sampleRate: number) =>
@@ -21,7 +30,11 @@ interface ExportsClient {
 }
 
 interface VideosClient {
-  GET: () => Promise<AxiosResponse<VideoSummary[], any>>
+  index: {
+    GET: () => Promise<AxiosResponse<VideoSummary[], any>>
+  }
+  GET: (videoId: string) => Promise<AxiosResponse<Video, any>>
+  POST: (body: VideoPostBody) => Promise<AxiosResponse<Video, any>>
 }
 
 export interface ApiClient {
@@ -86,8 +99,16 @@ function exportsClient(axios: AxiosInstance): ExportsClient {
 
 function videosClient(axios: AxiosInstance): VideosClient {
   return {
-    GET: () => {
-      return axios.get<VideoSummary[]>("/api/videos");
+    index: {
+      GET: () => {
+        return axios.get<VideoSummary[]>("/api/videos");
+      }
+    },
+    GET: (videoId: string) => {
+      return axios.get<Video>('/api/videos/' + videoId);
+    },
+    POST: (body) => {
+      return axios.post("api/videos", body);
     }
   }
 }

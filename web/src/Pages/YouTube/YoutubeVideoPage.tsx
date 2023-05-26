@@ -4,12 +4,13 @@ import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useParams} from "react-router-dom";
-import {videoGET} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export const YoutubeVideoPage = () => {
   const {id} = useParams();
   const videoId = id;
   const [video, setVideo] = useState<Loadable<Video>>("loading");
+  const api = useBackendAPI();
 
   const setVideoData = (video: Video) => {
     setVideo({
@@ -18,9 +19,9 @@ export const YoutubeVideoPage = () => {
   };
 
   useEffect(() => {
-    videoGET(videoId)
+    videoId && api.videos.GET(videoId)
       .then(r => setVideo({data: r.data}))
-  }, [videoId, setVideo,]);
+  }, [videoId, setVideo, api.videos]);
 
   if (video === "loading") {
     return (<>loading...</>);
