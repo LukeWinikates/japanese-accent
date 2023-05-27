@@ -4,10 +4,11 @@ import {Playlist} from "../../api/types";
 import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 import {useParams} from "react-router-dom";
-import {playlistGET} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export const PlaylistPage = () => {
   const {id} = useParams();
+  const api = useBackendAPI();
   const [playlist, setPlaylist] = useState<Loadable<Playlist>>("loading");
   let playlistId = id;
 
@@ -18,9 +19,9 @@ export const PlaylistPage = () => {
   };
 
   useEffect(() => {
-    playlistGET(playlistId)
+    playlistId && api.playlists.GET(playlistId)
       .then(r => setPlaylist({data: r.data}));
-  }, [playlistId, setPlaylist]);
+  }, [playlistId, setPlaylist, api.playlists]);
 
   return (
     <>

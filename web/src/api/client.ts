@@ -4,6 +4,8 @@ import {
   AppSettingsPUTBody,
   Export,
   Highlights,
+  Playlist,
+  PlaylistPostBody,
   Video,
   VideoAdvice,
   VideoPostBody,
@@ -67,6 +69,11 @@ interface AdviceClient {
   }
 }
 
+interface PlaylistClient {
+  GET: (playlistId: string) => Promise<AxiosResponse<Playlist, any>>
+  POST: (data: PlaylistPostBody) => Promise<AxiosResponse<Playlist, any>>
+}
+
 export interface ApiClient {
   debug: DebugClient
   waveform: WaveformClient
@@ -76,6 +83,7 @@ export interface ApiClient {
   videos: VideosClient
   wordLists: WordListsClient
   wordAnalysis: WordAnalysisClient
+  playlists: PlaylistClient
 }
 
 export function NewApiClient(axios: AxiosInstance): ApiClient {
@@ -87,7 +95,8 @@ export function NewApiClient(axios: AxiosInstance): ApiClient {
     videos: videosClient(axios),
     wordLists: wordListsClient(axios),
     debug: debugClient(axios),
-    wordAnalysis: wordAnalysisClient(axios)
+    wordAnalysis: wordAnalysisClient(axios),
+    playlists: playlistClient(axios)
   };
 }
 
@@ -193,6 +202,16 @@ function wordAnalysisClient(axios: AxiosInstance): WordAnalysisClient {
     },
     POST: (data: WordAnalysisPostBody) => {
       return axios.post<WordAnalysis>('/api/word-analysis/', data);
+    }
+  }
+}
+
+function playlistClient(axios: AxiosInstance): PlaylistClient {
+  return {
+    GET: (playlistId: string) => {
+      return axios.get<Playlist>('/api/playlists/' + playlistId);
+    }, POST: (data: PlaylistPostBody) => {
+      return axios.post<Playlist>("/api/playlists", data);
     }
   }
 }

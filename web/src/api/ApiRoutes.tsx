@@ -1,5 +1,5 @@
 import axios from "axios";
-import {ActivityPostBody, BoostPostBody, Pitch, Playlist, Segment, SegmentCreateBody, SegmentPutBody,} from "./types";
+import {ActivityPostBody, BoostPostBody, Pitch, Segment, SegmentCreateBody, SegmentPutBody,} from "./types";
 
 export function activityPOST(activityPostBody: ActivityPostBody) {
   return axios.post("/api/activity", {
@@ -21,16 +21,6 @@ export function pitchPOST(segment: Segment) {
 
 export function segmentDELETE(segment: Segment) {
   return axios.delete('/api/videos/' + segment.videoUuid + "/segments/" + segment.uuid);
-}
-
-export function playlistPOST() {
-  return axios.post<Playlist>("/api/playlists", {
-    count: 20
-  });
-}
-
-export function playlistGET(playlistId: string | undefined) {
-  return axios.get<Playlist>('/api/playlists/' + playlistId);
 }
 
 export function videoWordLinkPOST(data: { videoId: string; word: string }) {

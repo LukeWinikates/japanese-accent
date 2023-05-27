@@ -154,3 +154,7 @@ export type VideoPostBody = {
 export type WordAnalysisPostBody = {
   text: string
 }
+
+export type PlaylistPostBody = {
+  count: number
+}

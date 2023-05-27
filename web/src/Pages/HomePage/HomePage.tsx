@@ -8,7 +8,6 @@ import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {Loadable} from "../../App/loadable";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
-import {playlistPOST} from "../../api/ApiRoutes";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
 export default function HomePage() {
@@ -26,7 +25,7 @@ export default function HomePage() {
   }, [api.highlights]);
 
   function createQuick20AndNavigate() {
-    playlistPOST().then(e => {
+    api.playlists.POST({count: 20}).then(e => {
       navigate('/playlists/' + e.data.id)
     });
   }
