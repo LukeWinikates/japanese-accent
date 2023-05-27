@@ -8,6 +8,8 @@ import {
   VideoPostBody,
   VideoSummary,
   Waveform,
+  WordAnalysis,
+  WordAnalysisPostBody,
   WordList
 } from "./types";
 
@@ -51,6 +53,11 @@ interface DebugClient {
   }
 }
 
+interface WordAnalysisClient {
+  GET: (word: string) => Promise<AxiosResponse<WordAnalysis, any>>
+  POST: (data: WordAnalysisPostBody) => Promise<AxiosResponse<WordAnalysis, any>>
+}
+
 export interface ApiClient {
   debug: DebugClient
   waveform: WaveformClient
@@ -59,6 +66,7 @@ export interface ApiClient {
   exports: ExportsClient
   videos: VideosClient
   wordLists: WordListsClient
+  wordAnalysis: WordAnalysisClient
 }
 
 export function NewApiClient(axios: AxiosInstance): ApiClient {
@@ -69,7 +77,8 @@ export function NewApiClient(axios: AxiosInstance): ApiClient {
     exports: exportsClient(axios),
     videos: videosClient(axios),
     wordLists: wordListsClient(axios),
-    debug: debugClient(axios)
+    debug: debugClient(axios),
+    wordAnalysis: wordAnalysisClient(axios)
   };
 }
 
@@ -150,6 +159,17 @@ function debugClient(axios: AxiosInstance): DebugClient {
       POST: () => {
         return axios.post("/api/debug/refresh-metrics");
       }
+    }
+  }
+}
+
+function wordAnalysisClient(axios: AxiosInstance): WordAnalysisClient {
+  return {
+    GET: (word: string) => {
+      return axios.get<WordAnalysis>('/api/word-analysis/' + word);
+    },
+    POST: (data: WordAnalysisPostBody) => {
+      return axios.post<WordAnalysis>('/api/word-analysis/', data);
     }
   }
 }

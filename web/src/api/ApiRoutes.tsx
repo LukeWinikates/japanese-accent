@@ -8,7 +8,6 @@ import {
   SegmentCreateBody,
   SegmentPutBody,
   VideoAdvice,
-  WordAnalysis,
 } from "./types";
 
 export function activityPOST(activityPostBody: ActivityPostBody) {
@@ -23,10 +22,6 @@ export function boostPOST(boostPostBody: BoostPostBody) {
       ...boostPostBody
     }
   );
-}
-
-export function wordAnalysisGET(word: string) {
-  return axios.get<WordAnalysis>('/api/word-analysis/' + word);
 }
 
 export function pitchPOST(segment: Segment) {
@@ -45,10 +40,6 @@ export function playlistPOST() {
 
 export function playlistGET(playlistId: string | undefined) {
   return axios.get<Playlist>('/api/playlists/' + playlistId);
-}
-
-export function wordAnalysisPOST(data: { text: string }) {
-  return axios.post('/api/word-analysis/', data);
 }
 
 export function videoWordLinkPOST(data: { videoId: string; word: string }) {

@@ -150,3 +150,7 @@ export type VideoPostBody = {
   youtubeId: string,
   title: string
 };
+
+export type WordAnalysisPostBody = {
+  text: string
+}

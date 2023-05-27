@@ -22,7 +22,8 @@ import {Player} from "../../Dictaphone/Player";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Audio, WordAnalysis} from "../../api/types";
-import {videoWordLinkPOST, wordAnalysisPOST} from "../../api/ApiRoutes";
+import {videoWordLinkPOST} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
@@ -124,14 +125,15 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const [word, setWord] = useState<{ text: string } | null>(null);
   const [preview, setPreview] = useState<WordAnalysis | null>(null);
   const {classes} = useStyles();
+  const api = useBackendAPI();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();
   const previewWord = useCallback(() => {
     if (!word) {
       return;
     }
-    wordAnalysisPOST(word).then(r => setPreview(r.data));
-  }, [word, setPreview]);
+    api.wordAnalysis.POST(word).then(r => setPreview(r.data));
+  }, [word, setPreview, api.wordAnalysis]);
 
   useEffect(() => {
     if (!analysisDebounce) {

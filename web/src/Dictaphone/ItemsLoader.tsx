@@ -1,15 +1,17 @@
 import {WordAnalysis} from "../api/types";
 import React, {useEffect, useState} from "react";
 import {Loadable} from "../App/loadable";
-import {wordAnalysisGET} from "../api/ApiRoutes";
+import {useBackendAPI} from "../App/useBackendAPI";
 
 export const ItemsLoader = ({word, children}: { word: string, children: (items: WordAnalysis) => any }) => {
   const [item, setItem] = useState<Loadable<WordAnalysis>>("loading");
+  const api = useBackendAPI();
+
   useEffect(() => {
-    wordAnalysisGET(word).then(r => {
+    api.wordAnalysis.GET(word).then(r => {
       setItem({data: r.data});
     })
-  }, [word])
+  }, [word, api.wordAnalysis])
 
   if (item === "loading") {
     return <>Loading...</>
