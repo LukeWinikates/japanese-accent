@@ -37,10 +37,6 @@ export function segmentDELETE(segment: Segment) {
   return axios.delete('/api/videos/' + segment.videoUuid + "/segments/" + segment.uuid);
 }
 
-export function debugRefreshMetricsPOST() {
-  return axios.post("api/debug/refresh-metrics");
-}
-
 export function playlistPOST() {
   return axios.post<Playlist>("/api/playlists", {
     count: 20

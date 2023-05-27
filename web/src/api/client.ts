@@ -37,6 +37,7 @@ interface VideosClient {
   GET: (videoId: string) => Promise<AxiosResponse<Video, any>>
   POST: (body: VideoPostBody) => Promise<AxiosResponse<Video, any>>
 }
+
 interface WordListsClient {
   index: {
     GET: () => Promise<AxiosResponse<WordList[], any>>
@@ -44,7 +45,14 @@ interface WordListsClient {
   GET: (videoId: string) => Promise<AxiosResponse<WordList, any>>
 }
 
+interface DebugClient {
+  refreshMetrics: {
+    POST: () => Promise<AxiosResponse<any, any>>
+  }
+}
+
 export interface ApiClient {
+  debug: DebugClient
   waveform: WaveformClient
   settings: SettingsClient
   highlights: HighlightsClient
@@ -61,6 +69,7 @@ export function NewApiClient(axios: AxiosInstance): ApiClient {
     exports: exportsClient(axios),
     videos: videosClient(axios),
     wordLists: wordListsClient(axios),
+    debug: debugClient(axios)
   };
 }
 
@@ -117,7 +126,7 @@ function videosClient(axios: AxiosInstance): VideosClient {
       return axios.get<Video>('/api/videos/' + videoId);
     },
     POST: (body) => {
-      return axios.post("api/videos", body);
+      return axios.post("/api/videos", body);
     }
   }
 }
@@ -131,6 +140,16 @@ function wordListsClient(axios: AxiosInstance): WordListsClient {
     },
     GET: (id: string) => {
       return axios.get<WordList>('/api/wordlists/' + id);
+    }
+  }
+}
+
+function debugClient(axios: AxiosInstance): DebugClient {
+  return {
+    refreshMetrics: {
+      POST: () => {
+        return axios.post("/api/debug/refresh-metrics");
+      }
     }
   }
 }
