@@ -14,12 +14,12 @@ import (
 // TODO:
 // * delete the old VTT timeline generator and structs
 
-func MakeVideoAdviceSegmentDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
+func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var video *database.Video
 
 		youtubeID := context.Param("videoUuid")
-		segmentSha := context.Param("segmentSha")
+		segmentSha := context.Param("sha")
 		if err := db.Where("youtube_id = ?", youtubeID).
 			Preload("AdviceMutings").First(&video).Error; err != nil {
 			context.Status(http.StatusInternalServerError)

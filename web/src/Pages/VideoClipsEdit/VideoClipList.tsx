@@ -7,7 +7,7 @@ import {VariableSizeList} from 'react-window';
 import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import {elementForLabels, sizeForSegment} from "./ListItems";
-import {suggestedSegmentsDELETE} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 type Props = {
   advice: VideoAdvice,
@@ -19,6 +19,8 @@ type Props = {
 export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props) {
   const [selectedSegment, setSelectedSegment] = useState<Segment | SuggestedSegment | null>(null);//advice.suggestedSegments[0]);
   const [showMuted, setShowMuted] = useState<boolean>(false);
+  const api = useBackendAPI();
+
   const toggleShowMuted = useCallback((_: any, lastState: boolean) => {
     setShowMuted(!showMuted);
     listRef.current?.resetAfterIndex(0);
@@ -45,7 +47,8 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props)
 
   const deleteSegment = (segment: Segment | SuggestedSegment) => {
     if (segment.labels.some(ARE_ADVICE)) {
-      return suggestedSegmentsDELETE(video.videoId, segment.uuid).then(() => muteSuggestion(segment));
+      return api.videos.advice.suggestedClips.DELETE(video.videoId, segment.uuid)
+        .then(() => muteSuggestion(segment));
     }
     console.log("no delete implementation for true segments yet")
     // return videoSegmentDELETE(video.videoId, segment as Segment)

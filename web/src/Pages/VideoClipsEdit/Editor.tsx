@@ -3,9 +3,10 @@ import {Button, Stack} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useCallback} from "react";
 import {Segment, SuggestedSegment} from "../../api/types";
-import {suggestedSegmentsDELETE, videoSegmentPOST, videoSegmentPUT} from "../../api/ApiRoutes";
+import {videoSegmentPOST, videoSegmentPUT} from "../../api/ApiRoutes";
 import DoneIcon from '@mui/icons-material/Done';
 import {ARE_ADVICE} from "./segment";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 type Props = {
   videoId: string,
@@ -17,6 +18,7 @@ type Props = {
 
 
 export const Editor = ({segment, setSegment, videoId, parentUuid, onDelete}: Props) => {
+  const api = useBackendAPI();
   const saveClip = useCallback(() => {
     const apiCall = segment.labels.some(ARE_ADVICE) ? videoSegmentPOST : videoSegmentPUT;
     apiCall(videoId, {
@@ -27,8 +29,8 @@ export const Editor = ({segment, setSegment, videoId, parentUuid, onDelete}: Pro
 
   // TODO: this can delete real clips
   const hideSuggestedClip = useCallback(() => {
-    suggestedSegmentsDELETE(videoId, segment.uuid).then(() => onDelete(segment))
-  }, [segment, videoId, onDelete]);
+    api.videos.advice.suggestedClips.DELETE(videoId, segment.uuid).then(() => onDelete(segment))
+  }, [segment, videoId, onDelete, api.videos.advice.suggestedClips]);
 
   return (
     <>

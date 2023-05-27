@@ -1,14 +1,5 @@
 import axios from "axios";
-import {
-  ActivityPostBody,
-  BoostPostBody,
-  Pitch,
-  Playlist,
-  Segment,
-  SegmentCreateBody,
-  SegmentPutBody,
-  VideoAdvice,
-} from "./types";
+import {ActivityPostBody, BoostPostBody, Pitch, Playlist, Segment, SegmentCreateBody, SegmentPutBody,} from "./types";
 
 export function activityPOST(activityPostBody: ActivityPostBody) {
   return axios.post("/api/activity", {
@@ -46,10 +37,6 @@ export function videoWordLinkPOST(data: { videoId: string; word: string }) {
   return axios.post('/api/video-word-links', data);
 }
 
-export function videoAdviceGET(videoId: string) {
-  return axios.get<VideoAdvice>('/api/videos/' + videoId + '/advice');
-}
-
 export function videoSegmentPOST(videoId: string, data: SegmentCreateBody) {
   return axios.post<Segment>('/api/videos/' + videoId + "/segments/", data);
 }
@@ -60,8 +47,4 @@ export function videoSegmentPUT(videoId: string, segment: SegmentPutBody) {
 
 export function videoSegmentDELETE(videoId: string, segment: Segment) {
   return axios.delete('/api/videos/' + videoId + "/segments/" + segment.uuid);
-}
-
-export function suggestedSegmentsDELETE(videoId: string, segmentId: string) {
-  return axios.delete('/api/videos/' + videoId + "/advice/segments/" + segmentId)
 }

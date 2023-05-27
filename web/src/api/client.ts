@@ -5,6 +5,7 @@ import {
   Export,
   Highlights,
   Video,
+  VideoAdvice,
   VideoPostBody,
   VideoSummary,
   Waveform,
@@ -38,6 +39,7 @@ interface VideosClient {
   }
   GET: (videoId: string) => Promise<AxiosResponse<Video, any>>
   POST: (body: VideoPostBody) => Promise<AxiosResponse<Video, any>>
+  advice: AdviceClient
 }
 
 interface WordListsClient {
@@ -56,6 +58,13 @@ interface DebugClient {
 interface WordAnalysisClient {
   GET: (word: string) => Promise<AxiosResponse<WordAnalysis, any>>
   POST: (data: WordAnalysisPostBody) => Promise<AxiosResponse<WordAnalysis, any>>
+}
+
+interface AdviceClient {
+  GET: (videoId: string) => Promise<AxiosResponse<VideoAdvice, any>>
+  suggestedClips: {
+    DELETE: (videoId: string, segmentUUID: string) => Promise<AxiosResponse<void, any>>
+  }
 }
 
 export interface ApiClient {
@@ -124,6 +133,19 @@ function exportsClient(axios: AxiosInstance): ExportsClient {
   }
 }
 
+function adviceClient(axios: AxiosInstance): AdviceClient {
+  return {
+    GET: (videoId: string) => {
+      return axios.get<VideoAdvice>('/api/videos/' + videoId + '/advice');
+    },
+    suggestedClips: {
+      DELETE: (videoId: string, clipUUID: string) => {
+        return axios.delete('/api/videos/' + videoId + "/advice/clips/" + clipUUID);
+      }
+    }
+  }
+}
+
 function videosClient(axios: AxiosInstance): VideosClient {
   return {
     index: {
@@ -136,7 +158,8 @@ function videosClient(axios: AxiosInstance): VideosClient {
     },
     POST: (body) => {
       return axios.post("/api/videos", body);
-    }
+    },
+    advice: adviceClient(axios)
   }
 }
 

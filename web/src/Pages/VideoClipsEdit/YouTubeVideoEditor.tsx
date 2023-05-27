@@ -3,7 +3,6 @@ import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Button, Card, CardContent, Container, Typography} from "@mui/material";
 import {VideoClipList} from "./VideoClipList";
 import {Loadable} from "../../App/loadable";
-import {videoAdviceGET} from "../../api/ApiRoutes";
 import {Link} from "react-router-dom";
 import YouTubeIcon from "@mui/icons-material/YouTube";
 import LaunchIcon from "@mui/icons-material/Launch";
@@ -21,10 +20,10 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const api = useBackendAPI();
 
   useEffect(() => {
-    videoAdviceGET(video.videoId)
+    api.videos.advice.GET(video.videoId)
       .then(r => setAdvice({data: r.data}));
 
-  }, [video.videoId, setAdvice])
+  }, [video.videoId, setAdvice, api.videos.advice])
 
   useEffect(() => {
     api.waveform.GET(video.videoId, 80)
