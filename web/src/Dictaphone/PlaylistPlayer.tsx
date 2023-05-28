@@ -26,7 +26,6 @@ import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
 import {useInterval} from "../App/useInterval";
-import {segmentDELETE} from "../api/ApiRoutes";
 import {useBackendAPI} from "../App/useBackendAPI";
 
 type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
@@ -152,7 +151,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   };
 
   function destroySegment(segment: Segment, index: number) {
-    segmentDELETE(segment)
+    api.videos.clips.DELETE(segment.videoUuid, segment.uuid)
       .then(() => removeSegmentByIndex(index))
       .then(() => setPromptingSegmentDelete(null));
   }

@@ -3,7 +3,7 @@ import {Button, Dialog, DialogActions, DialogContent, DialogTitle, IconButton} f
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
 import {SegmentEditor} from "./SegmentEditor";
-import {videoSegmentPOST} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 type DraftSegmentDialogProps = { videoId: string, onClose: () => void };
 
@@ -25,6 +25,7 @@ const useStyles = makeStyles()(theme => (
   }
 ));
 const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
+  const api = useBackendAPI();
   const [segment, setSegment] = useState<DraftSegment>({
     videoUuid: videoId,
     startMS: 0,
@@ -34,7 +35,7 @@ const DraftSegmentDialog = ({videoId, onClose}: DraftSegmentDialogProps) => {
   const {classes} = useStyles();
 
   function save() {
-    videoSegmentPOST(videoId, {
+    api.videos.clips.POST(videoId, {
       text: segment.text,
       videoUuid: videoId,
       startMS: segment.startMS,

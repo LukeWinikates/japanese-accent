@@ -9,7 +9,7 @@ import TrashIcon from '@mui/icons-material/Delete';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import DialogActions from "@mui/material/DialogActions";
 import {SegmentEditor} from "./SegmentEditor";
-import {videoSegmentDELETE, videoSegmentPOST, videoSegmentPUT} from "../../api/ApiRoutes";
+import {useBackendAPI} from "../../App/useBackendAPI";
 
 export interface MediaSegmentsEditDialogProps {
   open: boolean;
@@ -47,18 +47,19 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     nextSegmentStart
   } = props;
   const {classes} = useStyles();
+  const api = useBackendAPI();
 
   const save = () => {
-    videoSegmentPUT(videoId, segment)
+    api.videos.clips.PUT(videoId, segment)
       .then(onClose);
   };
 
   const del = () => {
-    videoSegmentDELETE(videoId, segment).then(onDestroy);
+    api.videos.clips.DELETE(videoId, segment.uuid).then(onDestroy);
   };
 
   const clone = () => {
-    videoSegmentPOST(videoId, {
+    api.videos.clips.POST(videoId, {
       text: segment.text,
       videoUuid: videoId,
       startMS: segment.startMS,

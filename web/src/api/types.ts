@@ -124,7 +124,7 @@ export type ActivityPostBody = {
   segmentId: string
 }
 
-export type SegmentCreateBody = {
+export type ClipsPostBody = {
   videoUuid: string;
   startMS: number;
   endMS: number;
@@ -132,7 +132,8 @@ export type SegmentCreateBody = {
   parent: string | null,
   labels: string[]
 };
-export type SegmentPutBody = {
+
+export type ClipsPutBody = {
   uuid: string;
   videoUuid: string;
   startMS: number;

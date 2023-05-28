@@ -1,11 +1,11 @@
 import {AxiosInstance, AxiosResponse} from "axios";
 import {
   AppSettings,
-  AppSettingsPUTBody,
+  AppSettingsPUTBody, ClipsPostBody, ClipsPutBody,
   Export,
   Highlights,
   Playlist,
-  PlaylistPostBody,
+  PlaylistPostBody, Segment,
   Video,
   VideoAdvice,
   VideoPostBody,
@@ -42,6 +42,13 @@ interface VideosClient {
   GET: (videoId: string) => Promise<AxiosResponse<Video, any>>
   POST: (body: VideoPostBody) => Promise<AxiosResponse<Video, any>>
   advice: AdviceClient
+  clips: ClipsClient
+}
+
+interface ClipsClient {
+  PUT: (videoId: string, data: ClipsPutBody) => Promise<AxiosResponse<Segment, any>>
+  POST: (videoId: string, data: ClipsPostBody) => Promise<AxiosResponse<Segment, any>>
+  DELETE: (videoId: string, clipId: string) => Promise<AxiosResponse<void, any>>
 }
 
 interface WordListsClient {
@@ -168,7 +175,8 @@ function videosClient(axios: AxiosInstance): VideosClient {
     POST: (body) => {
       return axios.post("/api/videos", body);
     },
-    advice: adviceClient(axios)
+    advice: adviceClient(axios),
+    clips: clipsClient(axios)
   }
 }
 
@@ -215,3 +223,18 @@ function playlistClient(axios: AxiosInstance): PlaylistClient {
     }
   }
 }
+
+function clipsClient(axios: AxiosInstance): ClipsClient {
+  return {
+    DELETE: (videoId: string, clipId: string) => {
+        return axios.delete('/api/videos/' + videoId + "/segments/" + clipId)
+    },
+    POST: (videoId: string, data: ClipsPostBody) => {
+      return axios.post<Segment>('/api/videos/' + videoId + "/segments/", data)
+    },
+    PUT: (videoId: string, data: ClipsPutBody) => {
+      return axios.put('/api/videos/' + videoId + "/segments/" + data.uuid, data)
+    }
+  }
+}
+
