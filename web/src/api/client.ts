@@ -13,7 +13,8 @@ import {
   Waveform,
   WordAnalysis,
   WordAnalysisPostBody,
-  WordList
+  WordList,
+  WordLinksPostBody, Pitch, ActivityPostBody, BoostPostBody
 } from "./types";
 
 interface WaveformClient {
@@ -35,6 +36,11 @@ interface ExportsClient {
   POST: (videoUUID: string) => Promise<AxiosResponse<Export, any>>
 }
 
+
+interface WordLinksClient {
+  POST: (data: WordLinksPostBody) => Promise<AxiosResponse<void, any>>
+}
+
 interface VideosClient {
   index: {
     GET: () => Promise<AxiosResponse<VideoSummary[], any>>
@@ -43,12 +49,16 @@ interface VideosClient {
   POST: (body: VideoPostBody) => Promise<AxiosResponse<Video, any>>
   advice: AdviceClient
   clips: ClipsClient
+  wordLinks: WordLinksClient
 }
 
 interface ClipsClient {
   PUT: (videoId: string, data: ClipsPutBody) => Promise<AxiosResponse<Segment, any>>
   POST: (videoId: string, data: ClipsPostBody) => Promise<AxiosResponse<Segment, any>>
   DELETE: (videoId: string, clipId: string) => Promise<AxiosResponse<void, any>>
+  pitch: {
+    POST: (clipId: string) => Promise<AxiosResponse<Pitch, any>>
+  }
 }
 
 interface WordListsClient {
@@ -81,6 +91,14 @@ interface PlaylistClient {
   POST: (data: PlaylistPostBody) => Promise<AxiosResponse<Playlist, any>>
 }
 
+interface ActivityClient {
+  POST:(data: ActivityPostBody) => Promise<AxiosResponse<void, any>>
+}
+
+interface BoostsClient {
+  POST: (data: BoostPostBody) => Promise<AxiosResponse<void, any>>
+}
+
 export interface ApiClient {
   debug: DebugClient
   waveform: WaveformClient
@@ -91,6 +109,29 @@ export interface ApiClient {
   wordLists: WordListsClient
   wordAnalysis: WordAnalysisClient
   playlists: PlaylistClient
+  activity: ActivityClient
+  boosts: BoostsClient
+}
+
+function activityClient(axios: AxiosInstance): ActivityClient {
+  return {
+    POST: (data: ActivityPostBody) => {
+      return axios.post("/api/activity", {
+        ...data,
+        activityType: "PracticeStart"
+      })
+    }
+  };
+}
+
+function boostsClient(axios: AxiosInstance) : BoostsClient {
+  return {
+    POST: data => {
+      return axios.post("/api/boosts", {
+        ...data
+      })
+    }
+  };
 }
 
 export function NewApiClient(axios: AxiosInstance): ApiClient {
@@ -103,7 +144,9 @@ export function NewApiClient(axios: AxiosInstance): ApiClient {
     wordLists: wordListsClient(axios),
     debug: debugClient(axios),
     wordAnalysis: wordAnalysisClient(axios),
-    playlists: playlistClient(axios)
+    playlists: playlistClient(axios),
+    activity: activityClient(axios),
+    boosts: boostsClient(axios)
   };
 }
 
@@ -162,6 +205,14 @@ function adviceClient(axios: AxiosInstance): AdviceClient {
   }
 }
 
+function wordLinksClient(axios: AxiosInstance) : WordLinksClient {
+  return {
+    POST: (data: WordLinksPostBody) =>  {
+      return axios.post('/api/video-word-links', data)
+    }
+  };
+}
+
 function videosClient(axios: AxiosInstance): VideosClient {
   return {
     index: {
@@ -176,7 +227,8 @@ function videosClient(axios: AxiosInstance): VideosClient {
       return axios.post("/api/videos", body);
     },
     advice: adviceClient(axios),
-    clips: clipsClient(axios)
+    clips: clipsClient(axios),
+    wordLinks: wordLinksClient(axios)
   }
 }
 
@@ -226,6 +278,11 @@ function playlistClient(axios: AxiosInstance): PlaylistClient {
 
 function clipsClient(axios: AxiosInstance): ClipsClient {
   return {
+    pitch: {
+      POST: function (clipId: string) {
+        return axios.post<Pitch>(`/api/segments/${clipId}/pitches`);
+      }
+    },
     DELETE: (videoId: string, clipId: string) => {
         return axios.delete('/api/videos/' + videoId + "/segments/" + clipId)
     },

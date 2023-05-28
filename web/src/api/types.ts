@@ -159,3 +159,5 @@ export type WordAnalysisPostBody = {
 export type PlaylistPostBody = {
   count: number
 }
+
+export type WordLinksPostBody = { videoId: string, word: string };

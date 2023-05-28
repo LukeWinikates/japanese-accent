@@ -22,7 +22,6 @@ import {Player} from "../../Dictaphone/Player";
 import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import KeyboardArrowRightIcon from '@mui/icons-material/KeyboardArrowRight';
 import {Audio, WordAnalysis} from "../../api/types";
-import {videoWordLinkPOST} from "../../api/ApiRoutes";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
@@ -149,7 +148,7 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
     if (word === null) {
       return
     }
-    videoWordLinkPOST({
+    api.videos.wordLinks.POST({
       word: word.text,
       videoId
     }).then(onClose);

@@ -4,8 +4,7 @@ import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import AddWordDialog from "../Pages/WordList/AddWordDialog";
-import {pitchPOST} from "../api/ApiRoutes";
-
+import {useBackendAPI} from "../App/useBackendAPI";
 
 export const PitchDetails = ({
                                segment,
@@ -13,18 +12,18 @@ export const PitchDetails = ({
                              }: { segment: Segment | null, updateSegment: (segment: Segment) => void }) => {
 
   const [isAddingWord, setIsAddingWord] = useState(false);
+  const api = useBackendAPI();
 
   function fetchOJADPronunciation() {
     if (!segment) {
       return null;
     }
-    pitchPOST(segment)
+    api.videos.clips.pitch.POST(segment.uuid)
       .then(({data: p}) => updateSegment({
         ...segment,
         pitch: p
       }))
   }
-
 
   if (segment === null) {
     return <>Nothing to see here</>

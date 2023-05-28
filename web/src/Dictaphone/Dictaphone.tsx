@@ -7,7 +7,7 @@ import {ActivityPostBody, Audio, BoostPostBody, Segment} from "../api/types";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
 import audioURL from "../App/audioURL";
-import {activityPOST, boostPOST} from "../api/ApiRoutes";
+import {useBackendAPI} from "../App/useBackendAPI";
 
 const PREFIX = 'Dictaphone';
 
@@ -74,6 +74,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
   const [actionQueue, setActionQueue] = useState<Action[]>([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
+  const api = useBackendAPI();
 
   function saveRecording(recording: AudioRecording) {
     let newRecording = {...recording};
@@ -92,7 +93,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   function practice() {
     pauseAll();
-    activityPostBody && activityPOST(activityPostBody);
+    activityPostBody && api.activity.POST(activityPostBody);
     setActionQueue(["PlaySegment", "Record", "PlaySegment"])
     setSegmentIsPlaying(true);
   }
@@ -136,7 +137,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   }
 
   function boostCurrentSegment() {
-    boostPostBody && boostPOST(boostPostBody)
+    boostPostBody && api.boosts.POST(boostPostBody)
   }
 
   return (
