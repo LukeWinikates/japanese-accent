@@ -6,11 +6,12 @@ import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
 import AddWordDialog from "../Pages/WordList/AddWordDialog";
 import {useBackendAPI} from "../App/useBackendAPI";
 
-export const PitchDetails = ({
-                               segment,
-                               updateSegment
-                             }: { segment: Segment | null, updateSegment: (segment: Segment) => void }) => {
+type PitchDetailsProps = {
+  segment: Segment,
+  updateSegment: (segment: Segment) => void
+};
 
+export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
   const [isAddingWord, setIsAddingWord] = useState(false);
   const api = useBackendAPI();
 
@@ -46,7 +47,7 @@ export const PitchDetails = ({
           </Button>
         </Grid>
         <Grid item xs={4}>
-          <SuzukiButton text="Open in Suzuki-kun" items={[segment?.text]}/>
+          <SuzukiButton text="Open in Suzuki-kun" items={[segment.text]}/>
         </Grid>
       </Grid>
       {isAddingWord && <AddWordDialog onClose={() => setIsAddingWord(false)} videoId={segment.videoUuid}/>}

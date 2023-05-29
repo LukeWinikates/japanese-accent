@@ -169,6 +169,10 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     return api.exports.POST(parentId).then(() => setWatchingExport(true));
   }
 
+  if (!currentSegment) {
+    return <>no current segment</>
+  }
+
   return (
     <>
       <Card>
