@@ -1,38 +1,58 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {Highlights} from "../api/types";
-import {Divider, Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader} from "@mui/material";
+import {Divider, Drawer, Link, List, ListItemButton, ListItemIcon, ListItemText, ListSubheader,} from "@mui/material";
 import HouseIcon from '@mui/icons-material/House';
 import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
-import {Loadable} from "../App/loadable";
 import {useBackendAPI} from "../App/useBackendAPI";
+import {Loader} from "../App/Loader";
 
 type AppDrawerProps = {
   open: boolean,
   onClose: () => void,
 }
 
-export function DummyDrawer() {
+function LoadedDrawer({value}: { value: Highlights }) {
   return (
-    <div/>
+    <>
+      <List>
+        <ListSubheader disableSticky={true}>
+          Videos <RouterLink to="/videos">(see all)</RouterLink>
+        </ListSubheader>
+        {value.videos.map((video, index) => (
+          <React.Fragment key={index}>
+            <ListItemButton>
+              <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
+              <Link component={RouterLink} to={`/media/${video.videoId}`}>
+                <ListItemText primary={video.title}/>
+              </Link>
+            </ListItemButton>
+          </React.Fragment>
+        ))}
+      </List>
+      <Divider/>
+      <List>
+        <ListSubheader disableSticky={true}>
+          Word Lists <RouterLink to="/wordlists">(see all)</RouterLink>
+        </ListSubheader>
+        {value.wordLists.map((wordList, index) => (
+          <React.Fragment key={index}>
+            <ListItemButton>
+              <ListItemIcon><NotesIcon/></ListItemIcon>
+              <Link component={RouterLink} to={`/wordlists/${wordList.id}`}>
+                <ListItemText primary={wordList.name}/>
+              </Link>
+            </ListItemButton>
+          </React.Fragment>
+        ))}
+      </List>
+    </>
   );
 }
 
 export function AppDrawer({open, onClose}: AppDrawerProps) {
-  const [highlights, setHighlights] = useState<Loadable<Highlights>>("loading");
   const api = useBackendAPI();
-
-  useEffect(() => {
-    api.highlights.GET().then(r => setHighlights({data: r.data}))
-  }, [setHighlights, api.highlights]);
-
-  if (highlights === "loading") {
-    return (<DummyDrawer/>);
-  }
-
-  const categories = highlights.data;
-
   return (
     <Drawer
       anchor="left"
@@ -50,37 +70,7 @@ export function AppDrawer({open, onClose}: AppDrawerProps) {
         </ListItemButton>
       </List>
       <Divider/>
-      <List>
-        <ListSubheader disableSticky={true}>
-          Videos <RouterLink to="/videos">(see all)</RouterLink>
-        </ListSubheader>
-        {categories.videos.map((video, index) => (
-          <React.Fragment key={index}>
-            <ListItemButton>
-              <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
-              <Link component={RouterLink} to={`/media/${video.videoId}`}>
-                <ListItemText primary={video.title}/>
-              </Link>
-            </ListItemButton>
-          </React.Fragment>
-        ))}
-      </List>
-      <Divider/>
-      <List>
-        <ListSubheader disableSticky={true}>
-          Word Lists <RouterLink to="/wordlists">(see all)</RouterLink>
-        </ListSubheader>
-        {categories.wordLists.map((wordList, index) => (
-          <React.Fragment key={index}>
-            <ListItemButton>
-              <ListItemIcon><NotesIcon/></ListItemIcon>
-              <Link component={RouterLink} to={`/wordlists/${wordList.id}`}>
-                <ListItemText primary={wordList.name}/>
-              </Link>
-            </ListItemButton>
-          </React.Fragment>
-        ))}
-      </List>
+      <Loader callback={api.highlights.GET} into={LoadedDrawer}/>
     </Drawer>
   );
 }

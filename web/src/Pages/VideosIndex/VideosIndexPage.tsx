@@ -1,19 +1,12 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {VideoSummary} from "../../api/types";
-import {Loadable} from "../../App/loadable";
 import {VideoList} from "./VideoList";
 import {useBackendAPI} from "../../App/useBackendAPI";
+import {Loader} from "../../App/Loader";
 
-export default function VideosIndexPage() {
-  const [videos, setVideos] = useState<Loadable<VideoSummary[]>>("loading");
-  const api = useBackendAPI();
-
-  useEffect(() => {
-    api.videos.index.GET().then(r => setVideos({data: r.data}))
-  }, [api.videos.index]);
-
+function LoadedIndexPage({value}: { value: VideoSummary[] }) {
   return (
     <>
       <Box m={2}>
@@ -35,10 +28,7 @@ export default function VideosIndexPage() {
                   <Typography variant="h4">
                     Youtube Videos
                   </Typography>
-                  {
-                    videos === "loading" ? null :
-                      <VideoList videos={videos.data}/>
-                  }
+                  <VideoList videos={value}/>
                 </Grid>
               </Grid>
             </Box>
@@ -46,5 +36,15 @@ export default function VideosIndexPage() {
         </Container>
       </Box>
     </>
+  );
+}
+
+export default function VideosIndexPage() {
+  const api = useBackendAPI();
+  return (
+    <Loader
+      callback={api.videos.index.GET}
+      into={LoadedIndexPage}
+    />
   );
 }

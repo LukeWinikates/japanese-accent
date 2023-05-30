@@ -15,7 +15,10 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
   const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
 
-  console.log("re-render", video)
+
+  if (!video.files.hasMediaFile) {
+    throw new Error("invalid condition")
+  }
 
   const api = useBackendAPI();
 
