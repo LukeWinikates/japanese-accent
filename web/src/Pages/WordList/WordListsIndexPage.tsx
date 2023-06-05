@@ -1,20 +1,19 @@
-import React, {useEffect, useState} from "react";
+import React from "react";
 import {Box, Breadcrumbs, Container, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {WordList} from "../../api/types";
-import {Loadable} from "../../App/loadable";
 import {WordListList} from "./WordListList";
 import {useBackendAPI} from "../../App/useBackendAPI";
+import {Loader} from "../../App/Loader";
+
+function LoadedContent({value}: { value: WordList[] }) {
+  return (
+    <WordListList wordLists={value}/>
+  )
+}
 
 export default function WordListsIndexPage() {
-  const [wordLists, setWordLists] = useState<Loadable<WordList[]>>("loading");
   const api = useBackendAPI();
-
-  useEffect(() => {
-    api.wordLists.index.GET()
-      .then(r => setWordLists({data: r.data}))
-  }, [api.wordLists]);
-
   return (
     <>
       <Box m={2}>
@@ -36,10 +35,8 @@ export default function WordListsIndexPage() {
                   <Typography variant="h4">
                     WordLists
                   </Typography>
-                  {
-                    wordLists === "loading" ? null :
-                      <WordListList wordLists={wordLists.data}/>
-                  }
+                  <Loader callback={api.wordLists.index.GET}
+                          into={LoadedContent}/>
                 </Grid>
               </Grid>
             </Box>
