@@ -1,4 +1,4 @@
-import {SuggestedSegment, Video, VideoAdvice, Waveform as ApiWaveform} from "../../api/types";
+import {SuggestedSegment, Video, VideoAdvice} from "../../api/types";
 import React, {useEffect, useState} from "react";
 import {Box, Breadcrumbs, Button, Card, CardContent, Container, Typography} from "@mui/material";
 import {VideoClipList} from "./VideoClipList";
@@ -11,10 +11,8 @@ import ListenIcon from '@mui/icons-material/Hearing';
 import {VideoClipSummary} from "./VideoClipSummary";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
-export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
+export const YouTubeVideoEditor = ({video}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const [advice, setAdvice] = useState<Loadable<VideoAdvice>>("loading");
-  const [samplesData, setSamplesData] = useState<Loadable<ApiWaveform>>("loading");
-
 
   if (!video.files.hasMediaFile) {
     throw new Error("invalid condition")
@@ -28,12 +26,7 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
 
   }, [video.videoId, setAdvice, api.videos.advice])
 
-  useEffect(() => {
-    api.waveform.GET(video.videoId, 80)
-      .then(r => setSamplesData({data: r.data}))
-  }, [video.videoId, setSamplesData, api.waveform])
-
-  if (advice === "loading" || samplesData === "loading") {
+  if (advice === "loading") {
     return (<>loading...</>);
   }
 
@@ -86,23 +79,17 @@ export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVid
               <VideoClipSummary
                 video={video}
                 advice={advice.data}
-                waveform={samplesData.data}
               />
 
             </CardContent>
           </Card>
         </Box>
-
-        {
-          <VideoClipList videoUuid={video.videoId}
-                         advice={advice.data}
-                         video={video}
-                         muteSuggestion={muteSuggestion}
-          />
-        }
-
+        <VideoClipList videoUuid={video.videoId}
+                       advice={advice.data}
+                       video={video}
+                       muteSuggestion={muteSuggestion}
+        />
       </Container>
     </Box>
-  )
-    ;
+  );
 };

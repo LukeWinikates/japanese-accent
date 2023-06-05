@@ -1,18 +1,29 @@
 import {Box, Grid, LinearProgress, Stack, Typography} from "@mui/material";
 import {msToHumanReadable} from "../../App/time";
 import {MiniWaveform} from "./MiniWaveform";
-import React from "react";
+import React, {useCallback} from "react";
 import {Video, VideoAdvice, Waveform} from "../../api/types";
+import {useBackendAPI} from "../../App/useBackendAPI";
+import {Loader} from "../../App/Loader";
 
 declare type Props = {
   video: Video,
-  waveform: Waveform,
   advice: VideoAdvice
 }
 
-export const VideoClipSummary = ({video, advice, waveform}: Props) => {
+function LoadedWaveform({value}: { value: Waveform }) {
+  return <MiniWaveform samples={value.samples} sampleRate={value.sampleRate}
+                       playerPositionMS={0} initWidth={740}/>
+}
+
+export const VideoClipSummary = ({video, advice}: Props) => {
   const draftsDuration = video.segments.map(seg => seg.endMS - seg.startMS).reduce((len, memo) => memo + len, 0);
   const totalMS = advice.suggestedSegments[advice.suggestedSegments.length - 1].endMS;
+  const api = useBackendAPI();
+
+  const callback = useCallback(() => {
+    return api.waveform.GET(video.videoId, 80);
+  }, [video.videoId, api.waveform])
 
   return (
     <Grid container>
@@ -72,8 +83,7 @@ export const VideoClipSummary = ({video, advice, waveform}: Props) => {
 
       </Grid>
       <Grid item container xs={8}>
-        <MiniWaveform samples={waveform.samples} sampleRate={waveform.sampleRate}
-                      playerPositionMS={0} initWidth={740}/>
+        <Loader callback={callback} into={LoadedWaveform}/>
       </Grid>
     </Grid>
   );
