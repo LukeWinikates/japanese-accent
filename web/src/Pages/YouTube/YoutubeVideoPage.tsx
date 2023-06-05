@@ -1,39 +1,35 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback} from 'react';
 import {Video} from "../../api/types";
-import {Loadable} from "../../App/loadable";
 import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
+import {Loader} from "../../App/Loader";
 
-export const YoutubeVideoPage = () => {
-  const {id} = useParams();
-  const videoId = id;
-  const [video, setVideo] = useState<Loadable<Video>>("loading");
-  const api = useBackendAPI();
-
-  const setVideoData = (video: Video) => {
-    setVideo({
-      data: video
-    })
-  };
-
-  useEffect(() => {
-    videoId && api.videos.GET(videoId)
-      .then(r => setVideo({data: r.data}))
-  }, [videoId, setVideo, api.videos]);
-
-  if (video === "loading") {
-    return (<>loading...</>);
-  }
-
-  if (!video.data.files.hasMediaFile) {
+function Loaded({value, setValue}: { value: Video, setValue: (value: Video) => void }) {
+  if (!value.files.hasMediaFile) {
     return (
-      <PendingYouTubeVideo video={video.data}/>
+      <PendingYouTubeVideo video={value}/>
     );
   }
 
   return (
-    <LoadedYouTubeVideo video={video.data} onVideoChange={setVideoData}/>
+    <LoadedYouTubeVideo video={value} onVideoChange={setValue}/>
   );
+}
+
+type PageParams = { id: string };
+
+export const YoutubeVideoPage = () => {
+  const {id} = useParams<PageParams>() as PageParams;
+  const api = useBackendAPI();
+
+  const callback = useCallback(()=> {
+    return api.videos.GET(id)
+  }, [id, api.videos])
+
+  return (
+    <Loader callback={callback}
+            into={Loaded}/>
+  )
 };
