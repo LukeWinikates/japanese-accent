@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from "react";
+import React, {useCallback} from "react";
 import {
   Box,
   Button,
@@ -14,35 +14,19 @@ import {
 import LinkIcon from '@mui/icons-material/Link';
 import {SuzukiButton} from "../../VocabularyPractice/SuzukiButton";
 import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
-import {Loadable} from "../../App/loadable";
 import {WordList} from "../../api/types";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
+import {Loader} from "../../App/Loader";
 
-
-function CategoryPage() {
-  const {id} = useParams();
-  const [wordListData, setWordListData] = useState<Loadable<WordList>>("loading");
-  const api = useBackendAPI();
-
-  useEffect(() => {
-    id && api.wordLists.GET(id)
-      .then(r => setWordListData({data: r.data}));
-  }, [id, setWordListData, api.wordLists]);
-
-  if (wordListData === "loading") {
-    return <></>
-  }
-
-  const wordList = wordListData.data;
-
+function LoadedPage({value}: { value: WordList }) {
   return (
     <Box m={2}>
       <Container maxWidth='lg'>
 
         <Box paddingY={2} margin={0}>
           <Typography variant="h2">
-            {wordList.name}
+            {value.name}
           </Typography>
         </Box>
 
@@ -52,9 +36,9 @@ function CategoryPage() {
               <Typography variant="h4">
                 Practice Items
               </Typography>
-              <SuzukiButton text="Open all in Suzuki-kun" items={wordList.words.map(w => w.word)}/>
+              <SuzukiButton text="Open all in Suzuki-kun" items={value.words.map(w => w.word)}/>
               <List subheader={<li/>}>
-                {wordList.words.map((item, i) =>
+                {value.words.map((item, i) =>
                   <ListItem key={`item-${i}`}>
                     <ListItemText
                       secondary={
@@ -83,7 +67,21 @@ function CategoryPage() {
         </Box>
       </Container>
     </Box>
+  )
+}
+
+type PageParams = { id: string };
+
+function WordListPage() {
+  const {id} = useParams<PageParams>() as PageParams;
+  const api = useBackendAPI();
+  const callback = useCallback(() => api.wordLists.GET(id), [id, api.wordLists])
+
+  return (
+    <Loader
+      callback={callback}
+      into={LoadedPage}/>
   );
 }
 
-export default CategoryPage;
+export default WordListPage;
