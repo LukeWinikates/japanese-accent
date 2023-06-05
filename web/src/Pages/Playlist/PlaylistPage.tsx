@@ -1,34 +1,33 @@
-import React, {useEffect, useState} from 'react';
-import {Loadable} from "../../App/loadable";
+import React, {useCallback} from 'react';
 import {Playlist} from "../../api/types";
 import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
+import {Loader} from "../../App/Loader";
 
-export const PlaylistPage = () => {
-  const {id} = useParams();
-  const api = useBackendAPI();
-  const [playlist, setPlaylist] = useState<Loadable<Playlist>>("loading");
-  let playlistId = id;
+type PageParams = { id: string };
 
-  const setData = (playlist: Playlist) => {
-    setPlaylist({
-      data: playlist
-    })
-  };
-
-  useEffect(() => {
-    playlistId && api.playlists.GET(playlistId)
-      .then(r => setPlaylist({data: r.data}));
-  }, [playlistId, setPlaylist, api.playlists]);
-
+const LoadedPage = ({value, setValue}: { value: Playlist, setValue: (value: Playlist) => void }) => {
   return (
     <>
       <Typography>
-        Playlist: {playlistId}
+        Playlist: {value.id}
       </Typography>
-      {(playlist !== 'loading') && <LoadedPlaylistContent playlist={playlist.data} onPlaylistChange={setData}/>}
+      <LoadedPlaylistContent
+        playlist={value}
+        onPlaylistChange={setValue}/>
     </>
+  );
+}
+
+export const PlaylistPage = () => {
+  const {id} = useParams<PageParams>() as PageParams;
+  const api = useBackendAPI();
+  let callback = useCallback(() => api.playlists.GET(id),
+    [api.playlists, id]);
+
+  return (
+    <Loader callback={callback} into={LoadedPage}/>
   );
 }

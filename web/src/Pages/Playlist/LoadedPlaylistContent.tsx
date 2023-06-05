@@ -3,11 +3,8 @@ import React from "react";
 import {Playlist, Segment} from "../../api/types";
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 
-export const LoadedPlaylistContent = ({
-                                        playlist,
-                                        onPlaylistChange
-                                      }: { playlist: Playlist, onPlaylistChange: (p: Playlist) => void }) => {
-
+type Props = { playlist: Playlist, onPlaylistChange: (p: Playlist) => void };
+export const LoadedPlaylistContent = ({playlist, onPlaylistChange}: Props) => {
   function setSegments(segments: Segment[]) {
     onPlaylistChange({
       ...playlist,
