@@ -3,8 +3,7 @@ import React, {useEffect, useRef, useState} from "react";
 import {Box, Card, CardContent, LinearProgress, List, ListItem, Typography} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import {WithIndex} from "../App/WithIndex";
-import {PagingDictaphone} from "./PagingDictaphone";
-import {ItemsLoader} from "./ItemsLoader";
+import {WordAnalysisLoader} from "./WordAnalysisLoader";
 
 type AudioLinkPlayerProps = { words: Word[] };
 
@@ -66,11 +65,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
               #{currentWord.index + 1} / {words.length}
               {currentWord.value.word}
             </Typography>
-            <ItemsLoader word={currentWord.value.word}>
-              {
-                items => <PagingDictaphone items={items.audio}/>
-              }
-            </ItemsLoader>
+            <WordAnalysisLoader word={currentWord.value.word}/>
           </>
           }
         </CardContent>
