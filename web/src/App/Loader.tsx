@@ -4,7 +4,12 @@ import React, {ComponentType, useCallback, useEffect, useState} from "react";
 
 interface LoaderProps<T> {
   callback: () => Promise<AxiosResponse<T, any>>
-  into: ComponentType<{ value: T, setValue: (value: T) => void }>
+  into: ComponentType<Settable<T>>
+}
+
+export declare type Settable<T> = {
+  value: T,
+  setValue: (value: T) => void
 }
 
 export function Loader<T>({callback, into}: LoaderProps<T>) {

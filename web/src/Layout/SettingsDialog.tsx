@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useEffect, useState} from "react";
+import React, {ChangeEvent, useCallback, useState} from "react";
 import {
   Box,
   Button,
@@ -18,8 +18,9 @@ import {makeStyles} from 'tss-react/mui';
 import CloseIcon from "@mui/icons-material/Close";
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
-import {Loadable} from "../App/loadable";
 import {useBackendAPI} from "../App/useBackendAPI";
+import {AppSettings} from "../api/types";
+import {Loader, Settable} from "../App/Loader";
 
 const useStyles = makeStyles()(theme => (
   {
@@ -32,59 +33,116 @@ const useStyles = makeStyles()(theme => (
   }
 ));
 
+function LoadedDialog({value, setValue}: Settable<AppSettings>) {
+  const [showApiKey, setShowApiKey] = useState(false);
+  const api = useBackendAPI();
+
+
+  const saveForvoApiKey = useCallback(() => {
+    return api.settings.PUT({
+      forvoApiKey: value.forvoApiKey
+    })
+  }, [api.settings, value.forvoApiKey]);
+
+  const saveExportPath = useCallback(() => {
+    return api.settings.PUT({
+      audioExportPath: value.audioExportPath
+    })
+  }, [api.settings, value.audioExportPath]);
+
+  let handleApiKeyChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setValue({
+      ...value,
+      forvoApiKey: e.target.value
+    })
+  }, [value, setValue]);
+
+  let handleAudioExportPathChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setValue({
+      ...value,
+      audioExportPath: e.target.value
+    })
+  }, [value, setValue]);
+
+  return (
+    <>
+      <Box m={1}>
+        <Typography variant="h5">
+          Forvo Integration
+        </Typography>
+        <Typography variant="body1">
+          Japanese Accent Practice can use Forvo to find examples of native speakers pronouncing single Japanese
+          words.
+          To enable this feature, sign up at <Link href="https://forvo.com/">Forvo.com</Link>, and subscribe to their
+          API plan, then copy your API token here.
+
+        </Typography>
+        <>
+          <FormControl>
+            <Input
+              id="standard-adornment-password"
+              type={showApiKey ? 'text' : 'password'}
+              value={value.forvoApiKey}
+              onChange={handleApiKeyChange}
+              endAdornment={
+                <InputAdornment position="end">
+                  <IconButton
+                    aria-label="toggle password visibility"
+                    onClick={() => setShowApiKey(!showApiKey)}
+                    onMouseDown={() => setShowApiKey(!showApiKey)}
+                    size="large">
+                    {showApiKey ? <Visibility/> : <VisibilityOff/>}
+                  </IconButton>
+                </InputAdornment>
+              }
+            />
+          </FormControl>
+          <Button onClick={saveForvoApiKey}>
+            Save
+          </Button>
+        </>
+      </Box>
+
+      <Divider/>
+      <Box m={1}>
+        <Typography variant="h5">
+          Audio Export
+        </Typography>
+        <Typography variant="body1">
+          Japanese Accent Practice can export audio practice files for playback on your mobile device or music player
+
+        </Typography>
+
+        <FormControl>
+          <Input
+            value={value.audioExportPath}
+            onChange={handleAudioExportPathChange}
+          />
+        </FormControl>
+        <Button onClick={saveExportPath}>
+          Save
+        </Button>
+
+      </Box>
+
+      <Divider/>
+      <Box m={1}>
+        <Typography variant="h5">
+          Debug Tools
+        </Typography>
+        Playlists are generated based on your practice activity and Boosting of individual study items. Click here to
+        refresh these metrics.
+        <Button onClick={api.debug.refreshMetrics.POST}>
+          Refresh Metrics
+        </Button>
+      </Box>
+    </>
+  );
+}
+
 export default function SettingsDialog({onClose}: { onClose: () => void }) {
   const {classes} = useStyles();
   const api = useBackendAPI();
-
-  const [apiKey, setApiKeyData] = useState<Loadable<string>>("loading");
-  const [audioExportPath, setAudioExportPathData] = useState<Loadable<string>>("loading");
-  const [showApiKey, setShowApiKey] = useState(false);
-
-  useEffect(() => {
-    api.settings.GET()
-      .then(({data: settings}) => {
-        setApiKeyData({
-          data: settings.forvoApiKey
-        })
-        setAudioExportPathData({
-          data: settings.audioExportPath
-        })
-      });
-  }, [setApiKeyData, setAudioExportPathData, api.settings])
-
-  const refreshMetrics = () => {
-    return api.debug.refreshMetrics.POST();
-  }
-
-  const saveForvoApiKey = () => {
-    if (apiKey === "loading") {
-      return;
-    }
-    return api.settings.PUT({
-      forvoApiKey: apiKey.data
-    })
-  }
-
-  const saveExportPath = () => {
-    if (audioExportPath === "loading") {
-      return;
-    }
-    return api.settings.PUT({
-      audioExportPath: audioExportPath.data
-    })
-  }
-
-  let handleApiKeyChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setApiKeyData({
-      data: e.target.value
-    })
-  };
-
-  let handleAudioExportPathChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setAudioExportPathData({
-      data: e.target.value
-    })
-  };
 
   return (
     <Dialog
@@ -106,87 +164,7 @@ export default function SettingsDialog({onClose}: { onClose: () => void }) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <Box m={1}>
-          <Typography variant="h5">
-            Forvo Integration
-          </Typography>
-          <Typography variant="body1">
-            Japanese Accent Practice can use Forvo to find examples of native speakers pronouncing single Japanese
-            words.
-            To enable this feature, sign up at <Link href="https://forvo.com/">Forvo.com</Link>, and subscribe to their
-            API plan, then copy your API token here.
-
-          </Typography>
-
-          {
-            apiKey === "loading" ?
-              <>loading...</> :
-              <>
-                <FormControl>
-                  <Input
-                    id="standard-adornment-password"
-                    type={showApiKey ? 'text' : 'password'}
-                    value={apiKey.data}
-                    onChange={handleApiKeyChange}
-                    endAdornment={
-                      <InputAdornment position="end">
-                        <IconButton
-                          aria-label="toggle password visibility"
-                          onClick={() => setShowApiKey(!showApiKey)}
-                          onMouseDown={() => setShowApiKey(!showApiKey)}
-                          size="large">
-                          {showApiKey ? <Visibility/> : <VisibilityOff/>}
-                        </IconButton>
-                      </InputAdornment>
-                    }
-                  />
-                </FormControl>
-                <Button onClick={saveForvoApiKey}>
-                  Save
-                </Button>
-              </>
-          }
-        </Box>
-
-        <Divider/>
-        <Box m={1}>
-          <Typography variant="h5">
-            Audio Export
-          </Typography>
-          <Typography variant="body1">
-            Japanese Accent Practice can export audio practice files for playback on your mobile device or music player
-
-          </Typography>
-
-          {
-            audioExportPath === "loading" ?
-              <>loading...</> :
-              <>
-                <FormControl>
-                  <Input
-                    value={audioExportPath.data}
-                    onChange={handleAudioExportPathChange}
-                  />
-                </FormControl>
-                <Button onClick={saveExportPath}>
-                  Save
-                </Button>
-              </>
-          }
-        </Box>
-
-        <Divider/>
-        <Box m={1}>
-          <Typography variant="h5">
-            Debug Tools
-          </Typography>
-          Playlists are generated based on your practice activity and Boosting of individual study items. Click here to
-          refresh these metrics.
-          <Button onClick={refreshMetrics}>
-            Refresh Metrics
-          </Button>
-        </Box>
-
+        <Loader callback={api.settings.GET} into={LoadedDialog}/>
       </DialogContent>
       <DialogActions>
         {/*<Button onClick={save} disabled={preview === null}>*/}

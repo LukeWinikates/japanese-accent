@@ -4,9 +4,9 @@ import Grid from "@mui/material/Grid";
 import {WordList} from "../../api/types";
 import {WordListList} from "./WordListList";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
-function LoadedContent({value}: { value: WordList[] }) {
+function LoadedContent({value}: Settable<WordList[]>) {
   return (
     <WordListList wordLists={value}/>
   )

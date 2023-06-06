@@ -5,7 +5,7 @@ import {Waveform} from "../api/types";
 import {Range} from '../App/time'
 import {DrawBackground, DrawWaveform} from "./canvas";
 import {msToPctOfRange} from "./position";
-import {Loader} from "../App/Loader";
+import {Loader, Settable} from "../App/Loader";
 import {useBackendAPI} from "../App/useBackendAPI";
 import {ClipResizer} from "../Pages/YouTube/ClipResizer";
 
@@ -67,19 +67,22 @@ export function ClipResizingWaveform<T extends ClipWithRange>({
     [api.waveform, segment.videoUuid]
   );
 
-  const Into = useCallback(({value}: { value: Waveform }) => {
-    const setRange = (r: Range) => {
-      setSegment({
-        ...segment,
-        startMS: r.startMS,
-        endMS: r.endMS
-      })
+  const Into = useCallback(({value}: Settable<Waveform>) => {
+      const setRange = (r: Range) => {
+        setSegment({
+          ...segment,
+          startMS: r.startMS,
+          endMS: r.endMS
+        })
+      }
+      return (
+        <ResizingWaveform range={segment} waveform={value} setRange={setRange} onStartResizing={onStartResizing}
+                          playerPositionMS={playerPositionMS}/>
+      );
     }
-    return (
-      <ResizingWaveform range={segment} waveform={value} setRange={setRange} onStartResizing={onStartResizing}
-                        playerPositionMS={playerPositionMS}/>
-    );
-  }, [segment, onStartResizing, playerPositionMS, setSegment])
+    ,
+    [segment, onStartResizing, playerPositionMS, setSegment]
+  )
 
   return (
     <Loader callback={callback} into={Into}/>

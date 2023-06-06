@@ -2,10 +2,10 @@ import React, {useCallback} from 'react';
 import {YouTubeVideoEditor} from "./YouTubeVideoEditor";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 import {Video} from "../../api/types";
 
-const Into = ({value, setValue}: { value: Video, setValue: (value: Video) => void }) => {
+const Into = ({value, setValue}: Settable<Video>) => {
   return <YouTubeVideoEditor video={value} onVideoChange={setValue}/>
 }
 

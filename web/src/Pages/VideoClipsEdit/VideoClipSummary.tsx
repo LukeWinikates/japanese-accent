@@ -4,14 +4,14 @@ import {MiniWaveform} from "./MiniWaveform";
 import React, {useCallback} from "react";
 import {Video, VideoAdvice, Waveform} from "../../api/types";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
 declare type Props = {
   video: Video,
   advice: VideoAdvice
 }
 
-function LoadedWaveform({value}: { value: Waveform }) {
+function LoadedWaveform({value}: Settable<Waveform>) {
   return <MiniWaveform samples={value.samples} sampleRate={value.sampleRate}
                        playerPositionMS={0} initWidth={740}/>
 }

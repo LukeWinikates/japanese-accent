@@ -17,9 +17,9 @@ import {WordMoraSVG} from "../../VocabularyPractice/MoraSVG";
 import {WordList} from "../../api/types";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
-function LoadedPage({value}: { value: WordList }) {
+function LoadedPage({value}: Settable<WordList>) {
   return (
     <Box m={2}>
       <Container maxWidth='lg'>

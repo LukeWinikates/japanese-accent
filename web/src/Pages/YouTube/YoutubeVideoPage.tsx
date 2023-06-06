@@ -4,9 +4,9 @@ import {PendingYouTubeVideo} from "./PendingYouTubeVideo";
 import {LoadedYouTubeVideo} from "./LoadedYouTubeVideo";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
-function Loaded({value, setValue}: { value: Video, setValue: (value: Video) => void }) {
+function Loaded({value, setValue}: Settable<Video>) {
   if (!value.files.hasMediaFile) {
     return (
       <PendingYouTubeVideo video={value}/>
@@ -24,7 +24,7 @@ export const YoutubeVideoPage = () => {
   const {id} = useParams<PageParams>() as PageParams;
   const api = useBackendAPI();
 
-  const callback = useCallback(()=> {
+  const callback = useCallback(() => {
     return api.videos.GET(id)
   }, [id, api.videos])
 

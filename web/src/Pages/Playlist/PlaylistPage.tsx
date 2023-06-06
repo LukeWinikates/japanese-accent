@@ -4,11 +4,11 @@ import {Typography} from "@mui/material";
 import {LoadedPlaylistContent} from "./LoadedPlaylistContent";
 import {useParams} from "react-router-dom";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
 type PageParams = { id: string };
 
-const LoadedPage = ({value, setValue}: { value: Playlist, setValue: (value: Playlist) => void }) => {
+const LoadedPage = ({value, setValue}: Settable<Playlist>) => {
   return (
     <>
       <Typography>

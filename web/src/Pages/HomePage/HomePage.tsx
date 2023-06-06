@@ -8,9 +8,9 @@ import {YouTubeVideoAddModal} from "./YouTubeVideoAddModal";
 import {VideoList} from "../VideosIndex/VideoList";
 import {WordListList} from "../WordList/WordListList";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
-function LoadedHomePage({value}: { value: Highlights }) {
+function LoadedHomePage({value}: Settable<Highlights>) {
   return (
     <Box paddingY={2} margin={0}>
       <Grid container spacing={1}>

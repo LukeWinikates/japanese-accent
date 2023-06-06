@@ -2,9 +2,9 @@ import {WordAnalysis} from "../api/types";
 import React, {useCallback} from "react";
 import {useBackendAPI} from "../App/useBackendAPI";
 import {PagingDictaphone} from "./PagingDictaphone";
-import {Loader} from "../App/Loader";
+import {Loader, Settable} from "../App/Loader";
 
-const Into = function ({value}: { value: WordAnalysis }) {
+const Into = function ({value}: Settable<WordAnalysis>) {
   return (
     <PagingDictaphone items={value.audio}/>
   )

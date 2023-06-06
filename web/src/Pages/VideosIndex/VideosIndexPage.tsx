@@ -4,9 +4,9 @@ import Grid from "@mui/material/Grid";
 import {VideoSummary} from "../../api/types";
 import {VideoList} from "./VideoList";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
-function LoadedIndexPage({value}: { value: VideoSummary[] }) {
+function LoadedIndexPage({value}: Settable<VideoSummary[]>) {
   return (
     <>
       <Box m={2}>

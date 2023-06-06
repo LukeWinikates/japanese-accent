@@ -6,14 +6,14 @@ import YoutubeIcon from '@mui/icons-material/YouTube';
 import NotesIcon from '@mui/icons-material/Notes';
 import {Link as RouterLink} from "react-router-dom";
 import {useBackendAPI} from "../App/useBackendAPI";
-import {Loader} from "../App/Loader";
+import {Loader, Settable} from "../App/Loader";
 
 type AppDrawerProps = {
   open: boolean,
   onClose: () => void,
 }
 
-function LoadedDrawer({value}: { value: Highlights }) {
+function LoadedDrawer({value}: Settable<Highlights>) {
   return (
     <>
       <List>

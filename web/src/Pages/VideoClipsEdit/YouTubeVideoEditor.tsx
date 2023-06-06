@@ -9,7 +9,7 @@ import Mic from "@mui/icons-material/Mic";
 import ListenIcon from '@mui/icons-material/Hearing';
 import {VideoClipSummary} from "./VideoClipSummary";
 import {useBackendAPI} from "../../App/useBackendAPI";
-import {Loader} from "../../App/Loader";
+import {Loader, Settable} from "../../App/Loader";
 
 function LoadedEditor({
                         video,
@@ -80,7 +80,7 @@ export const YouTubeVideoEditor = ({video}: { video: Video, onVideoChange: (v: V
   const api = useBackendAPI();
 
   const callback = useCallback(() => api.videos.advice.GET(video.videoId), [video.videoId, api.videos.advice])
-  const Into = useCallback((props: { value: VideoAdvice, setValue: (value: VideoAdvice) => void }) => {
+  const Into = useCallback((props: Settable<VideoAdvice>) => {
     return (<LoadedEditor video={video} {...props} />)
   }, [video])
 
