@@ -34,7 +34,7 @@ export declare type PlayerProps = {
   onPlaybackEnded?: () => void
   playing: boolean
   onPlayerStateChanged: (playing: boolean) => void,
-  preferredStartTime?: number
+  preferredStartTime?: number | undefined
   onPositionChange?: (ms: number) => void,
 };
 
@@ -93,7 +93,7 @@ export const Player = ({
     if (checkIsComplete()) {
       audioRef.current?.pause();
       onPlayerStateChanged(false);
-      onPlaybackEnded();
+      onPlaybackEnded?.();
       rewindStart();
     }
   }

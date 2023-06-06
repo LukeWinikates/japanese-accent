@@ -1,19 +1,19 @@
-import React, {useEffect, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import {Waveform} from "../api/types";
 import {Range} from '../App/time'
-import {Loadable} from "../App/loadable";
-import {Segment} from "../Pages/YouTube/Segment";
 import {DrawBackground, DrawWaveform} from "./canvas";
 import {msToPctOfRange} from "./position";
+import {Loader} from "../App/Loader";
+import {useBackendAPI} from "../App/useBackendAPI";
+import {ClipResizer} from "../Pages/YouTube/ClipResizer";
 
 const TOP_HEIGHT = 50;
 const SCRUBBER_HEIGHT = 5;
 const SCRUBBER_HANDLE_HEIGHT = 25;
 const CONTAINER_HEIGHT = TOP_HEIGHT + SCRUBBER_HEIGHT + SCRUBBER_HANDLE_HEIGHT;
 
-// TODO: memoize the load function
 const useStyles = makeStyles()((theme) => ({
   playHeadTop: {
     position: "absolute",
@@ -36,25 +36,65 @@ const useStyles = makeStyles()((theme) => ({
   }
 }));
 
+interface ClipWithRange extends Range {
+  videoUuid: string
+}
 
-type Props = {
-  range: Range
-  setRange: (r: Range) => void
-  onLoadWaveform: () => Promise<Waveform>,
+type ClipResizingWaveformProps<T extends ClipWithRange> = {
+  segment: T
+  setSegment: (s: T) => void
   onStartResizing: () => void,
   playerPositionMS: number,
 }
 
+type ResizingWaveformProps = {
+  range: Range
+  setRange: (r: Range) => void
+  onStartResizing: () => void,
+  playerPositionMS: number,
+  waveform: Waveform
+}
+
+export function ClipResizingWaveform<T extends ClipWithRange>({
+                                                                segment,
+                                                                setSegment,
+                                                                playerPositionMS,
+                                                                onStartResizing
+                                                              }: ClipResizingWaveformProps<T>) {
+  const api = useBackendAPI();
+  const callback = useCallback(() =>
+      api.waveform.GET(segment.videoUuid, 8000),
+    [api.waveform, segment.videoUuid]
+  );
+
+  const Into = useCallback(({value}: { value: Waveform }) => {
+    const setRange = (r: Range) => {
+      setSegment({
+        ...segment,
+        startMS: r.startMS,
+        endMS: r.endMS
+      })
+    }
+    return (
+      <ResizingWaveform range={segment} waveform={value} setRange={setRange} onStartResizing={onStartResizing}
+                        playerPositionMS={playerPositionMS}/>
+    );
+  }, [segment, onStartResizing, playerPositionMS, setSegment])
+
+  return (
+    <Loader callback={callback} into={Into}/>
+  )
+}
+
 export function ResizingWaveform({
-                                   onLoadWaveform,
+                                   waveform,
                                    range,
-                                   playerPositionMS,
-                                    setRange
-                                 }: Props) {
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+                                   setRange,
+                                   playerPositionMS
+                                 }: ResizingWaveformProps) {
+  const canvasRef = useRef<HTMLCanvasElement>(null!)
   const [canvasWidth, setCanvasWidth] = useState<number | null>(null)
   const theme = useTheme();
-  const [waveform, setWaveform] = useState<Loadable<Waveform>>("loading")
   const [totalMS, setTotalMS] = useState<number>(0)
 
   const {classes} = useStyles();
@@ -72,11 +112,8 @@ export function ResizingWaveform({
 
   useEffect(() => {
     setCanvasWidth(canvasRef.current?.parentElement?.clientWidth || null)
-    onLoadWaveform().then(w => {
-      setWaveform({data: w});
-      setTotalMS(w.samples.length / w.sampleRate * 1000);
-    })
-  }, [onLoadWaveform])
+    setTotalMS(waveform.samples.length / waveform.sampleRate * 1000);
+  }, [waveform])
 
 
   const backgroundColor = theme.palette.grey.A200;
@@ -89,7 +126,7 @@ export function ResizingWaveform({
       return waveform.samples.slice(firstIndex, lastIndex)
     }
 
-    if (waveform === "loading" || !canvasWidth) {
+    if (!canvasWidth) {
       return;
     }
     const canvas = canvasRef.current
@@ -98,7 +135,7 @@ export function ResizingWaveform({
       return
     }
     const {width} = context.canvas;
-    let samples = inRange(waveform.data);
+    let samples = inRange(waveform);
     const sampleWidth = width / samples.length
     DrawBackground(context, width, TOP_HEIGHT, backgroundColor);
     DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, waveformColor);
@@ -130,10 +167,10 @@ export function ResizingWaveform({
 
   return (
     <div className={classes.waveFormContainer}>
-      <canvas ref={canvasRef} height={TOP_HEIGHT} width={canvasWidth || 0}/>
+      <canvas ref={canvasRef!} height={TOP_HEIGHT} width={canvasWidth || 0}/>
       <div className={classes.playHeadTop} style={{left: msToPx(playerPositionMS)}}/>
 
-      <Segment
+      <ClipResizer
         segment={range}
         updateSegment={setRange}
         pixelsToMS={pxToMS}

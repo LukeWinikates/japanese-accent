@@ -33,7 +33,7 @@ type Props = {
   pixelsToMS: (px: number) => number,
 };
 
-export function Segment({
+export function ClipResizer({
                           segment,
                           updateSegment,
                           msToPixels,

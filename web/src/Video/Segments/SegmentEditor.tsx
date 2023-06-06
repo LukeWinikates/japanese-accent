@@ -3,10 +3,9 @@ import {Button, TextField} from "@mui/material";
 
 import {Player} from "../../Dictaphone/Player";
 import {TimeInput} from "./TimeInput";
-import {msToHumanReadable, Range} from "../../App/time";
+import {msToHumanReadable} from "../../App/time";
 import audioURL from "../../App/audioURL";
-import {ResizingWaveform} from "../../Waveform/ResizingWaveform";
-import {useBackendAPI} from "../../App/useBackendAPI";
+import {ClipResizingWaveform} from "../../Waveform/ResizingWaveform";
 
 interface Segmentish {
   startMS: number;
@@ -32,8 +31,6 @@ export function SegmentEditor<T extends Segmentish>({
   const [preferredStartTime, setPreferredStartTime] = useState<number | undefined>(undefined);
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
   const [playerPositionMS, setPlayerPositionMS] = useState(0);
-
-  const api = useBackendAPI();
 
   useEffect(() => {
     setSegmentIsPlaying(false);
@@ -72,22 +69,13 @@ export function SegmentEditor<T extends Segmentish>({
     setPlayerStartDebounce(new Date())
   };
 
-  const setRange = (r: Range) => {
-    setSegment({
-      ...segment,
-      startMS: r.startMS,
-      endMS: r.endMS
-    })
-  }
-
   return (
     <>
-      <ResizingWaveform
-        onLoadWaveform={() => api.waveform.GET(segment.videoUuid, 8000).then(r => r.data)}
-        range={{startMS: segment.startMS, endMS: segment.endMS}}
+      <ClipResizingWaveform
+        segment={segment}
+        setSegment={setSegment}
         playerPositionMS={playerPositionMS}
         onStartResizing={() => setSegmentIsPlaying(false)}
-        setRange={setRange}
       />
 
       <Player src={audioURL(segment)}
