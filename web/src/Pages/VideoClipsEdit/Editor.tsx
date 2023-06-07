@@ -7,28 +7,46 @@ import DoneIcon from '@mui/icons-material/Done';
 import {ARE_ADVICE} from "./segment";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
+type GoodEnough = Segment | SuggestedSegment;
+
 type Props = {
   videoId: string,
-  parentUuid: string | null,
-  segment: Segment | SuggestedSegment,
-  setSegment: (s: Segment | SuggestedSegment) => void
-  onDelete: (s: SuggestedSegment) => void
+  segment: GoodEnough,
+  setSegment: (s: GoodEnough) => void
+  onDelete: (s: GoodEnough) => void
 };
 
-export const Editor = ({segment, setSegment, videoId, parentUuid, onDelete}: Props) => {
+export const Editor = ({segment, setSegment, videoId, onDelete}: Props) => {
   const api = useBackendAPI();
   const saveClip = useCallback(() => {
-    const apiCall = segment.labels.some(ARE_ADVICE) ? api.videos.clips.POST : api.videos.clips.PUT;
-    apiCall(videoId, {
-      ...segment,
-      parent: segment.labels.some(ARE_ADVICE) ? segment.uuid : parentUuid
-    });
-  }, [segment, videoId, parentUuid, api.videos.clips]);
+    if (segment.labels.some(ARE_ADVICE)) {
+      return api.videos.clips.POST(videoId, {
+        endMS: segment.endMS,
+        labels: [],
+        startMS: segment.startMS,
+        text: segment.text,
+        videoUuid: segment.videoUuid,
+        parent: segment.uuid
+      })
+    }
 
-  // TODO: this can delete real clips
+    return api.videos.clips.PUT(videoId, {
+      uuid: segment.uuid,
+      endMS: segment.endMS,
+      labels: [],
+      startMS: segment.startMS,
+      text: segment.text,
+      videoUuid: segment.videoUuid
+    })
+  }, [segment, videoId, api.videos.clips]);
+
   const hideSuggestedClip = useCallback(() => {
-    api.videos.advice.suggestedClips.DELETE(videoId, segment.uuid).then(() => onDelete(segment))
-  }, [segment, videoId, onDelete, api.videos.advice.suggestedClips]);
+    if (segment.labels.some(ARE_ADVICE)) {
+      return api.videos.advice.suggestedClips.DELETE(videoId, segment.uuid)
+        .then(() => onDelete(segment));
+    }
+    return api.videos.clips.DELETE(videoId, segment.uuid).then(() => onDelete(segment))
+  }, [segment, videoId, onDelete, api.videos.advice.suggestedClips, api.videos.clips]);
 
   return (
     <>

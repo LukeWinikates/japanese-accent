@@ -11,12 +11,15 @@ import {VideoClipSummary} from "./VideoClipSummary";
 import {useBackendAPI} from "../../App/useBackendAPI";
 import {Loader, Settable} from "../../App/Loader";
 
-function LoadedEditor({
-                        video,
-                        value,
-                        setValue
-                      }: { video: Video, value: VideoAdvice, setValue: (value: VideoAdvice) => void }) {
-  let muteSuggestion = (segmentToMute: SuggestedSegment) => {
+type LoadedEditorProps = {
+  video: Video,
+  setVideo: (v: Video) => void,
+  value: VideoAdvice,
+  setValue: (value: VideoAdvice) => void
+};
+
+function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
+  let muteSuggestion = useCallback((segmentToMute: SuggestedSegment) => {
     let newSuggestions = [...value.suggestedSegments];
 
     newSuggestions.splice(newSuggestions.findIndex(testSegment => testSegment.uuid === segmentToMute.uuid), 1, {
@@ -28,7 +31,17 @@ function LoadedEditor({
       ...value,
       suggestedSegments: newSuggestions
     })
-  };
+  }, [value, setValue]);
+
+  let removeClip = useCallback((clip: SuggestedSegment) => {
+    let newClips = [...video.segments];
+    newClips.splice(newClips.findIndex(testSegment => testSegment.uuid === clip.uuid), 1)
+
+    setVideo({
+      ...video,
+      segments: newClips
+    })
+  }, [video, setVideo]);
 
   return (
     <>
@@ -68,12 +81,13 @@ function LoadedEditor({
                      advice={value}
                      video={video}
                      muteSuggestion={muteSuggestion}
+                     removeClip={removeClip}
       />
     </>
   );
 }
 
-export const YouTubeVideoEditor = ({video}: { video: Video, onVideoChange: (v: Video) => void }) => {
+export const YouTubeVideoEditor = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   if (!video.files.hasMediaFile) {
     throw new Error("invalid condition")
   }
@@ -81,8 +95,8 @@ export const YouTubeVideoEditor = ({video}: { video: Video, onVideoChange: (v: V
 
   const callback = useCallback(() => api.videos.advice.GET(video.videoId), [video.videoId, api.videos.advice])
   const Into = useCallback((props: Settable<VideoAdvice>) => {
-    return (<LoadedEditor video={video} {...props} />)
-  }, [video])
+    return (<LoadedEditor video={video} setVideo={onVideoChange} {...props} />)
+  }, [video, onVideoChange])
 
   return (
     <Box m={2}>

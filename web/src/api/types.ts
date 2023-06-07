@@ -38,15 +38,15 @@ export declare type Pitch = {
 }
 
 export declare type Segment = {
-  startMS: number,
   endMS: number,
+  labels: SegmentLabel[],
+  lastActivityAt: Date
+  parent: string | null
+  pitch: Pitch
+  startMS: number,
   text: string,
   uuid: string,
   videoUuid: string,
-  lastActivityAt: Date
-  pitch: Pitch
-  labels: SegmentLabel[],
-  parent: string | null
 };
 
 export declare type SuggestedSegment = {
@@ -129,7 +129,7 @@ export type ClipsPostBody = {
   startMS: number;
   endMS: number;
   text: string
-  parent: string | null,
+  parent?: string | null,
   labels: string[]
 };
 
@@ -139,7 +139,7 @@ export type ClipsPutBody = {
   startMS: number;
   endMS: number;
   text: string
-  parent: string | null,
+  parent?: string | null,
   labels: string[]
 };
 

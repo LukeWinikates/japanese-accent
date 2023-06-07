@@ -14,9 +14,10 @@ type Props = {
   video: Video,
   videoUuid: string,
   muteSuggestion: (segment: SuggestedSegment) => void,
+  removeClip: (segment: SuggestedSegment) => void,
 }
 
-export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props) {
+export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip}: Props) {
   const [selectedSegment, setSelectedSegment] = useState<Segment | SuggestedSegment | null>(null);//advice.suggestedSegments[0]);
   const [showMuted, setShowMuted] = useState<boolean>(false);
   const api = useBackendAPI();
@@ -50,7 +51,8 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props)
       return api.videos.advice.suggestedClips.DELETE(video.videoId, segment.uuid)
         .then(() => muteSuggestion(segment));
     }
-    console.log("no delete implementation for true segments yet")
+    return api.videos.clips.DELETE(video.videoId, segment.uuid)
+      .then(() => removeClip(segment));
     // return videoSegmentDELETE(video.videoId, segment as Segment)
   }
 
@@ -85,7 +87,6 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion}: Props)
               <Editor
                 segment={selectedSegment}
                 setSegment={setSelectedSegment}
-                parentUuid={selectedSegment.uuid}
                 videoId={videoUuid}
                 onDelete={muteSuggestion}
               />

@@ -1,6 +1,6 @@
 import {Segment, SegmentLabel, SuggestedSegment} from "../../api/types";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
-import React, {CSSProperties} from "react";
+import React, {CSSProperties, useCallback} from "react";
 import {IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAction, Tooltip} from "@mui/material";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';
 import {makeStyles} from 'tss-react/mui';
@@ -31,7 +31,6 @@ export const sizeForSegment = (segment: Segment | SuggestedSegment, showMuted: b
     52
 }
 
-
 type Params = {
   segment: Segment | SuggestedSegment,
   setSelectedSegment: (s: Segment | SuggestedSegment) => void,
@@ -42,7 +41,7 @@ type Params = {
   onDelete: (s: Segment | SuggestedSegment) => void,
 };
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles<{}>()((theme) => ({
   muted: {
     backgroundColor: theme.palette.grey.A400,
     overflow: "hidden",
@@ -60,8 +59,7 @@ const useStyles = makeStyles()((theme) => ({
 }));
 
 export function MutedListItem({segment, setSelectedSegment, selected, index, style, showMuted}: Params) {
-
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
 
   const classNames = [classes.muted, showMuted ? null : classes.zeroHeight].join(" ")
 
@@ -77,7 +75,10 @@ export function MutedListItem({segment, setSelectedSegment, selected, index, sty
 
 
 export function SuggestedListItem({segment, setSelectedSegment, selected, onDelete, style}: Params) {
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
+  const deleteCallback = useCallback(() => {
+    onDelete(segment)
+  }, [onDelete, segment])
 
   return (
     <ListItemButton divider={true} style={style} key={segment.uuid} selected={selected} className={classes.suggestion}
@@ -90,8 +91,8 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
         primary={`${rangeToHumanReadable(segment.startMS, segment.endMS)}`}
         secondary={segment.text}>
       </ListItemText>
-      <IconButton edge="end" aria-label="delete" size="large">
-        <DeleteIcon　onClick={() => onDelete(segment)}/>
+      <IconButton onClick={deleteCallback} edge="end" aria-label="delete" size="large">
+        <DeleteIcon/>
       </IconButton>
     </ListItemButton>
   )
@@ -99,7 +100,7 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
 
 
 export function DraftListItem({segment, setSelectedSegment, selected, index, style}: Params) {
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
 
   return (
     <ListItemButton style={style} key={segment.uuid} selected={selected}
