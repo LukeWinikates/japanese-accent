@@ -14,7 +14,7 @@ const SCRUBBER_HEIGHT = 5;
 const SCRUBBER_HANDLE_HEIGHT = 25;
 const CONTAINER_HEIGHT = TOP_HEIGHT + SCRUBBER_HEIGHT + SCRUBBER_HANDLE_HEIGHT;
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles<{}>()((theme) => ({
   playHeadTop: {
     position: "absolute",
     top: 0,
@@ -66,15 +66,15 @@ export function ClipResizingWaveform<T extends ClipWithRange>({
       api.waveform.GET(segment.videoUuid, 8000),
     [api.waveform, segment.videoUuid]
   );
+  const setRange = useCallback((r: Range) => {
+    setSegment({
+      ...segment,
+      startMS: r.startMS,
+      endMS: r.endMS
+    })
+  }, [setSegment]);
 
   const Into = useCallback(({value}: Settable<Waveform>) => {
-      const setRange = (r: Range) => {
-        setSegment({
-          ...segment,
-          startMS: r.startMS,
-          endMS: r.endMS
-        })
-      }
       return (
         <ResizingWaveform range={segment} waveform={value} setRange={setRange} onStartResizing={onStartResizing}
                           playerPositionMS={playerPositionMS}/>
@@ -100,7 +100,7 @@ export function ResizingWaveform({
   const theme = useTheme();
   const [totalMS, setTotalMS] = useState<number>(0)
 
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
 
   let RESIZER_PADDING_MS = 2000;
 
