@@ -1,11 +1,11 @@
 import {Video} from "../../api/types";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import FileCopyIcon from '@mui/icons-material/FileCopy';
 import {Container, IconButton, Paper, Typography} from "@mui/material";
 
 import {makeStyles} from 'tss-react/mui';
 
-const useStyles = makeStyles()((theme) => (
+const useStyles = makeStyles<{}>()((theme) => (
   {
     buttonContainer: {
       textAlign: "right"
@@ -20,15 +20,15 @@ const useStyles = makeStyles()((theme) => (
 ));
 
 const CopyableText = ({text}: { text: string }) => {
-
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
   const [feedback, setFeedback] = useState(false);
-  const showCopiedFeedback = () => {
+  const showCopiedFeedback = useCallback(() => {
     setFeedback(true)
-  }
-  const copy = () => {
+  }, [setFeedback]);
+
+  const copy = useCallback(() => {
     navigator.clipboard.writeText(text).then(showCopiedFeedback)
-  }
+  }, [text, showCopiedFeedback]);
 
   useEffect(() => {
     if (!feedback) {
@@ -66,7 +66,7 @@ const CopyableText = ({text}: { text: string }) => {
 export const PendingYouTubeVideo = ({video}: { video: Video }) => {
   let youtubeDLCommandText = "youtube-dl --write-auto-sub -f m4a \\\n\t" +
     "-o '%(id)s.%(ext)s' -k --sub-lang ja \\\n\t" +
-      `https://www.youtube.com/watch?v=${video.videoId}`;
+    `https://www.youtube.com/watch?v=${video.videoId}`;
 
   return (
     <Container maxWidth='sm'>
