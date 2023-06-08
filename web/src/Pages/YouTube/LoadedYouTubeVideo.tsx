@@ -1,5 +1,5 @@
 import {Segment, Video} from "../../api/types";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@mui/material";
 import YouTubeIcon from '@mui/icons-material/YouTube';
 import LaunchIcon from '@mui/icons-material/Launch';
@@ -14,12 +14,16 @@ type TabTypes = "segments" | "words" | "notes";
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const [activeTab, setActiveTab] = useState<TabTypes>("segments");
 
-  function setVideoSegments(newSegments: Segment[]) {
+  const setVideoSegments = useCallback((newSegments: Segment[]) => {
     onVideoChange({
       ...video,
       segments: newSegments
     });
-  }
+  }, [onVideoChange, video]);
+
+  const onChange = useCallback((_: React.SyntheticEvent<Element, Event>, value : TabTypes) => {
+    setActiveTab(value);
+  }, [setActiveTab]);
 
   return (
     <Box m={2}>
@@ -49,7 +53,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         </Box>
         <Tabs
           value={activeTab}
-          onChange={(_, value) => setActiveTab(value)}
+          onChange={onChange}
           indicatorColor="primary"
           textColor="primary"
           centered
