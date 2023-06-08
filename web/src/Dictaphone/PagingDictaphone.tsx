@@ -1,5 +1,5 @@
 import {Audio} from "../api/types";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {WithIndex} from "../App/WithIndex";
 import {Typography} from "@mui/material";
 import {Dictaphone} from "./Dictaphone";
@@ -19,14 +19,14 @@ export function PagingDictaphone({items}: { items: Audio[] }) {
     })
   }, [items])
 
-  if (currentItem === null) {
-    return <>No items</>;
-  }
-
-  const setByIndex = (i: number) => {
+  const setByIndex = useCallback((i: number) => {
     setCurrentItem({
       index: i, value: items[i]
     })
+  }, [setCurrentItem, items]);
+
+  if (currentItem === null) {
+    return <>No items</>;
   }
 
   return (
