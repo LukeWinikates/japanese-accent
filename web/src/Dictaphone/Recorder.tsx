@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useCallback, useEffect} from 'react';
 
 import {styled} from '@mui/material/styles';
 
@@ -43,6 +43,11 @@ export declare type RecorderProps = {
 };
 
 export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingChange}: RecorderProps) => {
+  let onStop = useCallback((blobUrl: string, blob: Blob) => {
+    beforeRecord();
+    let newAudioRecording = {blobUrl, blob, timestamp: new Date()};
+    onNewRecording(newAudioRecording);
+  }, [beforeRecord, onNewRecording]);
 
   const {
     status,
@@ -50,11 +55,7 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
     stopRecording,
   } = useReactMediaRecorder({
     audio: true,
-    onStop: (blobUrl: string, blob: Blob) => {
-      beforeRecord();
-      let newAudioRecording = {blobUrl, blob, timestamp: new Date()};
-      onNewRecording(newAudioRecording);
-    }
+    onStop: onStop
   });
 
   useEffect(() => {
@@ -67,9 +68,9 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
     }
   }, [recording, beforeRecord, startRecording, status, stopRecording])
 
-  const toggle = () => {
+  const toggle = useCallback(() => {
     onRecordingChange(!recording);
-  };
+  }, [onRecordingChange, recording]);
 
   const RecordStopButton = status === 'recording' ? StopIcon : RadioButtonCheckedIcon;
   return (
