@@ -67,7 +67,7 @@ export function SegmentEditor<T extends Segmentish>({
     });
     setPreferredStartTime(newEnd - 1000);
     setPlayerStartDebounce(new Date())
-  }, [setPreferredStartTime, setPlayerStartDebounce]);
+  }, [setPreferredStartTime, setPlayerStartDebounce, segment, setSegment]);
 
   const duration = useMemo(() => {
     return {
