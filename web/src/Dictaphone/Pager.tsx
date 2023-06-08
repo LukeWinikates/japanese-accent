@@ -1,5 +1,5 @@
 import {Button, Grid} from "@mui/material";
-import React from "react";
+import React, {useCallback} from "react";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
@@ -11,11 +11,14 @@ type Props = {
 };
 
 export const Pager = ({currentIndex, setByIndex, maxIndex, betweenElement}: Props) => {
+  let backOnePage = useCallback(() => setByIndex(currentIndex - 1), [currentIndex, setByIndex]);
+  let aheadOnePage = useCallback(() => setByIndex(currentIndex + 1), [currentIndex, setByIndex]);
+
   return (
     <Grid container item xs={12} justifyContent="space-between">
       <Grid item xs={1}>
         <Button disabled={currentIndex === 0}
-                onClick={() => setByIndex(currentIndex - 1)}
+                onClick={backOnePage}
                 startIcon={<SkipPreviousIcon/>}>
           Previous
         </Button>
@@ -25,7 +28,7 @@ export const Pager = ({currentIndex, setByIndex, maxIndex, betweenElement}: Prop
 
       <Grid item xs={1}>
         <Button disabled={currentIndex === maxIndex}
-                onClick={() => setByIndex(currentIndex + 1)}
+                onClick={aheadOnePage}
                 endIcon={<SkipNextIcon/>}>
           Next
         </Button>
