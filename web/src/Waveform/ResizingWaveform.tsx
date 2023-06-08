@@ -81,7 +81,7 @@ export function ClipResizingWaveform<T extends ClipWithRange>({
       );
     }
     ,
-    [segment, onStartResizing, playerPositionMS, setSegment, setRange]
+    [segment, onStartResizing, playerPositionMS, setRange]
   )
 
   return (
