@@ -72,7 +72,7 @@ export function ClipResizingWaveform<T extends ClipWithRange>({
       startMS: r.startMS,
       endMS: r.endMS
     })
-  }, [setSegment]);
+  }, [setSegment, segment]);
 
   const Into = useCallback(({value}: Settable<Waveform>) => {
       return (
@@ -81,7 +81,7 @@ export function ClipResizingWaveform<T extends ClipWithRange>({
       );
     }
     ,
-    [segment, onStartResizing, playerPositionMS, setSegment]
+    [segment, onStartResizing, playerPositionMS, setSegment, setRange]
   )
 
   return (

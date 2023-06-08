@@ -1,4 +1,4 @@
-import React, {useCallback, useRef} from "react";
+import React, {useRef} from "react";
 import {Button} from "@mui/material";
 
 declare type SuzukiButtonProps = {
@@ -14,10 +14,6 @@ export function SuzukiButton(props: SuzukiButtonProps) {
     text
   } = props;
   const formEl = useRef<HTMLFormElement>(null!);
-
-  const submitForm = useCallback(() => {
-    formEl.current?.submit();
-  }, [formEl.current]);
 
   return (<form action={BASE_URL} method="post" target="_blank" ref={formEl}>
       <input type="hidden"
@@ -44,7 +40,7 @@ export function SuzukiButton(props: SuzukiButtonProps) {
           />)
         })
       }
-      <Button onClick={submitForm} variant="contained"
+      <Button onClick={formEl.current?.submit} variant="contained"
               color="secondary">
         {text}
       </Button>
