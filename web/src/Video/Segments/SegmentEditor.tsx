@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useCallback, useEffect, useMemo, useState} from 'react';
 import {Button, TextField} from "@mui/material";
 
 import {Player} from "../../Dictaphone/Player";
@@ -44,30 +44,42 @@ export function SegmentEditor<T extends Segmentish>({
   }, [playerStartDebounce])
 
 
-  const handleTextChange = (text: string) => {
+  const handleTextChange = useCallback((text: string) => {
     setSegment({
       ...segment,
       text
     });
-  };
+  }, [segment, setSegment]);
 
-  const handleStartChange = (newStart: number) => {
+  const handleStartChange = useCallback((newStart: number) => {
     const end = newStart >= segment.endMS ? newStart + 1000 : segment.endMS
     setSegment({
       ...segment,
       startMS: newStart,
       endMS: end
     });
-  };
+  }, [segment, setSegment]);
 
-  const handleEndChange = (newEnd: number) => {
+  const handleEndChange = useCallback((newEnd: number) => {
     setSegment({
       ...segment,
       endMS: newEnd
     });
     setPreferredStartTime(newEnd - 1000);
     setPlayerStartDebounce(new Date())
-  };
+  }, [setPreferredStartTime, setPlayerStartDebounce]);
+
+  const duration = useMemo(() => {
+    return {
+      startSec: segment.startMS / 1000,
+      endSec: segment.endMS / 1000
+    }
+  }, [segment.endMS, segment.startMS]);
+  const onPlaybackEnded = useCallback(() => setSegmentIsPlaying(false), [setSegmentIsPlaying]);
+
+  let alignPrevious = useCallback(() => previousSegmentEnd && handleStartChange(previousSegmentEnd), [handleStartChange, previousSegmentEnd]);
+  let alignNext = useCallback(() => nextSegmentStart && handleEndChange(nextSegmentStart), [handleEndChange, nextSegmentStart]);
+  let onTextChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTextChange(event.target.value), [handleTextChange]);
 
   return (
     <>
@@ -75,32 +87,29 @@ export function SegmentEditor<T extends Segmentish>({
         segment={segment}
         setSegment={setSegment}
         playerPositionMS={playerPositionMS}
-        onStartResizing={() => setSegmentIsPlaying(false)}
+        onStartResizing={onPlaybackEnded}
       />
 
       <Player src={audioURL(segment)}
-              duration={{
-                startSec: segment.startMS / 1000,
-                endSec: segment.endMS / 1000
-              }}
+              duration={duration}
               playing={segmentIsPlaying}
               onPlayerStateChanged={setSegmentIsPlaying}
               preferredStartTime={preferredStartTime}
               onPositionChange={setPlayerPositionMS}
-              onPlaybackEnded={() => setSegmentIsPlaying(false)}
+              onPlaybackEnded={onPlaybackEnded}
       />
 
 
       <TimeInput label="Start" onChange={handleStartChange} value={segment.startMS}/>
       {
         previousSegmentEnd &&
-        <Button onClick={() => handleStartChange(previousSegmentEnd)}>
+        <Button onClick={alignPrevious}>
           Align Start to Previous Segment End: {msToHumanReadable(previousSegmentEnd)}
         </Button>
       }
       <TimeInput label="End" onChange={handleEndChange} value={segment.endMS}/>
       {nextSegmentStart &&
-        <Button onClick={() => handleEndChange(nextSegmentStart)}>
+        <Button onClick={alignNext}>
           Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}
         </Button>
       }
@@ -108,7 +117,7 @@ export function SegmentEditor<T extends Segmentish>({
       <TextField margin="normal"
                  value={segment.text} fullWidth={true}
                  multiline={true}
-                 onChange={(event) => handleTextChange(event.target.value)}/>
+                 onChange={onTextChange}/>
 
     </>
   );
