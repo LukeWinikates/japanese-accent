@@ -1,7 +1,7 @@
 import {AppBar as MuiAppBar, Badge, CircularProgress, IconButton, Toolbar, Typography} from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import SettingsIcon from '@mui/icons-material/Settings';
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {makeStyles} from 'tss-react/mui';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
@@ -9,7 +9,7 @@ import {Link} from "react-router-dom";
 import SettingsDialog from "./SettingsDialog"
 import {CSSObject} from "tss-react";
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles<{}>()((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -32,12 +32,16 @@ type AppBarProps = {
 };
 
 export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
   const [{events, pendingHttpRequests}] = useServerInteractionHistory();
   const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;
 
-  const openSettingsDialog = () => setSettingsDialogOpen(true)
+  const openSettingsDialog = useCallback(() => setSettingsDialogOpen(true),
+    [setSettingsDialogOpen]);
+
+  const closeSettingsDialog = useCallback(() => setSettingsDialogOpen(false),
+    [setSettingsDialogOpen]);
 
   return <>
     <MuiAppBar position="fixed">
@@ -82,6 +86,6 @@ export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
       </Toolbar>
     </MuiAppBar>
     <div className={classes.offset}/>
-    {isSettingsDialogOpen && <SettingsDialog onClose={() => setSettingsDialogOpen(false)}/>}
+    {isSettingsDialogOpen && <SettingsDialog onClose={closeSettingsDialog}/>}
   </>;
 }

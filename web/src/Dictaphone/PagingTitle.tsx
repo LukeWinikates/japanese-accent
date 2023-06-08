@@ -1,5 +1,5 @@
 import {Button, Grid, Typography} from "@mui/material";
-import React from "react";
+import React, {useCallback} from "react";
 import {Segment} from "../api/types";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
@@ -8,6 +8,8 @@ type Props = { segment: Segment, segments: Segment[], currentSegmentIndex: numbe
 export const PagingTitle = ({segment, segments, currentSegmentIndex, setSegmentByIndex}: Props) => {
   const lastSegmentIndex = segments.length - 1;
 
+  let advanceOne = useCallback(() => setSegmentByIndex(currentSegmentIndex + 1), [setSegmentByIndex, currentSegmentIndex]);
+  let backOne = useCallback(() => setSegmentByIndex(currentSegmentIndex - 1), [setSegmentByIndex, currentSegmentIndex]);
   return <>
     <Typography>
       #{currentSegmentIndex + 1} / {segments.length}
@@ -15,7 +17,7 @@ export const PagingTitle = ({segment, segments, currentSegmentIndex, setSegmentB
     <Grid container item xs={12} spacing={1} justifyContent="space-between">
       <Grid item xs={1}>
         <Button disabled={currentSegmentIndex === 0}
-                onClick={() => setSegmentByIndex(currentSegmentIndex - 1)}
+                onClick={backOne}
                 startIcon={<SkipPreviousIcon/>}>
           Previous
         </Button>
@@ -27,7 +29,7 @@ export const PagingTitle = ({segment, segments, currentSegmentIndex, setSegmentB
       </Grid>
       <Grid item xs={1}>
         <Button disabled={currentSegmentIndex === lastSegmentIndex}
-                onClick={() => setSegmentByIndex(currentSegmentIndex + 1)}
+                onClick={advanceOne}
                 endIcon={<SkipNextIcon/>}>
           Next
         </Button>
