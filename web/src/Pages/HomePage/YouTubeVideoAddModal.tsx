@@ -1,5 +1,5 @@
 import {Button, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, TextField} from "@mui/material";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import {idFrom} from "../YouTube/linkParser";
 import {useBackendAPI} from "../../App/useBackendAPI";
@@ -7,8 +7,10 @@ import {useBackendAPI} from "../../App/useBackendAPI";
 export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: () => void }) {
   const navigate = useNavigate();
   const api = useBackendAPI();
+  const [videoUserInput, setVideoUserInput] = useState<string | null>(null);
+  const [videoTitle, setVideoTitle] = useState<string | null>(null);
 
-  function createNewVideo() {
+  const createNewVideo = useCallback(() => {
     if (videoUserInput === null || videoTitle === null) {
       return;
     }
@@ -22,26 +24,23 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
     }).then(() => {
       navigate('/media/' + youtubeId)
     });
-  }
+  }, [api.videos, navigate, videoTitle, videoUserInput]);
 
-  const [videoUserInput, setVideoUserInput] = useState<string | null>(null);
-  const [videoTitle, setVideoTitle] = useState<string | null>(null);
-
-  function handleUrlChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+  const handleUrlChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setVideoUserInput(event.target.value);
-  }
+  }, [setVideoUserInput]);
 
-  function handleTitleChange(event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) {
+  const handleTitleChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => {
     setVideoTitle(event.target.value);
-  }
+  }, [setVideoTitle]);
 
-  function formInputIsValid() {
+  const formInputIsValid = useCallback(() => {
     return !!videoUserInput && !!videoTitle && !!idFrom(videoUserInput) && videoTitle.length > 0;
-  }
+  }, [videoUserInput, videoTitle]);
 
-  function videoUserInputValid() {
+  const videoUserInputValid = () => {
     return !!videoUserInput && !!idFrom(videoUserInput);
-  }
+  };
 
   function videoTitleInputValid() {
     return !!videoTitle && videoTitle.length > 0;
