@@ -58,15 +58,19 @@ const useStyles = makeStyles<{}>()((theme) => ({
   }
 }));
 
-export function MutedListItem({segment, setSelectedSegment, selected, index, style, showMuted}: Params) {
+export function MutedListItem({segment, setSelectedSegment, selected, style, showMuted}: Params) {
   const {classes} = useStyles({});
 
   const classNames = [classes.muted, showMuted ? null : classes.zeroHeight].join(" ")
 
+  const onClick = useCallback(() => {
+    setSelectedSegment(segment);
+  }, [segment, setSelectedSegment]);
+
   return (
     <Tooltip style={style} title="Muted Segment">
       <ListItemButton key={segment.uuid} className={classNames} divider={false} dense selected={selected}
-                      onClick={() => setSelectedSegment(segment)}
+                      onClick={onClick}
       >
       </ListItemButton>
     </Tooltip>
@@ -80,9 +84,13 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
     onDelete(segment)
   }, [onDelete, segment])
 
+  const onClick = useCallback(() => {
+    setSelectedSegment(segment);
+  }, [segment, setSelectedSegment]);
+
   return (
     <ListItemButton divider={true} style={style} key={segment.uuid} selected={selected} className={classes.suggestion}
-                    onClick={() => setSelectedSegment(segment)}
+                    onClick={onClick}
     >
       <ListItemIcon>
         <LightbulbIcon/>
@@ -102,10 +110,14 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
 export function DraftListItem({segment, setSelectedSegment, selected, index, style}: Params) {
   const {classes} = useStyles({});
 
+  const onClick = useCallback(() => {
+    setSelectedSegment(segment);
+  }, [segment, setSelectedSegment]);
+
   return (
     <ListItemButton style={style} key={segment.uuid} selected={selected}
                     className={classes.draft}
-                    onClick={() => setSelectedSegment(segment)}
+                    onClick={onClick}
                     divider={true}
     >
       <ListItemIcon>
