@@ -1,16 +1,17 @@
 import {Box, Breadcrumbs, Container, Typography} from "@mui/material";
-import React from "react";
+import React, {useCallback} from "react";
 import {Playlist, Segment} from "../../api/types";
 import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 
 type Props = { playlist: Playlist, onPlaylistChange: (p: Playlist) => void };
+
 export const LoadedPlaylistContent = ({playlist, onPlaylistChange}: Props) => {
-  function setSegments(segments: Segment[]) {
+  const setSegments = useCallback((segments: Segment[]) => {
     onPlaylistChange({
       ...playlist,
       segments
     })
-  }
+  }, [onPlaylistChange, playlist]);
 
   return (
     <Box m={2}>
