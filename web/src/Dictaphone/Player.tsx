@@ -107,7 +107,7 @@ export const Player = ({
 
     onPlayerStateChanged(true);
     return audioRef.current?.play().catch(logError);
-  }, [onPlayerStateChanged]);
+  }, [onPlayerStateChanged, logError]);
 
   const pause = useCallback(() => {
     onPlayerStateChanged(false);
