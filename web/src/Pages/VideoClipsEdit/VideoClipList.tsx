@@ -22,7 +22,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   const [showMuted, setShowMuted] = useState<boolean>(false);
   const api = useBackendAPI();
 
-  const toggleShowMuted = useCallback((_: any, lastState: boolean) => {
+  const toggleShowMuted = useCallback(() => {
     setShowMuted(!showMuted);
     listRef.current?.resetAfterIndex(0);
   }, [showMuted]);
@@ -40,13 +40,11 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
 
   const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
 
-
-
-  function selectedSegmentByIndex(index: number) {
+  const selectedSegmentByIndex = useCallback((index: number) => {
     setSelectedSegment(advice.suggestedSegments[index]);
-  }
+  }, [advice.suggestedSegments, setSelectedSegment]);
 
-  const deleteSegment = (segment: Segment | SuggestedSegment) => {
+  const deleteSegment = useCallback((segment: Segment | SuggestedSegment) => {
     if (segment.labels.some(ARE_ADVICE)) {
       return api.videos.advice.suggestedClips.DELETE(video.videoId, segment.uuid)
         .then(() => muteSuggestion(segment));
@@ -54,7 +52,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     return api.videos.clips.DELETE(video.videoId, segment.uuid)
       .then(() => removeClip(segment));
     // return videoSegmentDELETE(video.videoId, segment as Segment)
-  }
+  }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
 
   function titleFor(selectedSegment: Segment | SuggestedSegment): string {
     const {labels} = selectedSegment;
