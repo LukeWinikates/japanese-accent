@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Box, Breadcrumbs, Container, Fab, Link as BreadcrumbLink, Typography} from "@mui/material";
 import Grid from "@mui/material/Grid";
 import {Highlights} from "../../api/types";
@@ -38,8 +38,8 @@ function LoadedHomePage({value}: Settable<Highlights>) {
         </Grid>
       </Grid>
     </Box>
-)
-  ;
+  )
+    ;
 }
 
 export default function HomePage() {
@@ -47,15 +47,19 @@ export default function HomePage() {
   const [dialogOpen, setDialogOpen] = useState<boolean>(false);
   const navigate = useNavigate();
 
-  function closeDialog() {
+  const onCloseDialog = useCallback(() => {
     setDialogOpen(false);
-  }
+  }, []);
 
-  function createQuick20AndNavigate() {
+  const onOpenDialog = useCallback(() => {
+    setDialogOpen(true);
+  }, [setDialogOpen]);
+
+  const createQuick20AndNavigate = useCallback(() => {
     api.playlists.POST({count: 20}).then(e => {
       navigate('/playlists/' + e.data.id)
     });
-  }
+  }, [api.playlists, navigate]);
 
   return (
     <>
@@ -76,7 +80,7 @@ export default function HomePage() {
           </Box>
         </Container>
       </Box>
-      <Fab variant="extended" onClick={() => setDialogOpen(true)}>
+      <Fab variant="extended" onClick={onOpenDialog}>
         <AddIcon/>
         Add YouTube video
       </Fab>
@@ -84,7 +88,7 @@ export default function HomePage() {
         <AddIcon/>
         Quick 20
       </Fab>
-      <YouTubeVideoAddModal open={dialogOpen} onClose={closeDialog}/>
+      <YouTubeVideoAddModal open={dialogOpen} onClose={onCloseDialog}/>
     </>
-);
+  );
 }
