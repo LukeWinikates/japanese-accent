@@ -1,8 +1,8 @@
-import React, {ForwardedRef, useEffect, useState} from "react";
+import React, {ForwardedRef, useCallback, useEffect, useState} from "react";
 import {makeStyles} from 'tss-react/mui';
 import {Resizable, ResizeCallbackData, ResizeHandle} from 'react-resizable';
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles<{}>()((theme) => ({
   span: {
     position: "absolute",
     display: "inline-flex",
@@ -34,12 +34,12 @@ type Props = {
 };
 
 export function ClipResizer({
-                          segment,
-                          updateSegment,
-                          msToPixels,
-                          pixelsToMS,
-                        }: Props) {
-  const {classes} = useStyles();
+                              segment,
+                              updateSegment,
+                              msToPixels,
+                              pixelsToMS,
+                            }: Props) {
+  const {classes} = useStyles({});
   let startPx = msToPixels(segment.startMS);
   let endPX = msToPixels(segment.endMS);
   let width = endPX - startPx;
@@ -53,7 +53,7 @@ export function ClipResizer({
     })
   }, [segment, startPx, width])
 
-  const onResize = (event: any, {size, handle}: ResizeCallbackData) => {
+  const onResize = useCallback((event: any, {size, handle}: ResizeCallbackData) => {
     if (handle === "w") {
       setLocalState({
         width: size.width,
@@ -65,23 +65,23 @@ export function ClipResizer({
         width: size.width,
       })
     }
-  };
+  }, [setLocalState, localState, endPX]);
 
-  const commitChange = () => {
+  const commitChange = useCallback(() => {
     updateSegment({
         ...segment,
         startMS: pixelsToMS(localState.left),
         endMS: pixelsToMS(localState.left + localState.width),
       }
     )
-  };
+  }, [updateSegment, segment, localState.left, localState.width, pixelsToMS]);
 
-  function handle(axis: ResizeHandle, ref: ForwardedRef<any>) {
+  const handle = useCallback((axis: ResizeHandle, ref: ForwardedRef<any>) => {
     return (
       <div ref={ref}
            className={`${classes.segmentResizer} ${axis === "w" ? classes.resizerWest : classes.resizerEast}`}/>
     );
-  }
+  }, [classes]);
 
   return (
     <Resizable
