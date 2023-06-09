@@ -64,6 +64,10 @@ function LoadedDialog({value, setValue}: Settable<AppSettings>) {
     })
   }, [value, setValue]);
 
+  const onToggleShowAPIKey = useCallback(() => {
+    setShowApiKey(!showApiKey);
+  }, [showApiKey, setShowApiKey]);
+
   return (
     <>
       <Box m={1}>
@@ -88,8 +92,8 @@ function LoadedDialog({value, setValue}: Settable<AppSettings>) {
                 <InputAdornment position="end">
                   <IconButton
                     aria-label="toggle password visibility"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    onMouseDown={() => setShowApiKey(!showApiKey)}
+                    onClick={onToggleShowAPIKey}
+                    onMouseDown={onToggleShowAPIKey}
                     size="large">
                     {showApiKey ? <Visibility/> : <VisibilityOff/>}
                   </IconButton>
