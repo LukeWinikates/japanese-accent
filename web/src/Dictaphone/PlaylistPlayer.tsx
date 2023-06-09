@@ -1,5 +1,5 @@
 import {duration, Export, Segment} from "../api/types";
-import React, {useEffect, useLayoutEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
   Box,
   Button,
@@ -14,8 +14,7 @@ import {
   LinearProgress,
   List,
   ListItemButton,
-  ListItemSecondaryAction,
-  Typography
+  ListItemSecondaryAction
 } from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import EditIcon from "@mui/material/SvgIcon";
@@ -27,6 +26,56 @@ import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
 import {useInterval} from "../App/useInterval";
 import {useBackendAPI} from "../App/useBackendAPI";
+
+type RowProps = {
+  segment: Segment,
+  index: number,
+  isCurrent: boolean,
+  onChangeSegment: (segment: Segment, index: number) => void,
+  onEdit: (segment: Segment) => void,
+  onDelete: (segment: Segment, index: number) => void,
+
+}
+const Row = ({segment, index, onChangeSegment, isCurrent, onEdit, onDelete}: RowProps) => {
+  const pauseAndChangeCurrentSegment = useCallback(() => {
+    onChangeSegment(segment, index);
+  }, [onChangeSegment, segment, index]);
+
+  const onClickEdit = useCallback(() => {
+    onEdit(segment)
+  }, [onEdit, segment]);
+
+  const onClickDelete = useCallback(() => {
+    onDelete(segment, index)
+  }, [onDelete, segment, index]);
+
+  return (
+    <ListItemButton key={index}
+                    selected={isCurrent}
+                    alignItems="flex-start"
+                    onClick={pauseAndChangeCurrentSegment}
+    >
+      <ListItemText
+        primaryTypographyProps={{noWrap: true, variant: "body2"}}
+        primary={segment.text}
+        secondary={Math.round(duration(segment)) + "s"}
+      >
+      </ListItemText>
+      <ListItemSecondaryAction>
+        <Button endIcon={<EditIcon/>} onClick={onClickEdit}>
+          Edit
+        </Button>
+        <IconButton
+          edge="end"
+          aria-label="delete"
+          onClick={onClickDelete}
+          size="large">
+          <DeleteIcon/>
+        </IconButton>
+      </ListItemSecondaryAction>
+    </ListItemButton>
+  );
+}
 
 type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
 
@@ -40,9 +89,9 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
   const api = useBackendAPI();
 
-  function pauseAll() {
+  const pauseAll = useCallback(() => {
     document.querySelectorAll("audio").forEach(a => a.pause());
-  }
+  }, []);
 
   useEffect(() => {
     setCurrentSegment(segments[0])
@@ -66,7 +115,13 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
       });
   }, watchingExport ? 200 : null);
 
-  async function handleModalClose() {
+  const setSegmentByIndex = useCallback((newIndex: number) => {
+    let segment = segments[newIndex];
+    setCurrentSegmentIndex(newIndex);
+    setCurrentSegment(segment);
+  }, [segments]);
+
+  const handleModalClose = useCallback(async () => {
     if (editingSegment === null) {
       return;
     }
@@ -76,98 +131,66 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     setEditingSegment(null);
     onSegmentsChange(newSegments);
     setCurrentSegment(editedSegment);
-  }
+  }, [currentSegmentIndex, editingSegment, onSegmentsChange, segments]);
 
-  function removeCurrentSegment() {
+  const removeSegmentByIndex = useCallback((index: number) => {
+      let newSegments = [...segments];
+      newSegments.splice(index, 1);
+      onSegmentsChange(newSegments);
+      if (currentSegmentIndex === index) {
+        setSegmentByIndex(currentSegmentIndex - 1);
+      }
+    }
+    , [currentSegmentIndex, onSegmentsChange, segments, setSegmentByIndex]);
+
+  const removeCurrentSegment = useCallback(() => {
     setEditingSegment(null);
     removeSegmentByIndex(currentSegmentIndex);
-  }
+  }, [currentSegmentIndex, removeSegmentByIndex]);
 
-  function mutateSegmentAtIndex(index: number, newValue: Segment) {
+  const mutateSegmentAtIndex = useCallback((index: number, newValue: Segment) => {
     const newSegments = [...segments];
     newSegments[index] = newValue;
     onSegmentsChange(newSegments);
     if (index === currentSegmentIndex) {
       setCurrentSegment(newValue);
     }
-  }
+  }, [currentSegmentIndex, onSegmentsChange, segments]);
 
-  function removeSegmentByIndex(index: number) {
-    let newSegments = [...segments];
-    newSegments.splice(index, 1);
-    onSegmentsChange(newSegments);
-    if (currentSegmentIndex === index) {
-      setSegmentByIndex(currentSegmentIndex - 1);
-    }
-  }
-
-  function addSegment(newSegment: Segment) {
+  const addSegment = useCallback((newSegment: Segment) => {
     let newSegments = [...segments];
     newSegments.splice(currentSegmentIndex + 1, 0, newSegment)
     onSegmentsChange(newSegments);
-  }
+  }, [currentSegmentIndex, onSegmentsChange, segments]);
 
-  function setSegmentByIndex(newIndex: number) {
-    let segment = segments[newIndex];
-    setCurrentSegmentIndex(newIndex);
-    setCurrentSegment(segment);
-  }
-
-  function promptToDelete(segment: Segment, index: number) {
+  const promptToDelete = useCallback((segment: Segment, index: number) => {
     setPromptingSegmentDelete({segment, index});
-  }
+  }, [setPromptingSegmentDelete]);
 
-  let renderRow = (segment: Segment, index: number) => {
-    return (
-      <ListItemButton key={index}
-                      selected={currentSegmentIndex === index}
-                      alignItems="flex-start"
-                      onClick={() => {
-                        pauseAll();
-                        setCurrentSegment(segment);
-                        setCurrentSegmentIndex(index);
-                      }}
-      >
-        <ListItemText
-          primaryTypographyProps={{noWrap: true, variant: "body2"}}
-          primary={segment.text}
-          secondary={Math.round(duration(segment)) + "s"}
-        >
-        </ListItemText>
-        <ListItemSecondaryAction>
-          <Button endIcon={<EditIcon/>} onClick={() => setEditingSegment(currentSegment)}>
-            Edit
-          </Button>
-          <IconButton
-            edge="end"
-            aria-label="delete"
-            onClick={() => promptToDelete(segment, index)}
-            size="large">
-            <DeleteIcon/>
-          </IconButton>
-        </ListItemSecondaryAction>
-      </ListItemButton>
-    );
-  };
+  const onPauseAndChangeSegment = useCallback((segment: Segment, index: number) => {
+    pauseAll();
+    setCurrentSegment(segment);
+    setCurrentSegmentIndex(index);
+  }, [setCurrentSegment, setCurrentSegmentIndex, pauseAll])
 
-  function destroySegment(segment: Segment, index: number) {
+  const destroySegment = useCallback((segment: Segment, index: number) => {
     api.videos.clips.DELETE(segment.videoUuid, segment.uuid)
       .then(() => removeSegmentByIndex(index))
       .then(() => setPromptingSegmentDelete(null));
-  }
+  }, [api.videos.clips, removeSegmentByIndex]);
 
-
-  if (!currentSegment) {
-    return (
-      <Typography>
-        Nothing here yet
-      </Typography>
-    )
-  }
-
-  function startExport() {
+  const startExport = useCallback(() => {
     return api.exports.POST(parentId).then(() => setWatchingExport(true));
-  }
+  }, [api.exports, parentId]);
+
+  const onCancelDeletePrompt = useCallback(() => setPromptingSegmentDelete(null), []);
+  const onDestroySegment = useCallback(() => {
+    return promptingSegmentDelete && destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index);
+  }, [promptingSegmentDelete, destroySegment]);
+
+  const onUpdateSegment = useCallback((s: Segment) => {
+    mutateSegmentAtIndex(currentSegmentIndex, s);
+  }, [currentSegmentIndex, mutateSegmentAtIndex]);
 
   if (!currentSegment) {
     return <>no current segment</>
@@ -185,7 +208,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
             setSegmentByIndex={setSegmentByIndex}
           />
           <PitchDetails segment={currentSegment}
-                        updateSegment={(p) => mutateSegmentAtIndex(currentSegmentIndex, p)}/>
+                        updateSegment={onUpdateSegment}/>
           <Dictaphone item={currentSegment}/>
           <Pager currentIndex={currentSegmentIndex}
                  maxIndex={segments.length - 1}
@@ -199,7 +222,15 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
         <Card ref={listRef}>
           <List>
             {
-              segments.map(renderRow)
+              segments.map((segment: Segment, index: number) => {
+                return <Row
+                  segment={segment}
+                  index={index}
+                  onChangeSegment={onPauseAndChangeSegment}
+                  onDelete={promptToDelete}
+                  onEdit={setEditingSegment}
+                  isCurrent={index === currentSegmentIndex}/>
+              })
             }
           </List>
         </Card>
@@ -225,7 +256,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
         promptingSegmentDelete !== null &&
         <Dialog
           open={true}
-          onClose={() => setPromptingSegmentDelete(null)}
+          onClose={onCancelDeletePrompt}
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
@@ -236,10 +267,10 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={() => setPromptingSegmentDelete(null)} color="primary">
+            <Button onClick={onCancelDeletePrompt} color="primary">
               Keep
             </Button>
-            <Button onClick={() => destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index)}
+            <Button onClick={onDestroySegment}
                     color="primary" autoFocus>
               Destroy
             </Button>
