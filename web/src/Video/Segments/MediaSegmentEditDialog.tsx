@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
 import {Segment} from "../../api/types";
@@ -23,7 +23,7 @@ export interface MediaSegmentsEditDialogProps {
   nextSegmentStart: number;
 }
 
-const useStyles = makeStyles()(theme => (
+const useStyles = makeStyles<{}>()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -46,19 +46,19 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
     previousSegmentEnd,
     nextSegmentStart
   } = props;
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
   const api = useBackendAPI();
 
-  const save = () => {
+  const onSave = useCallback(() => {
     api.videos.clips.PUT(videoId, segment)
       .then(onClose);
-  };
+  }, [api.videos.clips, onClose, segment, videoId]);
 
-  const del = () => {
+  const onDelete = useCallback(() => {
     api.videos.clips.DELETE(videoId, segment.uuid).then(onDestroy);
-  };
+  }, [api.videos.clips, segment, onDestroy, videoId]);
 
-  const clone = () => {
+  const onClone = useCallback(() => {
     api.videos.clips.POST(videoId, {
       text: segment.text,
       videoUuid: videoId,
@@ -68,7 +68,7 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       labels: [],
     })
       .then(response => onAdd(response.data))
-  };
+  }, [api.videos.clips, videoId, segment, onAdd]);
 
   return (
     <Dialog onClose={onClose}
@@ -96,13 +96,13 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
         />
       </DialogContent>
       <DialogActions>
-        <IconButton onClick={del} size="large">
+        <IconButton onClick={onDelete} size="large">
           <TrashIcon/>
         </IconButton>
-        <IconButton onClick={clone} size="large">
+        <IconButton onClick={onClone} size="large">
           <CopyIcon/>
         </IconButton>
-        <Button onClick={save}>
+        <Button onClick={onSave}>
           Save
         </Button>
       </DialogActions>
