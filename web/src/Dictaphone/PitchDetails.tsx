@@ -1,5 +1,5 @@
 import {Segment} from "../api/types";
-import React, {useState} from "react";
+import React, {useCallback, useState} from "react";
 import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
 import {SuzukiButton} from "../VocabularyPractice/SuzukiButton";
@@ -15,20 +15,16 @@ export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
   const [isAddingWord, setIsAddingWord] = useState(false);
   const api = useBackendAPI();
 
-  function fetchOJADPronunciation() {
-    if (!segment) {
-      return null;
-    }
+  const fetchOJADPronunciation = useCallback(() => {
     api.videos.clips.pitch.POST(segment.uuid)
       .then(({data: p}) => updateSegment({
         ...segment,
         pitch: p
       }))
-  }
+  }, [api.videos.clips.pitch, updateSegment, segment]);
 
-  if (segment === null) {
-    return <>Nothing to see here</>
-  }
+  let onClose = useCallback(() => setIsAddingWord(false), [setIsAddingWord]);
+  let onAddWord = useCallback(() => setIsAddingWord(true), [setIsAddingWord]);
 
   return (
     <Grid container item xs={12} spacing={2}>
@@ -42,7 +38,7 @@ export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
           <Button onClick={fetchOJADPronunciation}>
             Fetch pronunciation
           </Button>
-          <Button onClick={() => setIsAddingWord(true)}>
+          <Button onClick={onAddWord}>
             Add Word
           </Button>
         </Grid>
@@ -50,7 +46,7 @@ export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
           <SuzukiButton text="Open in Suzuki-kun" items={[segment.text]}/>
         </Grid>
       </Grid>
-      {isAddingWord && <AddWordDialog onClose={() => setIsAddingWord(false)} videoId={segment.videoUuid}/>}
+      {isAddingWord && <AddWordDialog onClose={onClose} videoId={segment.videoUuid}/>}
     </Grid>
   );
 }
