@@ -26,7 +26,7 @@ import {useBackendAPI} from "../../App/useBackendAPI";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
-const useStyles = makeStyles()(theme => (
+const useStyles = makeStyles<{}>()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -59,21 +59,21 @@ function ClickableAudio({audio}: { audio: Audio }) {
 
 function Preview({preview}: { preview: WordAnalysis }) {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const handlePageChange = (event: any, value: number) => {
+  const handlePageChange = useCallback((event: any, value: number) => {
     setCurrentIndex(value - 1)
-  };
+  }, [setCurrentIndex]);
 
-  function selectPrevious() {
+  const selectPrevious = useCallback(() => {
     setCurrentIndex(currentIndex === 0 ?
       preview.audio.length - 1 :
       currentIndex - 1);
-  }
+  }, [setCurrentIndex, currentIndex, preview.audio]);
 
-  function selectNext() {
+  const selectNext = useCallback(() => {
     setCurrentIndex(currentIndex === preview.audio.length - 1 ?
       0 :
       currentIndex + 1);
-  }
+  }, [setCurrentIndex, currentIndex, preview.audio]);
 
   return <>
     <RawMoraSVG
@@ -123,7 +123,7 @@ function SkeletonPreview() {
 const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const [word, setWord] = useState<{ text: string } | null>(null);
   const [preview, setPreview] = useState<WordAnalysis | null>(null);
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
   const api = useBackendAPI();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();
@@ -144,7 +144,7 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
     return () => clearTimeout(timer);
   }, [analysisDebounce, previewWord])
 
-  function save() {
+  const save = useCallback(() => {
     if (word === null) {
       return
     }
@@ -152,13 +152,13 @@ const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
       word: word.text,
       videoId
     }).then(onClose);
-  }
+  }, [onClose, api.videos.wordLinks, word, videoId]);
 
-  function handleWordChanged(e: any) {
+  const handleWordChanged = useCallback((e: any) => {
     const text = e.target.value;
     setWord({text});
     setAnalysisDebounce(new Date());
-  }
+  }, [setWord, setAnalysisDebounce]);
 
   return (
     <Dialog
