@@ -2,7 +2,7 @@ import {Button, Grid, Typography} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
-import React, {useEffect, useState} from "react";
+import React, {useCallback, useEffect, useState} from "react";
 import {ActivityPostBody, Audio, BoostPostBody, Segment} from "../api/types";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
@@ -76,38 +76,23 @@ export function Dictaphone({item}: DictaphoneProps) {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const api = useBackendAPI();
 
-  function saveRecording(recording: AudioRecording) {
-    let newRecording = {...recording};
-    setCurrentRecording(newRecording);
-    setRecordingIsPlaying(true);
-  }
 
   useEffect(() => {
     setCurrentRecording(null);
     setActionQueue([]);
   }, [item])
 
-  function pauseAll() {
+  const saveRecording = useCallback((recording: AudioRecording) => {
+    let newRecording = {...recording};
+    setCurrentRecording(newRecording);
+    setRecordingIsPlaying(true);
+  }, [setCurrentRecording, setRecordingIsPlaying]);
+
+  const pauseAll = useCallback(() => {
     document.querySelectorAll("audio").forEach(a => a.pause());
-  }
+  }, []);
 
-  function practice() {
-    pauseAll();
-    activityPostBody && api.activity.POST(activityPostBody);
-    setActionQueue(["PlaySegment", "Record", "PlaySegment"])
-    setSegmentIsPlaying(true);
-  }
-
-  function segmentPlaybackEnded() {
-    setSegmentIsPlaying(false);
-    if (actionQueue[0] === "PlaySegment") {
-      const [, ...newActionQueue] = actionQueue;
-      setActionQueue(newActionQueue);
-      startAction(newActionQueue[0]);
-    }
-  }
-
-  function startAction(action: Action) {
+  const startAction = useCallback((action: Action) => {
     switch (action) {
       case "PlaySegment":
         setRecordingIsPlaying(false);
@@ -125,20 +110,37 @@ export function Dictaphone({item}: DictaphoneProps) {
         setRecordingIsPlaying(true);
         break;
     }
-  }
+  }, []);
 
-  function recordingPlaybackEnded() {
+  const practice = useCallback(() => {
+    pauseAll();
+    activityPostBody && api.activity.POST(activityPostBody);
+    setActionQueue(["PlaySegment", "Record", "PlaySegment"])
+    setSegmentIsPlaying(true);
+  }, [activityPostBody, setActionQueue, setSegmentIsPlaying, api.activity, pauseAll]);
+
+  const segmentPlaybackEnded = useCallback(() => {
+    setSegmentIsPlaying(false);
+    if (actionQueue[0] === "PlaySegment") {
+      const [, ...newActionQueue] = actionQueue;
+      setActionQueue(newActionQueue);
+      startAction(newActionQueue[0]);
+    }
+  }, [actionQueue, setActionQueue, startAction]);
+
+
+  const recordingPlaybackEnded = useCallback(() => {
     setRecordingIsPlaying(false);
     if (actionQueue[0] === "Record" || actionQueue[0] === "PlayRecording") {
       const [, ...newActionQueue] = actionQueue;
       setActionQueue(newActionQueue);
       startAction(newActionQueue[0]);
     }
-  }
+  }, [startAction, actionQueue]);
 
-  function boostCurrentSegment() {
+  const boostCurrentSegment = useCallback(() => {
     boostPostBody && api.boosts.POST(boostPostBody)
-  }
+  }, [boostPostBody, api.boosts]);
 
   return (
     <StyledGrid container item spacing={1}>
