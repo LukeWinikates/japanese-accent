@@ -1,19 +1,39 @@
 import {Word} from "../api/types";
-import React, {useEffect, useRef, useState} from "react";
-import {Box, Card, CardContent, LinearProgress, List, ListItem, Typography} from "@mui/material";
+import React, {useCallback, useEffect, useRef, useState} from "react";
+import {Box, Card, CardContent, LinearProgress, List, ListItemButton, Typography} from "@mui/material";
 import ListItemText from "@mui/material/ListItemText";
 import {WithIndex} from "../App/WithIndex";
 import {WordAnalysisLoader} from "./WordAnalysisLoader";
 
 type AudioLinkPlayerProps = { words: Word[] };
 
+function Item({index, word, selected, onClick}: { index: number, word: Word, selected: boolean, onClick: (word: Word, index: number)=>void  }) {
+  const callback = useCallback(()=> {
+    onClick(word, index)
+  }, [word, index, onClick])
+  return (
+    <ListItemButton key={index}
+              selected={selected}
+              alignItems="flex-start"
+              onClick={callback}
+    >
+      <ListItemText
+        primaryTypographyProps={{noWrap: true, variant: "body2"}}
+        primary={word.word}
+        // secondary={Math.round(duration(segment)) + "s"}
+      >
+      </ListItemText>
+    </ListItemButton>
+  )
+}
+
 export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
 
   const [currentWord, setCurrentWord] = useState<WithIndex<Word>>({value: words[0], index: 0});
 
-  function pauseAll() {
+  const pauseAll = useCallback(() => {
     document.querySelectorAll("audio").forEach(a => a.pause());
-  }
+  }, []);
 
   const listRef = useRef<HTMLDivElement>(null);
 
@@ -24,6 +44,12 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
     });
   }, [currentWord])
 
+  let onClick = useCallback((word: Word, index: number) => {
+    pauseAll();
+    setCurrentWord({value: word, index});
+  },[pauseAll, setCurrentWord]);
+
+
   if (words.length === 0) {
     return (
       <Typography>
@@ -31,28 +57,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
       </Typography>);
   }
 
-  let renderRow = (word: Word, index: number) => {
-    return (
-      <ListItem key={index}
-                selected={currentWord.index === index}
-                alignItems="flex-start"
-                onClick={() => {
-                  pauseAll();
-                  setCurrentWord({value: word, index});
-                }}
-      >
-        <ListItemText
-          primaryTypographyProps={{noWrap: true, variant: "body2"}}
-          primary={word.word}
-          // secondary={Math.round(duration(segment)) + "s"}
-        >
-        </ListItemText>
-      </ListItem>
-    );
-  };
-
   let wordsProgress = (currentWord.index + 1) / words.length * 100;
-
 
   return (
     <Box>
@@ -74,7 +79,11 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
         <Card ref={listRef}>
           <List>
             {
-              words.map(renderRow)
+              words.map((word: Word, index: number) => {
+                return (
+                 <Item word={word} index={index} onClick={onClick} selected={index === currentWord.index}/>
+                );
+              })
             }
           </List>
         </Card>
