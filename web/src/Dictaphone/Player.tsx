@@ -1,6 +1,6 @@
 import {Grid, IconButton, LinearProgress} from "@mui/material";
 import {styled} from '@mui/material/styles';
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import ReplayIcon from '@mui/icons-material/Replay';
@@ -75,28 +75,13 @@ export const Player = ({
     }
   }, [preferredStartTime])
 
-
-  function checkIsComplete() {
+  const checkIsComplete = useCallback(() => {
     if (duration === "auto") {
       return audioRef.current?.ended || false;
     }
 
     return (audioRef.current?.currentTime || 0) >= duration.endSec;
-  }
-
-  function timeUpdate() {
-    setProgress(calculatePlayerProgress());
-    if (audioRef.current === undefined || audioRef.current === null) {
-      return;
-    }
-    onPositionChange && onPositionChange(audioRef.current.currentTime * 1000)
-    if (checkIsComplete()) {
-      audioRef.current?.pause();
-      onPlayerStateChanged(false);
-      onPlaybackEnded?.();
-      rewindStart();
-    }
-  }
+  }, [duration]);
 
   const currentIcon = () => {
     if (playing) {
@@ -108,41 +93,42 @@ export const Player = ({
 
   const PlayPauseIcon = currentIcon();
 
-  function rewindStart() {
+  const rewindStart = useCallback(() => {
     if (audioRef.current !== null) {
       audioRef.current.currentTime = (duration === "auto" ? 0 : duration.startSec);
     }
-  }
+  }, [duration]);
 
-  const toggle = () => {
-    if (!playing) {
-      return play();
-    } else {
-      pause();
-    }
-  };
 
-  const play = () => {
+  const play = useCallback(() => {
     if (audioRef.current === null) {
       return
     }
 
     onPlayerStateChanged(true);
     return audioRef.current?.play().catch(logError);
-  };
+  }, [onPlayerStateChanged]);
 
-  const pause = () => {
+  const pause = useCallback(() => {
     onPlayerStateChanged(false);
     audioRef.current?.pause();
-  };
+  }, [onPlayerStateChanged]);
 
-  const ended = () => {
+  const toggle = useCallback(() => {
+    if (!playing) {
+      return play();
+    } else {
+      pause();
+    }
+  }, [playing, play, pause]);
+
+  const ended = useCallback(() => {
     onPlayerStateChanged(false);
     rewindStart();
-  };
+  }, [rewindStart, onPlayerStateChanged]);
 
 
-  const calculatePlayerProgress = () => {
+  const calculatePlayerProgress = useCallback(() => {
     if (audioRef.current === null) {
       return 0;
     }
@@ -158,9 +144,9 @@ export const Player = ({
     const current = audioRef.current.currentTime - startSec;
     const total = endSec - startSec;
     return (current / total) * 100;
-  };
+  }, [duration]);
 
-  const handleProgressClick = (event: any) => {
+  const handleProgressClick = useCallback((event: any) => {
     if (playerProgressRef.current !== null &&
       audioRef.current !== null) {
       let startSec, endSec;
@@ -180,13 +166,27 @@ export const Player = ({
       audioRef.current.currentTime = startSec + offset;
 
     }
-  };
+  }, [duration]);
+
+  const timeUpdate = useCallback(() => {
+    setProgress(calculatePlayerProgress());
+    if (audioRef.current === undefined || audioRef.current === null) {
+      return;
+    }
+    onPositionChange && onPositionChange(audioRef.current.currentTime * 1000)
+    if (checkIsComplete()) {
+      audioRef.current?.pause();
+      onPlayerStateChanged(false);
+      onPlaybackEnded?.();
+      rewindStart();
+    }
+  }, [calculatePlayerProgress, checkIsComplete, onPlaybackEnded, onPlayerStateChanged, onPositionChange, rewindStart]);
 
   return (
     <StyledGrid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <audio ref={audioRef} src={src} autoPlay={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
       <Grid item xs={3}>
-        <IconButton onClick={() => rewindStart()} size="large">
+        <IconButton onClick={rewindStart} size="large">
           <ReplayIcon/>
         </IconButton>
         <IconButton onClick={toggle} color="primary" size="large">
