@@ -6,22 +6,16 @@ import {TimeInput} from "./TimeInput";
 import {msToHumanReadable} from "../../App/time";
 import audioURL from "../../App/audioURL";
 import {ClipResizingWaveform} from "../../Waveform/ResizingWaveform";
+import {BasicClip} from "../../api/types";
 
-interface Segmentish {
-  startMS: number;
-  endMS: number;
-  videoUuid: string;
-  text: string;
-}
-
-export interface SegmentEditorProps<T extends Segmentish> {
+export interface SegmentEditorProps<T extends BasicClip> {
   segment: T;
   setSegment: (segment: T) => void;
   previousSegmentEnd: number | null;
   nextSegmentStart: number | null;
 }
 
-export function SegmentEditor<T extends Segmentish>({
+export function SegmentEditor<T extends BasicClip>({
                                                       segment,
                                                       setSegment,
                                                       previousSegmentEnd,

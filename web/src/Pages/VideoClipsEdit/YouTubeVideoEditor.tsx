@@ -1,4 +1,4 @@
-import {SuggestedSegment, Video, VideoAdvice} from "../../api/types";
+import {BasicClip, Video, VideoAdvice} from "../../api/types";
 import React, {useCallback} from "react";
 import {Box, Breadcrumbs, Button, Card, CardContent, Container, Typography} from "@mui/material";
 import {VideoClipList} from "./VideoClipList";
@@ -19,7 +19,7 @@ type LoadedEditorProps = {
 };
 
 function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
-  let muteSuggestion = useCallback((segmentToMute: SuggestedSegment) => {
+  let muteSuggestion = useCallback((segmentToMute: BasicClip) => {
     let newSuggestions = [...value.suggestedSegments];
 
     newSuggestions.splice(newSuggestions.findIndex(testSegment => testSegment.uuid === segmentToMute.uuid), 1, {
@@ -33,7 +33,7 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
     })
   }, [value, setValue]);
 
-  let removeClip = useCallback((clip: SuggestedSegment) => {
+  let removeClip = useCallback((clip: BasicClip) => {
     let newClips = [...video.segments];
     newClips.splice(newClips.findIndex(testSegment => testSegment.uuid === clip.uuid), 1)
 

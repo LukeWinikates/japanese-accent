@@ -1,11 +1,17 @@
 import {AxiosInstance, AxiosResponse} from "axios";
 import {
+  ActivityPostBody,
   AppSettings,
-  AppSettingsPUTBody, ClipsPostBody, ClipsPutBody,
+  AppSettingsPUTBody,
+  BoostPostBody,
+  Clip,
+  ClipsPostBody,
+  ClipsPutBody,
   Export,
   Highlights,
+  Pitch,
   Playlist,
-  PlaylistPostBody, Segment,
+  PlaylistPostBody,
   Video,
   VideoAdvice,
   VideoPostBody,
@@ -13,8 +19,8 @@ import {
   Waveform,
   WordAnalysis,
   WordAnalysisPostBody,
-  WordList,
-  WordLinksPostBody, Pitch, ActivityPostBody, BoostPostBody
+  WordLinksPostBody,
+  WordList
 } from "./types";
 
 interface WaveformClient {
@@ -53,8 +59,8 @@ interface VideosClient {
 }
 
 interface ClipsClient {
-  PUT: (videoId: string, data: ClipsPutBody) => Promise<AxiosResponse<Segment, any>>
-  POST: (videoId: string, data: ClipsPostBody) => Promise<AxiosResponse<Segment, any>>
+  PUT: (videoId: string, data: ClipsPutBody) => Promise<AxiosResponse<Clip, any>>
+  POST: (videoId: string, data: ClipsPostBody) => Promise<AxiosResponse<Clip, any>>
   DELETE: (videoId: string, clipId: string) => Promise<AxiosResponse<void, any>>
   pitch: {
     POST: (clipId: string) => Promise<AxiosResponse<Pitch, any>>
@@ -287,7 +293,7 @@ function clipsClient(axios: AxiosInstance): ClipsClient {
         return axios.delete('/api/videos/' + videoId + "/segments/" + clipId)
     },
     POST: (videoId: string, data: ClipsPostBody) => {
-      return axios.post<Segment>('/api/videos/' + videoId + "/segments/", data)
+      return axios.post<Clip>('/api/videos/' + videoId + "/segments/", data)
     },
     PUT: (videoId: string, data: ClipsPutBody) => {
       return axios.put('/api/videos/' + videoId + "/segments/" + data.uuid, data)

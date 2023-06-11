@@ -3,7 +3,7 @@ import {styled} from '@mui/material/styles';
 import {DummyPlayer, Player} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useCallback, useEffect, useState} from "react";
-import {ActivityPostBody, Audio, BoostPostBody, Segment} from "../api/types";
+import {ActivityPostBody, Audio, BoostPostBody, Clip} from "../api/types";
 import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
 import audioURL from "../App/audioURL";
@@ -21,7 +21,7 @@ const StyledGrid = styled(Grid)(() => ({
   }
 }));
 
-type DictaphoneSupported = Segment | Audio
+type DictaphoneSupported = Clip | Audio
 
 type DictaphoneParams = {
   boostPostBody?: BoostPostBody,
@@ -30,7 +30,7 @@ type DictaphoneParams = {
   duration: { startSec: number, endSec: number } | "auto",
 }
 
-const makeParamsForSegment = (segment: Segment): DictaphoneParams => {
+const makeParamsForSegment = (segment: Clip): DictaphoneParams => {
   return {
     boostPostBody: {
       segmentId: segment.uuid,
@@ -58,7 +58,7 @@ declare type Action = "PlaySegment" | "Record" | "PlayRecording";
 
 function makeParams(item: DictaphoneSupported) {
   if ("videoUuid" in item) {
-    let segment = item as Segment;
+    let segment = item as Clip;
     return makeParamsForSegment(segment);
   }
   console.log("got here!")

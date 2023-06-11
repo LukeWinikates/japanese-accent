@@ -1,10 +1,10 @@
 import {Button, Grid, Typography} from "@mui/material";
 import React, {useCallback} from "react";
-import {Segment} from "../api/types";
+import {Clip} from "../api/types";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
-type Props = { segment: Segment, segments: Segment[], currentSegmentIndex: number, setSegmentByIndex: (idx: number) => void };
+type Props = { segment: Clip, segments: Clip[], currentSegmentIndex: number, setSegmentByIndex: (idx: number) => void };
 export const PagingTitle = ({segment, segments, currentSegmentIndex, setSegmentByIndex}: Props) => {
   const lastSegmentIndex = segments.length - 1;
 

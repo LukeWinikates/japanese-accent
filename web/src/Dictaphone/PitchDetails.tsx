@@ -1,4 +1,4 @@
-import {Segment} from "../api/types";
+import {Clip} from "../api/types";
 import React, {useCallback, useState} from "react";
 import {Button, Grid} from "@mui/material";
 import {RawMoraSVG, SkeletonMoraSVG} from "../VocabularyPractice/MoraSVG";
@@ -7,8 +7,8 @@ import AddWordDialog from "../Pages/WordList/AddWordDialog";
 import {useBackendAPI} from "../App/useBackendAPI";
 
 type PitchDetailsProps = {
-  segment: Segment,
-  updateSegment: (segment: Segment) => void
+  segment: Clip,
+  updateSegment: (segment: Clip) => void
 };
 
 export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {

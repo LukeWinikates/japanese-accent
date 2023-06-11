@@ -1,5 +1,5 @@
 import React, {useCallback, useRef, useState} from "react";
-import {Segment, SuggestedSegment, Video, VideoAdvice} from "../../api/types";
+import {BasicClip, Clip, Video, VideoAdvice} from "../../api/types";
 import {Card, CardContent, FormControlLabel, List, Switch, Typography,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
@@ -13,12 +13,12 @@ type Props = {
   advice: VideoAdvice,
   video: Video,
   videoUuid: string,
-  muteSuggestion: (segment: SuggestedSegment) => void,
-  removeClip: (segment: SuggestedSegment) => void,
+  muteSuggestion: (segment: BasicClip) => void,
+  removeClip: (segment: BasicClip) => void,
 }
 
 export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip}: Props) {
-  const [selectedSegment, setSelectedSegment] = useState<Segment | SuggestedSegment | null>(null);//advice.suggestedSegments[0]);
+  const [selectedSegment, setSelectedSegment] = useState<Clip | BasicClip | null>(null);//advice.suggestedSegments[0]);
   const [showMuted, setShowMuted] = useState<boolean>(false);
   const api = useBackendAPI();
 
@@ -44,7 +44,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     setSelectedSegment(advice.suggestedSegments[index]);
   }, [advice.suggestedSegments, setSelectedSegment]);
 
-  const deleteSegment = useCallback((segment: Segment | SuggestedSegment) => {
+  const deleteSegment = useCallback((segment: Clip | BasicClip) => {
     if (segment.labels.some(ARE_ADVICE)) {
       return api.videos.advice.suggestedClips.DELETE(video.videoId, segment.uuid)
         .then(() => muteSuggestion(segment));
@@ -54,7 +54,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     // return videoSegmentDELETE(video.videoId, segment as Segment)
   }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
 
-  function titleFor(selectedSegment: Segment | SuggestedSegment): string {
+  function titleFor(selectedSegment: Clip | BasicClip): string {
     const {labels} = selectedSegment;
     if (!labels) {
       return "???"

@@ -20,7 +20,7 @@ export declare type Video = {
   title: string,
   url: string,
   videoId: string,
-  segments: Segment[],
+  segments: Clip[],
   words: Word[],
   lastActivityAt: string
   text: string,
@@ -37,28 +37,22 @@ export declare type Pitch = {
   morae: string
 }
 
-export declare type Segment = {
-  endMS: number,
-  labels: SegmentLabel[],
+export declare interface Clip extends BasicClip {
   lastActivityAt: Date
   parent: string | null
   pitch: Pitch
-  startMS: number,
-  text: string,
-  uuid: string,
-  videoUuid: string,
-};
+}
 
-export declare type SuggestedSegment = {
+export declare type BasicClip = {
   startMS: number,
   endMS: number,
   text: string,
   uuid: string,
   videoUuid: string,
-  labels: SegmentLabel[],
+  labels: ClipLabel[],
 };
 
-export type SegmentLabel = "SEGMENT" | "ADVICE" | "MUTED"
+export type ClipLabel = "SEGMENT" | "ADVICE" | "MUTED"
 
 export declare type Highlights = {
   videos: VideoSummary[],
@@ -68,7 +62,7 @@ export declare type Highlights = {
 export declare type Playlist = {
   id: string,
   title: string,
-  segments: Segment[],
+  segments: Clip[],
 }
 
 export declare type WordList = {
@@ -77,8 +71,8 @@ export declare type WordList = {
   words: Word[]
 }
 
-export function duration(segment: Segment): number {
-  return (segment.endMS - segment.startMS) / 1000;
+export function durationSeconds(clip: Clip): number {
+  return (clip.endMS - clip.startMS) / 1000;
 }
 
 export type Audio = {
@@ -113,7 +107,7 @@ export type Waveform = {
 }
 
 export type VideoAdvice = {
-  suggestedSegments: SuggestedSegment[],
+  suggestedSegments: BasicClip[],
 }
 
 export type BoostPostBody = {

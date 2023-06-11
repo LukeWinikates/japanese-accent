@@ -1,4 +1,4 @@
-import {Segment, SegmentLabel, SuggestedSegment} from "../../api/types";
+import {BasicClip, Clip, ClipLabel} from "../../api/types";
 import {ARE_ADVICE, ARE_MUTED} from "./segment";
 import React, {CSSProperties, useCallback} from "react";
 import {IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAction, Tooltip} from "@mui/material";
@@ -9,7 +9,7 @@ import {rangeToHumanReadable} from "../../App/time";
 import DeleteIcon from "@mui/icons-material/Delete";
 import AudioFileIcon from '@mui/icons-material/AudioFile';
 
-export function elementForLabels(labels: SegmentLabel[]) {
+export function elementForLabels(labels: ClipLabel[]) {
   if (!labels) {
     return DraftListItem
   }
@@ -24,7 +24,7 @@ export function elementForLabels(labels: SegmentLabel[]) {
   return DraftListItem;
 }
 
-export const sizeForSegment = (segment: Segment | SuggestedSegment, showMuted: boolean) => {
+export const sizeForSegment = (segment: Clip | BasicClip, showMuted: boolean) => {
   const mutedSize = showMuted ? 12 : 0;
   return segment?.labels?.some(l => l === "MUTED") ?
     mutedSize :
@@ -32,13 +32,13 @@ export const sizeForSegment = (segment: Segment | SuggestedSegment, showMuted: b
 }
 
 type Params = {
-  segment: Segment | SuggestedSegment,
-  setSelectedSegment: (s: Segment | SuggestedSegment) => void,
+  segment: Clip | BasicClip,
+  setSelectedSegment: (s: Clip | BasicClip) => void,
   selected: boolean,
   index: number,
   style: CSSProperties,
   showMuted: boolean,
-  onDelete: (s: Segment | SuggestedSegment) => void,
+  onDelete: (s: Clip | BasicClip) => void,
 };
 
 const useStyles = makeStyles<{}>()((theme) => ({

@@ -1,11 +1,11 @@
-import {duration, Segment} from "../../api/types";
+import {Clip, durationSeconds} from "../../api/types";
 import {IconButton} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import React from "react";
 import {msToHumanReadable} from "../../App/time";
 import {WithIndex} from "../../App/WithIndex";
 
-type Props = { segmentWithIndex: WithIndex<Segment>, onSegmentSelected: (segment: WithIndex<Segment>) => void };
+type Props = { segmentWithIndex: WithIndex<Clip>, onSegmentSelected: (segment: WithIndex<Clip>) => void };
 
 const useStyles = makeStyles()((theme) => ({
   segmentContainer: {
@@ -21,7 +21,7 @@ export function PlayableSegment({segmentWithIndex, onSegmentSelected}: Props) {
 
   function computedWidth() {
     return Math.min(
-      Math.max(duration(segment) * 10, 10),
+      Math.max(durationSeconds(segment) * 10, 10),
       150);
   }
 
@@ -30,7 +30,7 @@ export function PlayableSegment({segmentWithIndex, onSegmentSelected}: Props) {
          onClick={() => onSegmentSelected(segmentWithIndex)}
          style={{width: computedWidth(), height: 25}}
          className={classes.segmentContainer}
-         title={`${segment.text} : ${msToHumanReadable(duration(segment))}`}
+         title={`${segment.text} : ${msToHumanReadable(durationSeconds(segment))}`}
     >
       <IconButton onClick={() => onSegmentSelected(segmentWithIndex)} size="large">
       </IconButton>

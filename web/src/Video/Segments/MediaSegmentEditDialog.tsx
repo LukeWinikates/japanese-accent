@@ -1,7 +1,7 @@
 import React, {useCallback} from 'react';
 import DialogTitle from '@mui/material/DialogTitle';
 import Dialog from '@mui/material/Dialog';
-import {Segment} from "../../api/types";
+import {Clip} from "../../api/types";
 import {Button, DialogContent, IconButton} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
 import CloseIcon from '@mui/icons-material/Close';
@@ -15,9 +15,9 @@ export interface MediaSegmentsEditDialogProps {
   open: boolean;
   onClose: () => void;
   onDestroy: () => void;
-  onAdd: (segment: Segment) => void;
-  segment: Segment;
-  setSegment: (segment: Segment) => void;
+  onAdd: (segment: Clip) => void;
+  segment: Clip;
+  setSegment: (segment: Clip) => void;
   videoId: string;
   previousSegmentEnd: number;
   nextSegmentStart: number;

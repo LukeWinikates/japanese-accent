@@ -1,7 +1,7 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {useTheme} from "@mui/material";
 import {makeStyles} from 'tss-react/mui';
-import {Waveform} from "../api/types";
+import {BasicClip, Waveform} from "../api/types";
 import {Range} from '../App/time'
 import {DrawBackground, DrawWaveform} from "./canvas";
 import {msToPctOfRange} from "./position";
@@ -36,11 +36,7 @@ const useStyles = makeStyles<{}>()((theme) => ({
   }
 }));
 
-interface ClipWithRange extends Range {
-  videoUuid: string
-}
-
-type ClipResizingWaveformProps<T extends ClipWithRange> = {
+type ClipResizingWaveformProps<T extends BasicClip> = {
   segment: T
   setSegment: (s: T) => void
   onStartResizing: () => void,
@@ -55,7 +51,7 @@ type ResizingWaveformProps = {
   waveform: Waveform
 }
 
-export function ClipResizingWaveform<T extends ClipWithRange>({
+export function ClipResizingWaveform<T extends BasicClip>({
                                                                 segment,
                                                                 setSegment,
                                                                 playerPositionMS,

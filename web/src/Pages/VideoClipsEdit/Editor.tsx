@@ -2,18 +2,16 @@ import {SegmentEditor} from "../../Video/Segments/SegmentEditor";
 import {Button, Stack} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useCallback} from "react";
-import {Segment, SuggestedSegment} from "../../api/types";
+import {BasicClip} from "../../api/types";
 import DoneIcon from '@mui/icons-material/Done';
 import {ARE_ADVICE} from "./segment";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
-type GoodEnough = Segment | SuggestedSegment;
-
 type Props = {
   videoId: string,
-  segment: GoodEnough,
-  setSegment: (s: GoodEnough) => void
-  onDelete: (s: GoodEnough) => void
+  segment: BasicClip,
+  setSegment: (s: BasicClip) => void
+  onDelete: (s: BasicClip) => void
 };
 
 export const Editor = ({segment, setSegment, videoId, onDelete}: Props) => {

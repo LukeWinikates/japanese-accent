@@ -1,4 +1,4 @@
-import {duration, Export, Segment} from "../api/types";
+import {Clip, durationSeconds, Export} from "../api/types";
 import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
   Box,
@@ -28,12 +28,12 @@ import {useInterval} from "../App/useInterval";
 import {useBackendAPI} from "../App/useBackendAPI";
 
 type RowProps = {
-  segment: Segment,
+  segment: Clip,
   index: number,
   isCurrent: boolean,
-  onChangeSegment: (segment: Segment, index: number) => void,
-  onEdit: (segment: Segment) => void,
-  onDelete: (segment: Segment, index: number) => void,
+  onChangeSegment: (segment: Clip, index: number) => void,
+  onEdit: (segment: Clip) => void,
+  onDelete: (segment: Clip, index: number) => void,
 
 }
 const Row = ({segment, index, onChangeSegment, isCurrent, onEdit, onDelete}: RowProps) => {
@@ -58,7 +58,7 @@ const Row = ({segment, index, onChangeSegment, isCurrent, onEdit, onDelete}: Row
       <ListItemText
         primaryTypographyProps={{noWrap: true, variant: "body2"}}
         primary={segment.text}
-        secondary={Math.round(duration(segment)) + "s"}
+        secondary={Math.round(durationSeconds(segment)) + "s"}
       >
       </ListItemText>
       <ListItemSecondaryAction>
@@ -77,12 +77,12 @@ const Row = ({segment, index, onChangeSegment, isCurrent, onEdit, onDelete}: Row
   );
 }
 
-type PlaylistPlayerProps = { segments: Segment[], onSegmentsChange: (segments: Segment[]) => void, parentId: string };
+type PlaylistPlayerProps = { segments: Clip[], onSegmentsChange: (segments: Clip[]) => void, parentId: string };
 
 export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistPlayerProps) => {
-  const [editingSegment, setEditingSegment] = useState<Segment | null>(null);
-  const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Segment, index: number } | null>(null);
-  const [currentSegment, setCurrentSegment] = useState<Segment | null>(segments[0]);
+  const [editingSegment, setEditingSegment] = useState<Clip | null>(null);
+  const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Clip, index: number } | null>(null);
+  const [currentSegment, setCurrentSegment] = useState<Clip | null>(segments[0]);
   const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
   const [watchingExport, setWatchingExport] = useState(false);
   const [exportProgress, setExportProgress] = useState<Export | null>(null);
@@ -148,7 +148,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     removeSegmentByIndex(currentSegmentIndex);
   }, [currentSegmentIndex, removeSegmentByIndex]);
 
-  const mutateSegmentAtIndex = useCallback((index: number, newValue: Segment) => {
+  const mutateSegmentAtIndex = useCallback((index: number, newValue: Clip) => {
     const newSegments = [...segments];
     newSegments[index] = newValue;
     onSegmentsChange(newSegments);
@@ -157,23 +157,23 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     }
   }, [currentSegmentIndex, onSegmentsChange, segments]);
 
-  const addSegment = useCallback((newSegment: Segment) => {
+  const addSegment = useCallback((newSegment: Clip) => {
     let newSegments = [...segments];
     newSegments.splice(currentSegmentIndex + 1, 0, newSegment)
     onSegmentsChange(newSegments);
   }, [currentSegmentIndex, onSegmentsChange, segments]);
 
-  const promptToDelete = useCallback((segment: Segment, index: number) => {
+  const promptToDelete = useCallback((segment: Clip, index: number) => {
     setPromptingSegmentDelete({segment, index});
   }, [setPromptingSegmentDelete]);
 
-  const onPauseAndChangeSegment = useCallback((segment: Segment, index: number) => {
+  const onPauseAndChangeSegment = useCallback((segment: Clip, index: number) => {
     pauseAll();
     setCurrentSegment(segment);
     setCurrentSegmentIndex(index);
   }, [setCurrentSegment, setCurrentSegmentIndex, pauseAll])
 
-  const destroySegment = useCallback((segment: Segment, index: number) => {
+  const destroySegment = useCallback((segment: Clip, index: number) => {
     api.videos.clips.DELETE(segment.videoUuid, segment.uuid)
       .then(() => removeSegmentByIndex(index))
       .then(() => setPromptingSegmentDelete(null));
@@ -188,7 +188,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
     return promptingSegmentDelete && destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index);
   }, [promptingSegmentDelete, destroySegment]);
 
-  const onUpdateSegment = useCallback((s: Segment) => {
+  const onUpdateSegment = useCallback((s: Clip) => {
     mutateSegmentAtIndex(currentSegmentIndex, s);
   }, [currentSegmentIndex, mutateSegmentAtIndex]);
 
@@ -222,7 +222,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
         <Card ref={listRef}>
           <List>
             {
-              segments.map((segment: Segment, index: number) => {
+              segments.map((segment: Clip, index: number) => {
                 return <Row
                   segment={segment}
                   index={index}

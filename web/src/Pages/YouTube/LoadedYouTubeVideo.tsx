@@ -1,4 +1,4 @@
-import {Segment, Video} from "../../api/types";
+import {Clip, Video} from "../../api/types";
 import React, {useCallback, useState} from "react";
 import {Box, Breadcrumbs, Button, Container, Tab, Tabs, Typography} from "@mui/material";
 import YouTubeIcon from '@mui/icons-material/YouTube';
@@ -14,7 +14,7 @@ type TabTypes = "segments" | "words" | "notes";
 export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
   const [activeTab, setActiveTab] = useState<TabTypes>("segments");
 
-  const setVideoSegments = useCallback((newSegments: Segment[]) => {
+  const setVideoSegments = useCallback((newSegments: Clip[]) => {
     onVideoChange({
       ...video,
       segments: newSegments

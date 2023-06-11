@@ -1,8 +1,8 @@
-import {Segment, SuggestedSegment} from "../../api/types";
+import {BasicClip, Clip} from "../../api/types";
 
-type MergerParams = { segments: Segment[], suggestedSegments: SuggestedSegment[] };
+type MergerParams = { segments: Clip[], suggestedSegments: BasicClip[] };
 
-export function merged({suggestedSegments, segments}: MergerParams): ((Segment|SuggestedSegment)[]) {
+export function merged({suggestedSegments, segments}: MergerParams): (BasicClip[]) {
   let toHide = segments.map(s => s.parent);
   let filteredSuggestedSegments = suggestedSegments.filter(s => !toHide.some(th => th === s.uuid));
 
