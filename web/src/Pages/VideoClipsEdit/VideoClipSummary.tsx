@@ -9,7 +9,7 @@ declare type Props = {
 }
 
 export const VideoClipSummary = ({video, advice}: Props) => {
-  const clipsDuration = video.segments.map(seg => {
+  const clipsDuration = video.clips.map(seg => {
     return seg.endMS - seg.startMS;
   }).reduce((len, memo) => {
     return memo + len;
@@ -25,7 +25,7 @@ export const VideoClipSummary = ({video, advice}: Props) => {
               Clips Created
             </Grid>
             <Grid item xs={2}>
-              {video.segments.length}
+              {video.clips.length}
             </Grid>
             <Grid item xs={4}>
               {msToHumanReadable(clipsDuration)}

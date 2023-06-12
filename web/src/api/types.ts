@@ -20,7 +20,7 @@ export declare type Video = {
   title: string,
   url: string,
   videoId: string,
-  segments: Clip[],
+  clips: Clip[],
   words: Word[],
   lastActivityAt: string
   text: string,

@@ -44,7 +44,7 @@ type Video struct {
 	URL            string         `json:"url"`
 	VideoID        string         `json:"videoId"`
 	Files          Files          `json:"files"`
-	Segments       []VideoSegment `json:"segments"`
+	Segments       []VideoSegment `json:"clips"`
 	LastActivityAt time.Time      `json:"lastActivityAt"`
 	Text           string         `json:"text"`
 	Words          []Word         `json:"words"`

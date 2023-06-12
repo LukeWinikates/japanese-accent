@@ -17,7 +17,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
   const setVideoSegments = useCallback((newSegments: Clip[]) => {
     onVideoChange({
       ...video,
-      segments: newSegments
+      clips: newSegments
     });
   }, [onVideoChange, video]);
 
@@ -64,7 +64,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
         <Box marginY={2}>
           {
             activeTab === "segments" &&
-            <PlaylistPlayer parentId={video.videoId} segments={video.segments} onSegmentsChange={setVideoSegments}/>
+            <PlaylistPlayer parentId={video.videoId} segments={video.clips} onSegmentsChange={setVideoSegments}/>
           }
           {
             activeTab === "words" &&

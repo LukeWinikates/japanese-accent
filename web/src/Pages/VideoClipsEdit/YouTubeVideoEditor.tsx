@@ -34,12 +34,12 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
   }, [value, setValue]);
 
   let removeClip = useCallback((clip: BasicClip) => {
-    let newClips = [...video.segments];
+    let newClips = [...video.clips];
     newClips.splice(newClips.findIndex(testSegment => testSegment.uuid === clip.uuid), 1)
 
     setVideo({
       ...video,
-      segments: newClips
+      clips: newClips
     })
   }, [video, setVideo]);
 

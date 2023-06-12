@@ -30,7 +30,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
 
   const segmentsForTimeline = merged({
     suggestedSegments: advice.suggestedSegments,
-    segments: video.segments,
+    segments: video.clips,
   });
 
   const sizeFor = useCallback((index: number) => {
