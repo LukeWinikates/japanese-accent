@@ -64,16 +64,10 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
         </Button>
         <Card>
           <CardContent>
-            <Typography variant={"h5"}>
-              Create clips from this video to help you study. Switch to practice mode to listen to a clip, imitate
-              what you hear, and compare your speaking to the native recording.
-            </Typography>
-
             <VideoClipSummary
               video={video}
               advice={value}
             />
-
           </CardContent>
         </Card>
       </Box>
