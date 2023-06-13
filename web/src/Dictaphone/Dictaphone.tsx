@@ -54,7 +54,7 @@ export declare type DictaphoneProps = {
   item: DictaphoneSupported,
 };
 
-declare type Action = "PlaySegment" | "Record" | "PlayRecording";
+declare type Action = "PlayClip" | "Record" | "PlayRecording";
 
 function makeParams(item: DictaphoneSupported) {
   if ("videoUuid" in item) {
@@ -94,7 +94,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   const startAction = useCallback((action: Action) => {
     switch (action) {
-      case "PlaySegment":
+      case "PlayClip":
         setRecordingIsPlaying(false);
         setIsRecording(false);
         setSegmentIsPlaying(true);
@@ -115,13 +115,13 @@ export function Dictaphone({item}: DictaphoneProps) {
   const practice = useCallback(() => {
     pauseAll();
     activityPostBody && api.activity.POST(activityPostBody);
-    setActionQueue(["PlaySegment", "Record", "PlaySegment"])
+    setActionQueue(["PlayClip", "Record", "PlayClip"])
     setSegmentIsPlaying(true);
   }, [activityPostBody, setActionQueue, setSegmentIsPlaying, api.activity, pauseAll]);
 
   const segmentPlaybackEnded = useCallback(() => {
     setSegmentIsPlaying(false);
-    if (actionQueue[0] === "PlaySegment") {
+    if (actionQueue[0] === "PlayClip") {
       const [, ...newActionQueue] = actionQueue;
       setActionQueue(newActionQueue);
       startAction(newActionQueue[0]);
