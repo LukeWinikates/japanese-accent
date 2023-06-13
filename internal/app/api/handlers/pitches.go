@@ -9,7 +9,7 @@ import (
 	"log"
 )
 
-func MakeSegmentPitchesCREATE(db gorm.DB) gin.HandlerFunc {
+func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		segmentID := context.Param("id")
 

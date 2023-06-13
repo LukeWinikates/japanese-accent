@@ -88,7 +88,7 @@ interface WordAnalysisClient {
 interface AdviceClient {
   GET: (videoId: string) => Promise<AxiosResponse<VideoAdvice, any>>
   suggestedClips: {
-    DELETE: (videoId: string, segmentUUID: string) => Promise<AxiosResponse<void, any>>
+    DELETE: (videoId: string, clipUUID: string) => Promise<AxiosResponse<void, any>>
   }
 }
 
@@ -286,17 +286,17 @@ function clipsClient(axios: AxiosInstance): ClipsClient {
   return {
     pitch: {
       POST: function (clipId: string) {
-        return axios.post<Pitch>(`/api/segments/${clipId}/pitches`);
+        return axios.post<Pitch>(`/api/clips/${clipId}/pitches`);
       }
     },
     DELETE: (videoId: string, clipId: string) => {
-        return axios.delete('/api/videos/' + videoId + "/segments/" + clipId)
+        return axios.delete(`/api/videos/${videoId}/clips/${clipId}`)
     },
     POST: (videoId: string, data: ClipsPostBody) => {
-      return axios.post<Clip>('/api/videos/' + videoId + "/segments/", data)
+      return axios.post<Clip>(`/api/videos/${videoId}/clips/`, data)
     },
     PUT: (videoId: string, data: ClipsPutBody) => {
-      return axios.put('/api/videos/' + videoId + "/segments/" + data.uuid, data)
+      return axios.put(`/api/videos/${videoId}/clips/${data.uuid}`, data)
     }
   }
 }

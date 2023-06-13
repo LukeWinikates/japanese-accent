@@ -67,12 +67,12 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 			videos.DELETE(":videoUuid/advice/clips/:sha", handlers.MakeSuggestedClipDELETE(mediaDirPath, db))
 
 			videos.GET(":videoUuid/waveform", handlers.MakeWaveformGET(mediaDirPath, db))
-			videos.POST(":videoUuid/segments/", handlers.MakeAudioSegmentsCREATE(db))
-			videos.PUT(":videoUuid/segments/:id", handlers.MakeAudioSegmentsPUT(db))
-			videos.DELETE(":videoUuid/segments/:id", handlers.MakeAudioSegmentsDELETE(db))
+			videos.POST(":videoUuid/clips/", handlers.MakeAudioClipsCREATE(db))
+			videos.PUT(":videoUuid/clips/:id", handlers.MakeAudioClipsPUT(db))
+			videos.DELETE(":videoUuid/clips/:id", handlers.MakeAudioClipsDELETE(db))
 		}
 
-		api.POST("/segments/:id/pitches", handlers.MakeSegmentPitchesCREATE(db))
+		api.POST("/clips/:id/pitches", handlers.MakeClipPitchesCREATE(db))
 
 		wordLists := api.Group("/wordlists/")
 		{

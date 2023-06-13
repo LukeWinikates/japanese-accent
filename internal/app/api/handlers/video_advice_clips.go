@@ -11,9 +11,6 @@ import (
 	"net/http"
 )
 
-// TODO:
-// * delete the old VTT timeline generator and structs
-
 func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var video *database.Video
