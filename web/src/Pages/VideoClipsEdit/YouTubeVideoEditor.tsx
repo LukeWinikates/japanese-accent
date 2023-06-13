@@ -20,7 +20,7 @@ type LoadedEditorProps = {
 
 function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
   let muteSuggestion = useCallback((segmentToMute: BasicClip) => {
-    let newSuggestions = [...value.suggestedSegments];
+    let newSuggestions = [...value.suggestedClips];
 
     newSuggestions.splice(newSuggestions.findIndex(testSegment => testSegment.uuid === segmentToMute.uuid), 1, {
       ...segmentToMute,
@@ -29,7 +29,7 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
 
     setValue({
       ...value,
-      suggestedSegments: newSuggestions
+      suggestedClips: newSuggestions
     })
   }, [value, setValue]);
 

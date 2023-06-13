@@ -14,7 +14,7 @@ export const VideoClipSummary = ({video, advice}: Props) => {
   }).reduce((len, memo) => {
     return memo + len;
   }, 0);
-  const totalMS = advice.suggestedSegments[advice.suggestedSegments.length - 1].endMS;
+  const totalMS = advice.suggestedClips[advice.suggestedClips.length - 1].endMS;
 
   return (
     <Stack spacing={2}>
@@ -36,7 +36,7 @@ export const VideoClipSummary = ({video, advice}: Props) => {
               Suggested Clips to Review
             </Grid>
             <Grid item xs={2}>
-              {advice.suggestedSegments.length}
+              {advice.suggestedClips.length}
             </Grid>
             <Grid item xs={4}>
               {msToHumanReadable(totalMS)}

@@ -29,7 +29,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   const listRef = useRef<VariableSizeList | null>(null);
 
   const segmentsForTimeline = merged({
-    suggestedSegments: advice.suggestedSegments,
+    suggestedSegments: advice.suggestedClips,
     segments: video.clips,
   });
 
@@ -38,11 +38,11 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     return sizeForSegment(d, showMuted);
   }, [showMuted, segmentsForTimeline]);
 
-  const selectedSegmentIndex = advice.suggestedSegments.findIndex(s => s.uuid === selectedSegment?.uuid)
+  const selectedSegmentIndex = advice.suggestedClips.findIndex(s => s.uuid === selectedSegment?.uuid)
 
   const selectedSegmentByIndex = useCallback((index: number) => {
-    setSelectedSegment(advice.suggestedSegments[index]);
-  }, [advice.suggestedSegments, setSelectedSegment]);
+    setSelectedSegment(advice.suggestedClips[index]);
+  }, [advice.suggestedClips, setSelectedSegment]);
 
   const deleteSegment = useCallback((segment: Clip | BasicClip) => {
     if (segment.labels.some(ARE_ADVICE)) {
@@ -79,7 +79,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
             <CardContent>
               <Pager
                 currentIndex={selectedSegmentIndex}
-                maxIndex={advice.suggestedSegments.length - 1}
+                maxIndex={advice.suggestedClips.length - 1}
                 betweenElement={<div>{titleFor(selectedSegment)}</div>}
                 setByIndex={selectedSegmentByIndex}/>
               <Editor

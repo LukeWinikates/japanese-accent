@@ -107,7 +107,7 @@ export type Waveform = {
 }
 
 export type VideoAdvice = {
-  suggestedSegments: BasicClip[],
+  suggestedClips: BasicClip[],
 }
 
 export type BoostPostBody = {

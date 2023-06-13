@@ -121,7 +121,7 @@ type TimedText struct {
 }
 
 type VideoAdviceResponse struct {
-	SuggestedSegments []SuggestedSegment `json:"suggestedSegments"`
+	SuggestedSegments []SuggestedSegment `json:"suggestedClips"`
 }
 
 type SuggestedSegment struct {
