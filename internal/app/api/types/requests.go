@@ -26,14 +26,14 @@ type SegmentEditRequest struct {
 type SegmentCreateRequest = VideoSegmentCreate
 
 type BoostCreateRequest struct {
-	SegmentID string `json:"segmentId"`
+	ClipID string `json:"clipId"`
 }
 type PlaylistCreateRequest struct {
 	Count int `json:"count"`
 }
 
 type ActivityCreateRequest struct {
-	SegmentID    string `json:"segmentId"`
+	ClipID       string `json:"clipId"`
 	ActivityType string `json:"activityType"`
 }
 

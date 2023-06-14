@@ -33,10 +33,10 @@ type DictaphoneParams = {
 const makeParamsForSegment = (segment: Clip): DictaphoneParams => {
   return {
     boostPostBody: {
-      segmentId: segment.uuid,
+      clipId: segment.uuid,
     },
     activityPostBody: {
-      segmentId: segment.uuid,
+      clipId: segment.uuid,
     },
     src: audioURL(segment),
     duration: {startSec: segment.startMS / 1000, endSec: segment.endMS / 1000},

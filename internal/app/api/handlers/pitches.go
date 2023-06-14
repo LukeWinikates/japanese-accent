@@ -21,7 +21,7 @@ func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 		//
-		//if db.Where("SegmentID = ?", segmentID).Find(&database.SegmentPitch{}).Error != nil {
+		//if db.Where("ClipID = ?", segmentID).Find(&database.SegmentPitch{}).Error != nil {
 		//	log.Println("already has a pitch")
 		//
 		//}

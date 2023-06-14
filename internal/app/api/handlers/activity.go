@@ -25,7 +25,7 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 		}
 
 		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", activityCreate.SegmentID).Preload("Video").Find(&segment).Error; err != nil {
+		if err := db.Where("uuid = ? ", activityCreate.ClipID).Preload("Video").Find(&segment).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return

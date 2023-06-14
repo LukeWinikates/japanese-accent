@@ -111,11 +111,11 @@ export type VideoAdvice = {
 }
 
 export type BoostPostBody = {
-  segmentId: string
+  clipId: string
 }
 
 export type ActivityPostBody = {
-  segmentId: string
+  clipId: string
 }
 
 export type ClipsPostBody = {

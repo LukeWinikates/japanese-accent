@@ -19,7 +19,7 @@ func MakeBoostPOST(db gorm.DB) gin.HandlerFunc {
 		}
 
 		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", boostRequest.SegmentID).Find(&segment).Error; err != nil {
+		if err := db.Where("uuid = ? ", boostRequest.ClipID).Find(&segment).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return
