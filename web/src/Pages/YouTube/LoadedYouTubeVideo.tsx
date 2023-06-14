@@ -9,10 +9,12 @@ import {Link} from "react-router-dom";
 import VideoIcon from '@mui/icons-material/Theaters';
 import EditIcon from '@mui/icons-material/Edit';
 
-type TabTypes = "segments" | "words" | "notes";
+type TabTypes = "clips" | "words" | "notes";
 
-export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVideoChange: (v: Video) => void }) => {
-  const [activeTab, setActiveTab] = useState<TabTypes>("segments");
+type Props = { video: Video, onVideoChange: (v: Video) => void };
+
+export const LoadedYouTubeVideo = ({video, onVideoChange}: Props) => {
+  const [activeTab, setActiveTab] = useState<TabTypes>("clips");
 
   const setVideoSegments = useCallback((newSegments: Clip[]) => {
     onVideoChange({
@@ -58,12 +60,12 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: { video: Video, onVid
           textColor="primary"
           centered
         >
-          <Tab label="Video Segments" value="segments"/>
+          <Tab label="Video Clips" value="clips"/>
           <Tab label="Vocabulary" value="words"/>
         </Tabs>
         <Box marginY={2}>
           {
-            activeTab === "segments" &&
+            activeTab === "clips" &&
             <PlaylistPlayer parentId={video.videoId} segments={video.clips} onSegmentsChange={setVideoSegments}/>
           }
           {
