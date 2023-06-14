@@ -1,4 +1,4 @@
-import {ClipEditor} from "../../Video/Segments/ClipEditor";
+import {ClipEditor} from "../../Video/Clips/ClipEditor";
 import {Button, Stack} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useCallback} from "react";

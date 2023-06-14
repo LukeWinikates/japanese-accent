@@ -11,13 +11,13 @@ import DialogActions from "@mui/material/DialogActions";
 import {ClipEditor} from "./ClipEditor";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
-export interface MediaSegmentsEditDialogProps {
+interface Props {
   open: boolean;
   onClose: () => void;
   onDestroy: () => void;
-  onAdd: (segment: Clip) => void;
-  segment: Clip;
-  setSegment: (segment: Clip) => void;
+  onAdd: (clip: Clip) => void;
+  clip: Clip;
+  setClip: (clip: Clip) => void;
   videoId: string;
   previousSegmentEnd: number;
   nextSegmentStart: number;
@@ -34,15 +34,15 @@ const useStyles = makeStyles<{}>()(theme => (
   }
 ));
 
-export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
+export function ClipEditorDialog(props: Props) {
   const {
     onClose,
     onDestroy,
     onAdd,
     open,
     videoId,
-    segment,
-    setSegment,
+    clip,
+    setClip,
     previousSegmentEnd,
     nextSegmentStart
   } = props;
@@ -50,25 +50,25 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
   const api = useBackendAPI();
 
   const onSave = useCallback(() => {
-    api.videos.clips.PUT(videoId, segment)
+    api.videos.clips.PUT(videoId, clip)
       .then(onClose);
-  }, [api.videos.clips, onClose, segment, videoId]);
+  }, [api.videos.clips, onClose, clip, videoId]);
 
   const onDelete = useCallback(() => {
-    api.videos.clips.DELETE(videoId, segment.uuid).then(onDestroy);
-  }, [api.videos.clips, segment, onDestroy, videoId]);
+    api.videos.clips.DELETE(videoId, clip.uuid).then(onDestroy);
+  }, [api.videos.clips, clip, onDestroy, videoId]);
 
   const onClone = useCallback(() => {
     api.videos.clips.POST(videoId, {
-      text: segment.text,
+      text: clip.text,
       videoUuid: videoId,
-      startMS: segment.startMS,
-      endMS: segment.endMS,
+      startMS: clip.startMS,
+      endMS: clip.endMS,
       parent: null,
       labels: [],
     })
       .then(response => onAdd(response.data))
-  }, [api.videos.clips, videoId, segment, onAdd]);
+  }, [api.videos.clips, videoId, clip, onAdd]);
 
   return (
     <Dialog onClose={onClose}
@@ -89,8 +89,8 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
       </DialogTitle>
       <DialogContent>
         <ClipEditor
-          clip={segment}
-          setClip={setSegment}
+          clip={clip}
+          setClip={setClip}
           previousClipEndMS={previousSegmentEnd}
           nextClipStartMS={nextSegmentStart}
         />

@@ -19,7 +19,7 @@ import {
 import ListItemText from "@mui/material/ListItemText";
 import EditIcon from "@mui/material/SvgIcon";
 import {Dictaphone} from "./Dictaphone";
-import {MediaSegmentEditDialog} from "../Video/Segments/MediaSegmentEditDialog";
+import {ClipEditorDialog} from "../Video/Clips/ClipEditorDialog";
 import DeleteIcon from '@mui/icons-material/Delete';
 import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
@@ -237,13 +237,13 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
       </Box>
       {
         editingSegment !== null &&
-        <MediaSegmentEditDialog
+        <ClipEditorDialog
           open={!!editingSegment}
           onClose={handleModalClose}
           onDestroy={removeCurrentSegment}
           onAdd={addSegment}
-          segment={editingSegment}
-          setSegment={setEditingSegment}
+          clip={editingSegment}
+          setClip={setEditingSegment}
           videoId={editingSegment.videoUuid}
           previousSegmentEnd={segments[currentSegmentIndex - 1]?.endMS ?? 0}
           nextSegmentStart={segments[currentSegmentIndex + 1]?.startMS ?? 0}
@@ -260,7 +260,7 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Delete this segment?"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Delete this clip?"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
               {promptingSegmentDelete.segment.text}
