@@ -62,7 +62,7 @@ export declare type Highlights = {
 export declare type Playlist = {
   id: string,
   title: string,
-  segments: Clip[],
+  clips: Clip[],
 }
 
 export declare type WordList = {

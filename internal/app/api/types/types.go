@@ -71,7 +71,7 @@ type Category struct {
 type Playlist struct {
 	//URL string `json:"url"`
 	ID       string         `json:"id"`
-	Segments []VideoSegment `json:"segments"`
+	Segments []VideoSegment `json:"clips"`
 }
 
 type WordList struct {

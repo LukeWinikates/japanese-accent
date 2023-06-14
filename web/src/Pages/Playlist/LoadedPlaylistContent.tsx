@@ -6,10 +6,10 @@ import {PlaylistPlayer} from "../../Dictaphone/PlaylistPlayer";
 type Props = { playlist: Playlist, onPlaylistChange: (p: Playlist) => void };
 
 export const LoadedPlaylistContent = ({playlist, onPlaylistChange}: Props) => {
-  const setSegments = useCallback((segments: Clip[]) => {
+  const setSegments = useCallback((clips: Clip[]) => {
     onPlaylistChange({
       ...playlist,
-      segments
+      clips
     })
   }, [onPlaylistChange, playlist]);
 
@@ -27,7 +27,7 @@ export const LoadedPlaylistContent = ({playlist, onPlaylistChange}: Props) => {
         </Box>
       </Container>
 
-      <PlaylistPlayer parentId={playlist.id} segments={playlist.segments} onSegmentsChange={setSegments}/>
+      <PlaylistPlayer parentId={playlist.id} segments={playlist.clips} onSegmentsChange={setSegments}/>
     </Box>
   );
 }
