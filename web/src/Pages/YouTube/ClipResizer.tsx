@@ -10,7 +10,7 @@ const useStyles = makeStyles<{}>()((theme) => ({
     backgroundColor: theme.palette.primary.light,
     opacity: .4,
   },
-  segmentResizer: {
+  clipResizer: {
     display: "inline-block",
     cursor: "col-resize",
     backgroundColor: theme.palette.secondary.light,
@@ -27,21 +27,21 @@ const useStyles = makeStyles<{}>()((theme) => ({
 }));
 
 type Props = {
-  segment: { startMS: number, endMS: number },
-  updateSegment: (s: { startMS: number, endMS: number }) => void,
+  clip: { startMS: number, endMS: number },
+  updateClip: (s: { startMS: number, endMS: number }) => void,
   msToPixels: (ms: number) => number,
   pixelsToMS: (px: number) => number,
 };
 
 export function ClipResizer({
-                              segment,
-                              updateSegment,
+                              clip,
+                              updateClip,
                               msToPixels,
                               pixelsToMS,
                             }: Props) {
   const {classes} = useStyles({});
-  let startPx = msToPixels(segment.startMS);
-  let endPX = msToPixels(segment.endMS);
+  let startPx = msToPixels(clip.startMS);
+  let endPX = msToPixels(clip.endMS);
   let width = endPX - startPx;
 
   const [localState, setLocalState] = useState({left: 0, width: 0})
@@ -51,7 +51,7 @@ export function ClipResizer({
       left: startPx,
       width: width
     })
-  }, [segment, startPx, width])
+  }, [clip, startPx, width])
 
   const onResize = useCallback((event: any, {size, handle}: ResizeCallbackData) => {
     if (handle === "w") {
@@ -68,18 +68,18 @@ export function ClipResizer({
   }, [setLocalState, localState, endPX]);
 
   const commitChange = useCallback(() => {
-    updateSegment({
-        ...segment,
+    updateClip({
+        ...clip,
         startMS: pixelsToMS(localState.left),
         endMS: pixelsToMS(localState.left + localState.width),
       }
     )
-  }, [updateSegment, segment, localState.left, localState.width, pixelsToMS]);
+  }, [updateClip, clip, localState.left, localState.width, pixelsToMS]);
 
   const handle = useCallback((axis: ResizeHandle, ref: ForwardedRef<any>) => {
     return (
       <div ref={ref}
-           className={`${classes.segmentResizer} ${axis === "w" ? classes.resizerWest : classes.resizerEast}`}/>
+           className={`${classes.clipResizer} ${axis === "w" ? classes.resizerWest : classes.resizerEast}`}/>
     );
   }, [classes]);
 

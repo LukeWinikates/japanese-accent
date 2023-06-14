@@ -1,4 +1,4 @@
-import {SegmentEditor} from "../../Video/Segments/SegmentEditor";
+import {ClipEditor} from "../../Video/Segments/ClipEditor";
 import {Button, Stack} from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useCallback} from "react";
@@ -48,11 +48,11 @@ export const Editor = ({segment, setSegment, videoId, onDelete}: Props) => {
 
   return (
     <>
-      <SegmentEditor
-        segment={segment}
-        setSegment={setSegment}
-        previousSegmentEnd={null}
-        nextSegmentStart={null}
+      <ClipEditor
+        clip={segment}
+        setClip={setSegment}
+        previousClipEndMS={null}
+        nextClipStartMS={null}
       />
 
       <Stack

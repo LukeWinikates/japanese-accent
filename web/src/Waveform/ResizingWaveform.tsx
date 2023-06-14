@@ -37,8 +37,8 @@ const useStyles = makeStyles<{}>()((theme) => ({
 }));
 
 type ClipResizingWaveformProps<T extends BasicClip> = {
-  segment: T
-  setSegment: (s: T) => void
+  clip: T
+  setClip: (s: T) => void
   onStartResizing: () => void,
   playerPositionMS: number,
 }
@@ -52,32 +52,32 @@ type ResizingWaveformProps = {
 }
 
 export function ClipResizingWaveform<T extends BasicClip>({
-                                                                segment,
-                                                                setSegment,
+                                                                clip,
+                                                                setClip,
                                                                 playerPositionMS,
                                                                 onStartResizing
                                                               }: ClipResizingWaveformProps<T>) {
   const api = useBackendAPI();
   const callback = useCallback(() =>
-      api.waveform.GET(segment.videoUuid, 8000),
-    [api.waveform, segment.videoUuid]
+      api.waveform.GET(clip.videoUuid, 8000),
+    [api.waveform, clip.videoUuid]
   );
   const setRange = useCallback((r: Range) => {
-    setSegment({
-      ...segment,
+    setClip({
+      ...clip,
       startMS: r.startMS,
       endMS: r.endMS
     })
-  }, [setSegment, segment]);
+  }, [setClip, clip]);
 
   const Into = useCallback(({value}: Settable<Waveform>) => {
       return (
-        <ResizingWaveform range={segment} waveform={value} setRange={setRange} onStartResizing={onStartResizing}
+        <ResizingWaveform range={clip} waveform={value} setRange={setRange} onStartResizing={onStartResizing}
                           playerPositionMS={playerPositionMS}/>
       );
     }
     ,
-    [segment, onStartResizing, playerPositionMS, setRange]
+    [clip, onStartResizing, playerPositionMS, setRange]
   )
 
   return (
@@ -170,8 +170,8 @@ export function ResizingWaveform({
       <div className={classes.playHeadTop} style={{left: msToPx(playerPositionMS)}}/>
 
       <ClipResizer
-        segment={range}
-        updateSegment={setRange}
+        clip={range}
+        updateClip={setRange}
         pixelsToMS={pxToMS}
         msToPixels={msToPx}/>
     </div>

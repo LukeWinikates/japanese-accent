@@ -9,107 +9,107 @@ import {ClipResizingWaveform} from "../../Waveform/ResizingWaveform";
 import {BasicClip} from "../../api/types";
 
 export interface SegmentEditorProps<T extends BasicClip> {
-  segment: T;
-  setSegment: (segment: T) => void;
-  previousSegmentEnd: number | null;
-  nextSegmentStart: number | null;
+  clip: T;
+  setClip: (segment: T) => void;
+  previousClipEndMS: number | null;
+  nextClipStartMS: number | null;
 }
 
-export function SegmentEditor<T extends BasicClip>({
-                                                      segment,
-                                                      setSegment,
-                                                      previousSegmentEnd,
-                                                      nextSegmentStart
+export function ClipEditor<T extends BasicClip>({
+                                                      clip,
+                                                      setClip,
+                                                      previousClipEndMS,
+                                                      nextClipStartMS
                                                     }: SegmentEditorProps<T>) {
-  const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
+  const [clipIsPlaying, setClipIsPlaying] = useState<boolean>(false);
   const [preferredStartTime, setPreferredStartTime] = useState<number | undefined>(undefined);
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
   const [playerPositionMS, setPlayerPositionMS] = useState(0);
 
   useEffect(() => {
-    setSegmentIsPlaying(false);
+    setClipIsPlaying(false);
     if (!playerStartDebounce) {
       return
     }
     const timer = setTimeout(() => {
-      setSegmentIsPlaying(true);
+      setClipIsPlaying(true);
     }, 300);
     return () => clearTimeout(timer);
   }, [playerStartDebounce])
 
 
   const handleTextChange = useCallback((text: string) => {
-    setSegment({
-      ...segment,
+    setClip({
+      ...clip,
       text
     });
-  }, [segment, setSegment]);
+  }, [clip, setClip]);
 
   const handleStartChange = useCallback((newStart: number) => {
-    const end = newStart >= segment.endMS ? newStart + 1000 : segment.endMS
-    setSegment({
-      ...segment,
+    const end = newStart >= clip.endMS ? newStart + 1000 : clip.endMS
+    setClip({
+      ...clip,
       startMS: newStart,
       endMS: end
     });
-  }, [segment, setSegment]);
+  }, [clip, setClip]);
 
   const handleEndChange = useCallback((newEnd: number) => {
-    setSegment({
-      ...segment,
+    setClip({
+      ...clip,
       endMS: newEnd
     });
     setPreferredStartTime(newEnd - 1000);
     setPlayerStartDebounce(new Date())
-  }, [setPreferredStartTime, setPlayerStartDebounce, segment, setSegment]);
+  }, [setPreferredStartTime, setPlayerStartDebounce, clip, setClip]);
 
   const duration = useMemo(() => {
     return {
-      startSec: segment.startMS / 1000,
-      endSec: segment.endMS / 1000
+      startSec: clip.startMS / 1000,
+      endSec: clip.endMS / 1000
     }
-  }, [segment.endMS, segment.startMS]);
-  const onPlaybackEnded = useCallback(() => setSegmentIsPlaying(false), [setSegmentIsPlaying]);
+  }, [clip.endMS, clip.startMS]);
+  const onPlaybackEnded = useCallback(() => setClipIsPlaying(false), [setClipIsPlaying]);
 
-  let alignPrevious = useCallback(() => previousSegmentEnd && handleStartChange(previousSegmentEnd), [handleStartChange, previousSegmentEnd]);
-  let alignNext = useCallback(() => nextSegmentStart && handleEndChange(nextSegmentStart), [handleEndChange, nextSegmentStart]);
+  let alignPrevious = useCallback(() => previousClipEndMS && handleStartChange(previousClipEndMS), [handleStartChange, previousClipEndMS]);
+  let alignNext = useCallback(() => nextClipStartMS && handleEndChange(nextClipStartMS), [handleEndChange, nextClipStartMS]);
   let onTextChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTextChange(event.target.value), [handleTextChange]);
 
   return (
     <>
       <ClipResizingWaveform
-        segment={segment}
-        setSegment={setSegment}
+        clip={clip}
+        setClip={setClip}
         playerPositionMS={playerPositionMS}
         onStartResizing={onPlaybackEnded}
       />
 
-      <Player src={audioURL(segment)}
+      <Player src={audioURL(clip)}
               duration={duration}
-              playing={segmentIsPlaying}
-              onPlayerStateChanged={setSegmentIsPlaying}
+              playing={clipIsPlaying}
+              onPlayerStateChanged={setClipIsPlaying}
               preferredStartTime={preferredStartTime}
               onPositionChange={setPlayerPositionMS}
               onPlaybackEnded={onPlaybackEnded}
       />
 
 
-      <TimeInput label="Start" onChange={handleStartChange} value={segment.startMS}/>
+      <TimeInput label="Start" onChange={handleStartChange} value={clip.startMS}/>
       {
-        previousSegmentEnd &&
+        previousClipEndMS &&
         <Button onClick={alignPrevious}>
-          Align Start to Previous Segment End: {msToHumanReadable(previousSegmentEnd)}
+          Align Start to Previous Segment End: {msToHumanReadable(previousClipEndMS)}
         </Button>
       }
-      <TimeInput label="End" onChange={handleEndChange} value={segment.endMS}/>
-      {nextSegmentStart &&
+      <TimeInput label="End" onChange={handleEndChange} value={clip.endMS}/>
+      {nextClipStartMS &&
         <Button onClick={alignNext}>
-          Align End to Next Segment Start: {msToHumanReadable(nextSegmentStart)}
+          Align End to Next Segment Start: {msToHumanReadable(nextClipStartMS)}
         </Button>
       }
 
       <TextField margin="normal"
-                 value={segment.text} fullWidth={true}
+                 value={clip.text} fullWidth={true}
                  multiline={true}
                  onChange={onTextChange}/>
 

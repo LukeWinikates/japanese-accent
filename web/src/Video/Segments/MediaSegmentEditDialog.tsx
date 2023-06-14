@@ -8,7 +8,7 @@ import CloseIcon from '@mui/icons-material/Close';
 import TrashIcon from '@mui/icons-material/Delete';
 import CopyIcon from '@mui/icons-material/FileCopy';
 import DialogActions from "@mui/material/DialogActions";
-import {SegmentEditor} from "./SegmentEditor";
+import {ClipEditor} from "./ClipEditor";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
 export interface MediaSegmentsEditDialogProps {
@@ -88,11 +88,11 @@ export function MediaSegmentEditDialog(props: MediaSegmentsEditDialogProps) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <SegmentEditor
-          segment={segment}
-          setSegment={setSegment}
-          previousSegmentEnd={previousSegmentEnd}
-          nextSegmentStart={nextSegmentStart}
+        <ClipEditor
+          clip={segment}
+          setClip={setSegment}
+          previousClipEndMS={previousSegmentEnd}
+          nextClipStartMS={nextSegmentStart}
         />
       </DialogContent>
       <DialogActions>
