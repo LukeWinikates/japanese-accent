@@ -61,7 +61,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     }
 
     if (labels.some(ARE_MUTED)) {
-      return "Muted Segment";
+      return "Muted Suggestion";
     }
 
     if (labels.some(ARE_ADVICE)) {

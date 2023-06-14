@@ -68,7 +68,7 @@ export function MutedListItem({segment, setSelectedSegment, selected, style, sho
   }, [segment, setSelectedSegment]);
 
   return (
-    <Tooltip style={style} title="Muted Segment">
+    <Tooltip style={style} title="Muted Clip">
       <ListItemButton key={segment.uuid} className={classNames} divider={false} dense selected={selected}
                       onClick={onClick}
       >
