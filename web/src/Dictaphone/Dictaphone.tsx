@@ -30,16 +30,16 @@ type DictaphoneParams = {
   duration: { startSec: number, endSec: number } | "auto",
 }
 
-const makeParamsForSegment = (segment: Clip): DictaphoneParams => {
+const makeParamsForClip = (clip: Clip): DictaphoneParams => {
   return {
     boostPostBody: {
-      clipId: segment.uuid,
+      clipId: clip.uuid,
     },
     activityPostBody: {
-      clipId: segment.uuid,
+      clipId: clip.uuid,
     },
-    src: audioURL(segment),
-    duration: {startSec: segment.startMS / 1000, endSec: segment.endMS / 1000},
+    src: audioURL(clip),
+    duration: {startSec: clip.startMS / 1000, endSec: clip.endMS / 1000},
   }
 }
 
@@ -59,9 +59,8 @@ declare type Action = "PlayClip" | "Record" | "PlayRecording";
 function makeParams(item: DictaphoneSupported) {
   if ("videoUuid" in item) {
     let segment = item as Clip;
-    return makeParamsForSegment(segment);
+    return makeParamsForClip(segment);
   }
-  console.log("got here!")
   return makeParamsForAudio(item as Audio)
 }
 
