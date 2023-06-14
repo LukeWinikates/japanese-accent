@@ -58,8 +58,7 @@ declare type Action = "PlayClip" | "Record" | "PlayRecording";
 
 function makeParams(item: DictaphoneSupported) {
   if ("videoUuid" in item) {
-    let segment = item as Clip;
-    return makeParamsForClip(segment);
+    return makeParamsForClip(item as Clip);
   }
   return makeParamsForAudio(item as Audio)
 }
@@ -69,7 +68,7 @@ export function Dictaphone({item}: DictaphoneProps) {
     activityPostBody, boostPostBody, src, duration
   } = makeParams(item);
   const [currentRecording, setCurrentRecording] = useState<AudioRecording | null>(null);
-  const [segmentIsPlaying, setSegmentIsPlaying] = useState<boolean>(false);
+  const [clipIsPlaying, setClipIsPlaying] = useState<boolean>(false);
   const [recordingIsPlaying, setRecordingIsPlaying] = useState<boolean>(false);
   const [actionQueue, setActionQueue] = useState<Action[]>([]);
   const [isRecording, setIsRecording] = useState<boolean>(false);
@@ -96,16 +95,16 @@ export function Dictaphone({item}: DictaphoneProps) {
       case "PlayClip":
         setRecordingIsPlaying(false);
         setIsRecording(false);
-        setSegmentIsPlaying(true);
+        setClipIsPlaying(true);
         break;
       case "Record":
-        setSegmentIsPlaying(false);
+        setClipIsPlaying(false);
         setRecordingIsPlaying(false);
         setIsRecording(true);
         break
       case "PlayRecording":
         setIsRecording(false);
-        setSegmentIsPlaying(false);
+        setClipIsPlaying(false);
         setRecordingIsPlaying(true);
         break;
     }
@@ -115,11 +114,11 @@ export function Dictaphone({item}: DictaphoneProps) {
     pauseAll();
     activityPostBody && api.activity.POST(activityPostBody);
     setActionQueue(["PlayClip", "Record", "PlayClip"])
-    setSegmentIsPlaying(true);
-  }, [activityPostBody, setActionQueue, setSegmentIsPlaying, api.activity, pauseAll]);
+    setClipIsPlaying(true);
+  }, [activityPostBody, setActionQueue, setClipIsPlaying, api.activity, pauseAll]);
 
-  const segmentPlaybackEnded = useCallback(() => {
-    setSegmentIsPlaying(false);
+  const onClipPlaybackEnded = useCallback(() => {
+    setClipIsPlaying(false);
     if (actionQueue[0] === "PlayClip") {
       const [, ...newActionQueue] = actionQueue;
       setActionQueue(newActionQueue);
@@ -137,7 +136,7 @@ export function Dictaphone({item}: DictaphoneProps) {
     }
   }, [startAction, actionQueue]);
 
-  const boostCurrentSegment = useCallback(() => {
+  const boostCurrentClip = useCallback(() => {
     boostPostBody && api.boosts.POST(boostPostBody)
   }, [boostPostBody, api.boosts]);
 
@@ -152,9 +151,9 @@ export function Dictaphone({item}: DictaphoneProps) {
         <Grid item xs={11}>
           <Player src={src}
                   duration={duration}
-                  onPlayerStateChanged={setSegmentIsPlaying}
-                  playing={segmentIsPlaying}
-                  onPlaybackEnded={segmentPlaybackEnded}
+                  onPlayerStateChanged={setClipIsPlaying}
+                  playing={clipIsPlaying}
+                  onPlaybackEnded={onClipPlaybackEnded}
           />
         </Grid>
       </Grid>
@@ -179,7 +178,7 @@ export function Dictaphone({item}: DictaphoneProps) {
 
       <Grid container item xs={12} justifyContent="flex-end">
         <Grid container item xs={2}>
-          <Button onClick={boostCurrentSegment}
+          <Button onClick={boostCurrentClip}
                   startIcon={<AddIcon/>}>
             Boost
           </Button>
