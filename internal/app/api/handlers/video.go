@@ -118,7 +118,7 @@ func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Vide
 			LastActivityAt: segment.LastActivityAt,
 			Pitch:          pitch,
 			ParentUUID:     segment.ParentUUID,
-			Labels:         []string{"SEGMENT"},
+			Labels:         []string{"SAVED"},
 		})
 	}
 

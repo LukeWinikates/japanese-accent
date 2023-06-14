@@ -5,7 +5,7 @@ import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
 import {VariableSizeList} from 'react-window';
 import {Editor} from "./Editor";
-import {ARE_ADVICE, ARE_MUTED} from "./segment";
+import {ARE_ADVICE, ARE_MUTED} from "./clipLabels";
 import {elementForLabels, sizeForSegment} from "./ListItems";
 import {useBackendAPI} from "../../App/useBackendAPI";
 

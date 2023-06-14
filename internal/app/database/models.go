@@ -62,10 +62,9 @@ const (
 type SegmentPitch struct {
 	gorm.Model
 	SegmentID uint
-	//Segment   VideoSegment
-	Pattern string
-	Source  string
-	Morae   string
+	Pattern   string
+	Source    string
+	Morae     string
 }
 
 type Playlist struct {

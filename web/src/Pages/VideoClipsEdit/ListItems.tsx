@@ -1,5 +1,5 @@
 import {BasicClip, Clip, ClipLabel} from "../../api/types";
-import {ARE_ADVICE, ARE_MUTED} from "./segment";
+import {ARE_ADVICE, ARE_MUTED} from "./clipLabels";
 import React, {CSSProperties, useCallback} from "react";
 import {IconButton, ListItemButton, ListItemIcon, ListItemSecondaryAction, Tooltip} from "@mui/material";
 import LightbulbIcon from '@mui/icons-material/Lightbulb';

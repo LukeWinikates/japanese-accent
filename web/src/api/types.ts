@@ -52,7 +52,7 @@ export declare type BasicClip = {
   labels: ClipLabel[],
 };
 
-export type ClipLabel = "SEGMENT" | "ADVICE" | "MUTED"
+export type ClipLabel = "SAVED" | "ADVICE" | "MUTED"
 
 export declare type Highlights = {
   videos: VideoSummary[],

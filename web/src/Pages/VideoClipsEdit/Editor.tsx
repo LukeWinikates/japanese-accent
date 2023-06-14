@@ -4,7 +4,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import React, {useCallback} from "react";
 import {BasicClip} from "../../api/types";
 import DoneIcon from '@mui/icons-material/Done';
-import {ARE_ADVICE} from "./segment";
+import {ARE_ADVICE} from "./clipLabels";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
 type Props = {
