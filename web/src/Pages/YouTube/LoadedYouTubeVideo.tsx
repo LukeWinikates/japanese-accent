@@ -16,10 +16,10 @@ type Props = { video: Video, onVideoChange: (v: Video) => void };
 export const LoadedYouTubeVideo = ({video, onVideoChange}: Props) => {
   const [activeTab, setActiveTab] = useState<TabTypes>("clips");
 
-  const setVideoSegments = useCallback((newSegments: Clip[]) => {
+  const setVideoClips = useCallback((clips: Clip[]) => {
     onVideoChange({
       ...video,
-      clips: newSegments
+      clips: clips
     });
   }, [onVideoChange, video]);
 
@@ -66,7 +66,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: Props) => {
         <Box marginY={2}>
           {
             activeTab === "clips" &&
-            <PlaylistPlayer parentId={video.videoId} clips={video.clips} onClipsChange={setVideoSegments}/>
+            <PlaylistPlayer parentId={video.videoId} clips={video.clips} onClipsChange={setVideoClips}/>
           }
           {
             activeTab === "words" &&

@@ -1,12 +1,12 @@
 import {BasicClip, Clip} from "../../api/types";
 
-type MergerParams = { segments: Clip[], suggestedSegments: BasicClip[] };
+type MergerParams = { clips: Clip[], suggestions: BasicClip[] };
 
-export function merged({suggestedSegments, segments}: MergerParams): (BasicClip[]) {
-  let toHide = segments.map(s => s.parent);
-  let filteredSuggestedSegments = suggestedSegments.filter(s => !toHide.some(th => th === s.uuid));
+export function merged({suggestions, clips}: MergerParams): (BasicClip[]) {
+  let toHide = clips.map(s => s.parent);
+  let filteredSuggestions = suggestions.filter(s => !toHide.some(th => th === s.uuid));
 
-  return [...segments, ...filteredSuggestedSegments].sort((a, b) => {
+  return [...clips, ...filteredSuggestions].sort((a, b) => {
     return Math.round(a.startMS - b.startMS);
   });
 }
