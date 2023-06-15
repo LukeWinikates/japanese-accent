@@ -19,12 +19,12 @@ type LoadedEditorProps = {
 };
 
 function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
-  let muteSuggestion = useCallback((segmentToMute: BasicClip) => {
+  let muteSuggestion = useCallback((clipToMute: BasicClip) => {
     let newSuggestions = [...value.suggestedClips];
 
-    newSuggestions.splice(newSuggestions.findIndex(testSegment => testSegment.uuid === segmentToMute.uuid), 1, {
-      ...segmentToMute,
-      labels: [...segmentToMute.labels, "MUTED"],
+    newSuggestions.splice(newSuggestions.findIndex(testClip => testClip.uuid === clipToMute.uuid), 1, {
+      ...clipToMute,
+      labels: [...clipToMute.labels, "MUTED"],
     })
 
     setValue({
@@ -35,7 +35,7 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
 
   let removeClip = useCallback((clip: BasicClip) => {
     let newClips = [...video.clips];
-    newClips.splice(newClips.findIndex(testSegment => testSegment.uuid === clip.uuid), 1)
+    newClips.splice(newClips.findIndex(testClip => testClip.uuid === clip.uuid), 1)
 
     setVideo({
       ...video,

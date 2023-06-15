@@ -6,7 +6,7 @@ import {merged} from "../YouTube/SuggestionMerger";
 import {VariableSizeList} from 'react-window';
 import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./clipLabels";
-import {elementForLabels, sizeForSegment} from "./ListItems";
+import {elementForLabels, sizeForClip} from "./ListItems";
 import {useBackendAPI} from "../../App/useBackendAPI";
 
 type Props = {
@@ -28,33 +28,33 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   }, [showMuted]);
   const listRef = useRef<VariableSizeList | null>(null);
 
-  const segmentsForTimeline = merged({
+  const clipsForTimeline = merged({
     suggestions: advice.suggestedClips,
     clips: video.clips,
   });
 
   const sizeFor = useCallback((index: number) => {
-    const d = segmentsForTimeline[index];
-    return sizeForSegment(d, showMuted);
-  }, [showMuted, segmentsForTimeline]);
+    const d = clipsForTimeline[index];
+    return sizeForClip(d, showMuted);
+  }, [showMuted, clipsForTimeline]);
 
-  const selectedSegmentIndex = advice.suggestedClips.findIndex(s => s.uuid === selectedClip?.uuid)
+  const selectedClipIndex = advice.suggestedClips.findIndex(s => s.uuid === selectedClip?.uuid)
 
-  const selectedSegmentByIndex = useCallback((index: number) => {
+  const selectedClipByIndex = useCallback((index: number) => {
     setSelectedClip(advice.suggestedClips[index]);
   }, [advice.suggestedClips, setSelectedClip]);
 
-  const deleteSegment = useCallback((segment: Clip | BasicClip) => {
-    if (segment.labels.some(ARE_ADVICE)) {
-      return api.videos.advice.suggestedClips.DELETE(video.videoId, segment.uuid)
-        .then(() => muteSuggestion(segment));
+  const onDeleteClip = useCallback((clip: Clip | BasicClip) => {
+    if (clip.labels.some(ARE_ADVICE)) {
+      return api.videos.advice.suggestedClips.DELETE(video.videoId, clip.uuid)
+        .then(() => muteSuggestion(clip));
     }
-    return api.videos.clips.DELETE(video.videoId, segment.uuid)
-      .then(() => removeClip(segment));
+    return api.videos.clips.DELETE(video.videoId, clip.uuid)
+      .then(() => removeClip(clip));
   }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
 
-  function titleFor(selectedSegment: Clip | BasicClip): string {
-    const {labels} = selectedSegment;
+  function titleFor(clip: Clip | BasicClip): string {
+    const {labels} = clip;
     if (!labels) {
       return "???"
     }
@@ -77,13 +77,13 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
           <Card>
             <CardContent>
               <Pager
-                currentIndex={selectedSegmentIndex}
+                currentIndex={selectedClipIndex}
                 maxIndex={advice.suggestedClips.length - 1}
                 betweenElement={<div>{titleFor(selectedClip)}</div>}
-                setByIndex={selectedSegmentByIndex}/>
+                setByIndex={selectedClipByIndex}/>
               <Editor
-                segment={selectedClip}
-                setSegment={setSelectedClip}
+                clip={selectedClip}
+                setClip={setSelectedClip}
                 videoId={videoUuid}
                 onDelete={muteSuggestion}
               />
@@ -108,21 +108,21 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
               ref={listRef}
               height={800}
               estimatedItemSize={52}
-              itemCount={segmentsForTimeline.length}
+              itemCount={clipsForTimeline.length}
               itemSize={sizeFor}
               width={"100%"}
             >
               {
                 ({index, style}) => {
-                  let s = segmentsForTimeline[index];
+                  let s = clipsForTimeline[index];
                   const Element = elementForLabels(s.labels);
                   return (
-                    <Element segment={s}
+                    <Element clip={s}
                              style={style}
                              index={index}
                              showMuted={showMuted}
-                             setSelectedSegment={setSelectedClip}
-                             onDelete={deleteSegment}
+                             setSelectedClip={setSelectedClip}
+                             onDelete={onDeleteClip}
                              selected={selectedClip?.uuid === s.uuid}/>
                   );
                 }

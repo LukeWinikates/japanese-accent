@@ -24,16 +24,16 @@ export function elementForLabels(labels: ClipLabel[]) {
   return DraftListItem;
 }
 
-export const sizeForSegment = (segment: Clip | BasicClip, showMuted: boolean) => {
+export const sizeForClip = (clip: Clip | BasicClip, showMuted: boolean) => {
   const mutedSize = showMuted ? 12 : 0;
-  return segment?.labels?.some(l => l === "MUTED") ?
+  return clip?.labels?.some(l => l === "MUTED") ?
     mutedSize :
     52
 }
 
 type Params = {
-  segment: Clip | BasicClip,
-  setSelectedSegment: (s: Clip | BasicClip) => void,
+  clip: Clip | BasicClip,
+  setSelectedClip: (s: Clip | BasicClip) => void,
   selected: boolean,
   index: number,
   style: CSSProperties,
@@ -58,18 +58,18 @@ const useStyles = makeStyles<{}>()((theme) => ({
   }
 }));
 
-export function MutedListItem({segment, setSelectedSegment, selected, style, showMuted}: Params) {
+export function MutedListItem({clip, setSelectedClip, selected, style, showMuted}: Params) {
   const {classes} = useStyles({});
 
   const classNames = [classes.muted, showMuted ? null : classes.zeroHeight].join(" ")
 
   const onClick = useCallback(() => {
-    setSelectedSegment(segment);
-  }, [segment, setSelectedSegment]);
+    setSelectedClip(clip);
+  }, [clip, setSelectedClip]);
 
   return (
     <Tooltip style={style} title="Muted Clip">
-      <ListItemButton key={segment.uuid} className={classNames} divider={false} dense selected={selected}
+      <ListItemButton key={clip.uuid} className={classNames} divider={false} dense selected={selected}
                       onClick={onClick}
       >
       </ListItemButton>
@@ -78,26 +78,26 @@ export function MutedListItem({segment, setSelectedSegment, selected, style, sho
 }
 
 
-export function SuggestedListItem({segment, setSelectedSegment, selected, onDelete, style}: Params) {
+export function SuggestedListItem({clip, setSelectedClip, selected, onDelete, style}: Params) {
   const {classes} = useStyles({});
   const deleteCallback = useCallback(() => {
-    onDelete(segment)
-  }, [onDelete, segment])
+    onDelete(clip)
+  }, [onDelete, clip])
 
   const onClick = useCallback(() => {
-    setSelectedSegment(segment);
-  }, [segment, setSelectedSegment]);
+    setSelectedClip(clip);
+  }, [clip, setSelectedClip]);
 
   return (
-    <ListItemButton divider={true} style={style} key={segment.uuid} selected={selected} className={classes.suggestion}
+    <ListItemButton divider={true} style={style} key={clip.uuid} selected={selected} className={classes.suggestion}
                     onClick={onClick}
     >
       <ListItemIcon>
         <LightbulbIcon/>
       </ListItemIcon>
       <ListItemText
-        primary={`${rangeToHumanReadable(segment.startMS, segment.endMS)}`}
-        secondary={segment.text}>
+        primary={`${rangeToHumanReadable(clip.startMS, clip.endMS)}`}
+        secondary={clip.text}>
       </ListItemText>
       <IconButton onClick={deleteCallback} edge="end" aria-label="delete" size="large">
         <DeleteIcon/>
@@ -107,15 +107,15 @@ export function SuggestedListItem({segment, setSelectedSegment, selected, onDele
 }
 
 
-export function DraftListItem({segment, setSelectedSegment, selected, index, style}: Params) {
+export function DraftListItem({clip, setSelectedClip, selected, index, style}: Params) {
   const {classes} = useStyles({});
 
   const onClick = useCallback(() => {
-    setSelectedSegment(segment);
-  }, [segment, setSelectedSegment]);
+    setSelectedClip(clip);
+  }, [clip, setSelectedClip]);
 
   return (
-    <ListItemButton style={style} key={segment.uuid} selected={selected}
+    <ListItemButton style={style} key={clip.uuid} selected={selected}
                     className={classes.draft}
                     onClick={onClick}
                     divider={true}
@@ -124,8 +124,8 @@ export function DraftListItem({segment, setSelectedSegment, selected, index, sty
         <AudioFileIcon/>
       </ListItemIcon>
       <ListItemText
-        primary={`${index + 1}: ${rangeToHumanReadable(segment.startMS, segment.endMS)}`}
-        secondary={segment.text}
+        primary={`${index + 1}: ${rangeToHumanReadable(clip.startMS, clip.endMS)}`}
+        secondary={clip.text}
       >
       </ListItemText>
       <ListItemSecondaryAction>

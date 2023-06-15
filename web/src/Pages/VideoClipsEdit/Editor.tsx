@@ -9,48 +9,48 @@ import {useBackendAPI} from "../../App/useBackendAPI";
 
 type Props = {
   videoId: string,
-  segment: BasicClip,
-  setSegment: (s: BasicClip) => void
-  onDelete: (s: BasicClip) => void
+  clip: BasicClip,
+  setClip: (c: BasicClip) => void
+  onDelete: (c: BasicClip) => void
 };
 
-export const Editor = ({segment, setSegment, videoId, onDelete}: Props) => {
+export const Editor = ({clip, setClip, videoId, onDelete}: Props) => {
   const api = useBackendAPI();
   const saveClip = useCallback(() => {
-    if (segment.labels.some(ARE_ADVICE)) {
+    if (clip.labels.some(ARE_ADVICE)) {
       return api.videos.clips.POST(videoId, {
-        endMS: segment.endMS,
+        endMS: clip.endMS,
         labels: [],
-        startMS: segment.startMS,
-        text: segment.text,
-        videoUuid: segment.videoUuid,
-        parent: segment.uuid
+        startMS: clip.startMS,
+        text: clip.text,
+        videoUuid: clip.videoUuid,
+        parent: clip.uuid
       })
     }
 
     return api.videos.clips.PUT(videoId, {
-      uuid: segment.uuid,
-      endMS: segment.endMS,
+      uuid: clip.uuid,
+      endMS: clip.endMS,
       labels: [],
-      startMS: segment.startMS,
-      text: segment.text,
-      videoUuid: segment.videoUuid
+      startMS: clip.startMS,
+      text: clip.text,
+      videoUuid: clip.videoUuid
     })
-  }, [segment, videoId, api.videos.clips]);
+  }, [clip, videoId, api.videos.clips]);
 
   const hideSuggestedClip = useCallback(() => {
-    if (segment.labels.some(ARE_ADVICE)) {
-      return api.videos.advice.suggestedClips.DELETE(videoId, segment.uuid)
-        .then(() => onDelete(segment));
+    if (clip.labels.some(ARE_ADVICE)) {
+      return api.videos.advice.suggestedClips.DELETE(videoId, clip.uuid)
+        .then(() => onDelete(clip));
     }
-    return api.videos.clips.DELETE(videoId, segment.uuid).then(() => onDelete(segment))
-  }, [segment, videoId, onDelete, api.videos.advice.suggestedClips, api.videos.clips]);
+    return api.videos.clips.DELETE(videoId, clip.uuid).then(() => onDelete(clip))
+  }, [clip, videoId, onDelete, api.videos.advice.suggestedClips, api.videos.clips]);
 
   return (
     <>
       <ClipEditor
-        clip={segment}
-        setClip={setSegment}
+        clip={clip}
+        setClip={setClip}
         previousClipEndMS={null}
         nextClipStartMS={null}
       />
