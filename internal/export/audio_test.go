@@ -33,7 +33,7 @@ func TestWriting(t *testing.T) {
 	err = WriteToPath(Recipe{
 		FilePath:        env.GetEnvAsStringOrFallback("PROJECT_DIR", ".") + "/test/test.m4a",
 		DestinationPath: tmp,
-		Segments: []RecipeSegment{
+		Clips: []RecipeClip{
 			{
 				Name:  "1",
 				Start: 300,

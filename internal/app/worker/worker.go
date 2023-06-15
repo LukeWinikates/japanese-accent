@@ -43,20 +43,20 @@ func (w realWorker) Run(videoPath string, video *database.Video, watcher chan ex
 		FilePath:        videoPath,
 		Title:           video.Title,
 		DestinationPath: w.ExportPath + "/" + video.Title,
-		Segments:        segmentsFromVideo(video),
+		Clips:           recipeClipsFromVideo(video),
 	}
 	return export.WriteToPath(recipe, watcher)
 }
 
-func segmentsFromVideo(video *database.Video) []export.RecipeSegment {
-	segments := make([]export.RecipeSegment, 0)
+func recipeClipsFromVideo(video *database.Video) []export.RecipeClip {
+	recipeClips := make([]export.RecipeClip, 0)
 
-	for _, segment := range video.Segments {
-		segments = append(segments, export.RecipeSegment{
-			Name:  segment.Text,
-			Start: segment.StartMS,
-			End:   segment.EndMS,
+	for _, clip := range video.Segments {
+		recipeClips = append(recipeClips, export.RecipeClip{
+			Name:  clip.Text,
+			Start: clip.StartMS,
+			End:   clip.EndMS,
 		})
 	}
-	return segments
+	return recipeClips
 }
