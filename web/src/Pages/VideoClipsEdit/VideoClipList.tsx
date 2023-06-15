@@ -13,12 +13,12 @@ type Props = {
   advice: VideoAdvice,
   video: Video,
   videoUuid: string,
-  muteSuggestion: (segment: BasicClip) => void,
-  removeClip: (segment: BasicClip) => void,
+  muteSuggestion: (clip: BasicClip) => void,
+  removeClip: (clip: BasicClip) => void,
 }
 
 export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip}: Props) {
-  const [selectedSegment, setSelectedSegment] = useState<Clip | BasicClip | null>(null);//advice.suggestedSegments[0]);
+  const [selectedClip, setSelectedClip] = useState<Clip | BasicClip | null>(null);
   const [showMuted, setShowMuted] = useState<boolean>(false);
   const api = useBackendAPI();
 
@@ -38,11 +38,11 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     return sizeForSegment(d, showMuted);
   }, [showMuted, segmentsForTimeline]);
 
-  const selectedSegmentIndex = advice.suggestedClips.findIndex(s => s.uuid === selectedSegment?.uuid)
+  const selectedSegmentIndex = advice.suggestedClips.findIndex(s => s.uuid === selectedClip?.uuid)
 
   const selectedSegmentByIndex = useCallback((index: number) => {
-    setSelectedSegment(advice.suggestedClips[index]);
-  }, [advice.suggestedClips, setSelectedSegment]);
+    setSelectedClip(advice.suggestedClips[index]);
+  }, [advice.suggestedClips, setSelectedClip]);
 
   const deleteSegment = useCallback((segment: Clip | BasicClip) => {
     if (segment.labels.some(ARE_ADVICE)) {
@@ -51,7 +51,6 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     }
     return api.videos.clips.DELETE(video.videoId, segment.uuid)
       .then(() => removeClip(segment));
-    // return videoSegmentDELETE(video.videoId, segment as Segment)
   }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
 
   function titleFor(selectedSegment: Clip | BasicClip): string {
@@ -72,7 +71,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
 
   return (
     <div>
-      {selectedSegment &&
+      {selectedClip &&
         <>
 
           <Card>
@@ -80,11 +79,11 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
               <Pager
                 currentIndex={selectedSegmentIndex}
                 maxIndex={advice.suggestedClips.length - 1}
-                betweenElement={<div>{titleFor(selectedSegment)}</div>}
+                betweenElement={<div>{titleFor(selectedClip)}</div>}
                 setByIndex={selectedSegmentByIndex}/>
               <Editor
-                segment={selectedSegment}
-                setSegment={setSelectedSegment}
+                segment={selectedClip}
+                setSegment={setSelectedClip}
                 videoId={videoUuid}
                 onDelete={muteSuggestion}
               />
@@ -122,9 +121,9 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
                              style={style}
                              index={index}
                              showMuted={showMuted}
-                             setSelectedSegment={setSelectedSegment}
+                             setSelectedSegment={setSelectedClip}
                              onDelete={deleteSegment}
-                             selected={selectedSegment?.uuid === s.uuid}/>
+                             selected={selectedClip?.uuid === s.uuid}/>
                   );
                 }
               }

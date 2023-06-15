@@ -1,5 +1,3 @@
-import {merged} from "./SuggestionMerger";
-
 // test('works with all the variants', () => {
 //   expect(idFrom('https://www.youtube.com/watch?v=7s3DL2wCMEk')).toBe('7s3DL2wCMEk');
 //   expect(idFrom('7s3DL2wCMEk')).toBe('7s3DL2wCMEk');
@@ -18,6 +16,6 @@ test('', ()=>{
 
 });
 
-// TODO: test merging a draft where the segments overlap
+// TODO: test merging a draft where the clips overlap
 
 // TODO:

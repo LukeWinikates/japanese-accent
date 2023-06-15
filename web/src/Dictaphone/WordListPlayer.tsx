@@ -20,7 +20,6 @@ function Item({index, word, selected, onClick}: { index: number, word: Word, sel
       <ListItemText
         primaryTypographyProps={{noWrap: true, variant: "body2"}}
         primary={word.word}
-        // secondary={Math.round(duration(segment)) + "s"}
       >
       </ListItemText>
     </ListItemButton>

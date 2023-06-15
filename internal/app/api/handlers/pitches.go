@@ -20,11 +20,6 @@ func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 			context.Status(404)
 			return
 		}
-		//
-		//if db.Where("ClipID = ?", segmentID).Find(&database.SegmentPitch{}).Error != nil {
-		//	log.Println("already has a pitch")
-		//
-		//}
 
 		pitches, err := ojad.GetPitches(segment.Text)
 
