@@ -5,7 +5,7 @@ import (
 	"sort"
 )
 
-func VTTSegmentsToTimings(segments []vtt.Segment) []Timing {
+func VTTSegmentsToTimings(segments []vtt.Cue) []Timing {
 	timings := make([]Timing, 0)
 
 	sort.Slice(segments, func(i, j int) bool {
@@ -22,7 +22,7 @@ func VTTSegmentsToTimings(segments []vtt.Segment) []Timing {
 	return timings
 }
 
-func VTTSegmentsToTimedText(segments []vtt.Segment) []TimedText {
+func VTTSegmentsToTimedText(segments []vtt.Cue) []TimedText {
 	timedText := make([]TimedText, 0)
 
 	sort.Slice(segments, func(i, j int) bool {

@@ -7,14 +7,14 @@ import (
 	"strings"
 )
 
-type Segment struct {
+type Cue struct {
 	StartMS int
 	EndMS   int
 	Text    string
 }
 
-func ParseSegments(fileContent string) ([]Segment, error) {
-	segments := make([]Segment, 0)
+func ParseCues(fileContent string) ([]Cue, error) {
+	cues := make([]Cue, 0)
 	scanner := bufio.NewScanner(strings.NewReader(fileContent))
 	for scanner.Scan() {
 		line := strings.TrimSpace(scanner.Text())
@@ -29,16 +29,16 @@ func ParseSegments(fileContent string) ([]Segment, error) {
 			start := splits[0]
 			end := splits[2]
 
-			maybeStart, err := parseSegmentTime(start)
+			maybeStart, err := parseCueTime(start)
 			if err != nil {
-				return segments, err
+				return cues, err
 			}
-			maybeEnd, err := parseSegmentTime(end)
+			maybeEnd, err := parseCueTime(end)
 			if err != nil {
-				return segments, err
+				return cues, err
 			}
 
-			segments = append(segments, Segment{
+			cues = append(cues, Cue{
 				StartMS: maybeStart,
 				EndMS:   maybeEnd,
 			})
@@ -46,16 +46,16 @@ func ParseSegments(fileContent string) ([]Segment, error) {
 		}
 		if len(line) > 0 {
 			text := regexp.MustCompile("<.*>").ReplaceAllString(line, "")
-			seg := segments[len(segments)-1]
+			seg := cues[len(cues)-1]
 			seg.Text = seg.Text + text
-			segments[len(segments)-1] = seg
+			cues[len(cues)-1] = seg
 		}
 	}
 
-	return segments, nil
+	return cues, nil
 }
 
-func parseSegmentTime(s string) (int, error) {
+func parseCueTime(s string) (int, error) {
 	mills := strings.Split(s, ".")
 	ms, err := strconv.Atoi(mills[1])
 	if err != nil {

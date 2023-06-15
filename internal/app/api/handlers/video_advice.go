@@ -46,7 +46,7 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func suggestedSegments(segments []vtt.Segment, videoUUID string, mutings []string) []types.SuggestedSegment {
+func suggestedSegments(segments []vtt.Cue, videoUUID string, mutings []string) []types.SuggestedSegment {
 	muteMap := make(map[string]bool)
 	for _, s := range mutings {
 		muteMap[s] = true
@@ -72,7 +72,7 @@ func suggestedSegments(segments []vtt.Segment, videoUUID string, mutings []strin
 	return segs
 }
 
-func sha(t vtt.Segment) string {
+func sha(t vtt.Cue) string {
 	shaHasher := sha256.New()
 	shaHasher.Write([]byte(fmt.Sprintf("%v %v %s", t.StartMS, t.EndMS, t.Text)))
 	return base64.URLEncoding.EncodeToString(shaHasher.Sum(nil))

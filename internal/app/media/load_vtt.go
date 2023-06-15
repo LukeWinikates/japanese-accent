@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func LoadVTTasAdvice(mediaDirectory string, youtubeID string) ([]vtt.Segment, error) {
+func LoadVTTasAdvice(mediaDirectory string, youtubeID string) ([]vtt.Cue, error) {
 	vttFile := FindSubtitleFile(mediaDirectory, youtubeID)
 
 	if !vttFile.IsFound {
@@ -16,11 +16,11 @@ func LoadVTTasAdvice(mediaDirectory string, youtubeID string) ([]vtt.Segment, er
 		return nil, err
 	}
 
-	segments, err := vtt.ParseSegments(string(file))
+	cues, err := vtt.ParseCues(string(file))
 
 	if err != nil {
 		return nil, err
 	}
 
-	return segments, nil
+	return cues, nil
 }
