@@ -31,7 +31,7 @@ type RowProps = {
   clip: Clip,
   index: number,
   isCurrent: boolean,
-  onChangeClip: (segment: Clip, index: number) => void,
+  onChangeClip: (clip: Clip, index: number) => void,
   onEdit: (clip: Clip) => void,
   onDelete: (clip: Clip, index: number) => void,
 

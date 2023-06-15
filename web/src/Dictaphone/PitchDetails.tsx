@@ -8,7 +8,7 @@ import {useBackendAPI} from "../App/useBackendAPI";
 
 type PitchDetailsProps = {
   clip: Clip,
-  updateClip: (segment: Clip) => void
+  updateClip: (clip: Clip) => void
 };
 
 export const PitchDetails = ({clip, updateClip}: PitchDetailsProps) => {
