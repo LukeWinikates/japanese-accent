@@ -19,8 +19,8 @@ interface Props {
   clip: Clip;
   setClip: (clip: Clip) => void;
   videoId: string;
-  previousSegmentEnd: number;
-  nextSegmentStart: number;
+  previousClipEndMS: number;
+  previousClipStartMS: number;
 }
 
 const useStyles = makeStyles<{}>()(theme => (
@@ -43,8 +43,8 @@ export function ClipEditorDialog(props: Props) {
     videoId,
     clip,
     setClip,
-    previousSegmentEnd,
-    nextSegmentStart
+    previousClipEndMS,
+    previousClipStartMS
   } = props;
   const {classes} = useStyles({});
   const api = useBackendAPI();
@@ -91,8 +91,8 @@ export function ClipEditorDialog(props: Props) {
         <ClipEditor
           clip={clip}
           setClip={setClip}
-          previousClipEndMS={previousSegmentEnd}
-          nextClipStartMS={nextSegmentStart}
+          previousClipEndMS={previousClipEndMS}
+          nextClipStartMS={previousClipStartMS}
         />
       </DialogContent>
       <DialogActions>

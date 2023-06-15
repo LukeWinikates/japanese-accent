@@ -28,37 +28,37 @@ import {useInterval} from "../App/useInterval";
 import {useBackendAPI} from "../App/useBackendAPI";
 
 type RowProps = {
-  segment: Clip,
+  clip: Clip,
   index: number,
   isCurrent: boolean,
-  onChangeSegment: (segment: Clip, index: number) => void,
-  onEdit: (segment: Clip) => void,
-  onDelete: (segment: Clip, index: number) => void,
+  onChangeClip: (segment: Clip, index: number) => void,
+  onEdit: (clip: Clip) => void,
+  onDelete: (clip: Clip, index: number) => void,
 
 }
-const Row = ({segment, index, onChangeSegment, isCurrent, onEdit, onDelete}: RowProps) => {
-  const pauseAndChangeCurrentSegment = useCallback(() => {
-    onChangeSegment(segment, index);
-  }, [onChangeSegment, segment, index]);
+const Row = ({clip, index, onChangeClip, isCurrent, onEdit, onDelete}: RowProps) => {
+  const pauseAndChangeCurrentClip = useCallback(() => {
+    onChangeClip(clip, index);
+  }, [onChangeClip, clip, index]);
 
   const onClickEdit = useCallback(() => {
-    onEdit(segment)
-  }, [onEdit, segment]);
+    onEdit(clip)
+  }, [onEdit, clip]);
 
   const onClickDelete = useCallback(() => {
-    onDelete(segment, index)
-  }, [onDelete, segment, index]);
+    onDelete(clip, index)
+  }, [onDelete, clip, index]);
 
   return (
     <ListItemButton key={index}
                     selected={isCurrent}
                     alignItems="flex-start"
-                    onClick={pauseAndChangeCurrentSegment}
+                    onClick={pauseAndChangeCurrentClip}
     >
       <ListItemText
         primaryTypographyProps={{noWrap: true, variant: "body2"}}
-        primary={segment.text}
-        secondary={Math.round(durationSeconds(segment)) + "s"}
+        primary={clip.text}
+        secondary={Math.round(durationSeconds(clip)) + "s"}
       >
       </ListItemText>
       <ListItemSecondaryAction>
@@ -167,9 +167,9 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
     setPromptingClipDeletion({clip: clip, index});
   }, [setPromptingClipDeletion]);
 
-  const onPauseAndSetNewCurrentClip = useCallback((segment: Clip, index: number) => {
+  const onPauseAndSetNewCurrentClip = useCallback((clip: Clip, index: number) => {
     pauseAll();
-    setCurrentClip(segment);
+    setCurrentClip(clip);
     setCurrentClipIndex(index);
   }, [setCurrentClip, setCurrentClipIndex, pauseAll])
 
@@ -207,8 +207,8 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
             clips={clips}
             setClipByIndex={setClipByIndex}
           />
-          <PitchDetails segment={currentClip}
-                        updateSegment={onUpdateClip}/>
+          <PitchDetails clip={currentClip}
+                        updateClip={onUpdateClip}/>
           <Dictaphone item={currentClip}/>
           <Pager currentIndex={currentClipIndex}
                  maxIndex={clips.length - 1}
@@ -222,11 +222,11 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
         <Card ref={listRef}>
           <List>
             {
-              clips.map((segment: Clip, index: number) => {
+              clips.map((clip: Clip, index: number) => {
                 return <Row
-                  segment={segment}
+                  clip={clip}
                   index={index}
-                  onChangeSegment={onPauseAndSetNewCurrentClip}
+                  onChangeClip={onPauseAndSetNewCurrentClip}
                   onDelete={promptToDelete}
                   onEdit={setEditingClip}
                   isCurrent={index === currentClipIndex}/>
@@ -245,8 +245,8 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
           clip={editingClip}
           setClip={setEditingClip}
           videoId={editingClip.videoUuid}
-          previousSegmentEnd={clips[currentClipIndex - 1]?.endMS ?? 0}
-          nextSegmentStart={clips[currentClipIndex + 1]?.startMS ?? 0}
+          previousClipEndMS={clips[currentClipIndex - 1]?.endMS ?? 0}
+          previousClipStartMS={clips[currentClipIndex + 1]?.startMS ?? 0}
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         />

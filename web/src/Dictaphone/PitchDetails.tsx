@@ -7,21 +7,21 @@ import AddWordDialog from "../Pages/WordList/AddWordDialog";
 import {useBackendAPI} from "../App/useBackendAPI";
 
 type PitchDetailsProps = {
-  segment: Clip,
-  updateSegment: (segment: Clip) => void
+  clip: Clip,
+  updateClip: (segment: Clip) => void
 };
 
-export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
+export const PitchDetails = ({clip, updateClip}: PitchDetailsProps) => {
   const [isAddingWord, setIsAddingWord] = useState(false);
   const api = useBackendAPI();
 
   const fetchOJADPronunciation = useCallback(() => {
-    api.videos.clips.pitch.POST(segment.uuid)
-      .then(({data: p}) => updateSegment({
-        ...segment,
+    api.videos.clips.pitch.POST(clip.uuid)
+      .then(({data: p}) => updateClip({
+        ...clip,
         pitch: p
       }))
-  }, [api.videos.clips.pitch, updateSegment, segment]);
+  }, [api.videos.clips.pitch, updateClip, clip]);
 
   let onClose = useCallback(() => setIsAddingWord(false), [setIsAddingWord]);
   let onAddWord = useCallback(() => setIsAddingWord(true), [setIsAddingWord]);
@@ -29,8 +29,8 @@ export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
   return (
     <Grid container item xs={12} spacing={2}>
       {
-        segment.pitch ?
-          <RawMoraSVG morae={segment.pitch.morae.split(' ')} pattern={segment.pitch.pattern}/> :
+        clip.pitch ?
+          <RawMoraSVG morae={clip.pitch.morae.split(' ')} pattern={clip.pitch.pattern}/> :
           <SkeletonMoraSVG/>
       }
       <Grid container item xs={12} spacing={2}>
@@ -43,10 +43,10 @@ export const PitchDetails = ({segment, updateSegment}: PitchDetailsProps) => {
           </Button>
         </Grid>
         <Grid item xs={4}>
-          <SuzukiButton text="Open in Suzuki-kun" items={[segment.text]}/>
+          <SuzukiButton text="Open in Suzuki-kun" items={[clip.text]}/>
         </Grid>
       </Grid>
-      {isAddingWord && <AddWordDialog onClose={onClose} videoId={segment.videoUuid}/>}
+      {isAddingWord && <AddWordDialog onClose={onClose} videoId={clip.videoUuid}/>}
     </Grid>
   );
 }
