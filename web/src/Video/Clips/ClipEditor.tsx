@@ -8,9 +8,9 @@ import audioURL from "../../App/audioURL";
 import {ClipResizingWaveform} from "../../Waveform/ResizingWaveform";
 import {BasicClip} from "../../api/types";
 
-export interface SegmentEditorProps<T extends BasicClip> {
+interface Props<T extends BasicClip> {
   clip: T;
-  setClip: (segment: T) => void;
+  setClip: (clip: T) => void;
   previousClipEndMS: number | null;
   nextClipStartMS: number | null;
 }
@@ -20,7 +20,7 @@ export function ClipEditor<T extends BasicClip>({
                                                       setClip,
                                                       previousClipEndMS,
                                                       nextClipStartMS
-                                                    }: SegmentEditorProps<T>) {
+                                                    }: Props<T>) {
   const [clipIsPlaying, setClipIsPlaying] = useState<boolean>(false);
   const [preferredStartTime, setPreferredStartTime] = useState<number | undefined>(undefined);
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
@@ -98,13 +98,13 @@ export function ClipEditor<T extends BasicClip>({
       {
         previousClipEndMS &&
         <Button onClick={alignPrevious}>
-          Align Start to Previous Segment End: {msToHumanReadable(previousClipEndMS)}
+          Align Start to Previous Clip End: {msToHumanReadable(previousClipEndMS)}
         </Button>
       }
       <TimeInput label="End" onChange={handleEndChange} value={clip.endMS}/>
       {nextClipStartMS &&
         <Button onClick={alignNext}>
-          Align End to Next Segment Start: {msToHumanReadable(nextClipStartMS)}
+          Align End to Next Clip Start: {msToHumanReadable(nextClipStartMS)}
         </Button>
       }
 
