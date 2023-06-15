@@ -66,7 +66,7 @@ func MakeAudioClipsCREATE(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		context.JSON(201, types.VideoSegment{
+		context.JSON(201, types.Clip{
 			UUID:      segment.UUID,
 			StartMS:   segment.StartMS,
 			EndMS:     segment.EndMS,

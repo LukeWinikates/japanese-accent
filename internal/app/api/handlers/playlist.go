@@ -61,15 +61,15 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiSegments := make([]types.VideoSegment, len(playlist.Segments))
+		apiSegments := make([]types.Clip, len(playlist.Segments))
 
 		for i, segment := range playlist.Segments {
-			var maybePitch *types.VideoSegmentPitch
+			var maybePitch *types.ClipPitch
 			if segment.SegmentPitch != nil {
 				var pitch = makeApiPitch(*segment.SegmentPitch)
 				maybePitch = &pitch
 			}
-			apiSegments[i] = types.VideoSegment{
+			apiSegments[i] = types.Clip{
 				StartMS:   segment.StartMS,
 				EndMS:     segment.EndMS,
 				Text:      segment.Text,
@@ -85,8 +85,8 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 		})
 
 		context.JSON(200, types.Playlist{
-			ID:       playlistID,
-			Segments: apiSegments,
+			ID:    playlistID,
+			Clips: apiSegments,
 		})
 	}
 }

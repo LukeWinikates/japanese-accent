@@ -9,20 +9,20 @@ type Highlights struct {
 	WordLists []WordList     `json:"wordLists"`
 }
 
-type VideoSegment struct {
-	StartMS        int                `json:"startMS"`
-	EndMS          int                `json:"endMS"`
-	Text           string             `json:"text"`
-	UUID           string             `json:"uuid"`
-	VideoUUID      string             `json:"videoUuid"`
-	LastActivityAt time.Time          `json:"lastActivityAt"`
-	Pitch          *VideoSegmentPitch `json:"pitch"`
-	Priority       int                `json:"priority"`
-	Labels         []string           `json:"labels"`
-	ParentUUID     *string            `json:"parent"`
+type Clip struct {
+	StartMS        int        `json:"startMS"`
+	EndMS          int        `json:"endMS"`
+	Text           string     `json:"text"`
+	UUID           string     `json:"uuid"`
+	VideoUUID      string     `json:"videoUuid"`
+	LastActivityAt time.Time  `json:"lastActivityAt"`
+	Pitch          *ClipPitch `json:"pitch"`
+	Priority       int        `json:"priority"`
+	Labels         []string   `json:"labels"`
+	ParentUUID     *string    `json:"parent"`
 }
 
-type VideoSegmentPitch struct {
+type ClipPitch struct {
 	Pattern string `json:"pattern"`
 	Morae   string `json:"morae"`
 }
@@ -40,15 +40,15 @@ type Files struct {
 }
 
 type Video struct {
-	Title          string         `json:"title"`
-	URL            string         `json:"url"`
-	VideoID        string         `json:"videoId"`
-	Files          Files          `json:"files"`
-	Segments       []VideoSegment `json:"clips"`
-	LastActivityAt time.Time      `json:"lastActivityAt"`
-	Text           string         `json:"text"`
-	Words          []Word         `json:"words"`
-	Status         string         `json:"status"`
+	Title          string    `json:"title"`
+	URL            string    `json:"url"`
+	VideoID        string    `json:"videoId"`
+	Files          Files     `json:"files"`
+	Clips          []Clip    `json:"clips"`
+	LastActivityAt time.Time `json:"lastActivityAt"`
+	Text           string    `json:"text"`
+	Words          []Word    `json:"words"`
+	Status         string    `json:"status"`
 }
 
 type Word struct {
@@ -70,8 +70,8 @@ type Category struct {
 
 type Playlist struct {
 	//URL string `json:"url"`
-	ID       string         `json:"id"`
-	Segments []VideoSegment `json:"clips"`
+	ID    string `json:"id"`
+	Clips []Clip `json:"clips"`
 }
 
 type WordList struct {
@@ -121,10 +121,10 @@ type TimedText struct {
 }
 
 type VideoAdviceResponse struct {
-	SuggestedSegments []SuggestedSegment `json:"suggestedClips"`
+	SuggestedClips []SuggestedClip `json:"suggestedClips"`
 }
 
-type SuggestedSegment struct {
+type SuggestedClip struct {
 	StartMS   int      `json:"startMS"`
 	EndMS     int      `json:"endMS"`
 	Text      string   `json:"text"`

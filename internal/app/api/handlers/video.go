@@ -98,26 +98,26 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 }
 
 func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Video {
-	apiSegs := make([]types.VideoSegment, 0)
-	for _, segment := range video.Segments {
-		var pitch *types.VideoSegmentPitch = nil
+	apiClips := make([]types.Clip, 0)
+	for _, clip := range video.Segments {
+		var pitch *types.ClipPitch = nil
 
-		if segment.SegmentPitch != nil {
-			pitch = &types.VideoSegmentPitch{
-				Pattern: segment.SegmentPitch.Pattern,
-				Morae:   segment.SegmentPitch.Morae,
+		if clip.SegmentPitch != nil {
+			pitch = &types.ClipPitch{
+				Pattern: clip.SegmentPitch.Pattern,
+				Morae:   clip.SegmentPitch.Morae,
 			}
 		}
 
-		apiSegs = append(apiSegs, types.VideoSegment{
-			StartMS:        segment.StartMS,
-			EndMS:          segment.EndMS,
-			Text:           segment.Text,
-			UUID:           segment.UUID,
+		apiClips = append(apiClips, types.Clip{
+			StartMS:        clip.StartMS,
+			EndMS:          clip.EndMS,
+			Text:           clip.Text,
+			UUID:           clip.UUID,
 			VideoUUID:      video.YoutubeID,
-			LastActivityAt: segment.LastActivityAt,
+			LastActivityAt: clip.LastActivityAt,
 			Pitch:          pitch,
-			ParentUUID:     segment.ParentUUID,
+			ParentUUID:     clip.ParentUUID,
 			Labels:         []string{"SAVED"},
 		})
 	}
@@ -126,7 +126,7 @@ func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Vide
 		Title:          video.Title,
 		URL:            youtube.URL(video.YoutubeID),
 		VideoID:        video.YoutubeID,
-		Segments:       apiSegs,
+		Clips:          apiClips,
 		LastActivityAt: video.LastActivityAt,
 		Text:           video.Text,
 		Words:          MakeApiWords(video.Words),

@@ -39,19 +39,19 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		}
 
 		advice := types.VideoAdviceResponse{
-			SuggestedSegments: suggestedSegments(vttSegments, youtubeID, mutings),
+			SuggestedClips: suggestedSegments(vttSegments, youtubeID, mutings),
 		}
 
 		context.JSON(200, advice)
 	}
 }
 
-func suggestedSegments(segments []vtt.Cue, videoUUID string, mutings []string) []types.SuggestedSegment {
+func suggestedSegments(segments []vtt.Cue, videoUUID string, mutings []string) []types.SuggestedClip {
 	muteMap := make(map[string]bool)
 	for _, s := range mutings {
 		muteMap[s] = true
 	}
-	segs := make([]types.SuggestedSegment, 0)
+	segs := make([]types.SuggestedClip, 0)
 	for _, t := range segments {
 		labels := make([]string, 0)
 		segmentUUID := sha(t)
@@ -60,7 +60,7 @@ func suggestedSegments(segments []vtt.Cue, videoUUID string, mutings []string) [
 		} else {
 			labels = append(labels, "ADVICE")
 		}
-		segs = append(segs, types.SuggestedSegment{
+		segs = append(segs, types.SuggestedClip{
 			StartMS:   t.StartMS,
 			EndMS:     t.EndMS,
 			Text:      t.Text,

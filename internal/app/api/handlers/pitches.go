@@ -46,8 +46,8 @@ func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func makeApiPitch(pitch database.SegmentPitch) types.VideoSegmentPitch {
-	return types.VideoSegmentPitch{
+func makeApiPitch(pitch database.SegmentPitch) types.ClipPitch {
+	return types.ClipPitch{
 		Pattern: pitch.Pattern,
 		Morae:   pitch.Morae,
 	}
