@@ -27,7 +27,7 @@ export const LoadedPlaylistContent = ({playlist, onPlaylistChange}: Props) => {
         </Box>
       </Container>
 
-      <PlaylistPlayer parentId={playlist.id} segments={playlist.clips} onSegmentsChange={setSegments}/>
+      <PlaylistPlayer parentId={playlist.id} clips={playlist.clips} onClipsChange={setSegments}/>
     </Box>
   );
 }

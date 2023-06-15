@@ -66,7 +66,7 @@ export const LoadedYouTubeVideo = ({video, onVideoChange}: Props) => {
         <Box marginY={2}>
           {
             activeTab === "clips" &&
-            <PlaylistPlayer parentId={video.videoId} segments={video.clips} onSegmentsChange={setVideoSegments}/>
+            <PlaylistPlayer parentId={video.videoId} clips={video.clips} onClipsChange={setVideoSegments}/>
           }
           {
             activeTab === "words" &&

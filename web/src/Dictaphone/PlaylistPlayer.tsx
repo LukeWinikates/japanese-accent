@@ -77,16 +77,16 @@ const Row = ({segment, index, onChangeSegment, isCurrent, onEdit, onDelete}: Row
   );
 }
 
-type PlaylistPlayerProps = { segments: Clip[], onSegmentsChange: (segments: Clip[]) => void, parentId: string };
+type PlaylistPlayerProps = { clips: Clip[], onClipsChange: (clips: Clip[]) => void, parentId: string };
 
-export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistPlayerProps) => {
-  const [editingSegment, setEditingSegment] = useState<Clip | null>(null);
-  const [promptingSegmentDelete, setPromptingSegmentDelete] = useState<{ segment: Clip, index: number } | null>(null);
-  const [currentSegment, setCurrentSegment] = useState<Clip | null>(segments[0]);
-  const [currentSegmentIndex, setCurrentSegmentIndex] = useState<number>(0);
+export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerProps) => {
+  const [editingClip, setEditingClip] = useState<Clip | null>(null);
+  const [promptingClipDeletion, setPromptingClipDeletion] = useState<{ clip: Clip, index: number } | null>(null);
+  const [currentClip, setCurrentClip] = useState<Clip | null>(clips[0]);
+  const [currentClipIndex, setCurrentClipIndex] = useState<number>(0);
   const [watchingExport, setWatchingExport] = useState(false);
   const [exportProgress, setExportProgress] = useState<Export | null>(null);
-  let segmentsProgress = (currentSegmentIndex + 1) / segments.length * 100;
+  let clipProgress = (currentClipIndex + 1) / clips.length * 100;
   const api = useBackendAPI();
 
   const pauseAll = useCallback(() => {
@@ -94,18 +94,18 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
   }, []);
 
   useEffect(() => {
-    setCurrentSegment(segments[0])
-    setCurrentSegmentIndex(0);
-  }, [parentId, segments]);
+    setCurrentClip(clips[0])
+    setCurrentClipIndex(0);
+  }, [parentId, clips]);
 
   const listRef = useRef<HTMLDivElement>(null);
 
   useLayoutEffect(() => {
-    listRef.current?.querySelectorAll(`li`)[currentSegmentIndex]?.scrollIntoView({
+    listRef.current?.querySelectorAll(`li`)[currentClipIndex]?.scrollIntoView({
       behavior: 'smooth',
       block: 'nearest',
     });
-  }, [currentSegmentIndex])
+  }, [currentClipIndex])
 
   useInterval(() => {
     api.exports.GET(parentId)
@@ -115,104 +115,104 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
       });
   }, watchingExport ? 200 : null);
 
-  const setSegmentByIndex = useCallback((newIndex: number) => {
-    let segment = segments[newIndex];
-    setCurrentSegmentIndex(newIndex);
-    setCurrentSegment(segment);
-  }, [segments]);
+  const setClipByIndex = useCallback((newIndex: number) => {
+    let clip = clips[newIndex];
+    setCurrentClipIndex(newIndex);
+    setCurrentClip(clip);
+  }, [clips]);
 
   const handleModalClose = useCallback(async () => {
-    if (editingSegment === null) {
+    if (editingClip === null) {
       return;
     }
-    const editedSegment = editingSegment;
-    let newSegments = [...segments];
-    newSegments.splice(currentSegmentIndex, 1, editedSegment);
-    setEditingSegment(null);
-    onSegmentsChange(newSegments);
-    setCurrentSegment(editedSegment);
-  }, [currentSegmentIndex, editingSegment, onSegmentsChange, segments]);
+    const editedClip = editingClip;
+    let newClips = [...clips];
+    newClips.splice(currentClipIndex, 1, editedClip);
+    setEditingClip(null);
+    onClipsChange(newClips);
+    setCurrentClip(editedClip);
+  }, [currentClipIndex, editingClip, onClipsChange, clips]);
 
-  const removeSegmentByIndex = useCallback((index: number) => {
-      let newSegments = [...segments];
-      newSegments.splice(index, 1);
-      onSegmentsChange(newSegments);
-      if (currentSegmentIndex === index) {
-        setSegmentByIndex(currentSegmentIndex - 1);
+  const removeClipByIndex = useCallback((index: number) => {
+      let newClips = [...clips];
+      newClips.splice(index, 1);
+      onClipsChange(newClips);
+      if (currentClipIndex === index) {
+        setClipByIndex(currentClipIndex - 1);
       }
     }
-    , [currentSegmentIndex, onSegmentsChange, segments, setSegmentByIndex]);
+    , [currentClipIndex, onClipsChange, clips, setClipByIndex]);
 
-  const removeCurrentSegment = useCallback(() => {
-    setEditingSegment(null);
-    removeSegmentByIndex(currentSegmentIndex);
-  }, [currentSegmentIndex, removeSegmentByIndex]);
+  const removeCurrentClip = useCallback(() => {
+    setEditingClip(null);
+    removeClipByIndex(currentClipIndex);
+  }, [currentClipIndex, removeClipByIndex]);
 
-  const mutateSegmentAtIndex = useCallback((index: number, newValue: Clip) => {
-    const newSegments = [...segments];
-    newSegments[index] = newValue;
-    onSegmentsChange(newSegments);
-    if (index === currentSegmentIndex) {
-      setCurrentSegment(newValue);
+  const mutateClipAtIndex = useCallback((index: number, newValue: Clip) => {
+    const newClips = [...clips];
+    newClips[index] = newValue;
+    onClipsChange(newClips);
+    if (index === currentClipIndex) {
+      setCurrentClip(newValue);
     }
-  }, [currentSegmentIndex, onSegmentsChange, segments]);
+  }, [currentClipIndex, onClipsChange, clips]);
 
-  const addSegment = useCallback((newSegment: Clip) => {
-    let newSegments = [...segments];
-    newSegments.splice(currentSegmentIndex + 1, 0, newSegment)
-    onSegmentsChange(newSegments);
-  }, [currentSegmentIndex, onSegmentsChange, segments]);
+  const addClip = useCallback((newClip: Clip) => {
+    let newClips = [...clips];
+    newClips.splice(currentClipIndex + 1, 0, newClip)
+    onClipsChange(newClips);
+  }, [currentClipIndex, onClipsChange, clips]);
 
-  const promptToDelete = useCallback((segment: Clip, index: number) => {
-    setPromptingSegmentDelete({segment, index});
-  }, [setPromptingSegmentDelete]);
+  const promptToDelete = useCallback((clip: Clip, index: number) => {
+    setPromptingClipDeletion({clip: clip, index});
+  }, [setPromptingClipDeletion]);
 
-  const onPauseAndChangeSegment = useCallback((segment: Clip, index: number) => {
+  const onPauseAndSetNewCurrentClip = useCallback((segment: Clip, index: number) => {
     pauseAll();
-    setCurrentSegment(segment);
-    setCurrentSegmentIndex(index);
-  }, [setCurrentSegment, setCurrentSegmentIndex, pauseAll])
+    setCurrentClip(segment);
+    setCurrentClipIndex(index);
+  }, [setCurrentClip, setCurrentClipIndex, pauseAll])
 
-  const destroySegment = useCallback((segment: Clip, index: number) => {
-    api.videos.clips.DELETE(segment.videoUuid, segment.uuid)
-      .then(() => removeSegmentByIndex(index))
-      .then(() => setPromptingSegmentDelete(null));
-  }, [api.videos.clips, removeSegmentByIndex]);
+  const destroyClip = useCallback((clip: Clip, index: number) => {
+    api.videos.clips.DELETE(clip.videoUuid, clip.uuid)
+      .then(() => removeClipByIndex(index))
+      .then(() => setPromptingClipDeletion(null));
+  }, [api.videos.clips, removeClipByIndex]);
 
   const startExport = useCallback(() => {
     return api.exports.POST(parentId).then(() => setWatchingExport(true));
   }, [api.exports, parentId]);
 
-  const onCancelDeletePrompt = useCallback(() => setPromptingSegmentDelete(null), []);
-  const onDestroySegment = useCallback(() => {
-    return promptingSegmentDelete && destroySegment(promptingSegmentDelete.segment, promptingSegmentDelete.index);
-  }, [promptingSegmentDelete, destroySegment]);
+  const onCancelDeletePrompt = useCallback(() => setPromptingClipDeletion(null), []);
+  const onDestroyClip = useCallback(() => {
+    return promptingClipDeletion && destroyClip(promptingClipDeletion.clip, promptingClipDeletion.index);
+  }, [promptingClipDeletion, destroyClip]);
 
-  const onUpdateSegment = useCallback((s: Clip) => {
-    mutateSegmentAtIndex(currentSegmentIndex, s);
-  }, [currentSegmentIndex, mutateSegmentAtIndex]);
+  const onUpdateClip = useCallback((s: Clip) => {
+    mutateClipAtIndex(currentClipIndex, s);
+  }, [currentClipIndex, mutateClipAtIndex]);
 
-  if (!currentSegment) {
-    return <>no current segment</>
+  if (!currentClip) {
+    return <>no current clip</>
   }
 
   return (
     <>
       <Card>
-        <LinearProgress variant="determinate" value={segmentsProgress}/>
+        <LinearProgress variant="determinate" value={clipProgress}/>
         <CardContent>
           <PagingTitle
-            segment={currentSegment}
-            currentSegmentIndex={currentSegmentIndex}
-            segments={segments}
-            setSegmentByIndex={setSegmentByIndex}
+            segment={currentClip}
+            currentSegmentIndex={currentClipIndex}
+            segments={clips}
+            setSegmentByIndex={setClipByIndex}
           />
-          <PitchDetails segment={currentSegment}
-                        updateSegment={onUpdateSegment}/>
-          <Dictaphone item={currentSegment}/>
-          <Pager currentIndex={currentSegmentIndex}
-                 maxIndex={segments.length - 1}
-                 setByIndex={setSegmentByIndex}/>
+          <PitchDetails segment={currentClip}
+                        updateSegment={onUpdateClip}/>
+          <Dictaphone item={currentClip}/>
+          <Pager currentIndex={currentClipIndex}
+                 maxIndex={clips.length - 1}
+                 setByIndex={setClipByIndex}/>
           <Button onClick={startExport} disabled={watchingExport}>
             {watchingExport ? (exportProgress?.progress || "Starting export") : "Export"}
           </Button>
@@ -222,38 +222,38 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
         <Card ref={listRef}>
           <List>
             {
-              segments.map((segment: Clip, index: number) => {
+              clips.map((segment: Clip, index: number) => {
                 return <Row
                   segment={segment}
                   index={index}
-                  onChangeSegment={onPauseAndChangeSegment}
+                  onChangeSegment={onPauseAndSetNewCurrentClip}
                   onDelete={promptToDelete}
-                  onEdit={setEditingSegment}
-                  isCurrent={index === currentSegmentIndex}/>
+                  onEdit={setEditingClip}
+                  isCurrent={index === currentClipIndex}/>
               })
             }
           </List>
         </Card>
       </Box>
       {
-        editingSegment !== null &&
+        editingClip !== null &&
         <ClipEditorDialog
-          open={!!editingSegment}
+          open={!!editingClip}
           onClose={handleModalClose}
-          onDestroy={removeCurrentSegment}
-          onAdd={addSegment}
-          clip={editingSegment}
-          setClip={setEditingSegment}
-          videoId={editingSegment.videoUuid}
-          previousSegmentEnd={segments[currentSegmentIndex - 1]?.endMS ?? 0}
-          nextSegmentStart={segments[currentSegmentIndex + 1]?.startMS ?? 0}
+          onDestroy={removeCurrentClip}
+          onAdd={addClip}
+          clip={editingClip}
+          setClip={setEditingClip}
+          videoId={editingClip.videoUuid}
+          previousSegmentEnd={clips[currentClipIndex - 1]?.endMS ?? 0}
+          nextSegmentStart={clips[currentClipIndex + 1]?.startMS ?? 0}
           aria-labelledby="simple-modal-title"
           aria-describedby="simple-modal-description"
         />
       }
 
       {
-        promptingSegmentDelete !== null &&
+        promptingClipDeletion !== null &&
         <Dialog
           open={true}
           onClose={onCancelDeletePrompt}
@@ -263,14 +263,14 @@ export const PlaylistPlayer = ({segments, onSegmentsChange, parentId}: PlaylistP
           <DialogTitle id="alert-dialog-title">{"Delete this clip?"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              {promptingSegmentDelete.segment.text}
+              {promptingClipDeletion.clip.text}
             </DialogContentText>
           </DialogContent>
           <DialogActions>
             <Button onClick={onCancelDeletePrompt} color="primary">
               Keep
             </Button>
-            <Button onClick={onDestroySegment}
+            <Button onClick={onDestroyClip}
                     color="primary" autoFocus>
               Destroy
             </Button>
