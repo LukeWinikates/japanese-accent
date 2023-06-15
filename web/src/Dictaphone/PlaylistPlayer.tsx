@@ -202,10 +202,10 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
         <LinearProgress variant="determinate" value={clipProgress}/>
         <CardContent>
           <PagingTitle
-            segment={currentClip}
-            currentSegmentIndex={currentClipIndex}
-            segments={clips}
-            setSegmentByIndex={setClipByIndex}
+            clip={currentClip}
+            currentClipIndex={currentClipIndex}
+            clips={clips}
+            setClipByIndex={setClipByIndex}
           />
           <PitchDetails segment={currentClip}
                         updateSegment={onUpdateClip}/>

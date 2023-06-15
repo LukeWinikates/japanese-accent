@@ -4,19 +4,19 @@ import {Clip} from "../api/types";
 import SkipPreviousIcon from "@mui/icons-material/SkipPrevious";
 import SkipNextIcon from '@mui/icons-material/SkipNext';
 
-type Props = { segment: Clip, segments: Clip[], currentSegmentIndex: number, setSegmentByIndex: (idx: number) => void };
-export const PagingTitle = ({segment, segments, currentSegmentIndex, setSegmentByIndex}: Props) => {
-  const lastSegmentIndex = segments.length - 1;
+type Props = { clip: Clip, clips: Clip[], currentClipIndex: number, setClipByIndex: (idx: number) => void };
+export const PagingTitle = ({clip, clips, currentClipIndex, setClipByIndex}: Props) => {
+  const maximumClipIndex = clips.length - 1;
 
-  let advanceOne = useCallback(() => setSegmentByIndex(currentSegmentIndex + 1), [setSegmentByIndex, currentSegmentIndex]);
-  let backOne = useCallback(() => setSegmentByIndex(currentSegmentIndex - 1), [setSegmentByIndex, currentSegmentIndex]);
+  let advanceOne = useCallback(() => setClipByIndex(currentClipIndex + 1), [setClipByIndex, currentClipIndex]);
+  let backOne = useCallback(() => setClipByIndex(currentClipIndex - 1), [setClipByIndex, currentClipIndex]);
   return <>
     <Typography>
-      #{currentSegmentIndex + 1} / {segments.length}
+      #{currentClipIndex + 1} / {clips.length}
     </Typography>
     <Grid container item xs={12} spacing={1} justifyContent="space-between">
       <Grid item xs={1}>
-        <Button disabled={currentSegmentIndex === 0}
+        <Button disabled={currentClipIndex === 0}
                 onClick={backOne}
                 startIcon={<SkipPreviousIcon/>}>
           Previous
@@ -24,11 +24,11 @@ export const PagingTitle = ({segment, segments, currentSegmentIndex, setSegmentB
       </Grid>
       <Grid container item xs={10} spacing={2}>
         <strong style={{display: "inline-block", margin: "auto"}}>
-          「{segment?.text}」
+          「{clip?.text}」
         </strong>
       </Grid>
       <Grid item xs={1}>
-        <Button disabled={currentSegmentIndex === lastSegmentIndex}
+        <Button disabled={currentClipIndex === maximumClipIndex}
                 onClick={advanceOne}
                 endIcon={<SkipNextIcon/>}>
           Next
