@@ -73,7 +73,6 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     <div>
       {selectedClip &&
         <>
-
           <Card>
             <CardContent>
               <Pager

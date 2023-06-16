@@ -18,29 +18,27 @@ export const VideoClipSummary = ({video, advice}: Props) => {
 
   return (
     <Stack spacing={2}>
-      <Grid container spacing={2}>
+      <Grid container>
         <Grid item container xs={6} spacing={2}>
-          <Grid item container spacing={2}>
-            <Grid item xs={6}>
-              Clips Created
-            </Grid>
-            <Grid item xs={2}>
-              {video.clips.length}
-            </Grid>
-            <Grid item xs={4}>
-              {msToHumanReadable(clipsDuration)}
-            </Grid>
+          <Grid item xs={6}>
+            Clips Created
           </Grid>
-          <Grid item container spacing={2}>
-            <Grid item xs={6}>
-              Suggested Clips to Review
-            </Grid>
-            <Grid item xs={2}>
-              {advice.suggestedClips.length}
-            </Grid>
-            <Grid item xs={4}>
-              {msToHumanReadable(totalMS)}
-            </Grid>
+          <Grid item xs={2}>
+            {video.clips.length}
+          </Grid>
+          <Grid item xs={4}>
+            {msToHumanReadable(clipsDuration)}
+          </Grid>
+        </Grid>
+        <Grid item container xs={6} spacing={2}>
+          <Grid item xs={6}>
+            Suggested Clips to Review
+          </Grid>
+          <Grid item xs={2}>
+            {advice.suggestedClips.length}
+          </Grid>
+          <Grid item xs={4}>
+            {msToHumanReadable(totalMS)}
           </Grid>
         </Grid>
       </Grid>
@@ -60,6 +58,5 @@ export const VideoClipSummary = ({video, advice}: Props) => {
         </Box>
       </Stack>
     </Stack>
-  )
-    ;
+  );
 }

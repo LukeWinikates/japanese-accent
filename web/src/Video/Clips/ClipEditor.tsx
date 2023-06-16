@@ -1,5 +1,5 @@
 import React, {useCallback, useEffect, useMemo, useState} from 'react';
-import {Button, TextField} from "@mui/material";
+import {Button, Grid, TextField} from "@mui/material";
 
 import {Player} from "../../Dictaphone/Player";
 import {TimeInput} from "./TimeInput";
@@ -7,6 +7,7 @@ import {msToHumanReadable} from "../../App/time";
 import audioURL from "../../App/audioURL";
 import {ClipResizingWaveform} from "../../Waveform/ResizingWaveform";
 import {BasicClip} from "../../api/types";
+import {TextOptionChooser} from "./TextOptionChooser";
 
 interface Props<T extends BasicClip> {
   clip: T;
@@ -16,11 +17,11 @@ interface Props<T extends BasicClip> {
 }
 
 export function ClipEditor<T extends BasicClip>({
-                                                      clip,
-                                                      setClip,
-                                                      previousClipEndMS,
-                                                      nextClipStartMS
-                                                    }: Props<T>) {
+                                                  clip,
+                                                  setClip,
+                                                  previousClipEndMS,
+                                                  nextClipStartMS
+                                                }: Props<T>) {
   const [clipIsPlaying, setClipIsPlaying] = useState<boolean>(false);
   const [preferredStartTime, setPreferredStartTime] = useState<number | undefined>(undefined);
   const [playerStartDebounce, setPlayerStartDebounce] = useState<Date | undefined>();
@@ -107,12 +108,21 @@ export function ClipEditor<T extends BasicClip>({
           Align End to Next Clip Start: {msToHumanReadable(nextClipStartMS)}
         </Button>
       }
+      <Grid container>
+        <Grid item xs={6}>
+          <TextField margin="normal"
+                     value={clip.text} fullWidth={true}
+                     multiline={true}
+                     onChange={onTextChange}/>
+        </Grid>
+        <Grid item xs={6}>
+          <TextOptionChooser
+            onChooseItem={handleTextChange}
+            options={[]}
+            />
+        </Grid>
 
-      <TextField margin="normal"
-                 value={clip.text} fullWidth={true}
-                 multiline={true}
-                 onChange={onTextChange}/>
-
+      </Grid>
     </>
   );
 }

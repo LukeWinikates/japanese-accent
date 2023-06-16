@@ -46,11 +46,8 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
   return (
     <>
       <Box paddingY={2} margin={0}>
-        <Typography variant="h2">
-          {video.title}
-        </Typography>
         <Typography variant="h4">
-          Clip Editor
+          Editing Clips from <em>{video.title}</em>
         </Typography>
         <Link to={".."} relative="path">
           <Button startIcon={<Mic/>} endIcon={<ListenIcon/>}>
