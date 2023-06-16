@@ -11,17 +11,17 @@ import (
 
 func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		segmentID := context.Param("id")
+		clipID := context.Param("id")
 
-		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
+		var clip *database.Clip
+		if err := db.Where("uuid = ? ", clipID).Find(&clip).Error; err != nil {
 
 			log.Println(err.Error())
 			context.Status(404)
 			return
 		}
 
-		pitches, err := ojad.GetPitches(segment.Text)
+		pitches, err := ojad.GetPitches(clip.Text)
 
 		if err != nil {
 			log.Println(err.Error())
@@ -30,12 +30,12 @@ func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 
 		normalized := ojad.MakePitchAndMoraStrings(pitches)
 
-		dbPitch := database.SegmentPitch{
+		dbPitch := database.ClipPitch{
 			Morae:   normalized.Morae,
 			Pattern: normalized.Pitch,
 			Source:  "OJAD",
 		}
-		if err := db.Model(&segment).Association("SegmentPitch").Replace(&dbPitch); err != nil {
+		if err := db.Model(&clip).Association("ClipPitch").Replace(&dbPitch); err != nil {
 
 			log.Println(err.Error())
 			context.Status(500)
@@ -46,7 +46,7 @@ func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 	}
 }
 
-func makeApiPitch(pitch database.SegmentPitch) types.ClipPitch {
+func makeApiPitch(pitch database.ClipPitch) types.ClipPitch {
 	return types.ClipPitch{
 		Pattern: pitch.Pattern,
 		Morae:   pitch.Morae,

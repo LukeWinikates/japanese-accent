@@ -16,7 +16,7 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 		var video *database.Video
 
 		youtubeID := context.Param("videoUuid")
-		segmentSha := context.Param("sha")
+		clipSHA := context.Param("sha")
 		if err := db.Where("youtube_id = ?", youtubeID).
 			Preload("AdviceMutings").First(&video).Error; err != nil {
 			context.Status(http.StatusInternalServerError)
@@ -25,18 +25,18 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 		}
 
 		if slices.Any(video.AdviceMutings, func(m database.AdviceMuting) bool {
-			return m.AdviceSha == segmentSha
+			return m.AdviceSha == clipSHA
 		}) {
 			context.Status(http.StatusNoContent)
 			return
 
 		}
 
-		vttSegments, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
+		vttAdvice, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
 
 		found := false
-		for _, seg := range vttSegments {
-			if segmentSha == sha(seg) {
+		for _, seg := range vttAdvice {
+			if clipSHA == sha(seg) {
 				found = true
 				break
 			}
@@ -52,7 +52,7 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 			log.Printf(err.Error())
 			return
 		}
-		err = queries.MuteAdvice(db, video, segmentSha)
+		err = queries.MuteAdvice(db, video, clipSHA)
 		log.Printf("%v\n", err)
 		if err != nil {
 			context.Status(http.StatusInternalServerError)

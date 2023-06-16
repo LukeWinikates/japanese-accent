@@ -18,15 +18,15 @@ func MakeBoostPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", boostRequest.ClipID).Find(&segment).Error; err != nil {
+		var clip *database.Clip
+		if err := db.Where("uuid = ? ", boostRequest.ClipID).Find(&clip).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return
 		}
 
-		boost := database.SegmentBoost{
-			Segment:   *segment,
+		boost := database.ClipBoost{
+			Clip:      *clip,
 			BoostedAt: time.Now(),
 		}
 
@@ -36,9 +36,9 @@ func MakeBoostPOST(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		segment.Priority = segment.Priority + database.BoostPriority
+		clip.Priority = clip.Priority + database.BoostPriority
 
-		if err := db.Save(segment).Error; err != nil {
+		if err := db.Save(clip).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 		}

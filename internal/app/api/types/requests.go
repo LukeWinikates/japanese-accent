@@ -1,6 +1,6 @@
 package types
 
-type VideoSegmentCreate struct {
+type VideoClipCreate struct {
 	StartMS int    `json:"startMS"`
 	EndMS   int    `json:"endMS"`
 	Text    string `json:"text"`
@@ -16,14 +16,14 @@ type VideoEdit struct {
 	Text  string `json:"text"`
 }
 
-type SegmentEditRequest struct {
+type ClipEditRequest struct {
 	StartMS int    `json:"startMS"`
 	EndMS   int    `json:"endMS"`
 	Text    string `json:"text"`
 	UUID    string `json:"uuid"`
 }
 
-type SegmentCreateRequest = VideoSegmentCreate
+type ClipCreateRequest = VideoClipCreate
 
 type BoostCreateRequest struct {
 	ClipID string `json:"clipId"`

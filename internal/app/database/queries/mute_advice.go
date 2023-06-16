@@ -5,9 +5,9 @@ import (
 	"gorm.io/gorm"
 )
 
-func MuteAdvice(db gorm.DB, video *database.Video, segmentSha string) error {
+func MuteAdvice(db gorm.DB, video *database.Video, clipSHA string) error {
 	return db.Model(video).Association("AdviceMutings").Append(&database.AdviceMuting{
-		AdviceSha: segmentSha,
+		AdviceSha: clipSHA,
 	})
 
 }

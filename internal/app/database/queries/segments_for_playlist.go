@@ -5,16 +5,16 @@ import (
 	"gorm.io/gorm"
 )
 
-func FindSegmentsForPlaylist(db gorm.DB, count int) ([]database.VideoSegment, error) {
-	segments := make([]database.VideoSegment, 0)
+func FindClipsForPlaylist(db gorm.DB, count int) ([]database.Clip, error) {
+	clips := make([]database.Clip, 0)
 
 	if err := db.
 		Order("priority DESC").
 		Limit(count).
-		Find(&segments).Error; err != nil {
+		Find(&clips).Error; err != nil {
 
 		return nil, err
 	}
 
-	return segments, nil
+	return clips, nil
 }

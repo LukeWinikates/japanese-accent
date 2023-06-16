@@ -8,7 +8,7 @@ import (
 
 func MakeRefreshMetricsPOST(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		err := database.RecalculateAllSegments(db)
+		err := database.RecalculateAllClipPriorities(db)
 		if err != nil {
 			context.Status(500)
 			return

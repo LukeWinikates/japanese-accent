@@ -24,15 +24,15 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", activityCreate.ClipID).Preload("Video").Find(&segment).Error; err != nil {
+		var clip *database.Clip
+		if err := db.Where("uuid = ? ", activityCreate.ClipID).Preload("Video").Find(&clip).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return
 		}
 
-		activity := database.SegmentActivity{
-			Segment:      *segment,
+		activity := database.ClipActivity{
+			Clip:         *clip,
 			ActivityType: activityCreate.ActivityType,
 		}
 
@@ -42,17 +42,17 @@ func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		segment.LastActivityAt = time.Now()
-		segment.Video.LastActivityAt = time.Now()
+		clip.LastActivityAt = time.Now()
+		clip.Video.LastActivityAt = time.Now()
 
-		segment.Priority = segment.Priority + database.ActivityPriority
+		clip.Priority = clip.Priority + database.ActivityPriority
 
-		if err := db.Save(segment).Error; err != nil {
+		if err := db.Save(clip).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 			return
 		}
-		if err := db.Save(segment.Video).Error; err != nil {
+		if err := db.Save(clip.Video).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 			return

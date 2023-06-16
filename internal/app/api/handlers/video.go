@@ -22,7 +22,7 @@ func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {
 		video := &database.Video{
 			YoutubeID:      videoCreateRequest.YoutubeID,
 			Title:          videoCreateRequest.Title,
-			Segments:       nil,
+			Clips:          nil,
 			LastActivityAt: time.Now(),
 		}
 
@@ -99,13 +99,13 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 
 func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Video {
 	apiClips := make([]types.Clip, 0)
-	for _, clip := range video.Segments {
+	for _, clip := range video.Clips {
 		var pitch *types.ClipPitch = nil
 
-		if clip.SegmentPitch != nil {
+		if clip.ClipPitch != nil {
 			pitch = &types.ClipPitch{
-				Pattern: clip.SegmentPitch.Pattern,
-				Morae:   clip.SegmentPitch.Morae,
+				Pattern: clip.ClipPitch.Pattern,
+				Morae:   clip.ClipPitch.Morae,
 			}
 		}
 

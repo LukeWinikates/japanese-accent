@@ -5,39 +5,39 @@ import "gorm.io/gorm"
 const BoostPriority = 50
 const ActivityPriority = -5
 
-func RecalculatePriority(db gorm.DB, segmentID uint) error {
-	var segment VideoSegment
-	var boosts []SegmentBoost
-	var activities []SegmentActivity
+func RecalculatePriority(db gorm.DB, clipID uint) error {
+	var clip Clip
+	var boosts []ClipBoost
+	var activities []ClipActivity
 	if err := db.
-		Find(&segment, segmentID).Error; err != nil {
+		Find(&clip, clipID).Error; err != nil {
 		return err
 	}
 
 	if err := db.
-		Where("segment_id = ?", segmentID).
+		Where("clip_id = ?", clipID).
 		Find(&boosts).Error; err != nil {
 		return err
 	}
 
 	if err := db.
-		Where("segment_id = ?", segmentID).
+		Where("clip_id = ?", clipID).
 		Find(&activities).Error; err != nil {
 		return err
 	}
 
-	segment.Priority = BoostPriority * len(boosts)
-	segment.Priority += ActivityPriority * len(activities)
+	clip.Priority = BoostPriority * len(boosts)
+	clip.Priority += ActivityPriority * len(activities)
 
-	return db.Save(&segment).Error
+	return db.Save(&clip).Error
 }
 
-func RecalculateAllSegments(db gorm.DB) error {
-	var segments []uint
-	db.Table("video_segments").Pluck("id", &segments)
+func RecalculateAllClipPriorities(db gorm.DB) error {
+	var clips []uint
+	db.Table("clips").Pluck("id", &clips)
 
-	for _, segment := range segments {
-		err := RecalculatePriority(db, segment)
+	for _, clip := range clips {
+		err := RecalculatePriority(db, clip)
 		if err != nil {
 			return err
 		}

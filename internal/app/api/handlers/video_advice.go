@@ -25,7 +25,7 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		vttSegments, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
+		vttAdvice, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
 		if err != nil {
 			context.Status(500)
 			log.Printf(err.Error())
@@ -39,37 +39,37 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		}
 
 		advice := types.VideoAdviceResponse{
-			SuggestedClips: suggestedSegments(vttSegments, youtubeID, mutings),
+			SuggestedClips: suggestedClips(vttAdvice, youtubeID, mutings),
 		}
 
 		context.JSON(200, advice)
 	}
 }
 
-func suggestedSegments(segments []vtt.Cue, videoUUID string, mutings []string) []types.SuggestedClip {
+func suggestedClips(cues []vtt.Cue, videoUUID string, mutings []string) []types.SuggestedClip {
 	muteMap := make(map[string]bool)
 	for _, s := range mutings {
 		muteMap[s] = true
 	}
-	segs := make([]types.SuggestedClip, 0)
-	for _, t := range segments {
+	clips := make([]types.SuggestedClip, 0)
+	for _, t := range cues {
 		labels := make([]string, 0)
-		segmentUUID := sha(t)
-		if muteMap[segmentUUID] {
+		clipUUID := sha(t)
+		if muteMap[clipUUID] {
 			labels = append(labels, "MUTED")
 		} else {
 			labels = append(labels, "ADVICE")
 		}
-		segs = append(segs, types.SuggestedClip{
+		clips = append(clips, types.SuggestedClip{
 			StartMS:   t.StartMS,
 			EndMS:     t.EndMS,
 			Text:      t.Text,
-			UUID:      segmentUUID,
+			UUID:      clipUUID,
 			Labels:    labels,
 			VideoUUID: videoUUID,
 		})
 	}
-	return segs
+	return clips
 }
 
 func sha(t vtt.Cue) string {

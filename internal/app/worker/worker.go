@@ -51,7 +51,7 @@ func (w realWorker) Run(videoPath string, video *database.Video, watcher chan ex
 func recipeClipsFromVideo(video *database.Video) []export.RecipeClip {
 	recipeClips := make([]export.RecipeClip, 0)
 
-	for _, clip := range video.Segments {
+	for _, clip := range video.Clips {
 		recipeClips = append(recipeClips, export.RecipeClip{
 			Name:  clip.Text,
 			Start: clip.StartMS,

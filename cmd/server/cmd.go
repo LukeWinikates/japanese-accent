@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/api"
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/metrics"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
@@ -21,6 +22,7 @@ type config struct {
 func main() {
 	log.Println("Data directories:", xdg.DataDirs)
 	config := readConfig()
+	fmt.Println(config.DatabaseFile)
 	db := prepareDatabase(config.DatabaseFile)
 
 	r := gin.Default()
@@ -48,7 +50,7 @@ func prepareDatabase(databaseFile string) *gorm.DB {
 	err = database.InitializeDatabase(*db)
 	if err != nil {
 		log.Println(err.Error())
-		log.Fatal("failed to connect database")
+		log.Fatal("failed to migrate database")
 	}
 
 	err = database.EnsureDatabaseReady(*db)

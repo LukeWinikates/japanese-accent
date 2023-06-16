@@ -5,14 +5,14 @@ import (
 	"sort"
 )
 
-func VTTSegmentsToTimings(segments []vtt.Cue) []Timing {
+func VTTCuesToTimings(cues []vtt.Cue) []Timing {
 	timings := make([]Timing, 0)
 
-	sort.Slice(segments, func(i, j int) bool {
-		return segments[i].EndMS < segments[j].EndMS
+	sort.Slice(cues, func(i, j int) bool {
+		return cues[i].EndMS < cues[j].EndMS
 	})
 
-	for _, seg := range segments {
+	for _, seg := range cues {
 		timings = append(timings, Timing{
 			TimeMS: seg.EndMS,
 			Labels: []string{"vtt"},
@@ -22,14 +22,14 @@ func VTTSegmentsToTimings(segments []vtt.Cue) []Timing {
 	return timings
 }
 
-func VTTSegmentsToTimedText(segments []vtt.Cue) []TimedText {
+func VTTCuesToTimedText(cues []vtt.Cue) []TimedText {
 	timedText := make([]TimedText, 0)
 
-	sort.Slice(segments, func(i, j int) bool {
-		return segments[i].EndMS < segments[j].EndMS
+	sort.Slice(cues, func(i, j int) bool {
+		return cues[i].EndMS < cues[j].EndMS
 	})
 
-	for _, seg := range segments {
+	for _, seg := range cues {
 		timedText = append(timedText, TimedText{
 			TimeMS:  seg.EndMS,
 			Content: seg.Text,

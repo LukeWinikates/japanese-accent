@@ -11,27 +11,25 @@ import (
 
 func MakeAudioClipsPUT(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		segmentID := context.Param("id")
-		var segmentEditRequest types.SegmentEditRequest
-		if err := context.BindJSON(&segmentEditRequest); err != nil {
+		clipID := context.Param("id")
+		var request types.ClipEditRequest
+		if err := context.BindJSON(&request); err != nil {
 			context.Status(500)
 			return
 		}
 
-		log.Print(segmentEditRequest)
-
-		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
+		var clip *database.Clip
+		if err := db.Where("uuid = ? ", clipID).Find(&clip).Error; err != nil {
 			context.Status(404)
 			log.Println(err.Error())
 			return
 		}
 
-		segment.StartMS = segmentEditRequest.StartMS
-		segment.Text = segmentEditRequest.Text
-		segment.EndMS = segmentEditRequest.EndMS
+		clip.StartMS = request.StartMS
+		clip.Text = request.Text
+		clip.EndMS = request.EndMS
 
-		if err := db.Save(segment).Error; err != nil {
+		if err := db.Save(clip).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 		}
@@ -40,7 +38,7 @@ func MakeAudioClipsPUT(db gorm.DB) gin.HandlerFunc {
 
 func MakeAudioClipsCREATE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		var createRequest types.SegmentCreateRequest
+		var createRequest types.ClipCreateRequest
 		if err := context.BindJSON(&createRequest); err != nil {
 			context.Status(500)
 			return
@@ -53,24 +51,24 @@ func MakeAudioClipsCREATE(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		var segment = database.VideoSegment{
+		var clip = database.Clip{
 			UUID:    uuid.NewString(),
 			StartMS: createRequest.StartMS,
 			Text:    createRequest.Text,
 			EndMS:   createRequest.EndMS,
 		}
 
-		if err := db.Model(&video).Association("Segments").Append(&segment); err != nil {
+		if err := db.Model(&video).Association("Clips").Append(&clip); err != nil {
 			context.Status(500)
 			log.Println(err.Error())
 			return
 		}
 
 		context.JSON(201, types.Clip{
-			UUID:      segment.UUID,
-			StartMS:   segment.StartMS,
-			EndMS:     segment.EndMS,
-			Text:      segment.Text,
+			UUID:      clip.UUID,
+			StartMS:   clip.StartMS,
+			EndMS:     clip.EndMS,
+			Text:      clip.Text,
 			VideoUUID: video.YoutubeID,
 		})
 	}
@@ -78,16 +76,16 @@ func MakeAudioClipsCREATE(db gorm.DB) gin.HandlerFunc {
 
 func MakeAudioClipsDELETE(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		segmentID := context.Param("id")
+		clipID := context.Param("id")
 
-		var segment *database.VideoSegment
-		if err := db.Where("uuid = ? ", segmentID).Find(&segment).Error; err != nil {
+		var clip *database.Clip
+		if err := db.Where("uuid = ? ", clipID).Find(&clip).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(404)
 			return
 		}
 
-		if err := db.Delete(segment).Error; err != nil {
+		if err := db.Delete(clip).Error; err != nil {
 			log.Println(err.Error())
 			context.Status(500)
 			return

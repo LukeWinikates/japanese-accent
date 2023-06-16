@@ -20,7 +20,7 @@ func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {
 			context.Status(500)
 			return
 		}
-		segments, err := queries.FindSegmentsForPlaylist(db, playlistCreate.Count)
+		clips, err := queries.FindClipsForPlaylist(db, playlistCreate.Count)
 
 		if err != nil {
 			log.Println(err.Error())
@@ -31,9 +31,9 @@ func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {
 		newString := uuid.NewString()
 
 		playlist := database.Playlist{
-			UUID:     newString,
-			Name:     "New Playlist: " + time.Now().Format(time.RFC822),
-			Segments: segments,
+			UUID:  newString,
+			Name:  "New Playlist: " + time.Now().Format(time.RFC822),
+			Clips: clips,
 		}
 
 		if err := db.Create(&playlist).Error; err != nil {
@@ -52,8 +52,8 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		var playlist database.Playlist
 		playlistID := context.Param("id")
-		if err := db.Preload("Segments.Video").
-			Preload("Segments.SegmentPitch").
+		if err := db.Preload("Clips.Video").
+			Preload("Clips.ClipPitch").
 			Where("uuid = ?", playlistID).
 			First(&playlist).Error; err != nil {
 			context.Status(500)
@@ -61,32 +61,32 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiSegments := make([]types.Clip, len(playlist.Segments))
+		apiClips := make([]types.Clip, len(playlist.Clips))
 
-		for i, segment := range playlist.Segments {
+		for i, clip := range playlist.Clips {
 			var maybePitch *types.ClipPitch
-			if segment.SegmentPitch != nil {
-				var pitch = makeApiPitch(*segment.SegmentPitch)
+			if clip.ClipPitch != nil {
+				var pitch = makeApiPitch(*clip.ClipPitch)
 				maybePitch = &pitch
 			}
-			apiSegments[i] = types.Clip{
-				StartMS:   segment.StartMS,
-				EndMS:     segment.EndMS,
-				Text:      segment.Text,
-				UUID:      segment.UUID,
-				VideoUUID: segment.Video.YoutubeID,
+			apiClips[i] = types.Clip{
+				StartMS:   clip.StartMS,
+				EndMS:     clip.EndMS,
+				Text:      clip.Text,
+				UUID:      clip.UUID,
+				VideoUUID: clip.Video.YoutubeID,
 				Pitch:     maybePitch,
-				Priority:  segment.Priority,
+				Priority:  clip.Priority,
 			}
 		}
 
-		sort.Slice(apiSegments, func(i, j int) bool {
-			return apiSegments[i].Priority > apiSegments[j].Priority
+		sort.Slice(apiClips, func(i, j int) bool {
+			return apiClips[i].Priority > apiClips[j].Priority
 		})
 
 		context.JSON(200, types.Playlist{
 			ID:    playlistID,
-			Clips: apiSegments,
+			Clips: apiClips,
 		})
 	}
 }

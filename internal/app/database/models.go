@@ -17,14 +17,14 @@ type Video struct {
 	gorm.Model
 	YoutubeID      string
 	Title          string
-	Segments       []VideoSegment
+	Clips          []Clip
 	Text           string
 	LastActivityAt time.Time
 	Words          []Word `gorm:"many2many:video_words"`
 	AdviceMutings  []AdviceMuting
 }
 
-type VideoSegment struct {
+type Clip struct {
 	gorm.Model
 	VideoID        uint
 	StartMS        int
@@ -33,45 +33,45 @@ type VideoSegment struct {
 	UUID           string
 	Video          Video
 	LastActivityAt time.Time
-	SegmentPitch   *SegmentPitch `gorm:"foreignKey:SegmentID"`
+	ClipPitch      *ClipPitch `gorm:"foreignKey:ClipID"`
 	Priority       int
 	ParentUUID     *string
 	Labels         Labels `gorm:"serializer:json"`
 }
 
-type SegmentBoost struct {
+type ClipBoost struct {
 	gorm.Model
-	SegmentID uint
-	Segment   VideoSegment
+	ClipID    uint
+	Clip      Clip
 	BoostedAt time.Time
 }
 
-type SegmentActivity struct {
+type ClipActivity struct {
 	gorm.Model
-	SegmentID    uint
-	Segment      VideoSegment
-	ActivityType SegmentActivityType
+	ClipID       uint
+	Clip         Clip
+	ActivityType ClipActivityType
 }
 
-type SegmentActivityType = string
+type ClipActivityType = string
 
 const (
-	PracticeStart SegmentActivityType = "PracticeStart"
+	PracticeStart ClipActivityType = "PracticeStart"
 )
 
-type SegmentPitch struct {
+type ClipPitch struct {
 	gorm.Model
-	SegmentID uint
-	Pattern   string
-	Source    string
-	Morae     string
+	ClipID  uint
+	Pattern string
+	Source  string
+	Morae   string
 }
 
 type Playlist struct {
 	gorm.Model
-	UUID     string
-	Name     string
-	Segments []VideoSegment `gorm:"many2many:playlist_segments"`
+	UUID  string
+	Name  string
+	Clips []Clip `gorm:"many2many:playlist_clips"`
 }
 
 type Word struct {
@@ -95,9 +95,12 @@ type AdviceMuting struct {
 
 func InitializeDatabase(db gorm.DB) error {
 	return db.AutoMigrate(
-		Video{}, VideoSegment{}, SegmentBoost{}, SegmentActivity{},
-		Playlist{}, Word{}, WordList{}, SegmentPitch{},
-		Settings{}, AdviceMuting{},
+	//Video{}, Clip{},
+	//ClipBoost{},
+	//ClipActivity{},
+	//Playlist{}, Word{},
+	//WordList{}, ClipPitch{},
+	//Settings{}, AdviceMuting{},
 	)
 }
 
