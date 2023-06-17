@@ -9,6 +9,7 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
+	"github.com/LukeWinikates/japanese-accent/internal/text"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -25,7 +26,7 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		vttAdvice, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
+		cues, err := media.LoadVTTCues(mediaDirectory, youtubeID)
 		if err != nil {
 			context.Status(500)
 			log.Printf(err.Error())
@@ -39,11 +40,27 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		}
 
 		advice := types.VideoAdviceResponse{
-			SuggestedClips: suggestedClips(vttAdvice, youtubeID, mutings),
+			SuggestedClips: suggestedClips(cues, youtubeID, mutings),
+			TextSnippets:   snippetsFromVTT(cues),
 		}
 
 		context.JSON(200, advice)
 	}
+}
+
+func snippetsFromVTT(cues []vtt.Cue) []types.TimedText {
+	texts := make([]types.TimedText, 0)
+	lastText := ""
+	for _, c := range cues {
+		_, nextText := text.RePartition(lastText, c.Text)
+		texts = append(texts, types.TimedText{
+			Content: nextText,
+			TimeMS:  c.StartMS,
+		})
+		lastText = c.Text
+	}
+
+	return texts
 }
 
 func suggestedClips(cues []vtt.Cue, videoUUID string, mutings []string) []types.SuggestedClip {

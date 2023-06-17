@@ -10,6 +10,10 @@ func RePartition(a, b string) (string, string) {
 		subA := a[len(a)-i:]
 		subB := b[:i]
 		if subA == subB {
+			if i == len(b) {
+				return a, ""
+			}
+
 			return a, b[i+1:]
 		}
 	}

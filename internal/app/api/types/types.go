@@ -122,6 +122,7 @@ type TimedText struct {
 
 type VideoAdviceResponse struct {
 	SuggestedClips []SuggestedClip `json:"suggestedClips"`
+	TextSnippets   []TimedText     `json:"textSnippets"`
 }
 
 type SuggestedClip struct {

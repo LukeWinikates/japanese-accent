@@ -5,7 +5,7 @@ import (
 	"os"
 )
 
-func LoadVTTasAdvice(mediaDirectory string, youtubeID string) ([]vtt.Cue, error) {
+func LoadVTTCues(mediaDirectory string, youtubeID string) ([]vtt.Cue, error) {
 	vttFile := FindSubtitleFile(mediaDirectory, youtubeID)
 
 	if !vttFile.IsFound {

@@ -32,7 +32,7 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 
 		}
 
-		vttAdvice, err := media.LoadVTTasAdvice(mediaDirectory, youtubeID)
+		vttAdvice, err := media.LoadVTTCues(mediaDirectory, youtubeID)
 
 		found := false
 		for _, seg := range vttAdvice {
