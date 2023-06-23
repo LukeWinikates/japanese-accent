@@ -93,6 +93,7 @@ export function ClipEditorDialog(props: Props) {
           setClip={setClip}
           previousClipEndMS={previousClipEndMS}
           nextClipStartMS={previousClipStartMS}
+          textSuggestions={[]}
         />
       </DialogContent>
       <DialogActions>

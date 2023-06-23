@@ -12,9 +12,10 @@ type Props = {
   clip: BasicClip,
   setClip: (c: BasicClip) => void
   onDelete: (c: BasicClip) => void
+  textSuggestions: string[]
 };
 
-export const Editor = ({clip, setClip, videoId, onDelete}: Props) => {
+export const Editor = ({clip, setClip, videoId, onDelete, textSuggestions}: Props) => {
   const api = useBackendAPI();
   const saveClip = useCallback(() => {
     if (clip.labels.some(ARE_ADVICE)) {
@@ -53,6 +54,7 @@ export const Editor = ({clip, setClip, videoId, onDelete}: Props) => {
         setClip={setClip}
         previousClipEndMS={null}
         nextClipStartMS={null}
+        textSuggestions={textSuggestions}
       />
 
       <Stack

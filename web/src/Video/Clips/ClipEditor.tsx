@@ -14,13 +14,15 @@ interface Props<T extends BasicClip> {
   setClip: (clip: T) => void;
   previousClipEndMS: number | null;
   nextClipStartMS: number | null;
+  textSuggestions: string[]
 }
 
 export function ClipEditor<T extends BasicClip>({
                                                   clip,
                                                   setClip,
                                                   previousClipEndMS,
-                                                  nextClipStartMS
+                                                  nextClipStartMS,
+                                                  textSuggestions
                                                 }: Props<T>) {
   const [clipIsPlaying, setClipIsPlaying] = useState<boolean>(false);
   const [preferredStartTime, setPreferredStartTime] = useState<number | undefined>(undefined);
@@ -118,7 +120,7 @@ export function ClipEditor<T extends BasicClip>({
         <Grid item xs={6}>
           <TextOptionChooser
             onChooseItem={handleTextChange}
-            options={[]}
+            options={textSuggestions}
             />
         </Grid>
 

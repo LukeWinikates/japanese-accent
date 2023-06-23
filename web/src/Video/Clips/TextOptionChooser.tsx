@@ -5,6 +5,14 @@ interface Props {
   options: string[]
 }
 
-export function TextOptionChooser(_:Props) {
-  return (<></>);
+export function TextOptionChooser({options}: Props) {
+  return (<ul>
+    {
+      options.map((o, i) => {
+        return <li key={i}>
+          {o}
+        </li>
+      })
+    }
+  </ul>);
 }

@@ -1,4 +1,4 @@
-import React, {useCallback, useRef, useState} from "react";
+import React, {useCallback, useMemo, useRef, useState} from "react";
 import {BasicClip, Clip, Video, VideoAdvice} from "../../api/types";
 import {Card, CardContent, FormControlLabel, List, Switch, Typography,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
@@ -8,6 +8,7 @@ import {Editor} from "./Editor";
 import {ARE_ADVICE, ARE_MUTED} from "./clipLabels";
 import {elementForLabels, sizeForClip} from "./ListItems";
 import {useBackendAPI} from "../../App/useBackendAPI";
+import {relevantClips} from "../../App/relevantClips";
 
 type Props = {
   advice: VideoAdvice,
@@ -53,6 +54,10 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
       .then(() => removeClip(clip));
   }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
 
+  const textSuggestionsForClip = useMemo(() => {
+    return selectedClip ? relevantClips(selectedClip.startMS, advice.textSnippets).map(c => c.content) : [];
+  }, [selectedClip, advice.textSnippets])
+
   function titleFor(clip: Clip | BasicClip): string {
     const {labels} = clip;
     if (!labels) {
@@ -85,6 +90,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
                 setClip={setSelectedClip}
                 videoId={videoUuid}
                 onDelete={muteSuggestion}
+                textSuggestions={textSuggestionsForClip}
               />
             </CardContent>
           </Card>

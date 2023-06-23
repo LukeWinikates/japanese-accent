@@ -52,6 +52,11 @@ export declare type BasicClip = {
   labels: ClipLabel[],
 };
 
+export declare type TimedText = {
+  content: string,
+  timeMS: number
+}
+
 export type ClipLabel = "SAVED" | "ADVICE" | "MUTED"
 
 export declare type Highlights = {
@@ -108,6 +113,7 @@ export type Waveform = {
 
 export type VideoAdvice = {
   suggestedClips: BasicClip[],
+  textSnippets: TimedText[]
 }
 
 export type BoostPostBody = {
