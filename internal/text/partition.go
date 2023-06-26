@@ -1,5 +1,9 @@
 package text
 
+import (
+	"unicode/utf8"
+)
+
 func RePartition(a, b string) (string, string) {
 	maxLen := len(a)
 	if len(a) > len(b) {
@@ -14,7 +18,17 @@ func RePartition(a, b string) (string, string) {
 				return a, ""
 			}
 
-			return a, b[i+1:]
+			j := 1
+			for ; j < 4; j++ {
+				if i+j >= len(b) {
+					return a, ""
+				}
+				if utf8.RuneStart(b[i+j]) {
+					break
+				}
+			}
+
+			return a, b[i+j:]
 		}
 	}
 

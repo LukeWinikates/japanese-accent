@@ -53,6 +53,9 @@ func snippetsFromVTT(cues []vtt.Cue) []types.TimedText {
 	lastText := ""
 	for _, c := range cues {
 		_, nextText := text.RePartition(lastText, c.Text)
+		if nextText == "" {
+			continue
+		}
 		texts = append(texts, types.TimedText{
 			Content: nextText,
 			TimeMS:  c.StartMS,
