@@ -1,8 +1,12 @@
 import {TimedText} from "../api/types";
 
-export function relevantClips(timeMS: number, timedTexts: TimedText[]) {
-  const {index} = closestIn(timedTexts, timeMS, c => c.timeMS);
-  return timedTexts.slice(Math.max(index - 3, 0), Math.min(index + 3, timedTexts.length - 1));
+export function relevantClips(timeMS: number, timedTexts: TimedText[]):TimedText[] {
+  try {
+    const {index} = closestIn(timedTexts, timeMS, c => c.timeMS);
+    return timedTexts.slice(Math.max(index - 3, 0), Math.min(index + 3, timedTexts.length - 1));
+  } catch {
+    return []
+  }
 }
 
 export function closestIn<T>(list: T[], timeMS: number, extractor: (t: T) => number): { item: T, index: number } {
