@@ -15,6 +15,12 @@ watch:
 	rm bin/server
 	~/go/bin/air
 
+tmp/JMdict: tmp/JMdict.gz
+	cd tmp/ ; gzip -dk JMdict.gz
+
+tmp/JMdict.gz:
+	cd tmp/ ; curl -L -R -O http://ftp.edrdg.org/pub/Nihongo/JMdict.gz
+
 setup:
 	yarn 2&>1 > /dev/null || npm install -g yarn
 	yarn install
