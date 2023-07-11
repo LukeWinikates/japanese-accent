@@ -2,6 +2,7 @@ package api
 
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/handlers"
+	dictionaryHandlers "github.com/LukeWinikates/japanese-accent/internal/app/api/handlers/dictionary"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/forvo"
 	"github.com/gin-gonic/gin"
@@ -78,6 +79,11 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 		{
 			wordLists.GET(":id", handlers.MakeWordListGET(db))
 			wordLists.GET("", handlers.MakeWordListListGET(db))
+		}
+
+		dictionary := api.Group("dictionary")
+		{
+			dictionary.GET("word/", dictionaryHandlers.MakeDictionaryWordGet(mediaDirPath))
 		}
 	}
 
