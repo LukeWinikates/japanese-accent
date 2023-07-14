@@ -15,8 +15,9 @@ import (
 )
 
 type config struct {
-	MediaDirPath string
-	DatabaseFile string
+	MediaDirPath     string
+	DatabaseFile     string
+	DictionaryDBFile string
 }
 
 func main() {
@@ -24,10 +25,11 @@ func main() {
 	config := readConfig()
 	fmt.Println(config.DatabaseFile)
 	db := prepareDatabase(config.DatabaseFile)
+	dictionaryDB := openDictionaryDB(config.DictionaryDBFile)
 
 	r := gin.Default()
 
-	api.Configure(r, config.MediaDirPath, *db)
+	api.Configure(r, config.MediaDirPath, *db, *dictionaryDB)
 	r.POST("/analytics", metrics.HandleWebVital)
 	r.GET("/metrics", wrap(promhttp.Handler()))
 	log.Fatalln(r.Run("localhost:8080").Error())
@@ -62,6 +64,15 @@ func prepareDatabase(databaseFile string) *gorm.DB {
 	return db
 }
 
+func openDictionaryDB(path string) *gorm.DB {
+	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
+	if err != nil {
+		log.Println(err.Error())
+		log.Fatal("failed to open dictionary")
+	}
+	return db
+}
+
 func readConfig() config {
 	mediaPath, err := xdg.DataFile("japanese-accent/data/media")
 	if err != nil {
@@ -73,8 +84,14 @@ func readConfig() config {
 		log.Fatal(err)
 	}
 
+	wnjpnFile, err := xdg.DataFile("japanese-accent/resource/wnjpn.db")
+	if err != nil {
+		log.Fatal(err)
+	}
+
 	return config{
-		MediaDirPath: mediaPath,
-		DatabaseFile: databaseFile,
+		MediaDirPath:     mediaPath,
+		DatabaseFile:     databaseFile,
+		DictionaryDBFile: wnjpnFile,
 	}
 }

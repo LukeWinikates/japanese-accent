@@ -10,7 +10,7 @@ import (
 	"log"
 )
 
-func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
+func Configure(engine *gin.Engine, mediaDirPath string, db, dictionaryDB gorm.DB) {
 
 	settings, err := LoadSettings(db)
 	if err != nil {
@@ -83,7 +83,8 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 
 		dictionary := api.Group("dictionary")
 		{
-			dictionary.GET("word/", dictionaryHandlers.MakeDictionaryWordGet(mediaDirPath))
+			dictionary.GET("word/:searchTerm",
+				dictionaryHandlers.MakeDictionaryWordGet(&dictionaryDB))
 		}
 	}
 
