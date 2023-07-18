@@ -5,12 +5,13 @@ import (
 	dictionaryHandlers "github.com/LukeWinikates/japanese-accent/internal/app/api/handlers/dictionary"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/forvo"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
 )
 
-func Configure(engine *gin.Engine, mediaDirPath string, db, dictionaryDB gorm.DB) {
+func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB, dictionaryIndex bleve.Index) {
 
 	settings, err := LoadSettings(db)
 	if err != nil {
@@ -84,7 +85,7 @@ func Configure(engine *gin.Engine, mediaDirPath string, db, dictionaryDB gorm.DB
 		dictionary := api.Group("dictionary")
 		{
 			dictionary.GET("word/:searchTerm",
-				dictionaryHandlers.MakeDictionaryWordGet(&dictionaryDB))
+				dictionaryHandlers.MakeDictionaryWordGet(dictionaryIndex))
 		}
 	}
 

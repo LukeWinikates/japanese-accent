@@ -1,17 +1,21 @@
 package dictionary
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/dictionary"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/gin-gonic/gin"
-	"gorm.io/gorm"
-	"log"
 )
 
-func MakeDictionaryWordGet(dictionaryDB *gorm.DB) gin.HandlerFunc {
+func MakeDictionaryWordGet(index bleve.Index) gin.HandlerFunc {
 	return func(context *gin.Context) {
 		searchTerm := context.Param("searchTerm")
-		words := dictionary.LookForWord(dictionaryDB, searchTerm)
-		log.Printf("%v\n", words)
-		context.JSON(200, words)
+
+		query := bleve.NewQueryStringQuery(searchTerm)
+		searchRequest := bleve.NewSearchRequest(query)
+		searchResult, err := index.Search(searchRequest)
+		if err != nil {
+			context.Status(500)
+		}
+
+		context.JSON(200, searchResult)
 	}
 }

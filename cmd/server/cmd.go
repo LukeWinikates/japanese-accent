@@ -6,6 +6,7 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/metrics"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/adrg/xdg"
+	"github.com/blevesearch/bleve/v2"
 	"github.com/gin-gonic/gin"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gorm.io/driver/sqlite"
@@ -15,9 +16,9 @@ import (
 )
 
 type config struct {
-	MediaDirPath     string
-	DatabaseFile     string
-	DictionaryDBFile string
+	MediaDirPath        string
+	DatabaseFile        string
+	DictionaryIndexFile string
 }
 
 func main() {
@@ -25,11 +26,11 @@ func main() {
 	config := readConfig()
 	fmt.Println(config.DatabaseFile)
 	db := prepareDatabase(config.DatabaseFile)
-	dictionaryDB := openDictionaryDB(config.DictionaryDBFile)
+	dictionaryIndex := openDictionaryIndex(config.DictionaryIndexFile)
 
 	r := gin.Default()
 
-	api.Configure(r, config.MediaDirPath, *db, *dictionaryDB)
+	api.Configure(r, config.MediaDirPath, *db, dictionaryIndex)
 	r.POST("/analytics", metrics.HandleWebVital)
 	r.GET("/metrics", wrap(promhttp.Handler()))
 	log.Fatalln(r.Run("localhost:8080").Error())
@@ -64,13 +65,13 @@ func prepareDatabase(databaseFile string) *gorm.DB {
 	return db
 }
 
-func openDictionaryDB(path string) *gorm.DB {
-	db, err := gorm.Open(sqlite.Open(path), &gorm.Config{})
+func openDictionaryIndex(path string) bleve.Index {
+	index, err := bleve.Open(path)
 	if err != nil {
 		log.Println(err.Error())
 		log.Fatal("failed to open dictionary")
 	}
-	return db
+	return index
 }
 
 func readConfig() config {
@@ -84,14 +85,14 @@ func readConfig() config {
 		log.Fatal(err)
 	}
 
-	wnjpnFile, err := xdg.DataFile("japanese-accent/resource/wnjpn.db")
+	dictionaryIndexFile, err := xdg.DataFile("japanese-accent/resource/dictionary.bleve")
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return config{
-		MediaDirPath:     mediaPath,
-		DatabaseFile:     databaseFile,
-		DictionaryDBFile: wnjpnFile,
+		MediaDirPath:        mediaPath,
+		DatabaseFile:        databaseFile,
+		DictionaryIndexFile: dictionaryIndexFile,
 	}
 }
