@@ -5,6 +5,9 @@ server: bin/server
 bin/server:
 	go build -o bin/server cmd/server/cmd.go
 
+bin/loader: cmd/loader/cmd.go
+	go build -o bin/loader cmd/loader/cmd.go
+
 integration-test:
 	go test ./... --tags=integration
 
@@ -24,3 +27,6 @@ tmp/JMdict.gz:
 setup:
 	yarn 2&>1 > /dev/null || npm install -g yarn
 	yarn install
+
+tmp/index.bleve: bin/loader
+	JMDICT_FILE=tmp/JMdict OUTPUT_FILE=tmp/index.bleve bin/loader

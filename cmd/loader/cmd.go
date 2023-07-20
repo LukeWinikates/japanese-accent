@@ -1,14 +1,44 @@
-package loader
+package main
 
-import "github.com/blevesearch/bleve/v2"
+import (
+	"github.com/blevesearch/bleve/v2"
+	"github.com/themoeway/jmdict-go"
+	"log"
+	"os"
+)
 
 func main() {
+	jmdictPath := os.Getenv("JMDICT_FILE")
+	indexPath := os.Getenv("OUTPUT_FILE")
 	mapping := bleve.NewIndexMapping()
-	index, err := bleve.New("example.bleve", mapping)
+	index, err := bleve.New(indexPath, mapping)
 	if err != nil {
 		panic(err)
 	}
 
+	jdmictFile, err := os.Open(jmdictPath)
+
+	if err != nil {
+		panic(err)
+	}
+
+	dictionary, _, err := jmdict.LoadJmdict(jdmictFile)
+
+	count := 0
+	log.Println("got here")
+
+	for _, entry := range dictionary.Entries {
+		if count == 5 {
+			break
+		}
+		if len(entry.Readings) > 0 {
+			log.Println("nonempty")
+			count++
+		}
+		for _, reading := range entry.Readings {
+			log.Printf("%v\n", reading)
+		}
+	}
 	message := struct {
 		Id   string
 		From string
