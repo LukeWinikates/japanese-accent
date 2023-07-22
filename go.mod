@@ -7,7 +7,7 @@ require (
 	github.com/andybalholm/cascadia v1.3.1
 	github.com/eko/gocache v1.2.0
 	github.com/gin-gonic/gin v1.9.1
-	github.com/google/uuid v1.2.0
+	github.com/google/uuid v1.3.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/prometheus/client_golang v1.16.0
 	github.com/stretchr/testify v1.8.4
