@@ -98,7 +98,7 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
     setCurrentClipIndex(0);
   }, [parentId, clips]);
 
-  const listRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null!);
 
   useLayoutEffect(() => {
     listRef.current?.querySelectorAll(`li`)[currentClipIndex]?.scrollIntoView({

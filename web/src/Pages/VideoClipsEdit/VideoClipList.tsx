@@ -25,9 +25,9 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
 
   const toggleShowMuted = useCallback(() => {
     setShowMuted(!showMuted);
-    listRef.current?.resetAfterIndex(0);
+    listRef.current.resetAfterIndex(0);
   }, [showMuted]);
-  const listRef = useRef<VariableSizeList | null>(null);
+  const listRef = useRef<VariableSizeList>(null!);
 
   const clipsForTimeline = merged({
     suggestions: advice.suggestedClips,

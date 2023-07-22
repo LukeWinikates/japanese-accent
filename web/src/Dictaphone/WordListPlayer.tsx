@@ -34,7 +34,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
     document.querySelectorAll("audio").forEach(a => a.pause());
   }, []);
 
-  const listRef = useRef<HTMLDivElement>(null);
+  const listRef = useRef<HTMLDivElement>(null!);
 
   useEffect(() => {
     listRef.current?.querySelectorAll(`li`)[currentWord.index]?.scrollIntoView({

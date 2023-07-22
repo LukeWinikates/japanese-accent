@@ -36,7 +36,7 @@ export function MiniWaveform({
                                initWidth,
                                playerPositionMS,
                              }: WaveformProps) {
-  const canvas1Ref = useRef<HTMLCanvasElement>(null)
+  const canvas1Ref = useRef<HTMLCanvasElement>(null!)
   const [canvasWidth, setCanvasWidth] = useState(initWidth)
   const totalMS = (samples.length / sampleRate) * 1000
   const theme = useTheme();

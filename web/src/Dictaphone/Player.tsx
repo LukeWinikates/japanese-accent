@@ -52,8 +52,8 @@ export const Player = ({
                        }: PlayerProps) => {
 
 
-  const audioRef = useRef<HTMLAudioElement>(null);
-  const playerProgressRef = useRef<HTMLDivElement>(null);
+  const audioRef = useRef<HTMLAudioElement>(null!);
+  const playerProgressRef = useRef<HTMLDivElement>(null!);
   const [progress, setProgress] = useState(0);
   const [, {logError}] = useServerInteractionHistory();
 
