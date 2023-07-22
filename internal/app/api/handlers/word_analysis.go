@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"context"
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/japanese"
@@ -29,11 +30,11 @@ func MakeWordAnalysisCREATE(db gorm.DB, forvoClient forvo.Client) gin.HandlerFun
 		}
 
 		if existingWord != nil {
-			context.JSON(200, wordAnalysisFromDatabaseWord(existingWord, forvoClient))
+			context.JSON(200, wordAnalysisFromDatabaseWord(context, existingWord, forvoClient))
 			return
 		}
 
-		pronunciations, err := forvoClient.GetPronunciations(analysisRequest.Text)
+		pronunciations, err := forvoClient.GetPronunciations(context, analysisRequest.Text)
 		if err != nil {
 			log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
 		}
@@ -74,7 +75,7 @@ func MakeWordAnalysisGET(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {
 
 		var wordText = context.Param("word")
 
-		pronunciations, err := forvoClient.GetPronunciations(wordText)
+		pronunciations, err := forvoClient.GetPronunciations(context, wordText)
 		if err != nil {
 			log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
 		}
@@ -87,12 +88,11 @@ func MakeWordAnalysisGET(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {
 		}
 
 		if existingWord != nil {
-			response := wordAnalysisFromDatabaseWord(existingWord, forvoClient)
+			response := wordAnalysisFromDatabaseWord(context, existingWord, forvoClient)
 			response.Audio = audio
 			context.JSON(200, response)
 			return
 		}
-
 
 		pitches, err := ojad.GetPitches(wordText)
 
@@ -131,14 +131,14 @@ func makeDatabaseWordFromAnalysis(analysis types.WordAnalysis) database.Word {
 	}
 }
 
-func wordAnalysisFromDatabaseWord(word *database.Word, forvoClient forvo.Client) types.WordAnalysis {
+func wordAnalysisFromDatabaseWord(context context.Context, word *database.Word, forvoClient forvo.Client) types.WordAnalysis {
 	morae := japanese.Morae(word.Furigana)
 	pattern := ""
 	if word.AccentMora != nil {
 		pattern = japanese.PatternString(*word.AccentMora, len(morae))
 	}
 
-	pronunciations, err := forvoClient.GetPronunciations(word.DisplayText)
+	pronunciations, err := forvoClient.GetPronunciations(context, word.DisplayText)
 
 	links := make([]types.AudioLink, 0)
 

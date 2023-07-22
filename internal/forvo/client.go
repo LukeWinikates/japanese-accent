@@ -1,6 +1,7 @@
 package forvo
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -16,15 +17,13 @@ func MakeClient(key string) BaseClient {
 }
 
 type Client interface {
-	GetPronunciations(word string) ([]Pronunciation, error)
+	GetPronunciations(context context.Context, word string) ([]Pronunciation, error)
 }
 
-//goland:noinspection SpellCheckingInspection
-
-func (client BaseClient) GetPronunciations(word string) ([]Pronunciation, error) {
+func (client BaseClient) GetPronunciations(context context.Context, word string) ([]Pronunciation, error) {
 	var pronunciations PronunciationList
 	url := client.wordUrl(word)
-	resp, err := http.Get(url)
+	resp, err := http.NewRequestWithContext(context, "GET", url, nil)
 
 	if err != nil {
 		return nil, err
