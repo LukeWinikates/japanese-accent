@@ -43,6 +43,13 @@ type FilesFindResult struct {
 }
 
 func FindSubtitleFile(mediaDirectory string, videoId string) FindFileResult {
+	if !safe(videoId) {
+		return FindFileResult{
+			IsFound: false,
+			Path:    "",
+			Err:     fmt.Errorf("youtubeID %s looks invalid", videoId),
+		}
+	}
 	subtitleFilePath := mediaDirectory + "/" + videoId + ".ja.vtt"
 	return findFileByName(subtitleFilePath)
 }

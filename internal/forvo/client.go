@@ -24,7 +24,6 @@ type Client interface {
 func (client BaseClient) GetPronunciations(word string) ([]Pronunciation, error) {
 	var pronunciations PronunciationList
 	url := client.wordUrl(word)
-	fmt.Println(url)
 	resp, err := http.Get(url)
 
 	if err != nil {
