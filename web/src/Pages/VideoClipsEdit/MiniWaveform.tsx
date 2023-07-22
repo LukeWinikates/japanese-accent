@@ -7,7 +7,7 @@ const TOP_HEIGHT = 50;
 const CONTAINER_HEIGHT = TOP_HEIGHT;
 
 
-const useStyles = makeStyles()((theme) => ({
+const useStyles = makeStyles<{}>()((theme) => ({
   playHeadTop: {
     position: "absolute",
     top: 0,
@@ -41,7 +41,7 @@ export function MiniWaveform({
   const totalMS = (samples.length / sampleRate) * 1000
   const theme = useTheme();
 
-  const {classes} = useStyles();
+  const {classes} = useStyles({});
 
   const backgroundColor = theme.palette.primary.main;
   const waveformColor = theme.palette.background.default;
