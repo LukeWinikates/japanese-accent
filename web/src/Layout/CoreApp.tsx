@@ -7,6 +7,7 @@ import {AppDrawer} from "./AppDrawer";
 import {Routes} from "./Routes";
 import {HistoryDrawer} from "./HistoryDrawer";
 import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
+import {GlobalStyles} from "tss-react";
 
 const useStyles = makeStyles()((theme) => ({
   content: {
@@ -49,23 +50,40 @@ export function CoreApp() {
   }, [setHistoryDrawerOpen]);
 
   return (
-    <Container maxWidth={false} disableGutters={true}>
-      <AppBar
-        onLeftDrawerOpen={onNavigationDrawerOpen}
-        onRightDrawerOpen={onHistoryDrawerOpen}
-      />
-      <main className={classes.content}>
-        <AppDrawer
-          open={isNavigationDrawerOpen}
-          onClose={onNavigationDrawerClose}
+    <>
+      <GlobalStyles styles={
+        {
+          body: {
+            margin: "0",
+            fontFamily:
+              "-apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',\n    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',\n    sans-serif",
+            WebkitFontSmoothing: "antialiased",
+            MozOsxFontSmoothing: "grayscale"
+          },
+          code: {
+            fontFamily:
+              "source-code-pro, Menlo, Monaco, Consolas, 'Courier New',\n    monospace"
+          }
+        }
+      }/>
+      <Container maxWidth={false} disableGutters={true}>
+        <AppBar
+          onLeftDrawerOpen={onNavigationDrawerOpen}
+          onRightDrawerOpen={onHistoryDrawerOpen}
         />
-        <Routes/>
-        <HistoryDrawer
-          open={isHistoryDrawerOpen}
-          onClose={onHistoryDrawerClose}
-          history={events}
-        />
-      </main>
-    </Container>
+        <main className={classes.content}>
+          <AppDrawer
+            open={isNavigationDrawerOpen}
+            onClose={onNavigationDrawerClose}
+          />
+          <Routes/>
+          <HistoryDrawer
+            open={isHistoryDrawerOpen}
+            onClose={onHistoryDrawerClose}
+            history={events}
+          />
+        </main>
+      </Container>
+    </>
   );
 }
