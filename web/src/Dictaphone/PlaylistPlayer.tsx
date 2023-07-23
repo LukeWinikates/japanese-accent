@@ -1,4 +1,4 @@
-import {Clip, durationSeconds, Export} from "../api/types";
+import {Clip, durationSeconds} from "../api/types";
 import React, {useCallback, useEffect, useLayoutEffect, useRef, useState} from "react";
 import {
   Box,
@@ -24,8 +24,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import {PitchDetails} from "./PitchDetails";
 import {PagingTitle} from "./PagingTitle";
 import {Pager} from "./Pager";
-import {useInterval} from "../App/useInterval";
 import {useBackendAPI} from "../App/useBackendAPI";
+import {ExportButton} from "./ExportButton";
 
 type RowProps = {
   clip: Clip,
@@ -84,8 +84,6 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
   const [promptingClipDeletion, setPromptingClipDeletion] = useState<{ clip: Clip, index: number } | null>(null);
   const [currentClip, setCurrentClip] = useState<Clip | null>(clips[0]);
   const [currentClipIndex, setCurrentClipIndex] = useState<number>(0);
-  const [watchingExport, setWatchingExport] = useState(false);
-  const [exportProgress, setExportProgress] = useState<Export | null>(null);
   let clipProgress = (currentClipIndex + 1) / clips.length * 100;
   const api = useBackendAPI();
 
@@ -106,14 +104,6 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
       block: 'nearest',
     });
   }, [currentClipIndex])
-
-  useInterval(() => {
-    api.exports.GET(parentId)
-      .then((r) => {
-        setExportProgress(r.data);
-        r.data.done && setWatchingExport(false)
-      });
-  }, watchingExport ? 200 : null);
 
   const setClipByIndex = useCallback((newIndex: number) => {
     let clip = clips[newIndex];
@@ -179,10 +169,6 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
       .then(() => setPromptingClipDeletion(null));
   }, [api.videos.clips, removeClipByIndex]);
 
-  const startExport = useCallback(() => {
-    return api.exports.POST(parentId).then(() => setWatchingExport(true));
-  }, [api.exports, parentId]);
-
   const onCancelDeletePrompt = useCallback(() => setPromptingClipDeletion(null), []);
   const onDestroyClip = useCallback(() => {
     return promptingClipDeletion && destroyClip(promptingClipDeletion.clip, promptingClipDeletion.index);
@@ -213,9 +199,7 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
           <Pager currentIndex={currentClipIndex}
                  maxIndex={clips.length - 1}
                  setByIndex={setClipByIndex}/>
-          <Button onClick={startExport} disabled={watchingExport}>
-            {watchingExport ? (exportProgress?.progress || "Starting export") : "Export"}
-          </Button>
+          <ExportButton parentId={parentId}/>
         </CardContent>
       </Card>
       <Box marginY={2} height='50vh' style={{overflowY: 'scroll'}}>
