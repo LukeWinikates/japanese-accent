@@ -88,7 +88,7 @@ export function ClipEditorDialog(props: Props) {
         </IconButton>
       </DialogTitle>
       <DialogContent>
-        <ClipEditor
+        <ClipEditor<Clip>
           clip={clip}
           setClip={setClip}
           previousClipEndMS={previousClipEndMS}
