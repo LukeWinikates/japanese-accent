@@ -6,6 +6,8 @@ import {Button} from "@mui/material";
 
 export function ExportButton({parentId}: { parentId: string }) {
   const api = useBackendAPI();
+  const [watchingExport, setWatchingExport] = useState(false);
+  const [exportProgress, setExportProgress] = useState<Export | null>(null);
 
   useInterval(() => {
     api.exports.GET(parentId)
@@ -19,8 +21,6 @@ export function ExportButton({parentId}: { parentId: string }) {
     return api.exports.POST(parentId).then(() => setWatchingExport(true));
   }, [api.exports, parentId]);
 
-  const [watchingExport, setWatchingExport] = useState(false);
-  const [exportProgress, setExportProgress] = useState<Export | null>(null);
   return <Button onClick={startExport} disabled={watchingExport}>
     {watchingExport ? (exportProgress?.progress || "Starting export") : "Export"}
   </Button>;
