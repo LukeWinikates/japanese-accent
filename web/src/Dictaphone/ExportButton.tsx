@@ -2,7 +2,8 @@ import {useBackendAPI} from "../App/useBackendAPI";
 import {useInterval} from "../App/useInterval";
 import React, {useCallback, useState} from "react";
 import {Export} from "../api/types";
-import {Button} from "@mui/material";
+import {LoadingButton} from "@mui/lab";
+import SyncIcon from '@mui/icons-material/Sync';
 
 export function ExportButton({parentId}: { parentId: string }) {
   const api = useBackendAPI();
@@ -21,7 +22,16 @@ export function ExportButton({parentId}: { parentId: string }) {
     return api.exports.POST(parentId).then(() => setWatchingExport(true));
   }, [api.exports, parentId]);
 
-  return <Button onClick={startExport} disabled={watchingExport}>
-    {watchingExport ? (exportProgress?.progress || "Starting export") : "Export"}
-  </Button>;
+  return (
+    <LoadingButton
+      onClick={startExport}
+      endIcon={<SyncIcon/>}
+      loading={watchingExport}
+      loadingPosition="end"
+      color="secondary"
+      variant="contained"
+    >
+      <span>{watchingExport ? (exportProgress?.progress || "Starting export") : "Export"}</span>
+    </LoadingButton>
+  );
 }
