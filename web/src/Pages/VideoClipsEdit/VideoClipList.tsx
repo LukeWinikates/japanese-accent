@@ -1,4 +1,4 @@
-import React, {useCallback, useMemo, useRef, useState} from "react";
+import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {BasicClip, Clip, Video, VideoAdvice} from "../../api/types";
 import {Card, CardContent, FormControlLabel, List, Switch, Typography,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
@@ -9,6 +9,7 @@ import {ARE_ADVICE, ARE_MUTED} from "./clipLabels";
 import {elementForLabels, sizeForClip} from "./ListItems";
 import {useBackendAPI} from "../../App/useBackendAPI";
 import {relevantClips} from "../../App/relevantClips";
+import {useSearchParams} from "react-router-dom";
 
 type Props = {
   advice: VideoAdvice,
@@ -19,31 +20,46 @@ type Props = {
 }
 
 export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip}: Props) {
-  const [selectedClip, setSelectedClip] = useState<Clip | BasicClip | null>(null);
-  const [showMuted, setShowMuted] = useState<boolean>(false);
-  const api = useBackendAPI();
-
-  const toggleShowMuted = useCallback(() => {
-    setShowMuted(!showMuted);
-    listRef.current.resetAfterIndex(0);
-  }, [showMuted]);
-  const listRef = useRef<VariableSizeList>(null!);
+  let [searchParams, setSearchParams] = useSearchParams();
+  const selected = searchParams.get("selected");
 
   const clipsForTimeline = merged({
     suggestions: advice.suggestedClips,
     clips: video.clips,
   });
 
+  let selectedClipIndex = clipsForTimeline.findIndex(s => s.uuid === selected)
+  if (selectedClipIndex === -1) {
+    selectedClipIndex = 0
+  }
+
+  const [selectedClip, setSelectedClip] = useState<BasicClip | null>(clipsForTimeline[selectedClipIndex]);
+
+  const [showMuted, setShowMuted] = useState<boolean>(false);
+  const api = useBackendAPI();
+
+  const listRef = useRef<VariableSizeList>(null!);
+
+  const toggleShowMuted = useCallback(() => {
+    setShowMuted(!showMuted);
+    listRef.current.resetAfterIndex(0);
+  }, [showMuted]);
+
   const sizeFor = useCallback((index: number) => {
-    const d = clipsForTimeline[index];
-    return sizeForClip(d, showMuted);
+    const clip = clipsForTimeline[index];
+    return sizeForClip(clip, showMuted);
   }, [showMuted, clipsForTimeline]);
 
-  const selectedClipIndex = advice.suggestedClips.findIndex(s => s.uuid === selectedClip?.uuid)
-
   const selectedClipByIndex = useCallback((index: number) => {
-    setSelectedClip(advice.suggestedClips[index]);
-  }, [advice.suggestedClips, setSelectedClip]);
+    let clip = clipsForTimeline[index];
+    setSelectedClip(clip);
+  }, [clipsForTimeline, setSelectedClip]);
+
+  useEffect(() => {
+    selectedClip ?
+      setSearchParams({selected: selectedClip.uuid}) :
+      setSearchParams({});
+  }, [selectedClip, setSearchParams])
 
   const onDeleteClip = useCallback((clip: Clip | BasicClip) => {
     if (clip.labels.some(ARE_ADVICE)) {
