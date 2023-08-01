@@ -7,6 +7,7 @@ import VideosIndexPage from "../Pages/VideosIndex/VideosIndexPage";
 import {VideoClipsEditPage} from "../Pages/VideoClipsEdit/VideoClipsEditPage";
 import WordListPage from "../Pages/WordList/WordListPage";
 import WordListsIndexPage from "../Pages/WordList/WordListsIndexPage";
+import {LessonEditorPage} from "../Pages/Lessons/LessonEditorPage";
 
 export function Routes() {
   return <RRoutes>
@@ -17,5 +18,6 @@ export function Routes() {
     <Route path="/playlists/:id" element={<PlaylistPage/>}/>
     <Route path="/wordlists/:id" element={<WordListPage/>}/>
     <Route path="/wordlists" element={<WordListsIndexPage/>}/>
+    <Route path="/lessons" element={<LessonEditorPage/>}/>
   </RRoutes>;
 }
