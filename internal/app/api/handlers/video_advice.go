@@ -1,9 +1,6 @@
 package handlers
 
 import (
-	"crypto/sha256"
-	"encoding/base64"
-	"fmt"
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
@@ -74,7 +71,7 @@ func suggestedClips(cues []vtt.Cue, videoUUID string, mutings []string) []types.
 	clips := make([]types.SuggestedClip, 0)
 	for _, t := range cues {
 		labels := make([]string, 0)
-		clipUUID := sha(t)
+		clipUUID := vtt.Sha(t)
 		if muteMap[clipUUID] {
 			labels = append(labels, "MUTED")
 		} else {
@@ -90,10 +87,4 @@ func suggestedClips(cues []vtt.Cue, videoUUID string, mutings []string) []types.
 		})
 	}
 	return clips
-}
-
-func sha(t vtt.Cue) string {
-	shaHasher := sha256.New()
-	shaHasher.Write([]byte(fmt.Sprintf("%v %v %s", t.StartMS, t.EndMS, t.Text)))
-	return base64.URLEncoding.EncodeToString(shaHasher.Sum(nil))
 }

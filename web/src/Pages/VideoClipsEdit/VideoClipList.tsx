@@ -1,6 +1,6 @@
 import React, {useCallback, useEffect, useMemo, useRef, useState} from "react";
 import {BasicClip, Clip, Video, VideoAdvice} from "../../api/types";
-import {Card, CardContent, FormControlLabel, List, Switch, Typography,} from "@mui/material";
+import {Button, Card, CardContent, FormControlLabel, List, Switch, Typography,} from "@mui/material";
 import {Pager} from "../../Dictaphone/Pager";
 import {merged} from "../YouTube/SuggestionMerger";
 import {VariableSizeList} from 'react-window';
@@ -17,9 +17,10 @@ type Props = {
   videoUuid: string,
   muteSuggestion: (clip: BasicClip) => void,
   removeClip: (clip: BasicClip) => void,
+  setAdvice: (advice: VideoAdvice) => void,
 }
 
-export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip}: Props) {
+export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip, setAdvice}: Props) {
   let [searchParams, setSearchParams] = useSearchParams();
   const selected = searchParams.get("selected");
 
@@ -69,6 +70,20 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
     return api.videos.clips.DELETE(video.videoId, clip.uuid)
       .then(() => removeClip(clip));
   }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
+
+  const onMuteAll = useCallback(() => {
+    return api.videos.advice.suggestedClips.index.DELETE(videoUuid).then(()=> {
+      setAdvice({
+        ...advice,
+        suggestedClips: advice.suggestedClips.map(c => {
+          return {
+            ...c,
+            labels: [...c.labels, "MUTED"]
+          }
+        })
+      })
+    });
+  }, [videoUuid, api.videos.advice.suggestedClips.index, advice, setAdvice]);
 
   const textSuggestionsForClip = useMemo(() => {
     return selectedClip ? relevantClips(selectedClip.startMS, advice.textSnippets).map(c => c.content) : [];
@@ -124,6 +139,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
             }
             label="Show Muted Clips"
           />
+          <Button onClick={onMuteAll}>Mute All</Button>
           <List>
             <VariableSizeList
               ref={listRef}

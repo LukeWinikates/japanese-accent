@@ -5,6 +5,7 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
 	"github.com/LukeWinikates/japanese-accent/internal/app/slices"
+	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
 	"log"
@@ -36,7 +37,7 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 
 		found := false
 		for _, seg := range vttAdvice {
-			if clipSHA == sha(seg) {
+			if clipSHA == vtt.Sha(seg) {
 				found = true
 				break
 			}
@@ -53,6 +54,36 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 			return
 		}
 		err = queries.MuteAdvice(db, video, clipSHA)
+		log.Printf("%v\n", err)
+		if err != nil {
+			context.Status(http.StatusInternalServerError)
+			log.Printf(err.Error())
+			return
+		}
+
+		context.Status(http.StatusNoContent)
+	}
+}
+
+func MakeSuggestedClipsDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
+	return func(context *gin.Context) {
+		var video *database.Video
+
+		youtubeID := context.Param("videoUuid")
+		if err := db.Where("youtube_id = ?", youtubeID).First(&video).Error; err != nil {
+			context.Status(http.StatusInternalServerError)
+			log.Printf("Error: %s\n", err.Error())
+			return
+		}
+
+		vttAdvice, err := media.LoadVTTCues(mediaDirectory, youtubeID)
+
+		if err != nil {
+			context.Status(http.StatusInternalServerError)
+			log.Printf(err.Error())
+			return
+		}
+		err = queries.MuteAllAdvice(db, video, vttAdvice)
 		log.Printf("%v\n", err)
 		if err != nil {
 			context.Status(http.StatusInternalServerError)

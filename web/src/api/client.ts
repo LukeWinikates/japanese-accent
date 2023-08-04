@@ -88,6 +88,9 @@ interface WordAnalysisClient {
 interface AdviceClient {
   GET: (videoId: string) => Promise<AxiosResponse<VideoAdvice, any>>
   suggestedClips: {
+    index: {
+      DELETE: (videoId: string) => Promise<AxiosResponse<void, any>>
+    }
     DELETE: (videoId: string, clipUUID: string) => Promise<AxiosResponse<void, any>>
   }
 }
@@ -98,7 +101,7 @@ interface PlaylistClient {
 }
 
 interface ActivityClient {
-  POST:(data: ActivityPostBody) => Promise<AxiosResponse<void, any>>
+  POST: (data: ActivityPostBody) => Promise<AxiosResponse<void, any>>
 }
 
 interface BoostsClient {
@@ -130,7 +133,7 @@ function activityClient(axios: AxiosInstance): ActivityClient {
   };
 }
 
-function boostsClient(axios: AxiosInstance) : BoostsClient {
+function boostsClient(axios: AxiosInstance): BoostsClient {
   return {
     POST: data => {
       return axios.post("/api/boosts", {
@@ -206,14 +209,19 @@ function adviceClient(axios: AxiosInstance): AdviceClient {
     suggestedClips: {
       DELETE: (videoId: string, clipUUID: string) => {
         return axios.delete('/api/videos/' + videoId + "/advice/clips/" + clipUUID);
+      },
+      index: {
+        DELETE: (videoId: string) => {
+          return axios.delete('/api/videos/' + videoId + "/advice/clips");
+        }
       }
     }
   }
 }
 
-function wordLinksClient(axios: AxiosInstance) : WordLinksClient {
+function wordLinksClient(axios: AxiosInstance): WordLinksClient {
   return {
-    POST: (data: WordLinksPostBody) =>  {
+    POST: (data: WordLinksPostBody) => {
       return axios.post('/api/video-word-links', data)
     }
   };
@@ -290,7 +298,7 @@ function clipsClient(axios: AxiosInstance): ClipsClient {
       }
     },
     DELETE: (videoId: string, clipId: string) => {
-        return axios.delete(`/api/videos/${videoId}/clips/${clipId}`)
+      return axios.delete(`/api/videos/${videoId}/clips/${clipId}`)
     },
     POST: (videoId: string, data: ClipsPostBody) => {
       return axios.post<Clip>(`/api/videos/${videoId}/clips/`, data)

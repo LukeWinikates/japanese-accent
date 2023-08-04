@@ -72,6 +72,7 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
                      advice={value}
                      video={video}
                      muteSuggestion={muteSuggestion}
+                     setAdvice={setValue}
                      removeClip={removeClip}
       />
     </>
