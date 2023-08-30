@@ -15,7 +15,7 @@
     "@fontsource/roboto": "^5.0.8",
     "@mui/icons-material": "^5.14.7",
     "@mui/lab": "^5.0.0-alpha.141",
-    "@mui/material": "^5.14.6",
+    "@mui/material": "^5.14.7",
     "@pmmmwh/react-refresh-webpack-plugin": "^0.5.11",
     "@svgr/webpack": "^8.1.0",
     "@testing-library/dom": "^9.3.0",
