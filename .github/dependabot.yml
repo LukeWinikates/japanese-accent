@@ -7,12 +7,23 @@ version: 2
 updates:
   - package-ecosystem: "npm" # See documentation for possible values
     directory: "/" # Location of package manifests
+    groups:
+      material:
+        patterns:
+          - "@mui*"
+      jest:
+        patterns:
+          - "*jest*"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 10
     versioning-strategy: "increase"
   - package-ecosystem: "gomod" # See documentation for possible values
     directory: "/" # Location of package manifests
+    groups:
+      gorm:
+        patterns:
+        - "gorm.io*"
     schedule:
-      interval: "daily"
+      interval: "weekly"
     open-pull-requests-limit: 10
