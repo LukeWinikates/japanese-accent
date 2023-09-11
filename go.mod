@@ -5,8 +5,8 @@ go 1.18
 require (
 	github.com/adrg/xdg v0.4.0
 	github.com/andybalholm/cascadia v1.3.2
-	github.com/eko/gocache/lib/v4 v4.1.4
-	github.com/eko/gocache/store/go_cache/v4 v4.2.0
+	github.com/eko/gocache/lib/v4 v4.1.5
+	github.com/eko/gocache/store/go_cache/v4 v4.2.1
 	github.com/gin-gonic/gin v1.9.1
 	github.com/google/uuid v1.3.1
 	github.com/patrickmn/go-cache v2.1.0+incompatible
