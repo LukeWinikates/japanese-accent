@@ -14,6 +14,9 @@ updates:
       jest:
         patterns:
           - "*jest*"
+      types:
+        patterns:
+          - "@types"
     schedule:
       interval: "weekly"
     open-pull-requests-limit: 10
