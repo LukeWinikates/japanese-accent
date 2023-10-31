@@ -141,6 +141,7 @@
     "moduleNameMapper": {
       "^react-native$": "react-native-web",
       "node-fetch": "<rootDir>/config/jest/fetch",
+      "react-markdown": "<rootDir>/config/jest/fetch",
       "^.+\\.module\\.(css|sass|scss)$": "identity-obj-proxy"
     },
     "moduleFileExtensions": [
