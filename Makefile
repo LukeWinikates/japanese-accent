@@ -12,7 +12,7 @@ test:
 	go test -v ./... -short
 
 watch:
-	rm bin/server
+	-rm bin/server
 	~/go/bin/air
 
 tmp/JMdict: tmp/JMdict.gz
