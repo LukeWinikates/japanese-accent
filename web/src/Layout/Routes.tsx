@@ -8,6 +8,7 @@ import {VideoClipsEditPage} from "../Pages/VideoClipsEdit/VideoClipsEditPage";
 import WordListPage from "../Pages/WordList/WordListPage";
 import WordListsIndexPage from "../Pages/WordList/WordListsIndexPage";
 import {LessonEditorPage} from "../Pages/Lessons/LessonEditorPage";
+import {PitchContourPage} from "../Pages/PitchContour/Page";
 
 export function Routes() {
   return <RRoutes>
@@ -19,5 +20,6 @@ export function Routes() {
     <Route path="/wordlists/:id" element={<WordListPage/>}/>
     <Route path="/wordlists" element={<WordListsIndexPage/>}/>
     <Route path="/lessons" element={<LessonEditorPage/>}/>
+    <Route path="test" element={<PitchContourPage/>}/>
   </RRoutes>;
 }
