@@ -26,14 +26,10 @@ const {
   prepareProxy,
   prepareUrls,
 } = require('react-dev-utils/WebpackDevServerUtils');
-const semver = require('semver');
 const paths = require('../../config/paths.cjs');
 const configFactory = require('../../config/webpack.config.cjs');
 const createDevServerConfig = require('../../config/webpackDevServer.config.cjs');
-const getClientEnvironment = require('../../config/env.cjs');
-const react = require(require.resolve('react', { paths: [paths.appPath] }));
 
-const env = getClientEnvironment(paths.publicUrlOrPath.slice(0, -1));
 const useYarn = fs.existsSync(paths.yarnLockFile);
 const isInteractive = process.stdout.isTTY;
 
@@ -54,13 +50,6 @@ if (process.env.HOST) {
       )}`
     )
   );
-  console.log(
-    `If this was unintentional, check that you haven't mistakenly set it in your shell.`
-  );
-  console.log(
-    `Learn more here: ${chalk.yellow('https://cra.link/advanced-config')}`
-  );
-  console.log();
 }
 
 // We require that you explicitly set browsers and do not fall back to
@@ -112,18 +101,9 @@ checkBrowsers(paths.appPath, isInteractive)
       port,
     };
     const devServer = new WebpackDevServer(serverConfig, compiler);
-    // Launch WebpackDevServer.
     devServer.startCallback(() => {
       if (isInteractive) {
         clearConsole();
-      }
-
-      if (env.raw.FAST_REFRESH && semver.lt(react.version, '16.10.0')) {
-        console.log(
-          chalk.yellow(
-            `Fast Refresh requires React 16.10 or higher. You are using React ${react.version}.`
-          )
-        );
       }
 
       console.log(chalk.cyan('Starting the development server...\n'));
@@ -131,7 +111,7 @@ checkBrowsers(paths.appPath, isInteractive)
 
     ['SIGINT', 'SIGTERM'].forEach(function (sig) {
       process.on(sig, function () {
-        devServer.close();
+        devServer.stop();
         process.exit();
       });
     });
@@ -139,7 +119,7 @@ checkBrowsers(paths.appPath, isInteractive)
     if (process.env.CI !== 'true') {
       // Gracefully exit when stdin ends
       process.stdin.on('end', function () {
-        devServer.close();
+        devServer.stop();
         process.exit();
       });
     }
