@@ -70,7 +70,6 @@
     "react-window": "^1.8.10",
     "resolve": "^1.22.8",
     "resolve-url-loader": "^5.0.0",
-    "sass-loader": "^14.1.1",
     "source-map-loader": "^5.0.0",
     "style-loader": "^3.3.4",
     "terser-webpack-plugin": "^5.3.10",
