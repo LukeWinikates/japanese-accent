@@ -14,9 +14,13 @@ updates:
       jest:
         patterns:
           - "*jest*"
+      typescript:
+        patterns:
+          - "@typescript/*"
+          - "*typescript*"
       types:
         patterns:
-          - "@types*"
+          - "@types/*"
       babel:
         patterns:
           - "@babel*"
