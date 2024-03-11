@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/media-has-caption */
+
 import {Grid, IconButton, LinearProgress} from "@mui/material";
 import {styled} from '@mui/material/styles';
 import React, {useCallback, useEffect, useRef, useState} from "react";

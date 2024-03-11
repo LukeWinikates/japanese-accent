@@ -54,7 +54,6 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
           Enter the YouTube URL here. You will be redirected to a page with the next steps.
         </DialogContentText>
         <TextField
-          autoFocus
           margin="dense"
           id="url"
           label="YouTube URL or ID"
