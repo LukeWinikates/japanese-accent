@@ -1,6 +1,5 @@
 import {Button, Grid, Typography} from "@mui/material";
-import {styled} from '@mui/material/styles';
-import {DummyPlayer, Player} from "./Player";
+import {Player, PlayerSkeleton} from "./Player";
 import {AudioRecording, Recorder} from "./Recorder";
 import React, {useCallback, useEffect, useState} from "react";
 import {ActivityPostBody, Audio, BoostPostBody, Clip} from "../api/types";
@@ -8,16 +7,12 @@ import RecordVoiceOverIcon from '@mui/icons-material/RecordVoiceOver';
 import AddIcon from '@mui/icons-material/Add';
 import audioURL from "../App/audioURL";
 import {useBackendAPI} from "../App/useBackendAPI";
+import {makeStyles} from "tss-react/mui";
 
-const PREFIX = 'Dictaphone';
 
-const classes = {
-  playerControls: `${PREFIX}-playerControls`
-};
-
-const StyledGrid = styled(Grid)(() => ({
-  [`& .${classes.playerControls}`]: {
-    textAlign: 'center',
+const useStyles = makeStyles<{}>()(() => ({
+  playerControls: {
+    textAlign: 'center'
   }
 }));
 
@@ -74,6 +69,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const api = useBackendAPI();
 
+  const {classes} = useStyles({});
 
   useEffect(() => {
     setCurrentRecording(null);
@@ -141,7 +137,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   }, [boostPostBody, api.boosts]);
 
   return (
-    <StyledGrid container item spacing={1}>
+    <Grid container item spacing={1}>
       <Grid container item xs={6} justifyContent="center" alignItems="center" className={classes.playerControls}>
         <Grid item xs={1}>
           <Typography variant="body1">
@@ -166,7 +162,7 @@ export function Dictaphone({item}: DictaphoneProps) {
         <Grid item xs={11}>
           {
             currentRecording === null ?
-              <DummyPlayer/> :
+              <PlayerSkeleton/> :
               <Player src={currentRecording.blobUrl}
                       playing={recordingIsPlaying}
                       onPlayerStateChanged={setRecordingIsPlaying}
@@ -196,6 +192,6 @@ export function Dictaphone({item}: DictaphoneProps) {
             Practice
           </Button>
         </Grid> </Grid>
-    </StyledGrid>
+    </Grid>
   );
 }

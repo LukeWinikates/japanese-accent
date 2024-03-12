@@ -1,6 +1,6 @@
 import React from 'react';
 import '@fontsource/roboto';
-import {StyledEngineProvider, ThemeProvider} from '@mui/material/styles';
+import {ThemeProvider} from '@mui/material/styles';
 import {BrowserRouter as Router} from "react-router-dom";
 import {CoreApp, theme} from "./Layout/CoreApp";
 import {EventHistoryProvider} from "./App/useServerInteractionHistory";
@@ -12,11 +12,9 @@ function App() {
     <EventHistoryProvider>
       <BackendAPIProvider>
         <Router>
-          <StyledEngineProvider injectFirst>
-            <ThemeProvider theme={theme}>
-              <CoreApp/>
-            </ThemeProvider>
-          </StyledEngineProvider>
+          <ThemeProvider theme={theme}>
+            <CoreApp/>
+          </ThemeProvider>
         </Router>
       </BackendAPIProvider>
     </EventHistoryProvider>

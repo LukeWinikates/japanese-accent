@@ -1,34 +1,24 @@
 /* eslint-disable jsx-a11y/media-has-caption */
 
 import {Grid, IconButton, LinearProgress} from "@mui/material";
-import {styled} from '@mui/material/styles';
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import PauseIcon from '@mui/icons-material/Pause';
 import ReplayIcon from '@mui/icons-material/Replay';
 import {secondsToHumanReadable} from "../App/time";
 import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
+import {makeStyles} from "tss-react/mui";
 
-const PREFIX = 'Player';
-
-const classes = {
-  playerControls: `${PREFIX}-playerControls`,
-  dummyProgress: `${PREFIX}-dummyProgress`
-};
-
-const StyledGrid = styled(Grid)((
-  {
-    theme
+const useStyles = makeStyles<{}>()((theme) => {
+  return {
+    playerControls: {
+      textAlign: 'center',
+    },
+    skeletonProgress: {
+      backgroundColor: theme.palette.action.disabled,
+    }
   }
-) => ({
-  [`&.${classes.playerControls}`]: {
-    textAlign: 'center',
-  },
-
-  [`& .${classes.dummyProgress}`]: {
-    backgroundColor: theme.palette.action.disabled,
-  }
-}));
+});
 
 export declare type PlayerProps = {
   src: string
@@ -58,6 +48,8 @@ export const Player = ({
   const playerProgressRef = useRef<HTMLDivElement>(null!);
   const [progress, setProgress] = useState(0);
   const [, {logError}] = useServerInteractionHistory();
+
+  const {classes} = useStyles({});
 
   useEffect(() => {
     if (playing) {
@@ -185,7 +177,7 @@ export const Player = ({
   }, [calculatePlayerProgress, checkIsComplete, onPlaybackEnded, onPlayerStateChanged, onPositionChange, rewindStart]);
 
   return (
-    <StyledGrid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
+    <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <audio ref={audioRef} src={src} autoPlay={false} onEnded={ended} onTimeUpdate={timeUpdate}/>
       <Grid item xs={3}>
         <IconButton onClick={rewindStart} size="large">
@@ -202,13 +194,12 @@ export const Player = ({
         <LinearProgress ref={playerProgressRef} onClick={handleProgressClick} variant="determinate"
                         value={progress}/>
       </Grid>
-    </StyledGrid>
+    </Grid>
   );
 };
 
-export const DummyPlayer = () => {
-
-
+export const PlayerSkeleton = () => {
+  const {classes} = useStyles({});
   return (
     <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <Grid item xs={3}>
@@ -224,7 +215,7 @@ export const DummyPlayer = () => {
       </Grid>
       <Grid item xs={6}>
         <LinearProgress variant="determinate"
-                        className={classes.dummyProgress}
+                        className={classes.skeletonProgress}
                         value={0}/>
       </Grid>
     </Grid>
