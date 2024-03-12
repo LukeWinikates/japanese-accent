@@ -1,6 +1,7 @@
 import {Word} from "../api/types";
 import {useTheme} from "@mui/material";
 import React from "react";
+import {makeStyles} from "tss-react/mui";
 
 function moraAccentHigh(word: Word, index: number) {
   if (!!word.accentMora) {
@@ -18,11 +19,20 @@ function moraAccentHigh(word: Word, index: number) {
 const moraWidth = 40;
 const high = 10;
 const low = 30;
+const height = 80;
+
+const useStyles = makeStyles<{}>()(() => ({
+  moraSVG: {
+    display: 'inline-block',
+    height: height
+  }
+}));
 
 export function WordMoraSVG({word}: {
   word: Word
 }) {
   const theme = useTheme();
+  const {classes} = useStyles({});
 
   const points = word.morae.map((m, i) => {
     const x = 20 + (i * moraWidth);
@@ -36,7 +46,7 @@ export function WordMoraSVG({word}: {
 
 
   return (
-    <svg style={{display: "inline-block", width: 8 * moraWidth, height: 80}}>
+    <svg className={classes.moraSVG} style={{width: 8 * moraWidth}}>
 
       {
         word.accentMora !== null ?
@@ -68,6 +78,8 @@ export function WordMoraSVG({word}: {
 
 export function RawMoraSVG({morae, pattern}: { morae: string[], pattern: string }) {
   const theme = useTheme();
+  const {classes} = useStyles({});
+
   const points = pattern.split("").map((m, i) => {
     const x = 20 + (i * moraWidth);
     const y = m === 'h' || m === 'k' ? high : low;
@@ -77,7 +89,7 @@ export function RawMoraSVG({morae, pattern}: { morae: string[], pattern: string 
   const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
 
   return (
-    <svg style={{display: "inline-block", width: morae.length * moraWidth, height: 80}}>
+    <svg className={classes.moraSVG} style={{width: morae.length * moraWidth}}>
 
       {
         points.map((p, i) => {
@@ -112,11 +124,11 @@ export function SkeletonMoraSVG() {
     const y = low;
     return {x, y}
   });
-
+  const {classes} = useStyles({});
   const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
 
   return (
-    <svg style={{display: "inline-block", width: 5 * moraWidth, height: 80}}>
+    <svg className={classes.moraSVG} style={{width: 5 * moraWidth}}>
 
       {
         points.map((p, i) => {

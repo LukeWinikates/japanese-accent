@@ -92,7 +92,8 @@
     "extends": [
       "react-app",
       "react-app/jest",
-      "plugin:jsx-a11y/recommended"
+      "plugin:jsx-a11y/recommended",
+      "plugin:sonarjs/recommended"
     ]
   },
   "browserslist": {
@@ -169,5 +170,8 @@
   "type": "module",
   "engines": {
     "node": ">=16"
+  },
+  "devDependencies": {
+    "eslint-plugin-sonarjs": "^0.24.0"
   }
 }

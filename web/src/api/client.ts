@@ -23,6 +23,20 @@ import {
   WordList
 } from "./types";
 
+const urls = {
+  video: {
+    index: "/api/videos",
+    get: (videoUUID: string) => `/api/videos/${videoUUID}`,
+    advice: {
+      get: (videoUUID: string) => `/api/videos/${videoUUID}/advice`,
+      clips: {
+        index: (videoUUID: string) => `/api/videos/${videoUUID}/advice/clips`,
+        get: (videoUUID: string, clipUUID: string) => `/api/videos/${videoUUID}/advice/clips/${clipUUID}`
+      }
+    }
+  }
+}
+
 interface WaveformClient {
   GET: (videoUuid: string, sampleRate: number) =>
     Promise<AxiosResponse<Waveform, any>>
@@ -204,15 +218,15 @@ function exportsClient(axios: AxiosInstance): ExportsClient {
 function adviceClient(axios: AxiosInstance): AdviceClient {
   return {
     GET: (videoId: string) => {
-      return axios.get<VideoAdvice>('/api/videos/' + videoId + '/advice');
+      return axios.get<VideoAdvice>(urls.video.advice.get(videoId));
     },
     suggestedClips: {
       DELETE: (videoId: string, clipUUID: string) => {
-        return axios.delete('/api/videos/' + videoId + "/advice/clips/" + clipUUID);
+        return axios.delete(urls.video.advice.clips.get(videoId, clipUUID));
       },
       index: {
         DELETE: (videoId: string) => {
-          return axios.delete('/api/videos/' + videoId + "/advice/clips");
+          return axios.delete(urls.video.advice.clips.index(videoId));
         }
       }
     }
@@ -231,14 +245,14 @@ function videosClient(axios: AxiosInstance): VideosClient {
   return {
     index: {
       GET: () => {
-        return axios.get<VideoSummary[]>("/api/videos");
+        return axios.get<VideoSummary[]>(urls.video.index);
       }
     },
     GET: (videoId: string) => {
-      return axios.get<Video>('/api/videos/' + videoId);
+      return axios.get<Video>(urls.video.get(videoId));
     },
     POST: (body) => {
-      return axios.post("/api/videos", body);
+      return axios.post(urls.video.index, body);
     },
     advice: adviceClient(axios),
     clips: clipsClient(axios),
