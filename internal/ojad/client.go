@@ -37,6 +37,10 @@ func GetPitches(phrase string) ([]Pitch, error) {
 	req, err := http.NewRequest("POST",
 		"http://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index",
 		strings.NewReader(values.Encode()))
+	if err != nil {
+		log.Println(err.Error())
+		return nil, err
+	}
 
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 

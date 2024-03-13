@@ -7,5 +7,5 @@ linters:
     - gofmt
     - gci
 #    - revive
-#    - ineffassign
+    - ineffassign
 #    - staticcheck
