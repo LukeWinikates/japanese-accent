@@ -80,8 +80,8 @@ func MakeExportCREATE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 
 func MakeExportGET() gin.HandlerFunc {
 	return func(ginContext *gin.Context) {
-		videoId := ginContext.Param("videoUUID")
-		tracker := inProcess[videoId]
+		videoID := ginContext.Param("videoUUID")
+		tracker := inProcess[videoID]
 
 		if tracker == nil {
 			ginContext.Status(404)
@@ -89,7 +89,7 @@ func MakeExportGET() gin.HandlerFunc {
 		}
 
 		ginContext.JSON(200, types.ExportGetResponse{
-			ID:       videoId,
+			ID:       videoID,
 			Progress: tracker.progress.Describe(),
 			Done:     tracker.progress.Ended,
 		})

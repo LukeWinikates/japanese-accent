@@ -7,9 +7,9 @@ import (
 	"os"
 )
 
-func FindAudioFile(mediaDirectory string, videoId string) FindFileResult {
+func FindAudioFile(mediaDirectory string, videoID string) FindFileResult {
 	mediaDir := os.DirFS(mediaDirectory)
-	files, err := fs.Glob(mediaDir, videoId+"*.m*")
+	files, err := fs.Glob(mediaDir, videoID+"*.m*")
 	if err != nil {
 		return FindFileResult{
 			IsFound: false,
@@ -42,15 +42,15 @@ type FilesFindResult struct {
 	HasMediaFile    bool
 }
 
-func FindSubtitleFile(mediaDirectory string, videoId string) FindFileResult {
-	if !safe(videoId) {
+func FindSubtitleFile(mediaDirectory string, videoID string) FindFileResult {
+	if !safe(videoID) {
 		return FindFileResult{
 			IsFound: false,
 			Path:    "",
-			Err:     fmt.Errorf("youtubeID %s looks invalid", videoId),
+			Err:     fmt.Errorf("youtubeID %s looks invalid", videoID),
 		}
 	}
-	subtitleFilePath := mediaDirectory + "/" + videoId + ".ja.vtt"
+	subtitleFilePath := mediaDirectory + "/" + videoID + ".ja.vtt"
 	return findFileByName(subtitleFilePath)
 }
 
@@ -70,23 +70,23 @@ func findFileByName(filePath string) FindFileResult {
 	}
 }
 
-func FindFiles(mediaDirectory string, videoId string) FilesFindResult {
+func FindFiles(mediaDirectory string, videoID string) FilesFindResult {
 	return FilesFindResult{
-		HasSubtitleFile: FindSubtitleFile(mediaDirectory, videoId).IsFound,
-		HasMediaFile:    FindAudioFile(mediaDirectory, videoId).IsFound,
+		HasSubtitleFile: FindSubtitleFile(mediaDirectory, videoID).IsFound,
+		HasMediaFile:    FindAudioFile(mediaDirectory, videoID).IsFound,
 	}
 }
 
-func FindWaveformFile(mediaDirectory string, videoId string) FindFileResult {
-	return findFileByName(waveformFilePath(mediaDirectory, videoId))
+func FindWaveformFile(mediaDirectory string, videoID string) FindFileResult {
+	return findFileByName(waveformFilePath(mediaDirectory, videoID))
 }
 
-func waveformFilePath(mediaDirectory string, videoId string) string {
-	return mediaDirectory + "/" + videoId + "-waveform.json"
+func waveformFilePath(mediaDirectory string, videoID string) string {
+	return mediaDirectory + "/" + videoID + "-waveform.json"
 }
 
-func WriteWaveformFile(mediaDirectory string, videoId string, data []int16, sampleRate int) error {
-	open, err := os.Create(waveformFilePath(mediaDirectory, videoId))
+func WriteWaveformFile(mediaDirectory string, videoID string, data []int16, sampleRate int) error {
+	open, err := os.Create(waveformFilePath(mediaDirectory, videoID))
 	fmt.Println("writing file")
 	if err != nil {
 		return err

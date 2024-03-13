@@ -43,11 +43,11 @@ func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		context.JSON(201, makeApiPitch(dbPitch))
+		context.JSON(201, makeAPIPitch(dbPitch))
 	}
 }
 
-func makeApiPitch(pitch database.ClipPitch) types.ClipPitch {
+func makeAPIPitch(pitch database.ClipPitch) types.ClipPitch {
 	return types.ClipPitch{
 		Pattern: pitch.Pattern,
 		Morae:   pitch.Morae,

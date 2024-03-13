@@ -9,8 +9,8 @@ import (
 
 func MakeAudioGET(mediaDirectory string) gin.HandlerFunc {
 	return func(context *gin.Context) {
-		videoId := context.Param("id")
-		findResult := media.FindAudioFile(mediaDirectory, videoId)
+		videoID := context.Param("id")
+		findResult := media.FindAudioFile(mediaDirectory, videoID)
 		if findResult.Err != nil {
 			log.Println(findResult.Err.Error())
 			context.Status(500)

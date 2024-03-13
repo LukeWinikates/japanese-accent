@@ -22,7 +22,7 @@ type Client interface {
 
 func (client BaseClient) GetPronunciations(context context.Context, word string) ([]Pronunciation, error) {
 	var pronunciations PronunciationList
-	url := client.wordUrl(word)
+	url := client.wordURL(word)
 	resp, err := http.NewRequestWithContext(context, "GET", url, nil)
 
 	if err != nil {
@@ -41,7 +41,7 @@ func (client BaseClient) GetPronunciations(context context.Context, word string)
 	return pronunciations.Items, err
 }
 
-func (client BaseClient) wordUrl(word string) string {
+func (client BaseClient) wordURL(word string) string {
 	return fmt.Sprintf(urlFormat,
 		url2.QueryEscape(word),
 		client.key)

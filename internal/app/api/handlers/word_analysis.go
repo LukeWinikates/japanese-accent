@@ -40,7 +40,7 @@ func MakeWordAnalysisCREATE(db gorm.DB, forvoClient forvo.Client) gin.HandlerFun
 			log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
 		}
 
-		audio := makeApiForvoLinks(pronunciations)
+		audio := makeAPIForvoLinks(pronunciations)
 
 		pitches, err := ojad.GetPitches(analysisRequest.Text)
 
@@ -81,7 +81,7 @@ func MakeWordAnalysisGET(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {
 			log.Printf("unable to get forvo pronunciations: %s \n", err.Error())
 		}
 
-		audio := makeApiForvoLinks(pronunciations)
+		audio := makeAPIForvoLinks(pronunciations)
 
 		var existingWord *database.Word
 		if err := db.Where("display_text", wordText).Where(&existingWord).Error; err != nil {
@@ -144,7 +144,7 @@ func wordAnalysisFromDatabaseWord(context context.Context, word *database.Word, 
 	links := make([]types.AudioLink, 0)
 
 	if err == nil {
-		links = makeApiForvoLinks(pronunciations)
+		links = makeAPIForvoLinks(pronunciations)
 	}
 
 	return types.WordAnalysis{
@@ -156,21 +156,21 @@ func wordAnalysisFromDatabaseWord(context context.Context, word *database.Word, 
 	}
 }
 
-func makeApiForvoLinks(pronunciations []forvo.Pronunciation) []types.AudioLink {
+func makeAPIForvoLinks(pronunciations []forvo.Pronunciation) []types.AudioLink {
 	audio := make([]types.AudioLink, 0)
 
 	for _, p := range pronunciations {
-		audio = append(audio, makeApiForvoLink(p))
+		audio = append(audio, makeAPIForvoLink(p))
 	}
 
 	return audio
 }
 
-func makeApiForvoLink(p forvo.Pronunciation) types.AudioLink {
+func makeAPIForvoLink(p forvo.Pronunciation) types.AudioLink {
 	return types.AudioLink{
 		URL:                  p.PathMP3,
 		SpeakerUsername:      p.Username,
 		SpeakerGender:        p.Sex,
-		ForvoPronunciationID: strconv.Itoa(p.Id),
+		ForvoPronunciationID: strconv.Itoa(p.ID),
 	}
 }

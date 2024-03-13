@@ -19,8 +19,8 @@ func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {
 
 	forvoClient := forvo.EmptyClient()
 
-	if settings.ForvoApiKey != nil {
-		forvoClient = forvo.MakeCachingClient(*settings.ForvoApiKey)
+	if settings.ForvoAPIKey != nil {
+		forvoClient = forvo.MakeCachingClient(*settings.ForvoAPIKey)
 	}
 
 	engine.Static("/public", "./web/public")

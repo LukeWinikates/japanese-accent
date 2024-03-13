@@ -21,7 +21,7 @@ func MakeAppSettingsGET(db gorm.DB) gin.HandlerFunc {
 		}
 
 		context.JSON(200, types.ApplicationSettings{
-			ForvoAPIKey:     settings.ForvoApiKey,
+			ForvoAPIKey:     settings.ForvoAPIKey,
 			AudioExportPath: settings.AudioExportPath,
 		})
 	}
@@ -46,7 +46,7 @@ func MakeAppSettingsPUT(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 		if request.ForvoAPIKey != nil {
-			settings.ForvoApiKey = request.ForvoAPIKey
+			settings.ForvoAPIKey = request.ForvoAPIKey
 		}
 
 		if request.AudioExportPath != nil {
@@ -59,7 +59,7 @@ func MakeAppSettingsPUT(db gorm.DB) gin.HandlerFunc {
 		}
 
 		context.JSON(200, types.ApplicationSettings{
-			ForvoAPIKey:     settings.ForvoApiKey,
+			ForvoAPIKey:     settings.ForvoAPIKey,
 			AudioExportPath: settings.AudioExportPath,
 		})
 	}
