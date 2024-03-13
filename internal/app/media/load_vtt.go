@@ -2,9 +2,10 @@ package media
 
 import (
 	"fmt"
-	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"os"
 	"regexp"
+
+	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 )
 
 var safeYoutubeIDRegex = regexp.MustCompile("^[-0-9A-Za-z]+$")

@@ -1,9 +1,10 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
 	"github.com/gin-gonic/gin"
-	"log"
 )
 
 func MakeAudioGET(mediaDirectory string) gin.HandlerFunc {

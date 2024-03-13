@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"log"
+	"net/http"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
@@ -8,8 +11,6 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
 )
 
 func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {

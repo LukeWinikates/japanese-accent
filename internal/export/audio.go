@@ -2,9 +2,10 @@ package export
 
 import (
 	"fmt"
-	ffmpeg "github.com/u2takey/ffmpeg-go"
 	"os"
 	"strconv"
+
+	ffmpeg "github.com/u2takey/ffmpeg-go"
 )
 
 type RecipeClip struct {

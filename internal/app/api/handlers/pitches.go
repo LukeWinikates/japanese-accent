@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/ojad"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 )
 
 func MakeClipPitchesCREATE(db gorm.DB) gin.HandlerFunc {

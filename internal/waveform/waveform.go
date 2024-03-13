@@ -3,11 +3,12 @@ package waveform
 import (
 	"encoding/binary"
 	"fmt"
-	"github.com/u2takey/ffmpeg-go"
 	"log"
 	"math"
 	"os"
 	"path"
+
+	"github.com/u2takey/ffmpeg-go"
 )
 
 func Waveform(source string, sampleRate int) ([]int16, error) {

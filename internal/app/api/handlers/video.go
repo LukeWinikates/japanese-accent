@@ -1,6 +1,9 @@
 package handlers
 
 import (
+	"log"
+	"time"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
@@ -8,8 +11,6 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 func MakeVideoPOST(db gorm.DB) gin.HandlerFunc {

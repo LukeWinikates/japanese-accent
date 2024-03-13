@@ -2,6 +2,9 @@ package main
 
 import (
 	"fmt"
+	"log"
+	"net/http"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api"
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/metrics"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
@@ -10,8 +13,6 @@ import (
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
-	"log"
-	"net/http"
 )
 
 type config struct {

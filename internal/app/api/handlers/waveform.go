@@ -2,14 +2,15 @@ package handlers
 
 import (
 	"fmt"
+	"log"
+	"strconv"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
 	waveform2 "github.com/LukeWinikates/japanese-accent/internal/waveform"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"strconv"
 )
 
 func MakeWaveformGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {

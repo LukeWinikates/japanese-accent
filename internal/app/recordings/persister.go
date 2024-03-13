@@ -1,8 +1,9 @@
 package recordings
 
 import (
-	"github.com/gin-gonic/gin"
 	"mime/multipart"
+
+	"github.com/gin-gonic/gin"
 )
 
 const dataDirectory = "./data/recordings/"

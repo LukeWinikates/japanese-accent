@@ -1,9 +1,10 @@
 package japanese
 
 import (
+	"testing"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
 var two = 2

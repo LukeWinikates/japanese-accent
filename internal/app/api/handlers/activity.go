@@ -1,12 +1,13 @@
 package handlers
 
 import (
+	"log"
+	"time"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 func MakeActivityPost(db gorm.DB) gin.HandlerFunc {
