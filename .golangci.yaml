@@ -8,4 +8,4 @@ linters:
     - gci
 #    - revive
     - ineffassign
-#    - staticcheck
+    - staticcheck

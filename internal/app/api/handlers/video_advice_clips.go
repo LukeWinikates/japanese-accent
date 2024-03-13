@@ -51,14 +51,14 @@ func MakeSuggestedClipDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc 
 
 		if err != nil {
 			context.Status(http.StatusInternalServerError)
-			log.Printf(err.Error())
+			log.Println(err.Error())
 			return
 		}
 		err = queries.MuteAdvice(db, video, clipSHA)
 		log.Printf("%v\n", err)
 		if err != nil {
 			context.Status(http.StatusInternalServerError)
-			log.Printf(err.Error())
+			log.Println(err.Error())
 			return
 		}
 
@@ -81,14 +81,14 @@ func MakeSuggestedClipsDELETE(mediaDirectory string, db gorm.DB) gin.HandlerFunc
 
 		if err != nil {
 			context.Status(http.StatusInternalServerError)
-			log.Printf(err.Error())
+			log.Println(err.Error())
 			return
 		}
 		err = queries.MuteAllAdvice(db, video, vttAdvice)
 		log.Printf("%v\n", err)
 		if err != nil {
 			context.Status(http.StatusInternalServerError)
-			log.Printf(err.Error())
+			log.Println(err.Error())
 			return
 		}
 

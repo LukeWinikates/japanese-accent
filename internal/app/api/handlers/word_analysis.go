@@ -27,7 +27,7 @@ func MakeWordAnalysisCREATE(db gorm.DB, forvoClient forvo.Client) gin.HandlerFun
 
 		var existingWord *database.Word
 		if err := db.Where("display_text", analysisRequest.Text).Where(&existingWord).Error; err != nil {
-
+			context.Status(500)
 		}
 
 		if existingWord != nil {
@@ -85,7 +85,7 @@ func MakeWordAnalysisGET(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {
 
 		var existingWord *database.Word
 		if err := db.Where("display_text", wordText).Where(&existingWord).Error; err != nil {
-
+			context.Status(500)
 		}
 
 		if existingWord != nil {
