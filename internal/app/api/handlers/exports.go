@@ -63,7 +63,6 @@ func MakeExportCREATE(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 						return
 					}
 				}
-				return
 			}()
 
 			err := worker.WithDB(db).Run(files.Path, video, watcher)
