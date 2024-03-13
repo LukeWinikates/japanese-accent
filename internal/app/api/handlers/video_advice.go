@@ -27,13 +27,13 @@ func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		cues, err := media.LoadVTTCues(mediaDirectory, youtubeID)
 		if err != nil {
 			context.Status(500)
-			log.Printf(err.Error())
+			log.Println(err.Error())
 			return
 		}
 		mutings, err := queries.GetAdviceMutings(db, youtubeID)
 		if err != nil {
 			context.Status(500)
-			log.Printf(err.Error())
+			log.Println(err.Error())
 			return
 		}
 

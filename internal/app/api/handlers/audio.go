@@ -12,7 +12,7 @@ func MakeAudioGET(mediaDirectory string) gin.HandlerFunc {
 		videoId := context.Param("id")
 		findResult := media.FindAudioFile(mediaDirectory, videoId)
 		if findResult.Err != nil {
-			log.Printf(findResult.Err.Error())
+			log.Println(findResult.Err.Error())
 			context.Status(500)
 		}
 
