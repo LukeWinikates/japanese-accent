@@ -21,29 +21,29 @@ func MakeWordListListGET(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiVideos := MakeApiWordLists(*wordLists)
+		apiVideos := MakeAPIWordLists(*wordLists)
 
 		context.JSON(200, apiVideos)
 	}
 }
 
-func MakeApiWordLists(lists []database.WordList) []types.WordList {
+func MakeAPIWordLists(lists []database.WordList) []types.WordList {
 	apiList := make([]types.WordList, 0)
 	for _, list := range lists {
-		apiList = append(apiList, MakeApiWordList(list))
+		apiList = append(apiList, MakeAPIWordList(list))
 	}
 	return apiList
 }
 
-func MakeApiWordList(list database.WordList) types.WordList {
+func MakeAPIWordList(list database.WordList) types.WordList {
 	return types.WordList{
 		ID:    list.ID,
 		Name:  list.Name,
-		Words: MakeApiWords(list.Words),
+		Words: MakeAPIWords(list.Words),
 	}
 }
 
-func MakeApiWords(words []database.Word) []types.Word {
+func MakeAPIWords(words []database.Word) []types.Word {
 	apiWords := make([]types.Word, 0)
 	for _, word := range words {
 		apiWords = append(apiWords, MakeAPIWord(word))
@@ -75,7 +75,7 @@ func MakeWordListGET(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiWordList := MakeApiWordList(*wordList)
+		apiWordList := MakeAPIWordList(*wordList)
 
 		context.JSON(200, apiWordList)
 	}

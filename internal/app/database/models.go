@@ -4,13 +4,12 @@ import (
 	"log"
 	"time"
 
-	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 type Settings struct {
 	gorm.Model
-	ForvoApiKey     *string
+	ForvoAPIKey     *string
 	AudioExportPath *string
 }
 

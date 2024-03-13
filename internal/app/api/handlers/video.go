@@ -73,7 +73,7 @@ func MakeVideoListGET(db gorm.DB) gin.HandlerFunc {
 			return
 		}
 
-		apiVideos := MakeApiVideoSummaries(*videos)
+		apiVideos := MakeAPIVideoSummaries(*videos)
 
 		context.JSON(200, apiVideos)
 	}
@@ -92,23 +92,16 @@ func MakeVideoGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {
 		}
 		files := media.FindFiles(mediaDirectory, youtubeID)
 
-		apiVideo := makeApiVideo(video, files)
+		apiVideo := makeAPIVideo(video, files)
 
 		context.JSON(200, apiVideo)
 	}
 }
 
-func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Video {
+func makeAPIVideo(video *database.Video, files media.FilesFindResult) types.Video {
 	apiClips := make([]types.Clip, 0)
 	for _, clip := range video.Clips {
-		var pitch *types.ClipPitch = nil
-
-		if clip.ClipPitch != nil {
-			pitch = &types.ClipPitch{
-				Pattern: clip.ClipPitch.Pattern,
-				Morae:   clip.ClipPitch.Morae,
-			}
-		}
+		pitch := makeAPIClipPitch(clip)
 
 		apiClips = append(apiClips, types.Clip{
 			StartMS:        clip.StartMS,
@@ -130,10 +123,21 @@ func makeApiVideo(video *database.Video, files media.FilesFindResult) types.Vide
 		Clips:          apiClips,
 		LastActivityAt: video.LastActivityAt,
 		Text:           video.Text,
-		Words:          MakeApiWords(video.Words),
+		Words:          MakeAPIWords(video.Words),
 		Files: types.Files{
 			HasMediaFile:    files.HasMediaFile,
 			HasSubtitleFile: files.HasSubtitleFile,
 		},
+	}
+}
+
+func makeAPIClipPitch(clip database.Clip) *types.ClipPitch {
+	if clip.ClipPitch == nil {
+		return nil
+
+	}
+	return &types.ClipPitch{
+		Pattern: clip.ClipPitch.Pattern,
+		Morae:   clip.ClipPitch.Morae,
 	}
 }

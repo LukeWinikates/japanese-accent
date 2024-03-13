@@ -67,7 +67,7 @@ func MakePlaylistGET(db gorm.DB) gin.HandlerFunc {
 		for i, clip := range playlist.Clips {
 			var maybePitch *types.ClipPitch
 			if clip.ClipPitch != nil {
-				var pitch = makeApiPitch(*clip.ClipPitch)
+				var pitch = makeAPIPitch(*clip.ClipPitch)
 				maybePitch = &pitch
 			}
 			apiClips[i] = types.Clip{

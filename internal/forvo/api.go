@@ -4,7 +4,7 @@ const urlFormat = "https://apifree.forvo.com/action/word-pronunciations/format/j
 
 //goland:noinspection SpellCheckingInspection
 type Pronunciation struct {
-	Id               int    `json:"id"`
+	ID               int    `json:"id"`
 	Word             string `json:"word"`
 	Original         string `json:"original"`
 	AddTime          string `json:"addtime"`

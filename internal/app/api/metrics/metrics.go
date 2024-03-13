@@ -40,7 +40,7 @@ func createVital(name string, help string) *prometheus.SummaryVec {
 }
 
 type WebVitalPayload struct {
-	Id        string  `json:"id"`
+	ID        string  `json:"id"`
 	Label     string  `json:"label"`
 	Name      string  `json:"name"`
 	StartTime float64 `json:"startTime"`

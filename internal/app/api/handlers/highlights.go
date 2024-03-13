@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func MakeApiVideoSummaries(videos []database.Video) []types.VideoSummary {
+func MakeAPIVideoSummaries(videos []database.Video) []types.VideoSummary {
 	apiVideoSummaries := make([]types.VideoSummary, 0)
 	for _, video := range videos {
 		apiVideoSummaries = append(apiVideoSummaries, types.VideoSummary{
@@ -41,8 +41,8 @@ func MakeHandleHighlightsGET(db gorm.DB) gin.HandlerFunc {
 		}
 
 		context.JSON(200, types.Highlights{
-			Videos:    MakeApiVideoSummaries(*videos),
-			WordLists: MakeApiWordLists(*wordLists),
+			Videos:    MakeAPIVideoSummaries(*videos),
+			WordLists: MakeAPIWordLists(*wordLists),
 		})
 	}
 }

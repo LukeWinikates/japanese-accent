@@ -2,7 +2,6 @@ package queries
 
 import (
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
-	_ "gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
