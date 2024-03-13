@@ -3,7 +3,7 @@ linters:
   enable:
     - errcheck
     - gosimple
-#    - govet
+    - govet
 #    - gofmt
 #    - gci
 #    - revive
