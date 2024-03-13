@@ -59,7 +59,7 @@ func MakeAPIWord(word database.Word) types.Word {
 		MoraCount:  len(morae),
 		Shiki:      string(japanese.AnalyzeShiki(word.AccentMora, morae)),
 		Morae:      morae,
-		Audio: make([]types.AudioLink, 0),
+		Audio:      make([]types.AudioLink, 0),
 	}
 }
 

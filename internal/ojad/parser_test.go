@@ -227,10 +227,10 @@ func TestParseWithGlides(t *testing.T) {
 	assert.Equal(t, 1, len(parse), nil)
 	assert.Equal(t, 4, len(parse[0].Morae), nil)
 	expected0 := []PitchedMora{
-		{Mora:"け", HighLow:"low"},
-		{Mora:"ん", HighLow:"high"},
-		{Mora:"きゅ", HighLow:"high"},
-		{Mora:"う", HighLow:"high"},
+		{Mora: "け", HighLow: "low"},
+		{Mora: "ん", HighLow: "high"},
+		{Mora: "きゅ", HighLow: "high"},
+		{Mora: "う", HighLow: "high"},
 	}
 
 	assert.Equal(t, expected0, parse[0].Morae, nil)
