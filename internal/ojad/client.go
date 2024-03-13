@@ -41,13 +41,12 @@ func GetPitches(phrase string) ([]Pitch, error) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	resp, err := client.Do(req)
-	defer resp.Body.Close()
-
 	if err != nil {
 		log.Println(err.Error())
 		return nil, err
 	}
 
+	defer resp.Body.Close()
 	parseResult, err := Parse(resp.Body)
 	if err != nil {
 		log.Println(err.Error())
