@@ -53,10 +53,10 @@ func GetPitches(phrase string) ([]Pitch, error) {
 		return nil, err
 	}
 
-	return normalize(phrase, parseResult), nil
+	return normalize(parseResult), nil
 }
 
-func normalize(phrase string, parseResult []Pitch) []Pitch {
+func normalize(parseResult []Pitch) []Pitch {
 	normalized := make([]PitchedMora, 0)
 	for _, pitch := range parseResult {
 		normalized = append(normalized, pitch.Morae...)
