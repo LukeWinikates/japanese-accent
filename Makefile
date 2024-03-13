@@ -22,5 +22,9 @@ tmp/JMdict.gz:
 	cd tmp/ ; curl -L -R -O http://ftp.edrdg.org/pub/Nihongo/JMdict.gz
 
 setup:
-	yarn 2&>1 > /dev/null || npm install -g yarn
+	yarn 2>&1 > /dev/null || npm install -g yarn
 	yarn install
+
+
+lint:
+	GOGC=off golangci-lint run
