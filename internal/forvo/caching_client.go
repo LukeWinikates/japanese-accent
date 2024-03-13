@@ -2,10 +2,11 @@ package forvo
 
 import (
 	"context"
+	"time"
+
 	"github.com/eko/gocache/lib/v4/cache"
 	store "github.com/eko/gocache/store/go_cache/v4"
 	gocache "github.com/patrickmn/go-cache"
-	"time"
 )
 
 type cachingClient struct {

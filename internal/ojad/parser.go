@@ -1,9 +1,10 @@
 package ojad
 
 import (
+	"io"
+
 	"github.com/andybalholm/cascadia"
 	"golang.org/x/net/html"
-	"io"
 )
 
 type HighLow = string

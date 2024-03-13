@@ -1,8 +1,9 @@
 package types
 
 import (
-	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 	"sort"
+
+	"github.com/LukeWinikates/japanese-accent/internal/app/vtt"
 )
 
 func VTTCuesToTimings(cues []vtt.Cue) []Timing {

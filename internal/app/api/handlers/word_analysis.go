@@ -2,6 +2,10 @@ package handlers
 
 import (
 	"context"
+	"log"
+	"strconv"
+	"strings"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/japanese"
@@ -9,9 +13,6 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/ojad"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"strconv"
-	"strings"
 )
 
 func MakeWordAnalysisCREATE(db gorm.DB, forvoClient forvo.Client) gin.HandlerFunc {

@@ -1,15 +1,16 @@
 package handlers
 
 import (
+	"log"
+	"sort"
+	"time"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"gorm.io/gorm"
-	"log"
-	"sort"
-	"time"
 )
 
 func MakePlaylistPost(db gorm.DB) gin.HandlerFunc {

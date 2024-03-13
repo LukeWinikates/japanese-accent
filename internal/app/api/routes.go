@@ -1,12 +1,13 @@
 package api
 
 import (
+	"log"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/handlers"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/forvo"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 )
 
 func Configure(engine *gin.Engine, mediaDirPath string, db gorm.DB) {

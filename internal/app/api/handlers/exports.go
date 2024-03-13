@@ -2,6 +2,9 @@ package handlers
 
 import (
 	"context"
+	"log"
+	"time"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/media"
@@ -9,8 +12,6 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/export"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
-	"time"
 )
 
 type exportTracker struct {

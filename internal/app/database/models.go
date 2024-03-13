@@ -1,10 +1,11 @@
 package database
 
 import (
-	_ "gorm.io/driver/sqlite"
-	"gorm.io/gorm"
 	"log"
 	"time"
+
+	_ "gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
 type Settings struct {

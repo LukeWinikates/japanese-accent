@@ -2,9 +2,10 @@ package recordings
 
 import (
 	"errors"
-	"github.com/stretchr/testify/assert"
 	"mime/multipart"
 	"testing"
+
+	"github.com/stretchr/testify/assert"
 )
 
 type fakePersister struct {

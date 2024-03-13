@@ -1,6 +1,8 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
@@ -9,7 +11,6 @@ import (
 	"github.com/LukeWinikates/japanese-accent/internal/text"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 )
 
 func MakeVideoAdviceGET(mediaDirectory string, db gorm.DB) gin.HandlerFunc {

@@ -1,13 +1,14 @@
 package handlers
 
 import (
+	"log"
+
 	"github.com/LukeWinikates/japanese-accent/internal/app/api/types"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database"
 	"github.com/LukeWinikates/japanese-accent/internal/app/database/queries"
 	"github.com/LukeWinikates/japanese-accent/internal/app/youtube"
 	"github.com/gin-gonic/gin"
 	"gorm.io/gorm"
-	"log"
 )
 
 func MakeApiVideoSummaries(videos []database.Video) []types.VideoSummary {
