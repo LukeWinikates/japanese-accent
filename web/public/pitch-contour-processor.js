@@ -1,4 +1,3 @@
-
 // https://developer.mozilla.org/en-US/docs/Web/API/AudioWorkletProcessor
 // https://developer.mozilla.org/en-US/docs/Web/API/Worklet/addModule
 // white-noise-processor.js
@@ -6,7 +5,11 @@ class PitchContourProcessor extends AudioWorkletProcessor {
   constructor() {
     super();
     this.count = 0
+    this.port.onmessage = (e) => {
+      this.started = e.data === "start";
+    }
   }
+
   process(inputs, outputs, parameters) {
     const input = inputs[0];
     const output = outputs[0];
@@ -22,16 +25,31 @@ class PitchContourProcessor extends AudioWorkletProcessor {
         return
       }
 
+      this.started && this.port.postMessage("1000hz")
+
       for (let i = 0; i < outputChannel.length; ++i) {
         outputChannel[i] = inputChannel[i];
       }
     }
 
-    return this.isPlaying;
+    return this.started;
   }
+  // https://youtu.be/YHjw_yaqa9M?si=c-L4RaZjDbDQHQK8&t=3353
+  calculatePitchContour(values) {
+    let windowSize = 80
+    let overlapSize = 20
+    let stepSize = windowSize - overlapSize
+    let idx = 0;
+    let N = values.length
+    for(var k = 0; k < (N - windowSize); k += stepSize) {
+      // for each offset from the starting position, check to see how aligned the intensities are
+      // if they are very similar, we have high correlation
+      for (var T = minT; T < maxT; T++) {
 
-  start() {
-    this.started = true;
+      }
+      var f0 = 1/T;
+
+    }
   }
 
   static get parameterDescriptors() {
