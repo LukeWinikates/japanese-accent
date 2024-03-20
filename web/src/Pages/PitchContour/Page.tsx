@@ -11,7 +11,7 @@ import {Stack} from "@mui/material";
 export const PitchContourPage = () => {
   const src = "/media/audio/ewb7EpYMew0#t=0.25,2.18"
   const audioRef = useRef<HTMLAudioElement>(null!);
-  const [data, setData] = useState<string[]>([])
+  const [data, setData] = useState<number[]>([])
   const [sampleRate, setSampleRate] = useState(0);
   const [pitchContourWorkletNode, setPitchContourWorkletNode] = useState<null | AudioWorkletNode>(null);
 
@@ -29,7 +29,7 @@ export const PitchContourPage = () => {
       );
       source.connect(pitchContourNode);
       pitchContourNode.connect(audioCtx.destination)
-      pitchContourNode.port.onmessage = (e: MessageEvent<string>) => {
+      pitchContourNode.port.onmessage = (e: MessageEvent<number>) => {
         setData((d) => [...d, e.data])
       }
       setPitchContourWorkletNode(pitchContourNode);
@@ -75,7 +75,6 @@ export const PitchContourPage = () => {
       <div>
         <h3>{data.length || 0}</h3>
         {sampleRate}
-        <h2>{data[0]?.length || 0}</h2>
         {data.map((val, idx) =>
           <div key={idx}>
             {val}

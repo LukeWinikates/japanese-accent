@@ -25,7 +25,7 @@ class PitchContourProcessor extends AudioWorkletProcessor {
         return
       }
 
-      this.started && this.port.postMessage("1000hz")
+      this.started && this.port.postMessage(this.calculatePitchContour(inputs[0][0], 48000))
 
       for (let i = 0; i < outputChannel.length; ++i) {
         outputChannel[i] = inputChannel[i];
@@ -35,21 +35,27 @@ class PitchContourProcessor extends AudioWorkletProcessor {
     return this.started;
   }
   // https://youtu.be/YHjw_yaqa9M?si=c-L4RaZjDbDQHQK8&t=3353
-  calculatePitchContour(values) {
-    let windowSize = 80
-    let overlapSize = 20
-    let stepSize = windowSize - overlapSize
+  calculatePitchContour(samples, sampleRate) {
+    var windowSize = 8;
+    let overlapSize = 6
+    let stepSize = 1
     let idx = 0;
-    let N = values.length
-    for(var k = 0; k < (N - windowSize); k += stepSize) {
+    let N = samples.length
+    var result = {offset: 1, score: 0}
+    for (var k = 1; k < samples.length - windowSize; k += stepSize) {
       // for each offset from the starting position, check to see how aligned the intensities are
       // if they are very similar, we have high correlation
-      for (var T = minT; T < maxT; T++) {
-
+      var score = 0;
+      for (var i = 0; i < windowSize; i++) {
+        score += samples[i] * samples[i + k];
       }
-      var f0 = 1/T;
 
+      if (score > result.score) {
+        result = {offset: k, score: score}
+      }
     }
+
+    return result.offset / sampleRate;
   }
 
   static get parameterDescriptors() {
