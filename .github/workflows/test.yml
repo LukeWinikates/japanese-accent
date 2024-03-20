@@ -37,3 +37,8 @@ jobs:
 
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v4
+
+      - name: lighthouse
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autorun
