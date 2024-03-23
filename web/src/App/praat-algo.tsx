@@ -1,9 +1,22 @@
 type Pitch = {}
 type Sound = {
+  xmax: number; // start time in Seconds
+  xmin: number; // end time in Seconds
   x1: number; // time of first sample in Seconds
   sampleCount: number;// "nx"
   samplingPeriodInSeconds: number; // "dx" I think this means it's the inverse of the sample rate
 
+}
+
+type PitchFrame = {
+  candidateCount: number
+  intensity: number
+  candidates: PitchCandidate[]
+}
+
+type PitchCandidate = {
+  frequency: number
+  strength: number
 }
 
 type Method = "AC_HANNING" | "AC_GAUSS" | "FCC_NORMAL" | "FCC_ACCURATE";
@@ -16,8 +29,7 @@ const NUM_PEAK_INTERPOLATE_SINC70 = 3;
 const NUM_PEAK_INTERPOLATE_SINC700 = 4;
 
 
-
-function sampledShortTermAnalysis(sound: Sound, windowDuration: number, timeStep:number) : {numberOfFrames: number, firstTime: number} {
+function sampledShortTermAnalysis(sound: Sound, windowDuration: number, timeStep: number): { numberOfFrames: number, firstTime: number } {
   console.assert(windowDuration > 0);
   console.assert(timeStep > 0);
   let soundDuration = sound.samplingPeriodInSeconds * sound.sampleCount;
@@ -32,6 +44,35 @@ function sampledShortTermAnalysis(sound: Sound, windowDuration: number, timeStep
   return {
     firstTime, numberOfFrames
   }
+}
+
+// https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Pitch.cpp#L468
+function createPitch(tmin: number, tmax: number, numberOfFrames: number, dt: number, t1: number, pitchCeiling: number, maxCandidatesNeeded: number): Pitch {
+  let frames: PitchFrame[] = [];
+  // my frames = newvectorzero <structPitch_Frame> (nt);
+  /*
+    Put one candidate in every frame (unvoiced, silent).
+  */
+  for (let i = 1; i <= numberOfFrames; i++) {
+    frames.push({
+      candidateCount: 1, intensity: 0,
+      candidates: [{
+        frequency: 0,
+        strength: 0
+      }]
+    });
+  }
+
+  return {
+    tMin: tmin,
+    tMax: tmax,
+    numberOfFrames,
+    dt,
+    t1,
+    ceiling: pitchCeiling,
+    maxCandidateCount: maxCandidatesNeeded,
+    frames
+  };
 }
 
 function SoundToPitchGeneric(sound: Sound,
@@ -137,16 +178,26 @@ function SoundToPitchGeneric(sound: Sound,
       let windowDuration = method === "FCC_ACCURATE" || method == "FCC_NORMAL" ?
         1.0 / pitchFloor + dtWindow :
         dtWindow;
-      let analysis = sampledShortTermAnalysis(sound, windowDuration, dt):
+      let analysis = sampledShortTermAnalysis(sound, windowDuration, dt);
       numberOfFrames = analysis.numberOfFrames;
       t1 = analysis.firstTime
     } catch (e) {
-      throw new Error ("The pitch analysis would give zero pitch frames.");
+      throw new Error("The pitch analysis would give zero pitch frames.");
     }
 
+    /*
+			Create the resulting pitch contour.
+		*/
+    let result: Pitch = createPitch(
+      sound.xmin, sound.xmax,
+      numberOfFrames, dt, t1,
+      pitchCeiling, maxCandidatesNeeded);
+
+
+    return result;
   } catch (e) {
     throw new Error("pitch analysis not completed")
   }
 
-  return {};
+
 }
