@@ -21,6 +21,11 @@ function SoundToPitchGeneric(sound: Sound,
                              voicedUnvoicedCost: number
 ) : Pitch {
 
+  try {
+
+  } catch (e) {
+    throw new Error("pitch analysis not completed")
+  }
 
   return {};
 }
