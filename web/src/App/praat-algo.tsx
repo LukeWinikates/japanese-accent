@@ -2,6 +2,8 @@ type Pitch = {
 
 }
 type Sound = {
+  sampleCount: number;
+  samplingPeriodInSeconds: number; // I think this means it's the inverse of the sample rate
 
 }
 
@@ -67,6 +69,15 @@ function SoundToPitchGeneric(sound: Sound,
         interpolationDepth = 1.0;
         break;
     }
+
+    let duration = sound.samplingPeriodInSeconds * sound.sampleCount;   // volatile, because we need to truncate to 64 bits
+
+    if (pitchFloor < periodsPerWindow / duration) {
+      throw new Error("To analyse this Sound, “pitch floor” must not be less than " + periodsPerWindow / duration + " Hz.");
+    }
+
+
+
 
   } catch (e) {
     throw new Error("pitch analysis not completed")
