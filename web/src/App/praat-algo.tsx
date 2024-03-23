@@ -1,6 +1,7 @@
 type Pitch = {}
 type Sound = {
-  sampleCount: number; "nx"
+  x1: number; // time of first sample in Seconds
+  sampleCount: number;// "nx"
   samplingPeriodInSeconds: number; // "dx" I think this means it's the inverse of the sample rate
 
 }
@@ -13,6 +14,25 @@ class FFTTable {
 
 const NUM_PEAK_INTERPOLATE_SINC70 = 3;
 const NUM_PEAK_INTERPOLATE_SINC700 = 4;
+
+
+
+function sampledShortTermAnalysis(sound: Sound, windowDuration: number, timeStep:number) : {numberOfFrames: number, firstTime: number} {
+  console.assert(windowDuration > 0);
+  console.assert(timeStep > 0);
+  let soundDuration = sound.samplingPeriodInSeconds * sound.sampleCount;
+  if (windowDuration > soundDuration) {
+    throw new Error("sound is shorter than Window length");
+  }
+  let numberOfFrames = Math.floor((soundDuration - windowDuration) / timeStep) + 1;
+  console.assert(numberOfFrames >= 1);
+  let midTime = sound.x1 - 0.5 * sound.samplingPeriodInSeconds + 0.5 * soundDuration;
+  let targetDuration = numberOfFrames * timeStep
+  let firstTime = midTime - 0.5 * targetDuration + 0.5 * timeStep
+  return {
+    firstTime, numberOfFrames
+  }
+}
 
 function SoundToPitchGeneric(sound: Sound,
                              method: Method,
@@ -107,7 +127,22 @@ function SoundToPitchGeneric(sound: Sound,
     let minimumLag = Math.max(2, Math.floor(1.0 / sound.samplingPeriodInSeconds / pitchCeiling));
     let maximumLag = Math.min(Math.floor(nSampWindow / periodsPerWindow) + 2, nSampWindow);
 
-
+    /*
+         * Determine the number of frames.
+         * Fit as many frames as possible symmetrically in the total duration.
+         * We do this even for the forward cross-correlation method,
+         * because that allows us to compare the two methods.
+         */
+    try {
+      let windowDuration = method === "FCC_ACCURATE" || method == "FCC_NORMAL" ?
+        1.0 / pitchFloor + dtWindow :
+        dtWindow;
+      let analysis = sampledShortTermAnalysis(sound, windowDuration, dt):
+      numberOfFrames = analysis.numberOfFrames;
+      t1 = analysis.firstTime
+    } catch (e) {
+      throw new Error ("The pitch analysis would give zero pitch frames.");
+    }
 
   } catch (e) {
     throw new Error("pitch analysis not completed")
