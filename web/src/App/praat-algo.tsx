@@ -245,9 +245,68 @@ function fftBackward(fftTable: FFTTable, windowR: any) {
 // );
 }
 
-https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L45
-function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3: any) {
+// https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sampled.h#L34
+function sampledXToLowIndex(sound: Sound, t: number):number {
+// (Sampled me, double x) { return Melder_ifloor   ((x - my x1) / my dx + 1.0); }
+  return Math.floor((t - sound.x1)/ sound.samplingPeriodInSeconds + 1);
+}
 
+type Param3 = {
+  nsampFFT: number;
+  window: number[];
+  nSampWindow: number;
+  method: Method;
+  halfNSampWindow: number;
+  localMean: number[];
+  nsampPeriod: number };
+
+https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L45
+function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3: Param3) {
+  let leftSample = sampledXToLowIndex(sound, t);
+  let rightSample = leftSample + 1;
+  let startSample = 0, endSample = 0;
+
+  // TODO: look at the sound.z attribute and think about 0 vs 1-based indexing of the channels
+  for (let channel = 1; channel <= sound.channelCount; channel++) {
+    /*
+			Compute the local mean; look one longest period to both sides.
+		*/
+    startSample = rightSample - param3.nsampPeriod;
+    endSample = leftSample + param3.nsampPeriod;
+    console.assert(startSample >= 1);
+    console.assert(endSample <= sound.sampleCount) // "my nx"
+
+    param3.localMean[channel] = 0;
+    for (let i = startSample; i <= endSample; i++) {
+      param3.localMean[channel] += sound.z[channel][i];
+    }
+
+    param3.localMean[channel] /= 2 * param3.nsampPeriod;
+
+    /*
+			Copy a window to a frame and subtract the local mean.
+			We are going to kill the DC component before windowing.
+		*/
+    startSample = rightSample - param3.halfNSampWindow;
+    endSample = leftSample + param3.halfNSampWindow;
+    console.assert(startSample >= 1);
+    console.assert(endSample <= sound.sampleCount);
+    // 	if (method < FCC_NORMAL) {
+    if (param3.method === "AC_HANNING" || param3.method === "AC_GAUSS") {
+      for (let j = 1, i = startSample; j <= param3.nSampWindow; j++) {
+        frame[channel][j] = (sound.z[channel][i++] - param3.localMean[channel]) * param3.window[j]
+      }
+      for (let j = param3.nSampWindow + 1; j <= param3.nsampFFT; j++) {
+        frame[channel][j] = 0;
+      }
+    } else {
+      for (let j = 1, i = startSample; j <= param3.nSampWindow; j++) {
+        frame[channel][j] = sound.z[channel][i++] - param3.localMean[channel];
+      }
+    }
+  }
+
+  // TODO: continue here
 }
 
 // https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sampled.h#L32
@@ -256,7 +315,7 @@ function sampledIndexToX(result: Pitch, frameIndex: number): number{
 }
 
 // https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L283
-function soundIntoPitch(sound: Sound, result: Pitch, param3: any) {
+function soundIntoPitch(sound: Sound, result: Pitch, param3: Param3) {
   result.frames.forEach((frame, i) => {
     let t = sampledIndexToX(result, i);
     soundIntoPitchFrame(sound, frame, t, param3);
@@ -464,7 +523,7 @@ function SoundToPitchGeneric(sound: Sound,
 				The Hanning window is 2 to 5 dB better for 3 periods/window.
 				The Gaussian window is 25 to 29 dB better for 6 periods/window.
 			*/
-      if (method == "AC_GAUSS") {   // Gaussian window
+      if (method === "AC_GAUSS") {   // Gaussian window
         let imid = 0.5 * (nSampWindow + 1);
         let edge = Math.exp(-12.0);
         for (let i = 1; i <= nSampWindow; i++) {
