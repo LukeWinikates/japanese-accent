@@ -252,6 +252,8 @@ function sampledXToLowIndex(sound: Sound, t: number):number {
 }
 
 type Param3 = {
+  globalPeak: number;
+  halfNSampPeriod: number;
   nsampFFT: number;
   window: number[];
   nSampWindow: number;
@@ -305,6 +307,31 @@ function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3:
       }
     }
   }
+
+
+  /*
+    Compute the local peak; look half a longest period to both sides.
+  */
+
+  let localPeak = 0.0;
+  if ((startSample = param3.halfNSampWindow + 1 - param3.halfNSampPeriod) < 1) {
+    startSample = 1;
+  }
+  if ((endSample = param3.halfNSampWindow + param3.halfNSampPeriod) > param3.nSampWindow) {
+    endSample = param3.nSampWindow
+  }
+
+  for (let channel = 1; channel <= sound.channelCount; channel++) {
+    for (let j = startSample; j<=endSample; j++) {
+      let value = Math.abs(frame[channel][j]);
+      if (value > localPeak) {
+        localPeak = value;
+      }
+    }
+  }
+
+  frame.intensity = (localPeak > param3.globalPeak ?
+    1.0 : localPeak / param3.globalPeak);
 
   // TODO: continue here
 }
