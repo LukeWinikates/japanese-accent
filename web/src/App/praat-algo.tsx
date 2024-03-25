@@ -1,13 +1,34 @@
+//xmin			// Start time (seconds).
+// 	xmax > xmin		// End time (seconds).
+// 	nx >= 1			// Number of time slices.
+// 	dx > 0.0		// Time step (seconds).
+// 	x1			// Centre of first time slice (seconds).
+// 	ceiling			// Candidates with a higher frequency are unvoiced.
+// 	maxnCandidates >= 1	// Maximum number of candidates per time slice.
+// 	frame[1..nx].nCandidates	// Number of candidates in each time slice, including the unvoiced candidate.
+// 	frame[1..nx].candidate[1..nCandidates].frequency
+// 		// The frequency of each candidate (Hz), 0 means aperiodic or silent.
+// 		// candidate[1].frequency is the frequency of the currently best candidate.
+// 	frame[1..nx].candidate[1..nCandidates].strength
+// 		// The strength of each candidate, a real number between 0 and 1:
+// 		// 0 means not periodic at all, 1 means perfectly periodic;
+// 		// if the frequency of the candidate is 0, its strength is a real number
+// 		// that represents the maximum periodicity that
+// 		// can still be considered to be due to noise (e.g., 0.4).
+// 		// candidate[1].strength is the strength of the currently best candidate.
+// 	frame[1..nx].intensity
+// 		// The relative intensity of each frame, a real number between 0 and 1.
+
 type Pitch = {
-  dt: number;
+  dx: number;
   ceiling: number;
   frames: PitchFrame[]
-  tMax: number
+  xMax: number
   numberOfFrames: number
   z: any[]
-  tMin: number;
+  xMin: number;
   maxCandidateCount: number;
-  t1: number
+  x1: number
 }
 
 type Sound = {
@@ -132,6 +153,9 @@ function sampledShortTermAnalysis(sound: Sound, windowDuration: number, timeStep
   }
 }
 
+// Pitch_create (double tmin, double tmax, integer nt, double dt, double t1, double ceiling, integer maxnCandidates)
+// Sampled_init (me.get(), tmin, tmax, nt, dt, t1);
+// void Sampled_init (Sampled me, double xmin, double xmax, integer nx, double dx, double x1) {
 // https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Pitch.cpp#L468
 function createPitch(tmin: number, tmax: number, numberOfFrames: number, dt: number, t1: number, pitchCeiling: number, maxCandidatesNeeded: number): Pitch {
   let frames: PitchFrame[] = [];
@@ -150,11 +174,11 @@ function createPitch(tmin: number, tmax: number, numberOfFrames: number, dt: num
   }
 
   return {
-    tMin: tmin,
-    tMax: tmax,
+    xMin: tmin,
+    xMax: tmax,
     numberOfFrames,
-    dt,
-    t1,
+    dx: dt,
+    x1: t1,
     ceiling: pitchCeiling,
     maxCandidateCount: maxCandidatesNeeded,
     frames,
@@ -193,6 +217,7 @@ function createFFTTable(n: number): Table {
     trigCache: new Array<number>(3 * n),
     splitCache: new Array<number>(32)
   };
+  NUMrffti(result);
   return result;
   // NUMrffti (n, my trigcache.asArgumentToFunctionThatExpectsZeroBasedArray(),
   //   my splitcache.asArgumentToFunctionThatExpectsZeroBasedArray() );
@@ -220,8 +245,22 @@ function fftBackward(fftTable: FFTTable, windowR: any) {
 // );
 }
 
+https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L45
+function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3: any) {
+
+}
+
+// https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sampled.h#L32
+function sampledIndexToX(result: Pitch, frameIndex: number): number{
+  return result.x1 + (frameIndex - 1) * result.dx;
+}
+
 // https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L283
 function soundIntoPitch(sound: Sound, result: Pitch, param3: any) {
+  result.frames.forEach((frame, i) => {
+    let t = sampledIndexToX(result, i);
+    soundIntoPitchFrame(sound, frame, t, param3);
+  });
 //static void Sound_into_Pitch (Sound_into_Pitch_Args me)
 // {
 // 	for (integer iframe = my firstFrame; iframe <= my lastFrame; iframe ++) {
@@ -479,6 +518,8 @@ function SoundToPitchGeneric(sound: Sound,
     // 		numberOfFramesPerThread = (numberOfFrames - 1) / numberOfThreads + 1;
 
 
+    pathfind(result, silenceThreshold, voicingThreshold, octaveCost, octaveJumpCost, voicedUnvoicedCost, pitchCeiling)
+
     soundIntoPitch(sound, result, {
       firstFrame: 1,
       lastFrame: numberOfFrames,
@@ -499,18 +540,15 @@ function SoundToPitchGeneric(sound: Sound,
       globalPeak,
       window: _window,
       windowR: windowR,
-    //  arg -> rbuffer = zero_VEC (2 * nsamp_window + 1);
+      rbuffer: new Array<number>(2* nSampWindow + 1),
+      // r -- a pointer to rbuffer[1 + nsamWindow]?
       // 			arg -> r = & arg -> rbuffer [1 + nsamp_window];
-      // 			arg -> imax = zero_INTVEC (maxnCandidates);
-      // 			arg -> localMean = zero_VEC (my ny);
+      localMean: new Array<number>(sound.channelCount),
+      imax: new Array<number>(maxCandidatesNeeded)
     })
-
-    pathfind(result, silenceThreshold, voicingThreshold, octaveCost, octaveJumpCost, voicedUnvoicedCost, pitchCeiling)
 
     return result;
   } catch (e) {
     throw new Error("pitch analysis not completed")
   }
-
-
 }
