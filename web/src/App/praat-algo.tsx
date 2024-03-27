@@ -251,36 +251,46 @@ function sampledXToLowIndex(sound: Sound, t: number): number {
 }
 
 type Param3 = {
-  windowR: number[];
-  brentIxMax: number;
-  fftTable: FFTTable;
   ac: number[];
-  r: number[];
-  maximumLag: number;
-  pitchFloor: number;
+  brentDepth: number;
+  brentIxMax: number;
   dtWindow: number;
+  fftTable: Table;
+  firstFrame: number;
   globalPeak: number;
   halfNSampPeriod: number;
-  nsampFFT: number;
-  window: number[];
-  nSampWindow: number;
-  method: Method;
   halfNSampWindow: number;
+  // halfNsampPeriod: number;
+  // halfNsampWindow: number
+  imax: number[];
+  lastFrame: number;
   localMean: number[];
+  maxCandidatesNeeded: number;
+  maximumLag: number;
+  method: Method;
+  nSampWindow: number;
+  nsampFFT: number;
   nsampPeriod: number
   octaveCost: number;
-  lastFrame: number;
-  imax: number[];
-  maxCandidatesNeeded: number;
-  brentDepth: number;
+  pitchFloor: number;
+  r: number[];
   rbuffer: number[];
-  firstFrame: number;
   voicingThreshold: number;
-  halfNsampPeriod: number;
-  halfNsampWindow: number
+  window: number[];
+  windowR: number[];
 };
 
-https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L45
+https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/melder/NUMinterpol.cpp#L36
+  function interpolateSinc(): number {
+    throw new Error("not implemented");
+    return 0;
+  }
+
+function improveMaximum(): number {
+  return 0;
+}
+
+// https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L45
 function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3: Param3) {
   let leftSample = sampledXToLowIndex(sound, t);
   let rightSample = leftSample + 1;
@@ -431,16 +441,88 @@ and divide it by the normalized autocorrelation of the window.
   /*
   Register the first candidate, which is always present: voicelessness.
 */
-  frame.candidates.slice(0,1)
+  // TODO: had to translate this to zero-indexed - perhaps that will make it incorrect
+  frame.candidates.slice(0, 1)
   frame.candidateCount = 1
   frame.candidates[0].frequency = 0.0;
   frame.candidates[0].strength = 0.0;
 
-  if(localPeak === 0) {
+  if (localPeak === 0) {
     return
   }
 
-  // TODO: pick up from here
+  param3.imax[1] = 0;
+  for (let i = 2; i < param3.maximumLag && i < param3.brentIxMax; i++) {
+    if (param3.r[i] > 0.5 * param3.voicingThreshold && // not too unvoiced?
+      param3.r[i] > param3.r[i - 1] && param3.r[i] >= param3.r[i + 1]) { // maximum?
+      let place = 0;
+
+      let {r, brentIxMax} = param3;
+      /*
+      Use parabolic interpolation for first estimate of frequency,
+      and sin(x)/x interpolation to compute the strength of this frequency.
+      */
+      let dr = 0.5 * (r[i + 1] - r[i - 1]);
+      let d2r = 2.0 * r[i] - r [i - 1] - r [i + 1];
+      let frequencyOfMaximum = 1.0 / sound.samplingPeriodInSeconds / (i + dr / d2r);
+      let offset = -brentIxMax - 1;
+      let strengthOfMaximum = /* method & 1 ? */
+          interpolateSinc()
+        // NUM_interpolate_sinc (constVEC (& r [offset + 1], brent_ixmax - offset), 1.0 / my dx / frequencyOfMaximum - offset, 30)
+        /* : r [i] + 0.5 * dr * dr / d2r */;
+      /*
+        High values due to short windows are to be reflected around 1.
+      */
+      if (strengthOfMaximum > 1.0) {
+        strengthOfMaximum = 1.0 / strengthOfMaximum;
+      }
+
+      if (frame.candidateCount < param3.maxCandidatesNeeded) {
+        frame.candidates.push({frequency: frequencyOfMaximum, strength: strengthOfMaximum})
+        frame.candidateCount++;
+        param3.imax[place] = i;
+      } else {
+        let weakest = 2.0;
+        for (let iWeak = 2; iWeak <= param3.maxCandidatesNeeded; iWeak++) {
+          const localStrength = frame.candidates[iWeak].strength - param3.octaveCost *
+            Math.log2(param3.pitchFloor / frame.candidates[iWeak].frequency);
+          if (localStrength < weakest) {
+            weakest = localStrength;
+            place = iWeak;
+          }
+        }
+        if (strengthOfMaximum - param3.octaveCost * Math.log2(param3.pitchFloor / frequencyOfMaximum) <= weakest) {
+          place = 0;
+        }
+        if (!!place) {
+          frame.candidates[place] = {frequency: frequencyOfMaximum, strength: strengthOfMaximum}
+          param3.imax[place] = i;
+        }
+      }
+
+    }
+
+
+  }
+
+  /*
+    Second pass: for extra precision, maximize sin(x)/x interpolation ('sinc').
+  */
+  for (let i = 2; i <= frame.candidateCount; i++) {
+    if (param3.method !== "AC_HANNING" || frame.candidates[i].frequency > 0.0 / sound.samplingPeriodInSeconds) {
+      let xmid: number, ymid: number;
+      let offset = -param3.brentIxMax - 1;
+      ymid = improveMaximum();
+      // ymid = NUMimproveMaximum (constVEC (& r [offset + 1], brent_ixmax - offset), imax [i] - offset,
+      //   pitchFrame -> candidates [i]. frequency > 0.3 / my dx ? NUM_PEAK_INTERPOLATE_SINC700 : brent_depth, & xmid);
+      xmid += offset;
+      frame.candidates[i].frequency = 1.0 / sound.samplingPeriodInSeconds / xmid;
+      if (ymid > 1.0) {
+        ymid = 1.0 / ymid;
+      }
+      frame.candidates [i].strength = ymid;
+    }
+  }
 }
 
 
@@ -483,10 +565,10 @@ function soundIntoPitch(sound: Sound, result: Pitch, param3: Param3) {
 // }
 }
 
-https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Pitch.cpp#L524
-  function pathfind(result: Pitch, silenceThreshold: number, voicingThreshold: number, octaveCost: number, octaveJumpCost: number, voicedUnvoicedCost: number, pitchCeiling: number) {
+// https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Pitch.cpp#L524
+function pathfind(result: Pitch, silenceThreshold: number, voicingThreshold: number, octaveCost: number, octaveJumpCost: number, voicedUnvoicedCost: number, pitchCeiling: number) {
 
-  }
+}
 
 function SoundToPitchGeneric(sound: Sound,
                              method: Method,
@@ -715,31 +797,34 @@ function SoundToPitchGeneric(sound: Sound,
     pathfind(result, silenceThreshold, voicingThreshold, octaveCost, octaveJumpCost, voicedUnvoicedCost, pitchCeiling)
 
     soundIntoPitch(sound, result, {
-      firstFrame: 1,
-      lastFrame: numberOfFrames,
-      pitchFloor,
-      maxCandidatesNeeded,
-      method,
-      voicingThreshold,
-      octaveCost,
-      fftTable
+      // 			arg -> r = & arg -> rbuffer [1 + nsamp_window];
+      // r -- a pointer to rbuffer[1 + nsamWindow]?
+      ac: [],
+      brentDepth,
+      brentIxMax,
       dtWindow,
-      nSampWindow,
-      halfNsampWindow,
+      fftTable,
+      firstFrame: 1,
+      globalPeak,
+      halfNSampPeriod: halfNsampPeriod,
+      halfNSampWindow: halfNsampWindow,
+      imax: new Array<number>(maxCandidatesNeeded),
+      lastFrame: numberOfFrames,
+      localMean: new Array<number>(sound.channelCount),
+      maxCandidatesNeeded,
       maximumLag,
+      method,
+      nSampWindow,
       nsampFFT,
       nsampPeriod,
-      halfNsampPeriod,
-      brentIxMax,
-      brentDepth,
-      globalPeak,
+      octaveCost,
+      pitchFloor,
+      r: [],
+      rbuffer: new Array<number>(2 * nSampWindow + 1),
+      voicingThreshold,
       window: _window,
       windowR: windowR,
-      rbuffer: new Array<number>(2 * nSampWindow + 1),
-      // r -- a pointer to rbuffer[1 + nsamWindow]?
-      // 			arg -> r = & arg -> rbuffer [1 + nsamp_window];
-      localMean: new Array<number>(sound.channelCount),
-      imax: new Array<number>(maxCandidatesNeeded)
+
     })
 
     return result;
