@@ -128,8 +128,7 @@ type PitchCandidate = {
 
 type Method = "AC_HANNING" | "AC_GAUSS" | "FCC_NORMAL" | "FCC_ACCURATE";
 
-class FFTTable {
-}
+type FFTTable = Table;
 
 
 const NUM_PEAK_INTERPOLATE_SINC70 = 3;
@@ -246,12 +245,20 @@ function fftBackward(fftTable: FFTTable, windowR: any) {
 }
 
 // https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sampled.h#L34
-function sampledXToLowIndex(sound: Sound, t: number):number {
+function sampledXToLowIndex(sound: Sound, t: number): number {
 // (Sampled me, double x) { return Melder_ifloor   ((x - my x1) / my dx + 1.0); }
-  return Math.floor((t - sound.x1)/ sound.samplingPeriodInSeconds + 1);
+  return Math.floor((t - sound.x1) / sound.samplingPeriodInSeconds + 1);
 }
 
 type Param3 = {
+  windowR: number[];
+  brentIxMax: number;
+  fftTable: FFTTable;
+  ac: number[];
+  r: number[];
+  maximumLag: number;
+  pitchFloor: number;
+  dtWindow: number;
   globalPeak: number;
   halfNSampPeriod: number;
   nsampFFT: number;
@@ -260,7 +267,18 @@ type Param3 = {
   method: Method;
   halfNSampWindow: number;
   localMean: number[];
-  nsampPeriod: number };
+  nsampPeriod: number
+  octaveCost: number;
+  lastFrame: number;
+  imax: number[];
+  maxCandidatesNeeded: number;
+  brentDepth: number;
+  rbuffer: number[];
+  firstFrame: number;
+  voicingThreshold: number;
+  halfNsampPeriod: number;
+  halfNsampWindow: number
+};
 
 https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sound_to_Pitch.cpp#L45
 function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3: Param3) {
@@ -271,8 +289,8 @@ function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3:
   // TODO: look at the sound.z attribute and think about 0 vs 1-based indexing of the channels
   for (let channel = 1; channel <= sound.channelCount; channel++) {
     /*
-			Compute the local mean; look one longest period to both sides.
-		*/
+      Compute the local mean; look one longest period to both sides.
+    */
     startSample = rightSample - param3.nsampPeriod;
     endSample = leftSample + param3.nsampPeriod;
     console.assert(startSample >= 1);
@@ -286,9 +304,9 @@ function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3:
     param3.localMean[channel] /= 2 * param3.nsampPeriod;
 
     /*
-			Copy a window to a frame and subtract the local mean.
-			We are going to kill the DC component before windowing.
-		*/
+      Copy a window to a frame and subtract the local mean.
+      We are going to kill the DC component before windowing.
+    */
     startSample = rightSample - param3.halfNSampWindow;
     endSample = leftSample + param3.halfNSampWindow;
     console.assert(startSample >= 1);
@@ -322,7 +340,7 @@ function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3:
   }
 
   for (let channel = 1; channel <= sound.channelCount; channel++) {
-    for (let j = startSample; j<=endSample; j++) {
+    for (let j = startSample; j <= endSample; j++) {
       let value = Math.abs(frame[channel][j]);
       if (value > localPeak) {
         localPeak = value;
@@ -333,11 +351,101 @@ function soundIntoPitchFrame(sound: Sound, frame: PitchFrame, t: number, param3:
   frame.intensity = (localPeak > param3.globalPeak ?
     1.0 : localPeak / param3.globalPeak);
 
-  // TODO: continue here
+  /*
+    Compute the correlation into the array 'r'.
+  */
+  if (param3.method === "FCC_ACCURATE" || param3.method === "FCC_NORMAL") {
+    let startTime = t - 0.5 * (1.0 / param3.pitchFloor + param3.dtWindow);
+    let localSpan = param3.maximumLag + param3.nSampWindow;
+    if ((startSample = sampledXToLowIndex(sound, startSample)) < 1) {
+      startSample = 1;
+    }
+    if (localSpan > sound.sampleCount + 1 - startSample) {
+      localSpan = sound.sampleCount + 1 - startSample;
+    }
+    let localMaximumLag = localSpan - param3.nSampWindow;
+    let offset = startSample - 1;
+    let sumx2 = 0.0; // sum of squares
+    for (let channel = 1; channel <= sound.channelCount; channel++) {
+      // TODO: decipher this - it looks like it's grabbing a mutable reference to a particular cell position
+      // 			const double * const amp = & my z [channel] [0] + offset;
+      for (let i = 1; i <= param3.nSampWindow; i++) {
+        let x = sound.z[channel][i + offset] - param3.localMean[channel];
+        sumx2 += x * x;
+      }
+    }
+    let sumy2 = sumx2;
+    param3.r[0] = 1;
+    for (var i = 1; 1 <= localMaximumLag; i++) {
+      let product = 0;
+      for (let channel = 1; channel <= sound.channelCount; channel++) {
+        let y0 = sound.z[channel][i + offset] - param3.localMean[channel];
+        let yZ = sound.z[channel][i + offset + +param3.nSampWindow] - param3.localMean[channel];
+        sumy2 += yZ * yZ - y0 * y0;
+        for (let j = 1; j <= param3.nSampWindow; j++) {
+          let x = sound.z[channel][offset + j] - param3.localMean [channel];
+          let y = sound.z[channel][offset + i + j] - param3.localMean [channel];
+          product += x * y;
+        }
+      }
+
+      // TODO: decipher this line - why is -i not out of bounds
+      // what does assigning to an array cell return?
+      // 			r [- i] = r [i] = (double) product / sqrt ((double) sumx2 * (double) sumy2);
+      param3.r[-i] = param3.r[i] = product / Math.sqrt(sumx2 * sumy2);
+    }
+  } else {
+    for (let i = 1; i <= param3.nsampFFT; i++) {
+      param3.ac[i] = 0.0;
+    }
+
+    for (let channel = 1; channel <= sound.channelCount; channel++) {
+      // NUMfft_forward (fftTable, VEC (& frame [channel] [1], fftTable->n));   // complex spectrum
+      let array = new Array<number>(param3.fftTable.n);
+      array.fill(frame[channel][1]);
+      fttForward(param3.fftTable, array)
+      param3.ac[1] += frame[channel][1] * frame[channel][1]  // DC component
+      for (let i = 2; i < param3.nsampFFT; i += 2) {
+        // power spectrum
+        param3.ac[i] += frame[channel][i] * frame[channel][i] + frame[channel][i + 1] * frame[channel][i + 1];
+        // Nyquist frequency
+        param3.ac[param3.nsampFFT] += frame[channel][param3.nsampFFT] * frame [channel] [param3.nsampFFT];
+      }
+    }
+
+    // autocorrelation
+    fftBackward(param3.fftTable, param3.ac)
+
+    /*
+Normalize the autocorrelation to the value with zero lag,
+and divide it by the normalized autocorrelation of the window.
+*/
+    param3.r[0] = 1.0;
+    for (let i = 1; i <= param3.brentIxMax; i++) {
+      param3.r[-i] = param3.r[i] = param3.ac[i + 1] /
+        (param3.ac [1] * param3.windowR [i + 1]);
+    }
+
+  }
+
+  /*
+  Register the first candidate, which is always present: voicelessness.
+*/
+  frame.candidates.slice(0,1)
+  frame.candidateCount = 1
+  frame.candidates[0].frequency = 0.0;
+  frame.candidates[0].strength = 0.0;
+
+  if(localPeak === 0) {
+    return
+  }
+
+  // TODO: pick up from here
 }
 
+
 // https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Sampled.h#L32
-function sampledIndexToX(result: Pitch, frameIndex: number): number{
+function sampledIndexToX(result: Pitch, frameIndex: number): number {
   return result.x1 + (frameIndex - 1) * result.dx;
 }
 
@@ -376,9 +484,9 @@ function soundIntoPitch(sound: Sound, result: Pitch, param3: Param3) {
 }
 
 https://github.com/praat/praat/blob/4c4f8db2ccb06d7778914024858c7279ca82f4bc/fon/Pitch.cpp#L524
-function pathfind(result: Pitch, silenceThreshold: number, voicingThreshold: number, octaveCost: number, octaveJumpCost: number, voicedUnvoicedCost: number, pitchCeiling: number) {
+  function pathfind(result: Pitch, silenceThreshold: number, voicingThreshold: number, octaveCost: number, octaveJumpCost: number, voicedUnvoicedCost: number, pitchCeiling: number) {
 
-}
+  }
 
 function SoundToPitchGeneric(sound: Sound,
                              method: Method,
@@ -515,7 +623,7 @@ function SoundToPitchGeneric(sound: Sound,
       return result;
     }
 
-    let _window, windowR;
+    let _window, windowR: number[];
 
     // cross-correlation
     if (method === "FCC_NORMAL" || method === "FCC_ACCURATE") {
@@ -584,7 +692,7 @@ function SoundToPitchGeneric(sound: Sound,
       windowR [nsampFFT] *= windowR [nsampFFT];   // Nyquist frequency
       // NUMfft_backward (& fftTable, windowR.get());   // autocorrelation
       fftBackward(fftTable, windowR);   // autocorrelation
-      for (var i = 2; i <= nSampWindow; i ++) {
+      for (var i = 2; i <= nSampWindow; i++) {
         windowR [i] /= windowR [1];   // normalize
       }
       windowR [1] = 1.0;   // normalize
@@ -614,6 +722,7 @@ function SoundToPitchGeneric(sound: Sound,
       method,
       voicingThreshold,
       octaveCost,
+      fftTable
       dtWindow,
       nSampWindow,
       halfNsampWindow,
@@ -626,7 +735,7 @@ function SoundToPitchGeneric(sound: Sound,
       globalPeak,
       window: _window,
       windowR: windowR,
-      rbuffer: new Array<number>(2* nSampWindow + 1),
+      rbuffer: new Array<number>(2 * nSampWindow + 1),
       // r -- a pointer to rbuffer[1 + nsamWindow]?
       // 			arg -> r = & arg -> rbuffer [1 + nsamp_window];
       localMean: new Array<number>(sound.channelCount),
