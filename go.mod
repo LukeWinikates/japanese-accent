@@ -16,7 +16,7 @@ require (
 	github.com/u2takey/go-utils v0.3.1
 	golang.org/x/net v0.22.0
 	gorm.io/driver/sqlite v1.5.5
-	gorm.io/gorm v1.25.8
+	gorm.io/gorm v1.25.9
 )
 
 require (
