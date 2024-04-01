@@ -172,6 +172,6 @@
     "node": ">=16"
   },
   "devDependencies": {
-    "eslint-plugin-sonarjs": "^0.24.0"
+    "eslint-plugin-sonarjs": "^0.25.0"
   }
 }
