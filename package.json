@@ -74,7 +74,7 @@
     "style-loader": "^4.0.0",
     "terser-webpack-plugin": "^5.3.10",
     "ts-pnp": "1.2.0",
-    "tss-react": "^4.9.7",
+    "tss-react": "^4.9.10",
     "typescript": "^5.4.5",
     "url-loader": "4.1.1",
     "web-vitals": "^3.5.2",
