@@ -21,7 +21,7 @@ type Props = {
 }
 
 export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeClip, setAdvice}: Props) {
-  let [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const selected = searchParams.get("selected");
 
   const clipsForTimeline = merged({
@@ -52,7 +52,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   }, [showMuted, clipsForTimeline]);
 
   const selectedClipByIndex = useCallback((index: number) => {
-    let clip = clipsForTimeline[index];
+    const clip = clipsForTimeline[index];
     setSelectedClip(clip);
   }, [clipsForTimeline, setSelectedClip]);
 
@@ -151,7 +151,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
             >
               {
                 ({index, style}) => {
-                  let s = clipsForTimeline[index];
+                  const s = clipsForTimeline[index];
                   const Element = elementForLabels(s.labels);
                   return (
                     <Element clip={s}

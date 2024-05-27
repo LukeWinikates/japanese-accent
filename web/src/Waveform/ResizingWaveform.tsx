@@ -98,7 +98,7 @@ export function ResizingWaveform({
 
   const {classes} = useStyles({});
 
-  let RESIZER_PADDING_MS = 2000;
+  const RESIZER_PADDING_MS = 2000;
 
   function clamp(val: number): number {
     return Math.min(Math.max(0, val), totalMS);
@@ -134,7 +134,7 @@ export function ResizingWaveform({
       return
     }
     const {width} = context.canvas;
-    let samples = inRange(waveform);
+    const samples = inRange(waveform);
     const sampleWidth = width / samples.length
     DrawBackground(context, width, TOP_HEIGHT, backgroundColor);
     DrawWaveform(context, samples, TOP_HEIGHT, sampleWidth, waveformColor);
@@ -149,7 +149,7 @@ export function ResizingWaveform({
         startMS: windowRange.startMS,
         endMS: windowRange.endMS
       }
-      let x = (msToPctOfRange(wr, ms) / 100) * canvasWidth;
+      const x = (msToPctOfRange(wr, ms) / 100) * canvasWidth;
       return Math.round(x);
     }
   }, [canvasWidth, windowRange.startMS, windowRange.endMS]);

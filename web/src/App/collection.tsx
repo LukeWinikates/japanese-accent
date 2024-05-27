@@ -13,8 +13,8 @@ export function newCursor<T>(collection: T[]): Cursor<T> {
 }
 
 export function setValue<T>(cursor: Cursor<T>, value: T): Cursor<T> {
-  let collection = [...cursor.collection];
-  let newValue = {...value};
+  const collection = [...cursor.collection];
+  const newValue = {...value};
   collection[cursor.index] = newValue
   return {
     index: cursor.index,
@@ -24,7 +24,7 @@ export function setValue<T>(cursor: Cursor<T>, value: T): Cursor<T> {
 }
 
 export function remove<T>(cursor: Cursor<T>): Cursor<T> {
-  let collection = [...cursor.collection];
+  const collection = [...cursor.collection];
   collection.splice(cursor.index, 1);
   return {
     index: cursor.index,

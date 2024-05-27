@@ -74,9 +74,9 @@ export function ClipEditor<T extends BasicClip>({
   }, [clip.endMS, clip.startMS]);
   const onPlaybackEnded = useCallback(() => setClipIsPlaying(false), [setClipIsPlaying]);
 
-  let alignPrevious = useCallback(() => previousClipEndMS && handleStartChange(previousClipEndMS), [handleStartChange, previousClipEndMS]);
-  let alignNext = useCallback(() => nextClipStartMS && handleEndChange(nextClipStartMS), [handleEndChange, nextClipStartMS]);
-  let onTextChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTextChange(event.target.value), [handleTextChange]);
+  const alignPrevious = useCallback(() => previousClipEndMS && handleStartChange(previousClipEndMS), [handleStartChange, previousClipEndMS]);
+  const alignNext = useCallback(() => nextClipStartMS && handleEndChange(nextClipStartMS), [handleEndChange, nextClipStartMS]);
+  const onTextChange = useCallback((event: React.ChangeEvent<HTMLTextAreaElement | HTMLInputElement>) => handleTextChange(event.target.value), [handleTextChange]);
 
   return (
     <>

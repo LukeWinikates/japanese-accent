@@ -13,7 +13,7 @@ export function closestIn<T>(list: T[], timeMS: number, extractor: (t: T) => num
   if (timeMS < extractor(list[0])) {
     return {item: list[0], index: 0};
   }
-  let lastIndex = list.length - 1;
+  const lastIndex = list.length - 1;
   if (timeMS > extractor(list[lastIndex])) {
     return {item: list[lastIndex], index: lastIndex}
   }

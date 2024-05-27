@@ -79,9 +79,9 @@ function reducer(state: ServerInteractionHistory, action: ServerInteraction): Se
 }
 
 export const EventHistoryProvider = ({children}: any) => {
-  let [state, dispatch] = useReducer(reducer, initial);
+  const [state, dispatch] = useReducer(reducer, initial);
 
-  let callbacks = useMemo(() => {
+  const callbacks = useMemo(() => {
     const logError = (e: string) => {
       dispatch({
         level: "error",

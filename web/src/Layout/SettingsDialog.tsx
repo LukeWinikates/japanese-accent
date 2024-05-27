@@ -50,14 +50,14 @@ function LoadedDialog({value, setValue}: Settable<AppSettings>) {
     })
   }, [api.settings, value.audioExportPath]);
 
-  let handleApiKeyChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleApiKeyChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValue({
       ...value,
       forvoApiKey: e.target.value
     })
   }, [value, setValue]);
 
-  let handleAudioExportPathChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleAudioExportPathChange = useCallback((e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setValue({
       ...value,
       audioExportPath: e.target.value

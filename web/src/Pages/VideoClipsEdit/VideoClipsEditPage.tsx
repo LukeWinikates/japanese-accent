@@ -14,7 +14,7 @@ type PageParams = { id: string };
 export const VideoClipsEditPage = () => {
   const {id} = useParams<PageParams>() as PageParams;
   const api = useBackendAPI();
-  let callback = useCallback(() => api.videos.GET(id),
+  const callback = useCallback(() => api.videos.GET(id),
     [api.videos, id]);
 
   return (

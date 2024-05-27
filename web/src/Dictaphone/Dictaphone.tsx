@@ -77,7 +77,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   }, [item])
 
   const saveRecording = useCallback((recording: AudioRecording) => {
-    let newRecording = {...recording};
+    const newRecording = {...recording};
     setCurrentRecording(newRecording);
     setRecordingIsPlaying(true);
   }, [setCurrentRecording, setRecordingIsPlaying]);

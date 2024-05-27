@@ -23,8 +23,8 @@ export const PitchDetails = ({clip, updateClip}: PitchDetailsProps) => {
       }))
   }, [api.videos.clips.pitch, updateClip, clip]);
 
-  let onClose = useCallback(() => setIsAddingWord(false), [setIsAddingWord]);
-  let onAddWord = useCallback(() => setIsAddingWord(true), [setIsAddingWord]);
+  const onClose = useCallback(() => setIsAddingWord(false), [setIsAddingWord]);
+  const onAddWord = useCallback(() => setIsAddingWord(true), [setIsAddingWord]);
 
   return (
     <Grid container item xs={12} spacing={2}>

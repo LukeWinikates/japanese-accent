@@ -40,9 +40,9 @@ export function ClipResizer({
                               pixelsToMS,
                             }: Props) {
   const {classes} = useStyles({});
-  let startPx = msToPixels(clip.startMS);
-  let endPX = msToPixels(clip.endMS);
-  let width = endPX - startPx;
+  const startPx = msToPixels(clip.startMS);
+  const endPX = msToPixels(clip.endMS);
+  const width = endPX - startPx;
 
   const [localState, setLocalState] = useState({left: 0, width: 0})
 

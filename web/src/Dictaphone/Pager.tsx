@@ -11,8 +11,8 @@ type Props = {
 };
 
 export const Pager = ({currentIndex, setByIndex, maxIndex, betweenElement}: Props) => {
-  let backOnePage = useCallback(() => setByIndex(currentIndex - 1), [currentIndex, setByIndex]);
-  let aheadOnePage = useCallback(() => setByIndex(currentIndex + 1), [currentIndex, setByIndex]);
+  const backOnePage = useCallback(() => setByIndex(currentIndex - 1), [currentIndex, setByIndex]);
+  const aheadOnePage = useCallback(() => setByIndex(currentIndex + 1), [currentIndex, setByIndex]);
 
   return (
     <Grid container item xs={12} justifyContent="space-between">

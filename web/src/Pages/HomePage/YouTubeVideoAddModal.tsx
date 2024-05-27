@@ -14,7 +14,7 @@ export function YouTubeVideoAddModal({open, onClose}: { open: boolean, onClose: 
     if (videoUserInput === null || videoTitle === null) {
       return;
     }
-    let youtubeId = idFrom(videoUserInput);
+    const youtubeId = idFrom(videoUserInput);
     if (youtubeId == null) {
       return
     }

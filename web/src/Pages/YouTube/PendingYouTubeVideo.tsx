@@ -64,7 +64,7 @@ const CopyableText = ({text}: { text: string }) => {
 }
 
 export const PendingYouTubeVideo = ({video}: { video: Video }) => {
-  let youtubeDLCommandText = "youtube-dl --write-auto-sub -f m4a \\\n\t" +
+  const youtubeDLCommandText = "youtube-dl --write-auto-sub -f m4a \\\n\t" +
     "-o '%(id)s.%(ext)s' -k --sub-lang ja \\\n\t" +
     `https://www.youtube.com/watch?v=${video.videoId}`;
 

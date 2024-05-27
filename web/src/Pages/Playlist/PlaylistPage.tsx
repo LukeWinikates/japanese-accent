@@ -24,7 +24,7 @@ const LoadedPage = ({value, setValue}: Settable<Playlist>) => {
 export const PlaylistPage = () => {
   const {id} = useParams<PageParams>() as PageParams;
   const api = useBackendAPI();
-  let callback = useCallback(() => api.playlists.GET(id),
+  const callback = useCallback(() => api.playlists.GET(id),
     [api.playlists, id]);
 
   return (

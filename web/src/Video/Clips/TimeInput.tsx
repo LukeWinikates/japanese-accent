@@ -17,13 +17,13 @@ function parseUserInput(value: string): number {
 }
 
 export function TimeInput({value, onChange, label}: TimeInputProps) {
-  let backOneSecond = useCallback(() => onChange(value - 1000), [value, onChange]);
-  let backHalfSecond = useCallback(() => onChange(value - 500), [value, onChange]);
-  let back100ms = useCallback(() => onChange(value - 100), [value, onChange]);
-  let ahead100ms = useCallback(() => onChange(value + 100), [value, onChange]);
-  let aheadHalfSecond = useCallback(() => onChange(value + 500), [value, onChange]);
-  let aheadOneSecond = useCallback(() => onChange(value + 1000), [value, onChange]);
-  let onChangeCallback = useCallback((event:ChangeEvent<HTMLInputElement>) => onChange(parseUserInput(event.target.value)), [onChange]);
+  const backOneSecond = useCallback(() => onChange(value - 1000), [value, onChange]);
+  const backHalfSecond = useCallback(() => onChange(value - 500), [value, onChange]);
+  const back100ms = useCallback(() => onChange(value - 100), [value, onChange]);
+  const ahead100ms = useCallback(() => onChange(value + 100), [value, onChange]);
+  const aheadHalfSecond = useCallback(() => onChange(value + 500), [value, onChange]);
+  const aheadOneSecond = useCallback(() => onChange(value + 1000), [value, onChange]);
+  const onChangeCallback = useCallback((event:ChangeEvent<HTMLInputElement>) => onChange(parseUserInput(event.target.value)), [onChange]);
 
   return (
     <FormControl margin="normal">

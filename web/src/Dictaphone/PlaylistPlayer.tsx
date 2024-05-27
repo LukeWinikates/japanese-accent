@@ -13,7 +13,7 @@ type PlaylistPlayerProps = { clips: Clip[], onClipsChange: (clips: Clip[]) => vo
 
 export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerProps) => {
     const [currentClip, setCurrentClip] = useState<Cursor<Clip>>(newCursor(clips));
-    let clipProgress = (currentClip.index + 1) / clips.length * 100;
+    const clipProgress = (currentClip.index + 1) / clips.length * 100;
 
     const pauseAll = useCallback(() => {
       document.querySelectorAll("audio").forEach(a => a.pause());

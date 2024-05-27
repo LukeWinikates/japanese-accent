@@ -19,8 +19,8 @@ type LoadedEditorProps = {
 };
 
 function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
-  let muteSuggestion = useCallback((clipToMute: BasicClip) => {
-    let newSuggestions = [...value.suggestedClips];
+  const muteSuggestion = useCallback((clipToMute: BasicClip) => {
+    const newSuggestions = [...value.suggestedClips];
 
     newSuggestions.splice(newSuggestions.findIndex(testClip => testClip.uuid === clipToMute.uuid), 1, {
       ...clipToMute,
@@ -33,8 +33,8 @@ function LoadedEditor({video, value, setValue, setVideo}: LoadedEditorProps) {
     })
   }, [value, setValue]);
 
-  let removeClip = useCallback((clip: BasicClip) => {
-    let newClips = [...video.clips];
+  const removeClip = useCallback((clip: BasicClip) => {
+    const newClips = [...video.clips];
     newClips.splice(newClips.findIndex(testClip => testClip.uuid === clip.uuid), 1)
 
     setVideo({

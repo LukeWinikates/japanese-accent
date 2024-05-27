@@ -43,9 +43,9 @@ export declare type RecorderProps = {
 };
 
 export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingChange}: RecorderProps) => {
-  let onStop = useCallback((blobUrl: string, blob: Blob) => {
+  const onStop = useCallback((blobUrl: string, blob: Blob) => {
     beforeRecord();
-    let newAudioRecording = {blobUrl, blob, timestamp: new Date()};
+    const newAudioRecording = {blobUrl, blob, timestamp: new Date()};
     onNewRecording(newAudioRecording);
   }, [beforeRecord, onNewRecording]);
 
@@ -76,7 +76,7 @@ export const Recorder = ({beforeRecord, onNewRecording, recording, onRecordingCh
   return (
     <Root className={classes.iconButtonWrapper}>
       {status === 'recording' &&
-      <CircularProgress size={22} color="secondary" className={classes.iconButtonProgress}/>}
+        <CircularProgress size={22} color="secondary" className={classes.iconButtonProgress}/>}
       <Button variant="contained"
               onClick={toggle}
               color={status === 'recording' ? "secondary" : "primary"}

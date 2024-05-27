@@ -8,8 +8,8 @@ type Props = { clip: Clip, clips: Clip[], currentClipIndex: number, setClipByInd
 export const PagingTitle = ({clip, clips, currentClipIndex, setClipByIndex}: Props) => {
   const maximumClipIndex = clips.length - 1;
 
-  let advanceOne = useCallback(() => setClipByIndex(currentClipIndex + 1), [setClipByIndex, currentClipIndex]);
-  let backOne = useCallback(() => setClipByIndex(currentClipIndex - 1), [setClipByIndex, currentClipIndex]);
+  const advanceOne = useCallback(() => setClipByIndex(currentClipIndex + 1), [setClipByIndex, currentClipIndex]);
+  const backOne = useCallback(() => setClipByIndex(currentClipIndex - 1), [setClipByIndex, currentClipIndex]);
   return <>
     <Typography>
       #{currentClipIndex + 1} / {clips.length}

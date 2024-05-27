@@ -43,7 +43,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
     });
   }, [currentWord])
 
-  let onClick = useCallback((word: Word, index: number) => {
+  const onClick = useCallback((word: Word, index: number) => {
     pauseAll();
     setCurrentWord({value: word, index});
   },[pauseAll, setCurrentWord]);
@@ -56,7 +56,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
       </Typography>);
   }
 
-  let wordsProgress = (currentWord.index + 1) / words.length * 100;
+  const wordsProgress = (currentWord.index + 1) / words.length * 100;
 
   return (
     <Box>
