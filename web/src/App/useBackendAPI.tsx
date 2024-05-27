@@ -4,8 +4,7 @@ import {ApiClient, NewApiClient} from "../api/client";
 import {useServerInteractionHistory} from "./useServerInteractionHistory";
 
 
-// @ts-ignore
-export const BackendAPIContext = createContext<ApiClient>(null);
+export const BackendAPIContext = createContext<ApiClient>(null!);
 
 export function useBackendAPI() {
   const context = useContext(BackendAPIContext);

@@ -18,7 +18,7 @@ type HistoryContext = [
     decrementPendingRequestCount: () => void
   }];
 
-let noOp = () => {
+const noOp = () => {
 };
 
 export const defaultValue: HistoryContext = [
@@ -67,11 +67,11 @@ function reducer(state: ServerInteractionHistory, action: ServerInteraction): Se
     }
   }
 
-  let newItem: HistoryEvent = {
+  const newItem: HistoryEvent = {
     text: action.message,
     severity: action.level,
   };
-  let keptHistory = [newItem, ...state.events.slice(9)];
+  const keptHistory = [newItem, ...state.events.slice(9)];
   return {
     ...state,
     events: keptHistory

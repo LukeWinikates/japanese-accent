@@ -41,12 +41,13 @@ export function Loader<T>({callback, into}: LoaderProps<T>) {
 
 
   switch (loadable.state) {
-    case "loaded":
+    case "loaded": {
       const Into = into
       const value = loadable.data;
       return (
         <Into value={value} setValue={setLoadedValue}/>
       );
+    }
     case "new":
     case "loading":
       return (

@@ -80,7 +80,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
             {
               words.map((word: Word, index: number) => {
                 return (
-                 <Item word={word} index={index} onClick={onClick} selected={index === currentWord.index}/>
+                 <Item key={index} word={word} index={index} onClick={onClick} selected={index === currentWord.index}/>
                 );
               })
             }

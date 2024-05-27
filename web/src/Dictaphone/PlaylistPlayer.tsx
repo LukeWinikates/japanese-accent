@@ -72,6 +72,7 @@ export const PlaylistPlayer = ({clips, onClipsChange, parentId}: PlaylistPlayerP
               {
                 clips.map((clip: Clip, index: number) => {
                   return <PlaylistRow
+                    key={index}
                     clip={clip}
                     index={index}
                     onSelectClip={onPauseAndSetNewCurrentClip}

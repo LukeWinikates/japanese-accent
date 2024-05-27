@@ -4,7 +4,7 @@ import React from "react";
 import {makeStyles} from "tss-react/mui";
 
 function moraAccentHigh(word: Word, index: number) {
-  if (!!word.accentMora) {
+  if (word.accentMora) {
     if (index === 0 && word.accentMora !== 1) {
       return false;
     }
