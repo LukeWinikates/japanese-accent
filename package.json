@@ -93,7 +93,7 @@
       "react-app",
       "react-app/jest",
       "plugin:jsx-a11y/recommended",
-      "plugin:sonarjs/recommended"
+      "plugin:sonarjs/recommended-legacy"
     ]
   },
   "browserslist": {
