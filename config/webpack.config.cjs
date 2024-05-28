@@ -652,11 +652,8 @@ module.exports = function (webpackEnv) {
         resolvePluginsRelativeTo: __dirname,
         baseConfig: {
           root: true,
-
           parser: '@babel/eslint-parser',
-
           plugins: ['react', 'testing-library', 'jest'],
-
           env: {
             browser: true,
             commonjs: true,
