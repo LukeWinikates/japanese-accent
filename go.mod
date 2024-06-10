@@ -1,6 +1,8 @@
 module github.com/LukeWinikates/japanese-accent
 
-go 1.18
+go 1.22
+
+toolchain go1.22.3
 
 require (
 	github.com/adrg/xdg v0.4.0
