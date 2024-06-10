@@ -210,7 +210,7 @@
     "node": ">=16"
   },
   "devDependencies": {
-    "eslint-plugin-jest": "^28.5.0",
+    "eslint-plugin-jest": "^28.6.0",
     "eslint-plugin-sonarjs": "^1.0.3",
     "eslint-plugin-testing-library": "^6.2.2"
   }
