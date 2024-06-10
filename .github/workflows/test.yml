@@ -15,7 +15,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v5
         with:
-          go-version: 'v1.21.6'
+          go-version: 'v1.22.4'
 
       - name: Set up Yarn
         uses: mskelton/setup-yarn@v2
