@@ -79,7 +79,7 @@
     "tss-react": "^4.9.10",
     "typescript": "^5.5.3",
     "url-loader": "4.1.1",
-    "web-vitals": "^4.2.1",
+    "web-vitals": "^4.2.2",
     "webpack": "^5.93.0",
     "webpack-dev-server": "^5.0.4",
     "webpack-manifest-plugin": "^5.0.0",
