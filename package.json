@@ -33,7 +33,7 @@
     "@types/react-window": "^1.8.8",
     "@typescript-eslint/eslint-plugin": "^7.17.0",
     "@typescript-eslint/parser": "^7.17.0",
-    "axios": "^1.7.3",
+    "axios": "^1.7.4",
     "axios-mock-adapter": "^2.0.0",
     "babel-jest": "^29.7.0",
     "babel-loader": "9.1.3",
