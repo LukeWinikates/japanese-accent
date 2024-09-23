@@ -18,7 +18,7 @@ jobs:
           go-version: 'v1.22.4'
 
       - name: Set up Yarn
-        uses: mskelton/setup-yarn@v2
+        uses: mskelton/setup-yarn@v3
         with:
           node-version: 22.2.0
 
