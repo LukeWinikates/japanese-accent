@@ -10,7 +10,7 @@ import {useBackendAPI} from "../App/useBackendAPI";
 import {makeStyles} from "tss-react/mui";
 
 
-const useStyles = makeStyles<{}>()(() => ({
+const useStyles = makeStyles<void>()(() => ({
   playerControls: {
     textAlign: 'center'
   }
@@ -69,7 +69,7 @@ export function Dictaphone({item}: DictaphoneProps) {
   const [isRecording, setIsRecording] = useState<boolean>(false);
   const api = useBackendAPI();
 
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   useEffect(() => {
     setCurrentRecording(null);
@@ -108,7 +108,9 @@ export function Dictaphone({item}: DictaphoneProps) {
 
   const practice = useCallback(() => {
     pauseAll();
-    activityPostBody && api.activity.POST(activityPostBody);
+    if (activityPostBody) {
+      api.activity.POST(activityPostBody);
+    }
     setActionQueue(["PlayClip", "Record", "PlayClip"])
     setClipIsPlaying(true);
   }, [activityPostBody, setActionQueue, setClipIsPlaying, api.activity, pauseAll]);
@@ -133,7 +135,10 @@ export function Dictaphone({item}: DictaphoneProps) {
   }, [startAction, actionQueue]);
 
   const boostCurrentClip = useCallback(() => {
-    boostPostBody && api.boosts.POST(boostPostBody)
+    if (!boostPostBody) {
+      return
+    }
+    api.boosts.POST(boostPostBody);
   }, [boostPostBody, api.boosts]);
 
   return (

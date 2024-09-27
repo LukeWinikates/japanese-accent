@@ -26,7 +26,7 @@ import {useBackendAPI} from "../../App/useBackendAPI";
 
 type AddWordDialogProps = { videoId: string, onClose: () => void };
 
-const useStyles = makeStyles<{}>()(theme => (
+const useStyles = makeStyles<void>()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -123,7 +123,7 @@ function SkeletonPreview() {
 const AddWordDialog = ({videoId, onClose}: AddWordDialogProps) => {
   const [word, setWord] = useState<{ text: string } | null>(null);
   const [preview, setPreview] = useState<WordAnalysis | null>(null);
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const api = useBackendAPI();
 
   const [analysisDebounce, setAnalysisDebounce] = useState<Date | undefined>();

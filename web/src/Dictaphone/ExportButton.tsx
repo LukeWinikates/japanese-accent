@@ -14,7 +14,9 @@ export function ExportButton({parentId}: { parentId: string }) {
     api.exports.GET(parentId)
       .then((r) => {
         setExportProgress(r.data);
-        r.data.done && setWatchingExport(false)
+        if (r.data.done) {
+          setWatchingExport(false)
+        }
       });
   }, watchingExport ? 200 : null);
 

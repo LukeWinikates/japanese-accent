@@ -22,7 +22,7 @@ import {useBackendAPI} from "../App/useBackendAPI";
 import {AppSettings} from "../api/types";
 import {Loader, Settable} from "../App/Loader";
 
-const useStyles = makeStyles<{}>()(theme => (
+const useStyles = makeStyles<void>()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -145,7 +145,7 @@ function LoadedDialog({value, setValue}: Settable<AppSettings>) {
 }
 
 export default function SettingsDialog({onClose}: { onClose: () => void }) {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const api = useBackendAPI();
 
   return (
