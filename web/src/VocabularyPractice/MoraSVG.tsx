@@ -21,7 +21,7 @@ const high = 10;
 const low = 30;
 const height = 80;
 
-const useStyles = makeStyles<{}>()(() => ({
+const useStyles = makeStyles<void>()(() => ({
   moraSVG: {
     display: 'inline-block',
     height: height
@@ -32,7 +32,7 @@ export function WordMoraSVG({word}: {
   word: Word
 }) {
   const theme = useTheme();
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   const points = word.morae.map((m, i) => {
     const x = 20 + (i * moraWidth);
@@ -78,7 +78,7 @@ export function WordMoraSVG({word}: {
 
 export function RawMoraSVG({morae, pattern}: { morae: string[], pattern: string }) {
   const theme = useTheme();
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   const points = pattern.split("").map((m, i) => {
     const x = 20 + (i * moraWidth);
@@ -124,7 +124,7 @@ export function SkeletonMoraSVG() {
     const y = low;
     return {x, y}
   });
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const path = points.map(({x, y}, i) => `${i === 0 ? "M" : "L"} ${x},${y}`).join("\n");
 
   return (

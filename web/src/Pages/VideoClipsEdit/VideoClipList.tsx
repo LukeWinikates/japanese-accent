@@ -57,9 +57,9 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   }, [clipsForTimeline, setSelectedClip]);
 
   useEffect(() => {
-    selectedClip ?
-      setSearchParams({selected: selectedClip.uuid}) :
-      setSearchParams({});
+    setSearchParams(selectedClip ?
+      {selected: selectedClip.uuid} :
+      {});
   }, [selectedClip, setSearchParams])
 
   const onDeleteClip = useCallback((clip: Clip | BasicClip) => {
@@ -72,7 +72,7 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   }, [api.videos.clips, api.videos.advice.suggestedClips, video.videoId, muteSuggestion, removeClip]);
 
   const onMuteAll = useCallback(() => {
-    return api.videos.advice.suggestedClips.index.DELETE(videoUuid).then(()=> {
+    return api.videos.advice.suggestedClips.index.DELETE(videoUuid).then(() => {
       setAdvice({
         ...advice,
         suggestedClips: advice.suggestedClips.map(c => {

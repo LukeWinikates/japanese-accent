@@ -9,7 +9,7 @@ import {HistoryDrawer} from "./HistoryDrawer";
 import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 import {GlobalStyles} from "tss-react";
 
-const useStyles = makeStyles<{}>()((theme) => ({
+const useStyles = makeStyles<void>()((theme) => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing(3),
@@ -28,7 +28,7 @@ export const theme = createTheme({
 });
 
 export function CoreApp() {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const [isNavigationDrawerOpen, setNavigationDrawerOpen] = useState(false);
   const [isHistoryDrawerOpen, setHistoryDrawerOpen] = useState(false);
   const [{events}] = useServerInteractionHistory();

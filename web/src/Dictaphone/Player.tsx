@@ -9,7 +9,7 @@ import {secondsToHumanReadable} from "../App/time";
 import {useServerInteractionHistory} from "../App/useServerInteractionHistory";
 import {makeStyles} from "tss-react/mui";
 
-const useStyles = makeStyles<{}>()((theme) => {
+const useStyles = makeStyles<void>()((theme) => {
   return {
     playerControls: {
       textAlign: 'center',
@@ -49,7 +49,7 @@ export const Player = ({
   const [progress, setProgress] = useState(0);
   const [, {logError}] = useServerInteractionHistory();
 
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   useEffect(() => {
     if (playing) {
@@ -167,7 +167,7 @@ export const Player = ({
     if (audioRef.current === undefined || audioRef.current === null) {
       return;
     }
-    onPositionChange && onPositionChange(audioRef.current.currentTime * 1000)
+    onPositionChange?.(audioRef.current.currentTime * 1000);
     if (checkIsComplete()) {
       audioRef.current?.pause();
       onPlayerStateChanged(false);
@@ -199,7 +199,7 @@ export const Player = ({
 };
 
 export const PlayerSkeleton = () => {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   return (
     <Grid container item xs={12} justifyContent="center" alignItems="center" className={classes.playerControls}>
       <Grid item xs={3}>

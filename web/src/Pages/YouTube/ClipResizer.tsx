@@ -2,7 +2,7 @@ import React, {ForwardedRef, useCallback, useEffect, useState} from "react";
 import {makeStyles} from 'tss-react/mui';
 import {Resizable, ResizeCallbackData, ResizeHandle} from 'react-resizable';
 
-const useStyles = makeStyles<{}>()((theme) => ({
+const useStyles = makeStyles<void>()((theme) => ({
   span: {
     position: "absolute",
     display: "inline-flex",
@@ -39,7 +39,7 @@ export function ClipResizer({
                               msToPixels,
                               pixelsToMS,
                             }: Props) {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const startPx = msToPixels(clip.startMS);
   const endPX = msToPixels(clip.endMS);
   const width = endPX - startPx;

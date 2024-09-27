@@ -14,7 +14,7 @@ const SCRUBBER_HEIGHT = 5;
 const SCRUBBER_HANDLE_HEIGHT = 25;
 const CONTAINER_HEIGHT = TOP_HEIGHT + SCRUBBER_HEIGHT + SCRUBBER_HANDLE_HEIGHT;
 
-const useStyles = makeStyles<{}>()((theme) => ({
+const useStyles = makeStyles<void>()((theme) => ({
   playHeadTop: {
     position: "absolute",
     top: 0,
@@ -96,7 +96,7 @@ export function ResizingWaveform({
   const theme = useTheme();
   const [totalMS, setTotalMS] = useState<number>(0)
 
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   const RESIZER_PADDING_MS = 2000;
 

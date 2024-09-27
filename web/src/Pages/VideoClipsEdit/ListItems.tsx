@@ -41,7 +41,7 @@ type Params = {
   onDelete: (s: Clip | BasicClip) => void,
 };
 
-const useStyles = makeStyles<{}>()((theme) => ({
+const useStyles = makeStyles<void>()((theme) => ({
   muted: {
     backgroundColor: theme.palette.grey.A400,
     overflow: "hidden",
@@ -59,7 +59,7 @@ const useStyles = makeStyles<{}>()((theme) => ({
 }));
 
 export function MutedListItem({clip, setSelectedClip, selected, style, showMuted}: Params) {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   const classNames = [classes.muted, showMuted ? null : classes.zeroHeight].join(" ")
 
@@ -79,7 +79,7 @@ export function MutedListItem({clip, setSelectedClip, selected, style, showMuted
 
 
 export function SuggestedListItem({clip, setSelectedClip, selected, onDelete, style}: Params) {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const deleteCallback = useCallback(() => {
     onDelete(clip)
   }, [onDelete, clip])
@@ -108,7 +108,7 @@ export function SuggestedListItem({clip, setSelectedClip, selected, onDelete, st
 
 
 export function DraftListItem({clip, setSelectedClip, selected, index, style}: Params) {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
 
   const onClick = useCallback(() => {
     setSelectedClip(clip);

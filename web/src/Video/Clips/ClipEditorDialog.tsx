@@ -23,7 +23,7 @@ interface Props {
   previousClipStartMS: number;
 }
 
-const useStyles = makeStyles<{}>()(theme => (
+const useStyles = makeStyles<void>()(theme => (
   {
     closeButton: {
       position: 'absolute',
@@ -46,7 +46,7 @@ export function ClipEditorDialog(props: Props) {
     previousClipEndMS,
     previousClipStartMS
   } = props;
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const api = useBackendAPI();
 
   const onSave = useCallback(() => {

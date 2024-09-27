@@ -9,7 +9,7 @@ import {Link} from "react-router-dom";
 import SettingsDialog from "./SettingsDialog"
 import {CSSObject} from "tss-react";
 
-const useStyles = makeStyles<{}>()((theme) => ({
+const useStyles = makeStyles<void>()((theme) => ({
   root: {
     flexGrow: 1,
   },
@@ -32,7 +32,7 @@ type AppBarProps = {
 };
 
 export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
-  const {classes} = useStyles({});
+  const {classes} = useStyles();
   const [{events, pendingHttpRequests}] = useServerInteractionHistory();
   const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;
