@@ -67,7 +67,7 @@
     "react-media-recorder": "https://github.com/LukeWinikates/react-media-recorder/releases/download/v1.6.7/react-media-recorder-1.6.7.tgz",
     "react-refresh": "^0.14.2",
     "react-resizable": "^3.0.4",
-    "react-router-dom": "^6.27.0",
+    "react-router-dom": "^6.28.0",
     "react-virtualized-auto-sizer": "^1.0.24",
     "react-window": "^1.8.10",
     "resolve": "^1.22.8",
