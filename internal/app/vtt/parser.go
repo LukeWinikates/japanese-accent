@@ -62,11 +62,11 @@ func parseCueTime(s string) (int, error) {
 		return 0, err
 	}
 	rest := strings.Split(mills[0], ":")
-	hr, err := strconv.Atoi(rest[0])
+	hours, err := strconv.Atoi(rest[0])
 	if err != nil {
 		return 0, err
 	}
-	min, err := strconv.Atoi(rest[1])
+	minutes, err := strconv.Atoi(rest[1])
 	if err != nil {
 		return 0, err
 	}
@@ -75,5 +75,5 @@ func parseCueTime(s string) (int, error) {
 		return 0, err
 	}
 
-	return ms + (1000 * sec) + (min * 60 * 1000) + (hr * 60 * 60 * 1000), nil
+	return ms + (1000 * sec) + (minutes * 60 * 1000) + (hours * 60 * 60 * 1000), nil
 }
