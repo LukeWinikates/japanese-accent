@@ -106,7 +106,7 @@ export const EventHistoryProvider = ({children}: any) => {
     }
   }, [dispatch])
 
-  const value = useMemo(()=>{
+  const value = useMemo<HistoryContext>(()=>{
     return [state, callbacks]
   }, [state, dispatch])
 
