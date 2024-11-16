@@ -38,8 +38,8 @@ function LoadedPage({value}: Settable<WordList>) {
               </Typography>
               <SuzukiButton text="Open all in Suzuki-kun" items={value.words.map(w => w.word)}/>
               <List subheader={<li/>}>
-                {value.words.map((item, i) =>
-                  <ListItem key={`item-${i}`}>
+                {value.words.map((item) =>
+                  <ListItem key={item.id}>
                     <ListItemText
                       secondary={
                         <>

@@ -2,6 +2,7 @@ import React, {createContext, useContext, useMemo, useReducer} from 'react';
 
 export interface HistoryEvent {
   text: string,
+  time: Date,
   severity: "info" | "debug" | "warning" | "error";
 }
 
@@ -70,6 +71,7 @@ function reducer(state: ServerInteractionHistory, action: ServerInteraction): Se
   const newItem: HistoryEvent = {
     text: action.message,
     severity: action.level,
+    time: new Date()
   };
   const keptHistory = [newItem, ...state.events.slice(9)];
   return {
@@ -104,9 +106,13 @@ export const EventHistoryProvider = ({children}: any) => {
     }
   }, [dispatch])
 
+  const value = useMemo(()=>{
+    return [state, callbacks]
+  }, [state, dispatch])
+
   return (
     <ServerInteractionHistoryContext.Provider
-      value={[state, callbacks]}>
+      value={value}>
       {children}
     </ServerInteractionHistoryContext.Provider>
   )

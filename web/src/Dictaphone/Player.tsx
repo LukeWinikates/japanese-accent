@@ -1,4 +1,5 @@
 /* eslint-disable jsx-a11y/media-has-caption */
+/* eslint-disable sonarjs/media-has-caption */
 
 import {Grid, IconButton, LinearProgress} from "@mui/material";
 import React, {useCallback, useEffect, useRef, useState} from "react";

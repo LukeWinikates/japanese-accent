@@ -34,14 +34,14 @@ type AppBarProps = {
 export function AppBar({onLeftDrawerOpen, onRightDrawerOpen}: AppBarProps) {
   const {classes} = useStyles();
   const [{events, pendingHttpRequests}] = useServerInteractionHistory();
-  const [isSettingsDialogOpen, setSettingsDialogOpen] = useState(false);
+  const [isSettingsDialogOpen, setIsSettingsDialogOpen] = useState(false);
   const hasPendingRequest = pendingHttpRequests > 0;
 
-  const openSettingsDialog = useCallback(() => setSettingsDialogOpen(true),
-    [setSettingsDialogOpen]);
+  const openSettingsDialog = useCallback(() => setIsSettingsDialogOpen(true),
+    [setIsSettingsDialogOpen]);
 
-  const closeSettingsDialog = useCallback(() => setSettingsDialogOpen(false),
-    [setSettingsDialogOpen]);
+  const closeSettingsDialog = useCallback(() => setIsSettingsDialogOpen(false),
+    [setIsSettingsDialogOpen]);
 
   return <>
     <MuiAppBar position="fixed">
