@@ -29,25 +29,25 @@ export const theme = createTheme({
 
 export function CoreApp() {
   const {classes} = useStyles();
-  const [isNavigationDrawerOpen, setNavigationDrawerOpen] = useState(false);
-  const [isHistoryDrawerOpen, setHistoryDrawerOpen] = useState(false);
+  const [isNavigationDrawerOpen, setIsNavigationDrawerOpen] = useState(false);
+  const [isHistoryDrawerOpen, setIsHistoryDrawerOpen] = useState(false);
   const [{events}] = useServerInteractionHistory();
 
   const onNavigationDrawerOpen = useCallback(() => {
-    setNavigationDrawerOpen(true);
-  }, [setNavigationDrawerOpen]);
+    setIsNavigationDrawerOpen(true);
+  }, [setIsNavigationDrawerOpen]);
 
   const onNavigationDrawerClose = useCallback(() => {
-    setNavigationDrawerOpen(false);
-  }, [setNavigationDrawerOpen]);
+    setIsNavigationDrawerOpen(false);
+  }, [setIsNavigationDrawerOpen]);
 
   const onHistoryDrawerOpen = useCallback(() => {
-    setHistoryDrawerOpen(true);
-  }, [setHistoryDrawerOpen]);
+    setIsHistoryDrawerOpen(true);
+  }, [setIsHistoryDrawerOpen]);
 
   const onHistoryDrawerClose = useCallback(() => {
-    setHistoryDrawerOpen(false);
-  }, [setHistoryDrawerOpen]);
+    setIsHistoryDrawerOpen(false);
+  }, [setIsHistoryDrawerOpen]);
 
   return (
     <>

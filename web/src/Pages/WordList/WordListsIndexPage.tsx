@@ -15,34 +15,32 @@ function LoadedContent({value}: Settable<WordList[]>) {
 export default function WordListsIndexPage() {
   const api = useBackendAPI();
   return (
-    <>
-      <Box m={2}>
-        <Container maxWidth='lg'>
-          <Breadcrumbs aria-label="breadcrumb">
-            <BreadcrumbLink color="inherit" href="/">
-              Home
-            </BreadcrumbLink>
-          </Breadcrumbs>
+    <Box m={2}>
+      <Container maxWidth='lg'>
+        <Breadcrumbs aria-label="breadcrumb">
+          <BreadcrumbLink color="inherit" href="/">
+            Home
+          </BreadcrumbLink>
+        </Breadcrumbs>
+
+        <Box paddingY={2} margin={0}>
+          <Typography variant="h2">
+            Japanese Accent Practice
+          </Typography>
 
           <Box paddingY={2} margin={0}>
-            <Typography variant="h2">
-              Japanese Accent Practice
-            </Typography>
-
-            <Box paddingY={2} margin={0}>
-              <Grid container spacing={1}>
-                <Grid item xs={6}>
-                  <Typography variant="h4">
-                    WordLists
-                  </Typography>
-                  <Loader callback={api.wordLists.index.GET}
-                          into={LoadedContent}/>
-                </Grid>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <Typography variant="h4">
+                  WordLists
+                </Typography>
+                <Loader callback={api.wordLists.index.GET}
+                        into={LoadedContent}/>
               </Grid>
-            </Box>
+            </Grid>
           </Box>
-        </Container>
-      </Box>
-    </>
+        </Box>
+      </Container>
+    </Box>
   );
 }

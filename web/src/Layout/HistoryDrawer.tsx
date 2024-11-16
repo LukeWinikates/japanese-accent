@@ -25,9 +25,9 @@ export function HistoryDrawer({open, onClose, history}: HistoryDrawerProps) {
         </Typography>
         <List>
           {
-            history.map((h, i) => {
+            history.map((h) => {
               return (
-                <ListItem key={i}>
+                <ListItem key={h.time.valueOf()}>
                   {h.text}
                 </ListItem>
               )

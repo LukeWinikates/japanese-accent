@@ -8,8 +8,8 @@ interface Props {
 export function TextOptionChooser({options}: Props) {
   return (<ul>
     {
-      options.map((o, i) => {
-        return <li key={i}>
+      options.map((o) => {
+        return <li key={o}>
           {o}
         </li>
       })

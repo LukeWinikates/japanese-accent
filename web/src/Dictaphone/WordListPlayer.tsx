@@ -12,7 +12,7 @@ function Item({index, word, selected, onClick}: { index: number, word: Word, sel
     onClick(word, index)
   }, [word, index, onClick])
   return (
-    <ListItemButton key={index}
+    <ListItemButton key={word.id}
               selected={selected}
               alignItems="flex-start"
               onClick={callback}
@@ -80,7 +80,7 @@ export const WordListPlayer = ({words}: AudioLinkPlayerProps) => {
             {
               words.map((word: Word, index: number) => {
                 return (
-                 <Item key={index} word={word} index={index} onClick={onClick} selected={index === currentWord.index}/>
+                 <Item key={word.id} word={word} index={index} onClick={onClick} selected={index === currentWord.index}/>
                 );
               })
             }

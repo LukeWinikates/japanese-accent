@@ -20,8 +20,8 @@ function LoadedDrawer({value}: Settable<Highlights>) {
         <ListSubheader disableSticky={true}>
           Videos <RouterLink to="/videos">(see all)</RouterLink>
         </ListSubheader>
-        {value.videos.map((video, index) => (
-          <React.Fragment key={index}>
+        {value.videos.map((video) => (
+          <React.Fragment key={video.videoId}>
             <ListItemButton>
               <ListItemIcon>{<YoutubeIcon/>}</ListItemIcon>
               <Link component={RouterLink} to={`/media/${video.videoId}`}>
@@ -36,8 +36,8 @@ function LoadedDrawer({value}: Settable<Highlights>) {
         <ListSubheader disableSticky={true}>
           Word Lists <RouterLink to="/wordlists">(see all)</RouterLink>
         </ListSubheader>
-        {value.wordLists.map((wordList, index) => (
-          <React.Fragment key={index}>
+        {value.wordLists.map((wordList) => (
+          <React.Fragment key={wordList.id}>
             <ListItemButton>
               <ListItemIcon><NotesIcon/></ListItemIcon>
               <Link component={RouterLink} to={`/wordlists/${wordList.id}`}>

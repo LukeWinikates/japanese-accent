@@ -6,7 +6,7 @@ declare type SuzukiButtonProps = {
   text: string,
 };
 
-const BASE_URL="http://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index";
+const BASE_URL="https://www.gavo.t.u-tokyo.ac.jp/ojad/phrasing/index";
 
 export function SuzukiButton(props: SuzukiButtonProps) {
   const {

@@ -8,34 +8,32 @@ import {Loader, Settable} from "../../App/Loader";
 
 function LoadedIndexPage({value}: Settable<VideoSummary[]>) {
   return (
-    <>
-      <Box m={2}>
-        <Container maxWidth='lg'>
-          <Breadcrumbs aria-label="breadcrumb">
-            <BreadcrumbLink color="inherit" href="/">
-              Home
-            </BreadcrumbLink>
-          </Breadcrumbs>
+    <Box m={2}>
+      <Container maxWidth='lg'>
+        <Breadcrumbs aria-label="breadcrumb">
+          <BreadcrumbLink color="inherit" href="/">
+            Home
+          </BreadcrumbLink>
+        </Breadcrumbs>
+
+        <Box paddingY={2} margin={0}>
+          <Typography variant="h2">
+            Japanese Accent Practice
+          </Typography>
 
           <Box paddingY={2} margin={0}>
-            <Typography variant="h2">
-              Japanese Accent Practice
-            </Typography>
-
-            <Box paddingY={2} margin={0}>
-              <Grid container spacing={1}>
-                <Grid item xs={6}>
-                  <Typography variant="h4">
-                    Youtube Videos
-                  </Typography>
-                  <VideoList videos={value}/>
-                </Grid>
+            <Grid container spacing={1}>
+              <Grid item xs={6}>
+                <Typography variant="h4">
+                  Youtube Videos
+                </Typography>
+                <VideoList videos={value}/>
               </Grid>
-            </Box>
+            </Grid>
           </Box>
-        </Container>
-      </Box>
-    </>
+        </Box>
+      </Container>
+    </Box>
   );
 }
 

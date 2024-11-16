@@ -108,24 +108,22 @@ export function VideoClipList({advice, videoUuid, video, muteSuggestion, removeC
   return (
     <div>
       {selectedClip &&
-        <>
-          <Card>
-            <CardContent>
-              <Pager
-                currentIndex={selectedClipIndex}
-                maxIndex={advice.suggestedClips.length - 1}
-                betweenElement={<div>{titleFor(selectedClip)}</div>}
-                setByIndex={selectedClipByIndex}/>
-              <Editor
-                clip={selectedClip}
-                setClip={setSelectedClip}
-                videoId={videoUuid}
-                onDelete={muteSuggestion}
-                textSuggestions={textSuggestionsForClip}
-              />
-            </CardContent>
-          </Card>
-        </>
+        <Card>
+          <CardContent>
+            <Pager
+              currentIndex={selectedClipIndex}
+              maxIndex={advice.suggestedClips.length - 1}
+              betweenElement={<div>{titleFor(selectedClip)}</div>}
+              setByIndex={selectedClipByIndex}/>
+            <Editor
+              clip={selectedClip}
+              setClip={setSelectedClip}
+              videoId={videoUuid}
+              onDelete={muteSuggestion}
+              textSuggestions={textSuggestionsForClip}
+            />
+          </CardContent>
+        </Card>
       }
       <Card>
         <CardContent>
