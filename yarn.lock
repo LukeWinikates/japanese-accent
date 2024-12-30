@@ -1547,10 +1547,10 @@
   resolved "https://registry.yarnpkg.com/@floating-ui/utils/-/utils-0.2.7.tgz#d0ece53ce99ab5a8e37ebdfe5e32452a2bfc073e"
   integrity sha512-X8R8Oj771YRl/w+c1HqAC1szL8zWQRwFvgDwT129k9ACdBoud/+/rX9V0qiMl6LWUdP9voC2nDVZYPMQQsb6eA==
 
-"@fontsource/roboto@^5.1.0":
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.1.0.tgz#00230737ec09c60ae877a5e33d067c0607fdd5ba"
-  integrity sha512-cFRRC1s6RqPygeZ8Uw/acwVHqih8Czjt6Q0MwoUoDe9U3m4dH1HmNDRBZyqlMSFwgNAUKgFImncKdmDHyKpwdg==
+"@fontsource/roboto@^5.1.1":
+  version "5.1.1"
+  resolved "https://registry.yarnpkg.com/@fontsource/roboto/-/roboto-5.1.1.tgz#64b3f819baf8d3bcfb48c0437ddc7e4118a6ab14"
+  integrity sha512-XwVVXtERDQIM7HPUIbyDe0FP4SRovpjF7zMI8M7pbqFp3ahLJsJTd18h+E6pkar6UbV3btbwkKjYARr5M+SQow==
 
 "@humanwhocodes/config-array@^0.13.0":
   version "0.13.0"
