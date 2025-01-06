@@ -214,7 +214,7 @@
   },
   "devDependencies": {
     "eslint-plugin-jest": "^28.10.0",
-    "eslint-plugin-sonarjs": "^2.0.4",
+    "eslint-plugin-sonarjs": "^3.0.1",
     "eslint-plugin-testing-library": "^7.1.1"
   }
 }
