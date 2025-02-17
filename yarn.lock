@@ -507,7 +507,7 @@
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-private-property-in-object/-/plugin-proposal-private-property-in-object-7.21.0-placeholder-for-preset-env.2.tgz#7844f9289546efa9febac2de4cfe358a050bd703"
   integrity sha512-SOSkfJDddaM7mak6cPEpswyTRnuRltl429hMraQEglW+OkovnCzsiszTmsrlY//qLFjCpQDFRvjdm2wA5pPm9w==
 
-"@babel/plugin-proposal-private-property-in-object@^7.21.11":
+"@babel/plugin-proposal-private-property-in-object@^7.16.7", "@babel/plugin-proposal-private-property-in-object@^7.21.11":
   version "7.21.11"
   resolved "https://registry.yarnpkg.com/@babel/plugin-proposal-private-property-in-object/-/plugin-proposal-private-property-in-object-7.21.11.tgz#69d597086b6760c4126525cfa154f34631ff272c"
   integrity sha512-0QZ8qP/3RLDVBwBFoWAwCtgcDZJVwA5LUJRZU8x2YFfKNuFq161wK3cuGrALu5yiPu+vzwTAg/sMWVNeWeNyaw==
@@ -565,13 +565,6 @@
   integrity sha512-MXf5laXo6c1IbEbegDmzGPwGNTsHZmEy6QGznu5Sh2UCWvueywb2ee+CCE4zQiZstxU9BMoQO9i6zUFSY0Kj0Q==
   dependencies:
     "@babel/helper-plugin-utils" "^7.8.3"
-
-"@babel/plugin-syntax-flow@^7.22.5":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-syntax-flow/-/plugin-syntax-flow-7.22.5.tgz#163b820b9e7696ce134df3ee716d9c0c98035859"
-  integrity sha512-9RdCl0i+q0QExayk2nOS7853w08yLucnnPML6EN9S8fgMPVtdLDCdx/cOQ/i44Lb9UeQX9A35yaqBBOMMZxPxQ==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.22.5"
 
 "@babel/plugin-syntax-flow@^7.25.9":
   version "7.26.0"
@@ -820,15 +813,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.25.9"
 
-"@babel/plugin-transform-flow-strip-types@^7.16.0":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-flow-strip-types/-/plugin-transform-flow-strip-types-7.22.5.tgz#0bb17110c7bf5b35a60754b2f00c58302381dee2"
-  integrity sha512-tujNbZdxdG0/54g/oua8ISToaXTFBf8EnSb5PgQSciIXWOWKX3S4+JR7ZE9ol8FZwf9kxitzkGQ+QWeov/mCiA==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.22.5"
-    "@babel/plugin-syntax-flow" "^7.22.5"
-
-"@babel/plugin-transform-flow-strip-types@^7.24.7":
+"@babel/plugin-transform-flow-strip-types@^7.16.0", "@babel/plugin-transform-flow-strip-types@^7.24.7":
   version "7.25.9"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-flow-strip-types/-/plugin-transform-flow-strip-types-7.25.9.tgz#85879b42a8f5948fd6317069978e98f23ef8aec1"
   integrity sha512-/VVukELzPDdci7UUsWQaSkhgnjIWXnIyRpM02ldxaVoFK96c41So8JcKT3m0gYjyv7j5FNPGS5vfELrWalkbDA==
@@ -1024,14 +1009,7 @@
   dependencies:
     "@babel/helper-plugin-utils" "^7.22.5"
 
-"@babel/plugin-transform-react-display-name@^7.16.0":
-  version "7.22.5"
-  resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-display-name/-/plugin-transform-react-display-name-7.22.5.tgz#3c4326f9fce31c7968d6cb9debcaf32d9e279a2b"
-  integrity sha512-PVk3WPYudRF5z4GKMEYUrLjPl38fJSKNaEOkFuoprioowGuWN6w2RKznuFNSlJx7pzzXXStPUnNSOEO0jL5EVw==
-  dependencies:
-    "@babel/helper-plugin-utils" "^7.22.5"
-
-"@babel/plugin-transform-react-display-name@^7.24.7":
+"@babel/plugin-transform-react-display-name@^7.16.0", "@babel/plugin-transform-react-display-name@^7.24.7":
   version "7.25.9"
   resolved "https://registry.yarnpkg.com/@babel/plugin-transform-react-display-name/-/plugin-transform-react-display-name-7.25.9.tgz#4b79746b59efa1f38c8695065a92a9f5afb24f7d"
   integrity sha512-KJfMlYIUxQB1CJfO3e0+h0ZHWOTLCPP115Awhaz8U0Zpq36Gl/cXlpoyMRnUWlhNUBAzldnCiAZNvCDj7CrKxQ==
@@ -3519,10 +3497,10 @@ babel-preset-jest@^29.6.3:
     babel-plugin-jest-hoist "^29.6.3"
     babel-preset-current-node-syntax "^1.0.0"
 
-babel-preset-react-app@^10.0.1:
-  version "10.0.1"
-  resolved "https://registry.yarnpkg.com/babel-preset-react-app/-/babel-preset-react-app-10.0.1.tgz#ed6005a20a24f2c88521809fa9aea99903751584"
-  integrity sha512-b0D9IZ1WhhCWkrTXyFuIIgqGzSkRIH5D5AmB0bXbzYAB1OBAwHcUeyWW2LorutLWF5btNo/N7r/cIdmvvKJlYg==
+babel-preset-react-app@^10.1.0:
+  version "10.1.0"
+  resolved "https://registry.yarnpkg.com/babel-preset-react-app/-/babel-preset-react-app-10.1.0.tgz#e367f223f6c27878e6cc28471d0d506a9ab9f96c"
+  integrity sha512-f9B1xMdnkCIqe+2dHrJsoQFRz7reChaAHE/65SdaykPklQqhme2WaC08oD3is77x9ff98/9EazAKFDZv5rFEQg==
   dependencies:
     "@babel/core" "^7.16.0"
     "@babel/plugin-proposal-class-properties" "^7.16.0"
@@ -3531,6 +3509,7 @@ babel-preset-react-app@^10.0.1:
     "@babel/plugin-proposal-numeric-separator" "^7.16.0"
     "@babel/plugin-proposal-optional-chaining" "^7.16.0"
     "@babel/plugin-proposal-private-methods" "^7.16.0"
+    "@babel/plugin-proposal-private-property-in-object" "^7.16.7"
     "@babel/plugin-transform-flow-strip-types" "^7.16.0"
     "@babel/plugin-transform-react-display-name" "^7.16.0"
     "@babel/plugin-transform-runtime" "^7.16.4"
